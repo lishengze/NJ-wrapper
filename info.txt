@@ -1,0 +1,75 @@
+
+> addon@0.0.0 install c:\Users\li.xiankui\mywork\SysUserApiWrapper
+> node-gyp rebuild
+
+
+c:\Users\li.xiankui\mywork\SysUserApiWrapper>if not defined npm_config_node_gyp (node "c:\Program Files (x86)\iojs\node_modules\npm\bin\node-gyp-bin\\..\..\node_modules\node-gyp\bin\node-gyp.js" rebuild )  else (node  rebuild ) 
+在此解决方案中一次生成一个项目。若要启用并行生成，请添加“/m”开关。
+生成启动时间为 2015/8/14 15:18:57。
+节点 1 上的项目“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\binding.sln”(默认目标)。
+ValidateSolutionConfiguration:
+  正在生成解决方案配置“Release|Win32”。
+项目“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\binding.sln”(1)正在节点 1 上生成“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj”(2) (默认目标)。
+PrepareForBuild:
+  正在创建目录“Release\obj\addon\”。
+  正在创建目录“Release\obj\addon\addon.tlog\”。
+InitializeBuildStatus:
+  正在创建“Release\obj\addon\addon.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64_x86\CL.exe /c /I"C:\Users\li.xiankui\.node-gyp\3.0.0\include\node" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\src" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\deps\uv\include" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\deps\v8\include" /I..\node_modules\nan /I.. /Zi /nologo /W3 /WX- /Ox /Ob2 /Oi /Ot /Oy /GL /D NODE_GYP_MODULE_NAME=addon /D WIN32 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _HAS_EXCEPTIONS=0 /D BUILDING_V8_SHARED=1 /D BUILDING_UV_SHARED=1 /D BUILDING_NODE_EXTENSION /D _WINDLL /GF /Gm- /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"Release\obj\addon\\" /Fd"Release\obj\addon\vc120.pdb" /Gd /TP /wd4351 /wd4355 /wd4800 /wd4251 /analyze- /errorReport:queue /MP ..\addon.cc ..\FtdcSysUserApi_Wrapper.cc ..\SysUserSpi.cc ..\SpiCFunc.cc ..\CDes.cpp
+  addon.cc
+  FtdcSysUserApi_Wrapper.cc
+  SysUserSpi.cc
+  SpiCFunc.cc
+..\SpiCFunc.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\FtdcSysUserApi_Wrapper.cc(146): warning C4244: “参数”: 从“int64_t”转换到“int”，可能丢失数据 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\FtdcSysUserApi_Wrapper.cc(186): warning C4244: “参数”: 从“int64_t”转换到“int”，可能丢失数据 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  CDes.cpp
+..\CDes.cpp(373): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(374): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(375): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(376): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(377): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(378): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(379): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+..\CDes.cpp(380): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64_x86\CL.exe /c /I"C:\Users\li.xiankui\.node-gyp\3.0.0\include\node" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\src" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\deps\uv\include" /I"C:\Users\li.xiankui\.node-gyp\3.0.0\deps\v8\include" /I..\node_modules\nan /I.. /Zi /nologo /W3 /WX- /Ox /Ob2 /Oi /Ot /Oy /GL /D NODE_GYP_MODULE_NAME=addon /D WIN32 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _HAS_EXCEPTIONS=0 /D BUILDING_V8_SHARED=1 /D BUILDING_UV_SHARED=1 /D BUILDING_NODE_EXTENSION /D _WINDLL /GF /Gm- /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"Release\obj\addon\\" /Fd"Release\obj\addon\vc120.pdb" /Gd /TC /wd4351 /wd4355 /wd4800 /wd4251 /analyze- /errorReport:queue /MP "c:\Program Files (x86)\iojs\node_modules\npm\node_modules\node-gyp\src\win_delay_load_hook.c"
+  win_delay_load_hook.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64_x86\link.exe /ERRORREPORT:QUEUE /OUT:"c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\Release\addon.node" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib DelayImp.lib "C:\Users\li.xiankui\.node-gyp\3.0.0\Release\iojs.lib" C:\Users\li.xiankui\mywork\SysUserApiWrapper\sysuserapi.lib Delayimp.lib /DELAYLOAD:iojs.exe /DELAYLOAD:node.exe /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\Release\addon.pdb" /MAP /MAPINFO:EXPORTS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /SAFESEH /ignore:4199 /DLL Release\obj\addon\addon.obj
+  Release\obj\addon\FtdcSysUserApi_Wrapper.obj
+  Release\obj\addon\SysUserSpi.obj
+  Release\obj\addon\SpiCFunc.obj
+  Release\obj\addon\CDes.obj
+  Release\obj\addon\win_delay_load_hook.obj
+     正在创建库 c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\Release\addon.lib 和对象 c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\Release\addon.exp
+  正在生成代码
+  已完成代码的生成
+  addon.vcxproj -> c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\Release\\addon.node
+FinalizeBuildStatus:
+  正在删除文件“Release\obj\addon\addon.tlog\unsuccessfulbuild”。
+  正在对“Release\obj\addon\addon.tlog\addon.lastbuildstate”执行 Touch 任务。
+已完成生成项目“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj”(默认目标)的操作。
+已完成生成项目“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\binding.sln”(默认目标)的操作。
+
+已成功生成。
+
+“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\binding.sln”(默认目标) (1) ->
+“c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj”(默认目标) (2) ->
+(ClCompile 目标) -> 
+  ..\SpiCFunc.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\FtdcSysUserApi_Wrapper.cc(146): warning C4244: “参数”: 从“int64_t”转换到“int”，可能丢失数据 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\FtdcSysUserApi_Wrapper.cc(186): warning C4244: “参数”: 从“int64_t”转换到“int”，可能丢失数据 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(373): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(374): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(375): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(376): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(377): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(378): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(379): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+  ..\CDes.cpp(380): warning C4554: “<<”: 检查运算符优先级可能存在的错误；使用圆括号阐明优先级 [c:\Users\li.xiankui\mywork\SysUserApiWrapper\build\addon.vcxproj]
+
+    11 个警告
+    0 个错误
+
+已用时间 00:00:17.13
