@@ -414,7 +414,7 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
 
     }
 }
-fs.writeFile('SpiCFunc.cc', str, function (err) {
+fs.writeFile('../SpiCFunc.cc', str, function (err) {
     if (err) throw err;
     console.log('It\'s saved!');
     console.log('package length is:'+Packagelength);

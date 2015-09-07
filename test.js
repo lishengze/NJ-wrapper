@@ -31,7 +31,6 @@ Spi.prototype.OnFrontConnected=function(){
 //Spi.prototype.OnRspQrySysUserLoginTopic=function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
 Spi.prototype.OnRspQrySysUserLoginTopic=function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
 {
-	
 	console.log("haha!");
 	console.log("LoginTime in JS is: "+pRspQrySysUserLogin.LoginTime);
 	console.log("UserID in JS is: "+pRspQrySysUserLogin.UserID);

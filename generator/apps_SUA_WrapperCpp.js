@@ -560,7 +560,7 @@ function getTypeLength(itemType){
     return 100;
 
 }
-fs.writeFile('FtdcSysUserApi_Wrapper.cc', str, function (err) {
+fs.writeFile('../FtdcSysUserApi_Wrapper.cc', str, function (err) {
     if (err) throw err;
     console.log('It\'s saved!');
     console.log('package length is:'+Packagelength);

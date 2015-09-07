@@ -8,7 +8,7 @@
         ".",
       ],
       "libraries": [
-          "-lC:/Users/li.xiankui/mywork/SysUserApiWrapper/sysuserapi.lib",
+          "-lC:/Users/li.xiankui/Roaming/TestXML/sysuserapi.lib",
       ]
     }
   ]

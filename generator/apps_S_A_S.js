@@ -47,7 +47,7 @@ lengthField++;
      }
      str += "}\n\n";
  }
-fs.writeFile('SysUserApiStruct_JS.js', str, function (err) {
+fs.writeFile('../SysUserApiStruct_JS.js', str, function (err) {
     if (err) throw err;
     console.log('It\'s saved!');
 });

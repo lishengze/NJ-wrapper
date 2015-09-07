@@ -59,7 +59,7 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
 
 str+="};\n\n";
 str+="#endif";
-fs.writeFile('SysUserSpi.h', str, function (err) {
+fs.writeFile('../SysUserSpi.h', str, function (err) {
     if (err) throw err;
     console.log('It\'s saved!');
   //console.log('package length is:'+Packagelength);

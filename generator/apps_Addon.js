@@ -47,7 +47,7 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
 }
 str+="};\n\n";
 str+="NODE_MODULE(addon, InitAll);";
-fs.writeFile('Addon.cc', str, function (err) {
+fs.writeFile('../Addon.cc', str, function (err) {
     if (err) throw err;
     console.log('It\'s saved!');
     console.log('package length is:'+Packagelength);
