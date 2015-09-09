@@ -21,7 +21,17 @@ var str = hereDoc(function () {/*
 */});
 var jsonContent=require("./package.json");
 var Packagelength=jsonContent.FTD.packages[0].package.length;
-for(var i=0;i<Packagelength;i++){
+var beforeRspQryTopCpuInfoTopic=0;
+while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
+    beforeRspQryTopCpuInfoTopic++;
+}
+var AfterRtnNetNonPartyLinkInfoTopic=0;
+while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
+    AfterRtnNetNonPartyLinkInfoTopic++;
+}
+AfterRtnNetNonPartyLinkInfoTopic++;
+
+for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
     if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rsp"||jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rtn"){
         str+=" uv_async_t asyncOn"+jsonContent.FTD.packages[0].package[i].$.name+";\n";
     }

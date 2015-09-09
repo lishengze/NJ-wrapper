@@ -39,7 +39,6 @@ while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.na
 AfterRtnNetNonPartyLinkInfoTopic++;
 
 for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
-    var strName = jsonContent.FTD.packages[0].package[i].$.name;
     if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rsp"||jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rtn"){
         str+="   uv_async_init(uv_default_loop(), &asyncOn"+jsonContent.FTD.packages[0].package[i].$.name
             +",On"+jsonContent.FTD.packages[0].package[i].$.name+");\n";

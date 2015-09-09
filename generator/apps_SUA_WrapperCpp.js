@@ -30,8 +30,28 @@ var str = hereDoc(function () {/*
  _userApi->Release();
  delete _spi;
  uv_close((uv_handle_t*) &async, NULL);
- uv_close((uv_handle_t*) &asyncOnRspQrySysUserLoginTopic, NULL);
- }
+ */
+});
+var jsonContent=require("./package.json");
+var Packagelength=jsonContent.FTD.packages[0].package.length;
+var beforeRspQryTopCpuInfoTopic=0;
+while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
+    beforeRspQryTopCpuInfoTopic++;
+}
+var AfterRtnNetNonPartyLinkInfoTopic=0;
+while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
+    AfterRtnNetNonPartyLinkInfoTopic++;
+}
+AfterRtnNetNonPartyLinkInfoTopic++;
+
+for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
+    if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rsp"||jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rtn"){
+        str+="   uv_close((uv_handle_t*) &asyncOn"+jsonContent.FTD.packages[0].package[i].$.name
+            +",NULL);\n";
+    }
+}
+ str+=hereDoc(function(){
+ /*}
 
  void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
  Nan::HandleScope scope;
@@ -52,17 +72,7 @@ var str = hereDoc(function () {/*
  Nan::SetPrototypeMethod(tpl,"ReqQrySysUserLoginTopic",ReqQrySysUserLoginTopic);
 
  */});
-var jsonContent=require("./package.json");
-var Packagelength=jsonContent.FTD.packages[0].package.length;
-var beforeRspQryTopCpuInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
-    beforeRspQryTopCpuInfoTopic++;
-}
-var AfterRtnNetNonPartyLinkInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
-    AfterRtnNetNonPartyLinkInfoTopic++;
-}
-AfterRtnNetNonPartyLinkInfoTopic++;
+
 var IntLength=jsonContent.FTD.types[0].Int.length;
 var stringLength=jsonContent.FTD.types[0].String.length;
 var vstringLength=jsonContent.FTD.types[0].VString.length;
