@@ -26,6 +26,8 @@ var str = hereDoc(function () {/*
  /////以下为自动生成///////////////////
 
 */});
+
+
 var jsonContent=require("./package.json");
 var Packagelength=jsonContent.FTD.packages[0].package.length;
 var beforeRspQryTopCpuInfoTopic=0;

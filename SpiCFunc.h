@@ -1,11 +1,33 @@
 
  #ifndef SPICFUNC_H
  #define SPICFUNC_H
-
+#include <queue>
 
  #include "nan.h"
 
  extern Nan::Persistent<v8::Object> SpiObj;
+ 
+extern int g_RtnNetPartyLinkStatusInfoTopic_Sys_index;
+extern int g_RtnNetPartyLinkStatusInfoTopic_Fun_index; 
+extern std::queue<void**> g_RtnNetPartyLinkStatusInfoTopic_queue;
+extern uv_mutex_t g_RtnNetPartyLinkStatusInfoTopic_data_mutex;   // 
+extern uv_mutex_t g_RtnNetPartyLinkStatusInfoTopic_mutex;
+extern uv_sem_t   g_RtnNetPartyLinkStatusInfoTopic_sem;
+ 
+ 
+extern int g_RtnTradeUserLoginInfoTopic_Sys_index;
+extern int g_RtnTradeUserLoginInfoTopic_Fun_index; 
+extern std::queue<void**> g_RtnTradeUserLoginInfoTopic_queue;
+extern uv_mutex_t g_RtnTradeUserLoginInfoTopic_data_mutex;   // 
+extern uv_mutex_t g_RtnTradeUserLoginInfoTopic_mutex;
+extern uv_sem_t   g_RtnTradeUserLoginInfoTopic_sem;
+
+extern int g_OnRspQryNetMonitorAttrScopeTopic_Sys_index;
+extern int g_OnRspQryNetMonitorAttrScopeTopic_Fun_index; 
+extern std::queue<void**> g_OnRspQryNetMonitorAttrScopeTopic_queue;
+extern uv_mutex_t g_OnRspQryNetMonitorAttrScopeTopic_data_mutex;   // 
+extern uv_mutex_t g_OnRspQryNetMonitorAttrScopeTopic_mutex;
+extern uv_sem_t   g_OnRspQryNetMonitorAttrScopeTopicc_sem;
 
  extern uv_async_t async;
  void print_progress(uv_async_t *handle);

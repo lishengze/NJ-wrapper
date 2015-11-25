@@ -504,7 +504,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterFront) {
 }
 
 NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterSpi) {
-    std::cout<<"RegisterSpi Called!"<<std::endl;
+    std::cout<<"\n******* FtdcSysUserApi_Wrapper::RegisterSpi: START! *******"<<std::endl;
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(info[0]->IsObject())
     {
@@ -514,6 +514,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterSpi) {
         obj->_userApi->RegisterSpi(obj->_spi);
     }
     info.GetReturnValue().SetUndefined();
+    std::cout << "******* FtdcSysUserApi_Wrapper::RegisterSpi: END *******\n" << std::endl;
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
      std::cout<<"ReqUserLogin Called!"<<std::endl;
@@ -551,7 +552,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
      }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
-     std::cout<<"ReqQrySysUserLoginTopic Called!"<<std::endl;
+     std::cout<< "\n******* FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic START! *******"<<std::endl;
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
      {
@@ -564,7 +565,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneUserIDStr(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
      strcpy_s(field.UserID, 16, *paramOneUserIDStr);
-     std::cout<<*paramOneUserIDStr<<std::endl;
+     std::cout <<"UserIDStr: " <<*paramOneUserIDStr<<std::endl;
      //Password
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOnePasswordStr(Nan::To<v8::String>(paramOnePasswordObj).ToLocalChecked());
@@ -574,12 +575,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      char encryptedPassword[256] = {0};
      DesEncrypt.Encrypt(*paramOnePasswordStr, encryptedPassword);
      strcpy_s(field.Password, 41, encryptedPassword);
-     std::cout<<encryptedPassword<<std::endl;
+     std::cout<<"encryptedPassword: " << encryptedPassword<<std::endl;
      //VersionID
      v8::Local<v8::Object> paramOneVersionIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("VersionID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneVersionIDStr(Nan::To<v8::String>(paramOneVersionIDObj).ToLocalChecked());
      strcpy_s(field.VersionID, 17, *paramOneVersionIDStr);
-     std::cout<<*paramOneVersionIDStr<<std::endl;
+     std::cout<<"paramOneVersionIDStr: " << *paramOneVersionIDStr <<std::endl;
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
      int64_t nRequestID=paramTwo->Value();
@@ -588,9 +589,10 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      double returnValue= obj->_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+     std::cout<< "******* FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic END! *******\n"<<std::endl;
  }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic){
-  std::cout<<"ReqQryTopMemInfoTopic Called!"<<std::endl;
+  std::cout<<"\n******* FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic: START! *******"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
   {
@@ -638,6 +640,8 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic){
   double returnValue= obj->_userApi->ReqQryTopMemInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+  
+  std::cout<<"******* FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic: END! *******\n"<<std::endl;
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopProcessInfoTopic){
   std::cout<<"ReqQryTopProcessInfoTopic Called!"<<std::endl;
@@ -925,7 +929,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogInfoTopic){
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic){
-  std::cout<<"ReqQrySubscriberTopic Called!"<<std::endl;
+  std::cout<<"\n************* ReqQrySubscriberTopic START! *************"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
   {
@@ -968,6 +972,8 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic){
   double returnValue= obj->_userApi->ReqQrySubscriberTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+  std::cout<<"************* ReqQrySubscriberTopic END! *************\n"<<std::endl;
+  
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOidRelationTopic){
   std::cout<<"ReqQryOidRelationTopic Called!"<<std::endl;
@@ -5010,7 +5016,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTypeTopic){
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic){
-  std::cout<<"ReqQryNetMonitorAttrScopeTopic Called!"<<std::endl;
+  std::cout<<"\n*********** FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic: START! **********"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
   {
@@ -5053,6 +5059,8 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic){
   double returnValue= obj->_userApi->ReqQryNetMonitorAttrScopeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+  
+  std::cout<<"\n*********** FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic: END! **********"<<std::endl;
 }
 NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrTypeTopic){
   std::cout<<"ReqQryNetMonitorAttrTypeTopic Called!"<<std::endl;

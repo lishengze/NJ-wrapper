@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Test Socket.io Namespace</title>	
+	<script src = "socket.io.js"></script>			
+	<script src = "Client.js"></script>
+</head>
+
+<body>
+	<script>
+		var url = 'http://localhost';
+		
+		var rootSocket = io.connect(url);
+		
+		writeData('Connect default io namespace');
+		
+		var userSocketClient = {};
+			
+		// 注册来自服务端的消息, 需要响应的事件只注册一次.	
+		rootSocket.on('ready to establish connect', function(username){
+			
+			writeData('establish connect ' + username);
+				
+			userSocketClient[username] = io.connect(url + '/' + username); // stoped;
+						
+			userSocketClient[username].on('connect completed', function(username){
+				
+				writeData(username + ' connect completed');																						
+			});	
+			
+			userSocketClient[username].on('connect_server', function(data){
+			
+				writeData(data);								
+			});
+			
+			userSocketClient[username].on('Get from Server', function(data){
+				
+				writeData('Get from Server: Hi Client '+ data);				
+			});
+										
+		});
+						
+		function addUser(username) {
+		
+			writeData(url + '/' + username);		
+			rootSocket.emit('new user', username);		// 发多次;				
+		}
+	
+		function loginServer(username){
+			
+			userSocketClient[username].emit('Login server', username);					
+		}
+		
+		function disconnectServer (username) {
+			userSocketClient[username].disconnect();
+		}
+	
+		function testCommunicateUser(username){
+						
+			userSocketClient[username].emit('Get from Client', username);
+		}				
+		
+		function writeData(Data){
+						
+			alert(Data);			
+			/*
+			var newNode = document.createElement("p");			
+			newNode.innerHTML = Data;					
+			document.getElementById("div1").insertBefore(newNode);
+			*/				
+		}
+						
+	</script>
+	
+	<h3>The connecting process</h3>
+	<br/>
+	
+	<div id='div1'>
+		<form>
+			<input value="add lee"  type="button"  onclick="addUser('lee')"><br/><br/>
+			<input value="add Tom"  type="button"  onclick="addUser('Tom')"><br/><br/>
+			<input value="add Jack" type="button"  onclick="addUser('Jack')"><br/><br/>
+			
+			<input value="communicate lee" type="button" 
+			    onclick="testCommunicateUser('lee')"><br/><br/>
+			<input value="communicate Tom" type="button" 
+			    onclick="testCommunicateUser('Tom')"><br/><br/>
+			<input value="communicate Jack" type="button" 
+			    onclick="testCommunicateUser('Jack')"><br/><br/>
+		</form>
+
+	</div>
+	
+</body>
+</html>

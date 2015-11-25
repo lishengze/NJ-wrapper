@@ -12,6 +12,17 @@
    uv_async_init(uv_default_loop(), &asyncOnFrontDisconnected, OnFrontDisconnected);
    uv_async_init(uv_default_loop(), &asyncOnHeartBeatWarning, OnHeartBeatWarning);
 
+    uv_mutex_init(&g_RtnNetPartyLinkStatusInfoTopic_data_mutex);
+    uv_mutex_init(&g_RtnNetPartyLinkStatusInfoTopic_mutex);
+    uv_sem_init(&g_RtnNetPartyLinkStatusInfoTopic_sem, 1);
+    
+    uv_mutex_init(&g_RtnTradeUserLoginInfoTopic_data_mutex);
+    uv_mutex_init(&g_RtnTradeUserLoginInfoTopic_mutex);
+    uv_sem_init(&g_RtnTradeUserLoginInfoTopic_sem, 1);
+    
+    uv_mutex_init(&g_OnRspQryNetMonitorAttrScopeTopic_data_mutex);
+    uv_mutex_init(&g_OnRspQryNetMonitorAttrScopeTopic_mutex);
+    uv_sem_init(&g_OnRspQryNetMonitorAttrScopeTopicc_sem, 1);
 
  /////以下为自动生成///////////////////
 

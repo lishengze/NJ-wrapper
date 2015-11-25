@@ -8,7 +8,7 @@
         ".",
       ],
       "libraries": [
-          "-lC:/Users/li.xiankui/Roaming/TestXML/sysuserapi.lib",
+          "-lC:/Users/li.shengze/github/Nodejs/Addons/SysUserApiWrapper_Test_Sync/sysuserapi.lib",
       ]
     }
   ]

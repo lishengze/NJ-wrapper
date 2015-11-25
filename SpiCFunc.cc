@@ -2,11 +2,37 @@
  #include "SpiCFunc.h"
  #include "FtdcSysUserApiStruct.h"
  #include <iostream>
+ using std::cin;
+ using std::cout;
+ using std::endl;
  using namespace v8;
  Nan::Persistent<v8::Object> SpiObj;
  uv_async_t async;
  uv_async_t asyncOnFrontDisconnected;
  uv_async_t asyncOnHeartBeatWarning;
+ 
+int g_RtnNetPartyLinkStatusInfoTopic_Sys_index = 0;
+int g_RtnNetPartyLinkStatusInfoTopic_Fun_index = 0;
+std::queue<void**> g_RtnNetPartyLinkStatusInfoTopic_queue;
+uv_mutex_t g_RtnNetPartyLinkStatusInfoTopic_data_mutex;   // 
+uv_mutex_t g_RtnNetPartyLinkStatusInfoTopic_mutex;
+uv_sem_t   g_RtnNetPartyLinkStatusInfoTopic_sem;
+ 
+int g_RtnTradeUserLoginInfoTopic_Sys_index = 0;
+int g_RtnTradeUserLoginInfoTopic_Fun_index = 0; 
+std::queue<void**> g_RtnTradeUserLoginInfoTopic_queue;
+uv_mutex_t g_RtnTradeUserLoginInfoTopic_data_mutex;   // 
+uv_mutex_t g_RtnTradeUserLoginInfoTopic_mutex;
+uv_sem_t   g_RtnTradeUserLoginInfoTopic_sem;
+
+int g_OnRspQryNetMonitorAttrScopeTopic_Sys_index = 0;
+int g_OnRspQryNetMonitorAttrScopeTopic_Fun_index = 0; 
+std::queue<void**> g_OnRspQryNetMonitorAttrScopeTopic_queue;
+uv_mutex_t g_OnRspQryNetMonitorAttrScopeTopic_data_mutex;   // 
+uv_mutex_t g_OnRspQryNetMonitorAttrScopeTopic_mutex;
+uv_sem_t   g_OnRspQryNetMonitorAttrScopeTopicc_sem;
+
+
  //以下自动生成
  uv_async_t asyncOnRspQryTopCpuInfoTopic;
  uv_async_t asyncOnRtnTopCpuInfoTopic;
@@ -1653,6 +1679,7 @@ void OnRtnSyslogInfoTopic(uv_async_t *handle)
 }
 void OnRspQrySubscriberTopic(uv_async_t *handle)
 {
+    std::cout<<"\n********** CFunc::OnRspQrySubscriberTopic: START ********"<<std::endl;
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -1718,11 +1745,12 @@ void OnRspQrySubscriberTopic(uv_async_t *handle)
         params[3]=Local<v8::Value>(nIsLastNewJS);
         callback.Call(4, params);
     }
-    std::cout<<"end1"<<std::endl;
+   std::cout<<"********** CFunc::OnRspQrySubscriberTopic: END! ********\n"<<std::endl;
     for(int i=0;i<4;i++){
         delete []paramArrayNew[i];
     }
     delete []paramArrayNew;
+    
         
 }
 void OnRspQryOidRelationTopic(uv_async_t *handle)
@@ -2166,8 +2194,8 @@ void OnRspQryWarningEventTopic(uv_async_t *handle)
       else if(pRspInfo==NULL){
       std::cout<<"pRspInfo: "<<"NULL"<<std::endl;
       }
-      std::cout<<"nRequestID: "<<nRequestID<<std::endl;
-      std::cout<<"nIsLastNew: "<<nIsLastNew<<std::endl;
+    //   std::cout<<"nRequestID: "<<nRequestID<<std::endl;
+    //   std::cout<<"nIsLastNew: "<<nIsLastNew<<std::endl;
      v8::Local<v8::String> MonDate=Nan::New<v8::String>("MonDate").ToLocalChecked();
      v8::Local<v8::String> MonDateValue=Nan::New(pRspQryWarningEvent->MonDate).ToLocalChecked();
      v8::Local<v8::String> MonTime=Nan::New<v8::String>("MonTime").ToLocalChecked();
@@ -2242,7 +2270,6 @@ void OnRspQryWarningEventTopic(uv_async_t *handle)
         params[3]=Local<v8::Value>(nIsLastNewJS);
         callback.Call(4, params);
     }
-    std::cout<<"end1"<<std::endl;
     for(int i=0;i<4;i++){
         delete []paramArrayNew[i];
     }
@@ -2251,6 +2278,7 @@ void OnRspQryWarningEventTopic(uv_async_t *handle)
 }
 void OnRtnWarningEventTopic(uv_async_t *handle)
 {
+    std::cout <<"\n**************** SpiCFunc::OnRtnWarningEventTopic: START ****************" << std::endl;
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -2323,7 +2351,7 @@ void OnRtnWarningEventTopic(uv_async_t *handle)
 
      callback.Call(1, param);
      }
-     std::cout<<"end1"<<std::endl;
+     std::cout <<"**************** SpiCFunc::OnRtnWarningEventTopic: END ****************\n" << std::endl;
      for(int i=0;i<4;i++){
      delete []paramArrayNew[i];
      }
@@ -6204,6 +6232,7 @@ void OnRtnFrontInfoTopic(uv_async_t *handle)
 }
 void OnRspQrySysUserLoginTopic(uv_async_t *handle)
 {
+    std::cout<<"\n****************SpiCFunc:: OnRspQrySysUserLoginTopic: START ****************" << std::endl;
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -6275,11 +6304,13 @@ void OnRspQrySysUserLoginTopic(uv_async_t *handle)
         params[3]=Local<v8::Value>(nIsLastNewJS);
         callback.Call(4, params);
     }
-    std::cout<<"end1"<<std::endl;
+    
     for(int i=0;i<4;i++){
         delete []paramArrayNew[i];
     }
     delete []paramArrayNew;
+    
+    std::cout<<"****************SpiCFunc:: OnRspQrySysUserLoginTopic: END ****************" << std::endl;
         
 }
 void OnRspQrySysUserLogoutTopic(uv_async_t *handle)
@@ -7187,8 +7218,14 @@ void OnRspQryTradeUserLoginInfoTopic(uv_async_t *handle)
 }
 void OnRtnTradeUserLoginInfoTopic(uv_async_t *handle)
 {
+   std::cout <<"\n********** CFunc::OnRtnTradeUserLoginInfoTopic: START ********"<<std::endl;
+   std::cout << "**** g_RtnTradeUserLoginInfoTopic_Fun_index: " 
+             << g_RtnTradeUserLoginInfoTopic_Fun_index++ << endl;
+              
     void**paramArrayNew=new void*[4];
+    
     paramArrayNew = (void**)handle->data;
+    
     Nan::HandleScope scope;
     if(SpiObj.IsEmpty())
     {
@@ -7252,6 +7289,9 @@ void OnRtnTradeUserLoginInfoTopic(uv_async_t *handle)
      delete []paramArrayNew[i];
      }
      delete []paramArrayNew;
+     
+     uv_sem_post(&g_RtnTradeUserLoginInfoTopic_sem);
+     std::cout<<"********** CFunc::OnRtnTradeUserLoginInfoTopic: END! ********\n"<<std::endl;
      
 }
 void OnRspQryPartTradeTopic(uv_async_t *handle)
@@ -8068,6 +8108,7 @@ void OnRspQryFrontStat(uv_async_t *handle)
 }
 void OnRtnSysTimeSyncTopic(uv_async_t *handle)
 {
+    std::cout <<"\n**************** SpiCFunc:OnRtnSysTimeSyncTopic : START ****************" << std::endl;
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -8098,7 +8139,7 @@ void OnRtnSysTimeSyncTopic(uv_async_t *handle)
 
      callback.Call(1, param);
      }
-     std::cout<<"end1"<<std::endl;
+     std::cout <<"**************** SpiCFunc:OnRtnSysTimeSyncTopic : END ****************\n" << std::endl;
      for(int i=0;i<4;i++){
      delete []paramArrayNew[i];
      }
@@ -16579,6 +16620,10 @@ void OnRtnNetMonitorTypeTopic(uv_async_t *handle)
 }
 void OnRspQryNetMonitorAttrScopeTopic(uv_async_t *handle)
 {
+    std::cout<<"\n*********** CFunc::OnRspQryNetMonitorAttrScopeTopic: START! **********"<<std::endl;
+    cout << "****** g_OnRspQryNetMonitorAttrScopeTopic_Fun_index " 
+         << g_OnRspQryNetMonitorAttrScopeTopic_Fun_index++ << " ******" << endl;
+          
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -16649,13 +16694,14 @@ void OnRspQryNetMonitorAttrScopeTopic(uv_async_t *handle)
         params[2]=Local<v8::Value>(nRequestIDJS);
         params[3]=Local<v8::Value>(nIsLastNewJS);
         callback.Call(4, params);
-    }
-    std::cout<<"end1"<<std::endl;
+    }    
     for(int i=0;i<4;i++){
         delete []paramArrayNew[i];
     }
     delete []paramArrayNew;
-        
+          
+  std::cout<<"*********** CFunc::OnRspQryNetMonitorAttrScopeTopic: END! **********\n"<<std::endl;    
+  uv_sem_post(&g_OnRspQryNetMonitorAttrScopeTopicc_sem);    
 }
 void OnRtnNetMonitorAttrScopeTopic(uv_async_t *handle)
 {
@@ -20441,6 +20487,9 @@ void OnRspQryNetPartyLinkStatusInfoTopic(uv_async_t *handle)
 }
 void OnRtnNetPartyLinkStatusInfoTopic(uv_async_t *handle)
 {
+    std::cout<<"\n********** CFunc::OnRtnNetPartyLinkStatusInfoTopic: START ********"<<std::endl;
+    std::cout << "**** g_RtnNetPartyLinkStatusInfoTopic_Fun_index: " 
+              << g_RtnNetPartyLinkStatusInfoTopic_Fun_index++ << endl;
     void**paramArrayNew=new void*[4];
     paramArrayNew = (void**)handle->data;
     Nan::HandleScope scope;
@@ -20486,12 +20535,15 @@ void OnRtnNetPartyLinkStatusInfoTopic(uv_async_t *handle)
 
      callback.Call(1, param);
      }
-     std::cout<<"end1"<<std::endl;
+      
      for(int i=0;i<4;i++){
      delete []paramArrayNew[i];
      }
      delete []paramArrayNew;
      
+     std::cout<<"********** CFunc::OnRtnNetPartyLinkStatusInfoTopic: END ********\n"<<std::endl;
+     
+     uv_sem_post(&g_RtnNetPartyLinkStatusInfoTopic_sem);         
 }
 void OnRspQryNetMemberSDHLineInfoTopic(uv_async_t *handle)
 {

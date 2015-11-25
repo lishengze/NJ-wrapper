@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>Test Socket.io GetMessage Stream</title>	
+	<script src = "./node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>			
+</head>
+
+<body>
+	<script>
+	//	  var url = 'http://localhost';
+	 	 var url = 'http://192.168.1.106:80';
+		var rootSocket = io.connect(url);
+		
+		function startDataStream() {
+			rootSocket.emit('start data stream', 'start');
+		}
+		
+		rootSocket.on('new data comes', function(data){
+			document.getElementById("data").value = data.join();
+		})
+		
+		function stopDataStream () {			
+			rootSocket.emit('stop emit data', " ");
+		}	
+						
+	</script>
+	
+	<h3>The connecting process</h3>
+	<br/>
+	
+	<div id='div1'>
+		<form>
+			
+			<input type = "button" id = "startdatastream" value = "Start Data Stream"
+				   onclick="startDataStream()"><br/><br/> 			
+			Data from the server: <input type = "text" id = "data" value = ""> <br/><br/>			
+			<input type = "button" id = "stopdatastream" value = "Stop Data Stream"
+				   onclick="stopDataStream()">
+				   
+		</form>
+
+	</div>
+	
+</body>
+</html>

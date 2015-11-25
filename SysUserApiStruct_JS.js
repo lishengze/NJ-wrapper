@@ -1288,7 +1288,7 @@ exports.CShfeFtdcReqQryTopMemInfoField=function()
   this.StartTime=" ";
   this.EndDate=" ";
   this.EndTime=" ";
-  this.KeepAlive=0;
+  this.KeepAlive=1;
 }
 
 exports.CShfeFtdcRspQryTopMemInfoField=function()

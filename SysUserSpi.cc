@@ -6,6 +6,9 @@
  #include <string>
  #include <sstream>
  #include <memory.h>
+ using std::cin;
+ using std::cout;
+ using std::endl;
  using namespace std;
  void SysUserSpi::OnFrontConnected(){
      std::cout<<"SysUserSpi::OnFrontConnected()"<<std::endl;
@@ -90,8 +93,21 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField *pRtnTopCpuInf
 }
 void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField *pRspQryTopMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
-  std::cout<<"on pRspQryTopMemInfo->HostName:"<<pRspQryTopMemInfo->HostName<<std::endl;
+  try {
+  std::cout<<"\n******* SysUserSpi::OnRspQryTopMemInfoTopic: START *******"<<std::endl;
+  
+  if (NULL == pRspQryTopMemInfo) {
+    cout << "pRspQryTopMemInfo is NULL" << endl;
+    
+    if (NULL != pRspInfo) {
+      cout << "pRspInfo->ErrorID: " << pRspInfo->ErrorID << endl;
+      cout << "pRspInfo->ErrorMsg: " << pRspInfo->ErrorMsg << endl;
+    }
+    
+  } else {
+    
+     std::cout << "Data in pRspQryTopMemInfo: " << * (char*)(pRspQryTopMemInfo) << endl;
+  std::cout<<"on pRspQryTopMemInfo->HostName:"<<pRspQryTopMemInfo->HostName  <<std::endl;
   std::cout<<"on pRspQryTopMemInfo->MonDate:"<<pRspQryTopMemInfo->MonDate<<std::endl;
   std::cout<<"on pRspQryTopMemInfo->MonTime:"<<pRspQryTopMemInfo->MonTime<<std::endl;
   std::cout<<"on pRspQryTopMemInfo->TOTALREAL:"<<pRspQryTopMemInfo->TOTALREAL<<std::endl;
@@ -102,8 +118,13 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField *pRspQry
   std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
   std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
   std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
-  CShfeFtdcRspQryTopMemInfoField* pNewRspQryTopMemInfo =new CShfeFtdcRspQryTopMemInfoField;
+
+  CShfeFtdcRspQryTopMemInfoField* pNewRspQryTopMemInfo =new CShfeFtdcRspQryTopMemInfoField;  
+    
   memcpy(pNewRspQryTopMemInfo,pRspQryTopMemInfo,sizeof(CShfeFtdcRspQryTopMemInfoField));
+  
+//  cout << "memcpy done!" << endl;
+  
   int *pId=new int(nRequestID);
   bool *bIsLastNew=new bool(bIsLast);
   void** paramArray=new void*[4];
@@ -121,9 +142,18 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField *pRspQry
     }
     paramArray[2]=(void*)pId;
     paramArray[3]=(void*)bIsLastNew;
-  asyncOnRspQryTopMemInfoTopic.data=(void*)&paramArray[0];
-  uv_async_send(&asyncOnRspQryTopMemInfoTopic);
-  std::cout<<"end send "<<std::endl;
+    asyncOnRspQryTopMemInfoTopic.data=(void*)&paramArray[0];
+    uv_async_send(&asyncOnRspQryTopMemInfoTopic);
+     std::cout<<"******* SysUserSpi::OnRspQryTopMemInfoTopic: START *******\n"<<std::endl;      
+   }  
+   
+  } catch (char *str) {  
+        cout << "error: " << str << endl;  
+  } catch (exception& error) {
+    
+    std::cout << "Standard exception: " << error.what() << std::endl;  
+  }
+  
 }
 void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField *pRtnTopMemInfo)
 {
@@ -352,7 +382,7 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField *pRtnNetwork
 }
 void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField *pRspQryClientLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n **************** SysUserSpi::OnRspQryClientLoginTopic:  START **************** "<<std::endl;
   std::cout<<"on pRspQryClientLogin->UserName:"<<pRspQryClientLogin->UserName<<std::endl;
   std::cout<<"on pRspQryClientLogin->Privalage:"<<pRspQryClientLogin->Privalage<<std::endl;
   std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
@@ -379,8 +409,9 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField *pRspQ
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQryClientLoginTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQryClientLoginTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"\n **************** SysUserSpi::OnRspQryClientLoginTopic end! ****************  \n "<<std::endl;
 }
+
 void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField *pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
   std::cout<<"ok"<<std::endl;
@@ -523,15 +554,27 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField *pRtnSyslogInf
   uv_async_send(&asyncOnRtnSyslogInfoTopic);
   std::cout<<"end send "<<std::endl;
 }
+
+// TestSubscriber;
+
 void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField *pRspQrySubscriber, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
-  std::cout<<"on pRspQrySubscriber->ErrorID:"<<pRspQrySubscriber->ErrorID<<std::endl;
-  std::cout<<"on pRspQrySubscriber->ErrorMsg:"<<pRspQrySubscriber->ErrorMsg<<std::endl;
-  std::cout<<"on pRspQrySubscriber->ObjectID:"<<pRspQrySubscriber->ObjectID<<std::endl;
-  std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
-  std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
-  std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
+  std::cout<<"\n********** SysUserSpi::OnRspQrySubscriberTopic: START ********"<<std::endl;
+  if (NULL == pRspQrySubscriber) {
+    cout << " pRspQrySubscriber is NULL" << endl;
+    
+    if (NULL != pRspInfo) {
+       cout << "pRspInfo -> ErrorID: " << pRspInfo -> ErrorID << endl;
+       cout << "pRspInfo -> ErrorMsg: " << pRspInfo -> ErrorMsg  << endl; 
+    }
+  } else {    
+  
+  std::cout<<"SysUserSpi::pRspQrySubscriber->ErrorID:"<<pRspQrySubscriber->ErrorID<<std::endl;
+  std::cout<<"SysUserSpi::pRspQrySubscriber->ErrorMsg:"<<pRspQrySubscriber->ErrorMsg<<std::endl;
+  std::cout<<"SysUserSpi::pRspQrySubscriber->ObjectID:"<<pRspQrySubscriber->ObjectID<<std::endl;
+  std::cout<<"SysUserSpi::pRspInfo:"<<pRspInfo<<std::endl;
+  std::cout<<"SysUserSpi::nRequestID:"<<nRequestID<<std::endl;
+  std::cout<<"SysUserSpi::bIsLast:"<<bIsLast<<std::endl;
   CShfeFtdcRspQrySubscriberField* pNewRspQrySubscriber =new CShfeFtdcRspQrySubscriberField;
   memcpy(pNewRspQrySubscriber,pRspQrySubscriber,sizeof(CShfeFtdcRspQrySubscriberField));
   int *pId=new int(nRequestID);
@@ -553,7 +596,9 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField *pRspQry
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQrySubscriberTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQrySubscriberTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"\n********** SysUserSpi::OnRspQrySubscriberTopic: END ********\n"<<std::endl;
+  
+  }
 }
 void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField *pRspQryOidRelation, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -717,25 +762,25 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField *pRtnO
 }
 void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField *pRspQryWarningEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->MonDate:"<<pRspQryWarningEvent->MonDate<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->MonTime:"<<pRspQryWarningEvent->MonTime<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->OccurDate:"<<pRspQryWarningEvent->OccurDate<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->OccurTime:"<<pRspQryWarningEvent->OccurTime<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EvendID:"<<pRspQryWarningEvent->EvendID<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->ObjectID:"<<pRspQryWarningEvent->ObjectID<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->IPAddress:"<<pRspQryWarningEvent->IPAddress<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EventName:"<<pRspQryWarningEvent->EventName<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EventNum:"<<pRspQryWarningEvent->EventNum<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EventType:"<<pRspQryWarningEvent->EventType<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EventDes:"<<pRspQryWarningEvent->EventDes<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->ProcessFlag:"<<pRspQryWarningEvent->ProcessFlag<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->WarningLevel:"<<pRspQryWarningEvent->WarningLevel<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->EventDealDes:"<<pRspQryWarningEvent->EventDealDes<<std::endl;
-  std::cout<<"on pRspQryWarningEvent->FullEventName:"<<pRspQryWarningEvent->FullEventName<<std::endl;
-  std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
-  std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
-  std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
+  // std::cout<<"\n**************** SysUserSpi::OnRspQryWarningEventTopic: START ****************"<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->MonDate:"<<pRspQryWarningEvent->MonDate<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->MonTime:"<<pRspQryWarningEvent->MonTime<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->OccurDate:"<<pRspQryWarningEvent->OccurDate<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->OccurTime:"<<pRspQryWarningEvent->OccurTime<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EvendID:"<<pRspQryWarningEvent->EvendID<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->ObjectID:"<<pRspQryWarningEvent->ObjectID<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->IPAddress:"<<pRspQryWarningEvent->IPAddress<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EventName:"<<pRspQryWarningEvent->EventName<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EventNum:"<<pRspQryWarningEvent->EventNum<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EventType:"<<pRspQryWarningEvent->EventType<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EventDes:"<<pRspQryWarningEvent->EventDes<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->ProcessFlag:"<<pRspQryWarningEvent->ProcessFlag<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->WarningLevel:"<<pRspQryWarningEvent->WarningLevel<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->EventDealDes:"<<pRspQryWarningEvent->EventDealDes<<std::endl;
+  // std::cout<<"on pRspQryWarningEvent->FullEventName:"<<pRspQryWarningEvent->FullEventName<<std::endl;
+  // std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
+  // std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
+  // std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
   CShfeFtdcRspQryWarningEventField* pNewRspQryWarningEvent =new CShfeFtdcRspQryWarningEventField;
   memcpy(pNewRspQryWarningEvent,pRspQryWarningEvent,sizeof(CShfeFtdcRspQryWarningEventField));
   int *pId=new int(nRequestID);
@@ -757,34 +802,34 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField *pRs
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQryWarningEventTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQryWarningEventTopic);
-  std::cout<<"end send "<<std::endl;
+//  std::cout<<"\**************** SysUserSpi::OnRspQryWarningEventTopic: END \n****************"<<std::endl;
 }
 void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField *pRtnWarningEvent)
 {
-  std::cout<<"ok"<<std::endl;
-  std::cout<<"on pRtnWarningEvent->MonDate:"<<pRtnWarningEvent->MonDate<<std::endl;
-  std::cout<<"on pRtnWarningEvent->MonTime:"<<pRtnWarningEvent->MonTime<<std::endl;
-  std::cout<<"on pRtnWarningEvent->OccurDate:"<<pRtnWarningEvent->OccurDate<<std::endl;
-  std::cout<<"on pRtnWarningEvent->OccurTime:"<<pRtnWarningEvent->OccurTime<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EvendID:"<<pRtnWarningEvent->EvendID<<std::endl;
-  std::cout<<"on pRtnWarningEvent->ObjectID:"<<pRtnWarningEvent->ObjectID<<std::endl;
-  std::cout<<"on pRtnWarningEvent->IPAddress:"<<pRtnWarningEvent->IPAddress<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventName:"<<pRtnWarningEvent->EventName<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventNum:"<<pRtnWarningEvent->EventNum<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventType:"<<pRtnWarningEvent->EventType<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventDes:"<<pRtnWarningEvent->EventDes<<std::endl;
-  std::cout<<"on pRtnWarningEvent->ProcessFlag:"<<pRtnWarningEvent->ProcessFlag<<std::endl;
-  std::cout<<"on pRtnWarningEvent->WarningLevel:"<<pRtnWarningEvent->WarningLevel<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventDealDes:"<<pRtnWarningEvent->EventDealDes<<std::endl;
-  std::cout<<"on pRtnWarningEvent->FullEventName:"<<pRtnWarningEvent->FullEventName<<std::endl;
-  std::cout<<"on pRtnWarningEvent->EventCount:"<<pRtnWarningEvent->EventCount<<std::endl;
+  // std::cout<<"\n**************** SysUserSpi::OnRtnWarningEventTopic: START ****************"<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->MonDate:"<<pRtnWarningEvent->MonDate<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->MonTime:"<<pRtnWarningEvent->MonTime<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->OccurDate:"<<pRtnWarningEvent->OccurDate<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->OccurTime:"<<pRtnWarningEvent->OccurTime<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EvendID:"<<pRtnWarningEvent->EvendID<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->ObjectID:"<<pRtnWarningEvent->ObjectID<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->IPAddress:"<<pRtnWarningEvent->IPAddress<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventName:"<<pRtnWarningEvent->EventName<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventNum:"<<pRtnWarningEvent->EventNum<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventType:"<<pRtnWarningEvent->EventType<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventDes:"<<pRtnWarningEvent->EventDes<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->ProcessFlag:"<<pRtnWarningEvent->ProcessFlag<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->WarningLevel:"<<pRtnWarningEvent->WarningLevel<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventDealDes:"<<pRtnWarningEvent->EventDealDes<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->FullEventName:"<<pRtnWarningEvent->FullEventName<<std::endl;
+  // std::cout<<"on pRtnWarningEvent->EventCount:"<<pRtnWarningEvent->EventCount<<std::endl;
   CShfeFtdcRtnWarningEventField* pNewRtnWarningEvent =new CShfeFtdcRtnWarningEventField;
   memcpy(pNewRtnWarningEvent,pRtnWarningEvent,sizeof(CShfeFtdcRtnWarningEventField));
   void** paramArray=new void*[4];
   paramArray[0]=(void*)pNewRtnWarningEvent;
   asyncOnRtnWarningEventTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRtnWarningEventTopic);
-  std::cout<<"end send "<<std::endl;
+  // std::cout<<"**************** SysUserSpi::OnRtnWarningEventTopic: END ****************\n"<<std::endl;
 }
 void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField *pRspQryCPUUsage, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -2262,7 +2307,7 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField *pRtnFrontInfo)
 }
 void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField *pRspQrySysUserLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n**************** SysUserSpi::OnRspQrySysUserLoginTopic: START **************** "<<std::endl;
   std::cout<<"on pRspQrySysUserLogin->UserID:"<<pRspQrySysUserLogin->UserID<<std::endl;
   std::cout<<"on pRspQrySysUserLogin->TradingDay:"<<pRspQrySysUserLogin->TradingDay<<std::endl;
   std::cout<<"on pRspQrySysUserLogin->LoginTime:"<<pRspQrySysUserLogin->LoginTime<<std::endl;
@@ -2292,7 +2337,7 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField *pRs
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQrySysUserLoginTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQrySysUserLoginTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"****************  SysUserSpi::OnRspQrySysUserLoginTopic: END **************** \n"<<std::endl;
 }
 void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField *pRspQrySysUserLogout, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -2622,7 +2667,7 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField *pRtnTradeLog)
 }
 void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginInfoField *pRspQryTradeUserLoginInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"SysUserSpi::OnRspQryTradeUserLoginInfoTopic: ok"<<std::endl;
   std::cout<<"on pRspQryTradeUserLoginInfo->ObjectID:"<<pRspQryTradeUserLoginInfo->ObjectID<<std::endl;
   std::cout<<"on pRspQryTradeUserLoginInfo->UserID:"<<pRspQryTradeUserLoginInfo->UserID<<std::endl;
   std::cout<<"on pRspQryTradeUserLoginInfo->ParticipantID:"<<pRspQryTradeUserLoginInfo->ParticipantID<<std::endl;
@@ -2659,11 +2704,11 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQryTradeUserLoginInfoTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQryTradeUserLoginInfoTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"SysUserSpi::OnRspQryTradeUserLoginInfoTopic: end send \n"<<std::endl;
 }
 void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoField *pRtnTradeUserLoginInfo)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n********** Spi::OnRtnTradeUserLoginInfoTopic: START ********"<<std::endl;
   std::cout<<"on pRtnTradeUserLoginInfo->ObjectID:"<<pRtnTradeUserLoginInfo->ObjectID<<std::endl;
   std::cout<<"on pRtnTradeUserLoginInfo->UserID:"<<pRtnTradeUserLoginInfo->UserID<<std::endl;
   std::cout<<"on pRtnTradeUserLoginInfo->ParticipantID:"<<pRtnTradeUserLoginInfo->ParticipantID<<std::endl;
@@ -2681,8 +2726,23 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
   void** paramArray=new void*[4];
   paramArray[0]=(void*)pNewRtnTradeUserLoginInfo;
   asyncOnRtnTradeUserLoginInfoTopic.data=(void*)&paramArray[0];
+  
+  uv_mutex_lock(&g_RtnTradeUserLoginInfoTopic_data_mutex);
+  
+  g_RtnTradeUserLoginInfoTopic_queue.push(paramArray);
+  
+  uv_mutex_unlock(&g_RtnTradeUserLoginInfoTopic_data_mutex);
+
+  uv_sem_wait(&g_RtnTradeUserLoginInfoTopic_sem);
+  uv_mutex_lock(&g_RtnTradeUserLoginInfoTopic_mutex);  
+  
+  std::cout << "**** g_RtnTradeUserLoginInfoTopic_Sys_index: " 
+              << g_RtnTradeUserLoginInfoTopic_Sys_index++ << endl;  
   uv_async_send(&asyncOnRtnTradeUserLoginInfoTopic);
-  std::cout<<"end send "<<std::endl;
+  
+  uv_mutex_unlock(&g_RtnTradeUserLoginInfoTopic_mutex);  
+  
+  std::cout<<"********** Spi::OnRtnTradeUserLoginInfoTopic: END! ********\n"<<std::endl;
 }
 void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField *pRspQryPartTrade, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -2861,7 +2921,7 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField 
 }
 void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField *pRspQryHistoryMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n******* SysUserSpi::OnRspQryHistoryMemInfoTopic: START *******"<<std::endl;
   std::cout<<"on pRspQryHistoryMemInfo->HostName:"<<pRspQryHistoryMemInfo->HostName<<std::endl;
   std::cout<<"on pRspQryHistoryMemInfo->MonDate:"<<pRspQryHistoryMemInfo->MonDate<<std::endl;
   std::cout<<"on pRspQryHistoryMemInfo->MonTime:"<<pRspQryHistoryMemInfo->MonTime<<std::endl;
@@ -2894,7 +2954,7 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField 
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQryHistoryMemInfoTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRspQryHistoryMemInfoTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"******* SysUserSpi::OnRspQryHistoryMemInfoTopic: END *******\n"<<std::endl;
 }
 void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkInfoField *pRspQryHistoryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -3008,7 +3068,7 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField *pRspQryFrontSt
 }
 void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField *pRtnSysTimeSync)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n****************SysUserSpi::OnRtnSysTimeSyncTopic: START ****************"<<std::endl;
   std::cout<<"on pRtnSysTimeSync->MonDate:"<<pRtnSysTimeSync->MonDate<<std::endl;
   std::cout<<"on pRtnSysTimeSync->MonTime:"<<pRtnSysTimeSync->MonTime<<std::endl;
   CShfeFtdcRtnSysTimeSyncField* pNewRtnSysTimeSync =new CShfeFtdcRtnSysTimeSyncField;
@@ -3017,11 +3077,11 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField *pRtnSysTime
   paramArray[0]=(void*)pNewRtnSysTimeSync;
   asyncOnRtnSysTimeSyncTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRtnSysTimeSyncTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"**************** SysUserSpi::OnRtnSysTimeSyncTopic: END ****************\n"<<std::endl;
 }
 void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField *pRtnDataCenterChg)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n**************** SysUserSpi::OnRtnDataCenterChgTopic: START ****************"<<std::endl;
   std::cout<<"on pRtnDataCenterChg->DataCenterID:"<<pRtnDataCenterChg->DataCenterID<<std::endl;
   CShfeFtdcRtnDataCenterChgField* pNewRtnDataCenterChg =new CShfeFtdcRtnDataCenterChgField;
   memcpy(pNewRtnDataCenterChg,pRtnDataCenterChg,sizeof(CShfeFtdcRtnDataCenterChgField));
@@ -3029,7 +3089,7 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField *pRtnDat
   paramArray[0]=(void*)pNewRtnDataCenterChg;
   asyncOnRtnDataCenterChgTopic.data=(void*)&paramArray[0];
   uv_async_send(&asyncOnRtnDataCenterChgTopic);
-  std::cout<<"end send "<<std::endl;
+  std::cout<<"**************** SysUserSpi::OnRtnDataCenterChgTopic: END ****************\n"<<std::endl;
 }
 void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakField *pRspQryHistoryTradePeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
@@ -6263,15 +6323,7 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField *pRtnN
 }
 void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrScopeField *pRspQryNetMonitorAttrScope, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-  std::cout<<"ok"<<std::endl;
-  std::cout<<"on pRspQryNetMonitorAttrScope->OperationType:"<<pRspQryNetMonitorAttrScope->OperationType<<std::endl;
-  std::cout<<"on pRspQryNetMonitorAttrScope->ID:"<<pRspQryNetMonitorAttrScope->ID<<std::endl;
-  std::cout<<"on pRspQryNetMonitorAttrScope->CName:"<<pRspQryNetMonitorAttrScope->CName<<std::endl;
-  std::cout<<"on pRspQryNetMonitorAttrScope->EName:"<<pRspQryNetMonitorAttrScope->EName<<std::endl;
-  std::cout<<"on pRspQryNetMonitorAttrScope->Comments:"<<pRspQryNetMonitorAttrScope->Comments<<std::endl;
-  std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
-  std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
-  std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
+
   CShfeFtdcRspQryNetMonitorAttrScopeField* pNewRspQryNetMonitorAttrScope =new CShfeFtdcRspQryNetMonitorAttrScopeField;
   memcpy(pNewRspQryNetMonitorAttrScope,pRspQryNetMonitorAttrScope,sizeof(CShfeFtdcRspQryNetMonitorAttrScopeField));
   int *pId=new int(nRequestID);
@@ -6292,8 +6344,31 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
     paramArray[2]=(void*)pId;
     paramArray[3]=(void*)bIsLastNew;
   asyncOnRspQryNetMonitorAttrScopeTopic.data=(void*)&paramArray[0];
+  
+  uv_mutex_lock(&g_OnRspQryNetMonitorAttrScopeTopic_data_mutex);
+  g_OnRspQryNetMonitorAttrScopeTopic_queue.push(paramArray);
+  uv_mutex_unlock(&g_OnRspQryNetMonitorAttrScopeTopic_data_mutex);
+  
+  uv_sem_wait(&g_OnRspQryNetMonitorAttrScopeTopicc_sem);
+  uv_mutex_lock(&g_OnRspQryNetMonitorAttrScopeTopic_mutex);
+  
+  std::cout<<"\n*********** SysUserSpi::OnRspQryNetMonitorAttrScopeTopic: START! **********"<<std::endl;
+  cout << "****** g_OnRspQryNetMonitorAttrScopeTopic_Sys_index: " 
+       << g_OnRspQryNetMonitorAttrScopeTopic_Sys_index++ <<" ******" <<endl;       
+  std::cout<<"on pRspQryNetMonitorAttrScope->OperationType:"<<pRspQryNetMonitorAttrScope->OperationType<<std::endl;
+  std::cout<<"on pRspQryNetMonitorAttrScope->ID:"<<pRspQryNetMonitorAttrScope->ID<<std::endl;
+  std::cout<<"on pRspQryNetMonitorAttrScope->CName:"<<pRspQryNetMonitorAttrScope->CName<<std::endl;
+  std::cout<<"on pRspQryNetMonitorAttrScope->EName:"<<pRspQryNetMonitorAttrScope->EName<<std::endl;
+  std::cout<<"on pRspQryNetMonitorAttrScope->Comments:"<<pRspQryNetMonitorAttrScope->Comments<<std::endl;
+  std::cout<<"on pRspInfo:"<<pRspInfo<<std::endl;
+  std::cout<<"on nRequestID:"<<nRequestID<<std::endl;
+  std::cout<<"on bIsLast:"<<bIsLast<<std::endl;
+  
   uv_async_send(&asyncOnRspQryNetMonitorAttrScopeTopic);
-  std::cout<<"end send "<<std::endl;
+  
+  uv_mutex_unlock(&g_OnRspQryNetMonitorAttrScopeTopic_mutex);
+  
+  std::cout<<"*********** SysUserSpi::OnRspQryNetMonitorAttrScopeTopic: END! **********\n"<<std::endl;
 }
 void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeField *pRtnNetMonitorAttrScope)
 {
@@ -7741,7 +7816,7 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
 }
 void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatusInfoField *pRtnNetPartyLinkStatusInfo)
 {
-  std::cout<<"ok"<<std::endl;
+  std::cout<<"\n********** SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic: START ********"<<std::endl;  
   std::cout<<"on pRtnNetPartyLinkStatusInfo->OperationType:"<<pRtnNetPartyLinkStatusInfo->OperationType<<std::endl;
   std::cout<<"on pRtnNetPartyLinkStatusInfo->MonDate:"<<pRtnNetPartyLinkStatusInfo->MonDate<<std::endl;
   std::cout<<"on pRtnNetPartyLinkStatusInfo->MonTime:"<<pRtnNetPartyLinkStatusInfo->MonTime<<std::endl;
@@ -7754,8 +7829,22 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
   void** paramArray=new void*[4];
   paramArray[0]=(void*)pNewRtnNetPartyLinkStatusInfo;
   asyncOnRtnNetPartyLinkStatusInfoTopic.data=(void*)&paramArray[0];
+  
+  uv_mutex_lock(&g_RtnNetPartyLinkStatusInfoTopic_data_mutex);
+  
+  g_RtnNetPartyLinkStatusInfoTopic_queue.push(paramArray);
+  
+  uv_mutex_unlock(&g_RtnNetPartyLinkStatusInfoTopic_data_mutex);
+
+  uv_sem_wait(&g_RtnNetPartyLinkStatusInfoTopic_sem);
+  uv_mutex_lock(&g_RtnNetPartyLinkStatusInfoTopic_mutex);  
+  
+  std::cout<< "**** g_RtnNetPartyLinkStatusInfoTopic_Sys_index: " << g_RtnNetPartyLinkStatusInfoTopic_Sys_index++ << endl;
   uv_async_send(&asyncOnRtnNetPartyLinkStatusInfoTopic);
-  std::cout<<"end send "<<std::endl;
+  
+  uv_mutex_unlock(&g_RtnNetPartyLinkStatusInfoTopic_mutex);  
+   
+  std::cout<<"********** SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic: END ********\n"<<std::endl;
 }
 void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLineInfoField *pRspQryNetMemberSDHLineInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
