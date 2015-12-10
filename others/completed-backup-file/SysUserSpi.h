@@ -1,18 +1,20 @@
 #ifndef _SYSUSERSPI_H_
- #define _SYSUSERSPI_H_
+#define _SYSUSERSPI_H_
 
- #include "FtdcSysUserApi.h"
- #include "spi-transform.h"
- #include "nan.h"
+#include "FtdcSysUserApi.h"
+#include <nan.h>
 
  class SysUserSpi: public CShfeFtdcSysUserSpi
- {
+ {     
     public:
+        ~SysUserSpi();
+        
         virtual void OnFrontConnected();
         virtual void OnFrontDisConnected(int nReason);
         virtual void OnHeartBeatWarning(int nTimeLapse);
         
         //以下为自动生成
+  //      virtual void OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField *pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
         virtual void OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField *pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
         virtual void OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField *pRtnTopCpuInfo);
@@ -586,7 +588,6 @@
         virtual void OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLinkInfoField *pRspQryNetNonPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
         virtual void OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoField *pRtnNetNonPartyLinkInfo);
-
-}; 
+ };
 
 #endif

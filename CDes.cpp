@@ -1,12 +1,12 @@
 /////////////////////////////////////////////////////////////////////////
 ///@system OraclePass
-///@company 上海期货信息技术有限公司
+///@company 锟较猴拷锟节伙拷锟斤拷息锟斤拷锟斤拷锟斤拷锟睫癸拷司
 ///@file CCrypto.h
-///@brief实现了CBase64编码类、des和triple des加密类
+///@brief实锟斤拷锟斤拷CBase64锟斤拷锟斤拷锟洁、des锟斤拷triple des锟斤拷锟斤拷锟斤拷
 ///@history 
-///20070622 张继海		创建该文件
-///20070622 张继海		DES and Triple-DES Encryption and Decryption, from efgh.com/software
-///20070702 严少辉		增加triple des
+///20070622 锟脚继猴拷		锟斤拷锟斤拷锟斤拷锟侥硷拷
+///20070622 锟脚继猴拷		DES and Triple-DES Encryption and Decryption, from efgh.com/software
+///20070702 锟斤拷锟劫伙拷		锟斤拷锟斤拷triple des
 /////////////////////////////////////////////////////////////////////////
 
 //#include "stdafx.h"
@@ -17,20 +17,20 @@ int CBase64::Encode(const unsigned char *pSrc, char *pDst, int nSrcLen, int nMax
 {
     const char EncodeTab[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-	unsigned char c1, c2, c3;    // 输入缓冲区读出3个字节
-	int nDstLen = 0;             // 输出的字符计数
-	int nLineLen = 0;            // 输出的行长度计数
-	int nDiv = nSrcLen / 3;      // 输入数据长度除以3得到的倍数
-	int nMod = nSrcLen % 3;      // 输入数据长度除以3得到的余数
+	unsigned char c1, c2, c3;    // 锟斤拷锟诫缓锟斤拷锟斤拷锟斤拷锟斤拷3锟斤拷锟街斤拷
+	int nDstLen = 0;             // 锟斤拷锟斤拷锟斤拷锟街凤拷锟斤拷锟斤拷
+	int nLineLen = 0;            // 锟斤拷锟斤拷锟斤拷锟叫筹拷锟饺硷拷锟斤拷
+	int nDiv = nSrcLen / 3;      // 锟斤拷锟斤拷锟斤拷锟捷筹拷锟饺筹拷锟斤拷3锟矫碉拷锟侥憋拷锟斤拷
+	int nMod = nSrcLen % 3;      // 锟斤拷锟斤拷锟斤拷锟捷筹拷锟饺筹拷锟斤拷3锟矫碉拷锟斤拷锟斤拷锟斤拷
 
-	// 每次取3个字节，编码成4个字符
+	// 每锟斤拷取3锟斤拷锟街节ｏ拷锟斤拷锟斤拷锟斤拷4锟斤拷锟街凤拷
 	for (int i=0; i<nDiv; i++) {
-		// 取3个字节
+		// 取3锟斤拷锟街斤拷
 		c1 = *pSrc++;
 		c2 = *pSrc++;
 		c3 = *pSrc++;
 
-		// 编码成4个字符
+		// 锟斤拷锟斤拷锟斤拷4锟斤拷锟街凤拷
 		*pDst++ = EncodeTab[c1 >> 2];
 		*pDst++ = EncodeTab[((c1 << 4) | (c2 >> 4)) & 0x3f];
 		*pDst++ = EncodeTab[((c2 << 2) | (c3 >> 6)) & 0x3f];
@@ -38,7 +38,7 @@ int CBase64::Encode(const unsigned char *pSrc, char *pDst, int nSrcLen, int nMax
 		nLineLen += 4;
 		nDstLen += 4;
 
-		// 行超长，换行
+		// 锟叫筹拷锟斤拷锟斤拷锟斤拷锟斤拷
 		if (nLineLen>nMaxLineLen-4) {
 			*pDst++ = '\r';
 			*pDst++ = '\n';
@@ -47,7 +47,7 @@ int CBase64::Encode(const unsigned char *pSrc, char *pDst, int nSrcLen, int nMax
 		}
 	}
 
-	// 编码余下的字节
+	// 锟斤拷锟斤拷锟斤拷锟铰碉拷锟街斤拷
 	if (nMod==1) {
 		c1 = *pSrc++;
 		*pDst++ = EncodeTab[(c1 & 0xfc) >> 2];
@@ -66,7 +66,7 @@ int CBase64::Encode(const unsigned char *pSrc, char *pDst, int nSrcLen, int nMax
 		*pDst++ = '=';
 		nDstLen += 4;
 	}
-	// 输出加个结束符
+	// 锟斤拷锟斤拷锟接革拷锟斤拷锟斤拷锟斤拷
 	if (nDstLen!=0)
 	{
 		*pDst++ = '@';
@@ -98,11 +98,11 @@ int CBase64::Decode(const char *pSrc, unsigned char *pDst, int nSrcLen)
 		39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,        // 'a'-'z'
 	};
 
-	int nValue;  // 解码用到的四字节整数
-	int nDstLen=0; // 输出的字符计数
+	int nValue;  // 锟斤拷锟斤拷锟矫碉拷锟斤拷锟斤拷锟街斤拷锟斤拷锟斤拷
+	int nDstLen=0; // 锟斤拷锟斤拷锟斤拷锟街凤拷锟斤拷锟斤拷
 	int i=0;
 
-	// 取4个字符，解码到一个长整数，再经过移位得到3个字节
+	// 取4锟斤拷锟街凤拷锟斤拷锟斤拷锟诫到一锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟劫撅拷锟斤拷锟斤拷位锟矫碉拷3锟斤拷锟街斤拷
 	while (i<nSrcLen) {
 		if (*pSrc!='\r' && *pSrc!='\n') {
 			nValue = DecodeTab[*pSrc++] << 18;
@@ -123,12 +123,12 @@ int CBase64::Decode(const char *pSrc, unsigned char *pDst, int nSrcLen)
 			}
 			i += 4;
 		}
-		else {// 回车换行，跳过
+		else {// 锟截筹拷锟斤拷锟叫ｏ拷锟斤拷锟斤拷
 			pSrc++;
 			i++;
 		}
 	}
-	// 输出加个结束符
+	// 锟斤拷锟斤拷锟接革拷锟斤拷锟斤拷锟斤拷
 	*pDst = '\0';
 	return nDstLen;
 }
@@ -696,26 +696,26 @@ char* des::encryptbuffer(const char *buff,int size,bool isEncrypt)
 void des::EncryptBase64(const char *pSrc, char *pDst, int nSrcLen, bool isEncrypt)
 {
     char pBuffer[256];
-	const char *pIn;	//指向要进行加解密处理的缓冲区
-	char *pOut; //指向加解密处理结果的缓冲区
-	int nActualSize;	//要进行加解密处理的缓冲区内容的字节长度
+	const char *pIn;	//指锟斤拷要锟斤拷锟叫加斤拷锟杰达拷锟斤拷锟侥伙拷锟斤拷锟斤拷
+	char *pOut; //指锟斤拷锟接斤拷锟杰达拷锟斤拷锟斤拷锟斤拷锟侥伙拷锟斤拷锟斤拷
+	int nActualSize;	//要锟斤拷锟叫加斤拷锟杰达拷锟斤拷锟侥伙拷锟斤拷锟斤拷锟斤拷锟捷碉拷锟街节筹拷锟斤拷
 
-	//准备数据
+	//准锟斤拷锟斤拷锟斤拷
 	if (isEncrypt) {
-		//加密
+		//锟斤拷锟斤拷
 		nActualSize = nSrcLen;
 		pIn = pSrc;
 		pOut = pBuffer;
 	}
 	else {
-		// 解密
+		// 锟斤拷锟斤拷
 		nActualSize = base64.Decode(pSrc, (unsigned char *)pBuffer, nSrcLen);
 		pIn = (char *)pBuffer;
 		pOut = pDst;
 	}
 
 	int i;
-	//加解密处理
+	//锟接斤拷锟杰达拷锟斤拷
 	for (i=0; i<nActualSize; i+=8) {
 		char *pValue=encryptbuffer(pIn, 8, isEncrypt);
 		memcpy(pOut+i, pValue, 8);
@@ -723,9 +723,9 @@ void des::EncryptBase64(const char *pSrc, char *pDst, int nSrcLen, bool isEncryp
 		delete[] pValue;
 	}
 
-	//加密后的编码处理
+	//锟斤拷锟杰猴拷锟侥憋拷锟诫处锟斤拷
 	if (isEncrypt) {
-		//加密，进行编码转换
+		//锟斤拷锟杰ｏ拷锟斤拷锟叫憋拷锟斤拷转锟斤拷
 		nActualSize = base64.Encode((unsigned char *)pOut, pDst, i);
 	}
 		pDst[nActualSize] = '\0';
@@ -776,24 +776,24 @@ char* triple_des::encryptbuffer(const char *buff,int size,bool isEncrypt)
 void triple_des::EncryptBase64(const char *pSrc, char *pDst, int nSrcLen, bool isEncrypt)
 {
     char pBuffer[256];
-	const char *pIn;	//指向要进行加解密处理的缓冲区
-	char *pOut; //指向加解密处理结果的缓冲区
-	int nActualSize;	//要进行加解密处理的缓冲区内容的字节长度
+	const char *pIn;	//指锟斤拷要锟斤拷锟叫加斤拷锟杰达拷锟斤拷锟侥伙拷锟斤拷锟斤拷
+	char *pOut; //指锟斤拷锟接斤拷锟杰达拷锟斤拷锟斤拷锟斤拷锟侥伙拷锟斤拷锟斤拷
+	int nActualSize;	//要锟斤拷锟叫加斤拷锟杰达拷锟斤拷锟侥伙拷锟斤拷锟斤拷锟斤拷锟捷碉拷锟街节筹拷锟斤拷
 
 	if (isEncrypt) {
-		//加密
+		//锟斤拷锟斤拷
 		nActualSize = nSrcLen;
 		pIn = pSrc;
 		pOut = pBuffer;
 	}
 	else {
-		// 解密
+		// 锟斤拷锟斤拷
 		nActualSize = base64.Decode(pSrc, (unsigned char *)pBuffer, nSrcLen);
 		pIn = (char *)pBuffer;
 		pOut = pDst;
 	}
 
-	//加解密处理
+	//锟接斤拷锟杰达拷锟斤拷
 	int i;
 	for (i=0; i<nActualSize; i+=8) {
 		char *pValue=encryptbuffer(pIn, 8, isEncrypt);
@@ -802,9 +802,9 @@ void triple_des::EncryptBase64(const char *pSrc, char *pDst, int nSrcLen, bool i
 		delete[] pValue;
 	}
 
-	//加密后的编码处理
+	//锟斤拷锟杰猴拷锟侥憋拷锟诫处锟斤拷
 	if (isEncrypt) {
-		//加密，进行编码转换
+		//锟斤拷锟杰ｏ拷锟斤拷锟叫憋拷锟斤拷转锟斤拷
 		nActualSize = base64.Encode((unsigned char *)pOut, pDst, i);
 	}
 		pDst[nActualSize] = '\0';

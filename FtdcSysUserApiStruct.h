@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////
-///@system ĞÂÒ»´ú½»Ò×ËùÏµÍ³
-///@company ÉÏº£ÆÚ»õĞÅÏ¢¼¼ÊõÓĞÏŞ¹«Ë¾
+///@system æ–°ä¸€ä»£äº¤æ˜“æ‰€ç³»ç»Ÿ
+///@company ä¸Šæµ·æœŸè´§ä¿¡æ¯æŠ€æœ¯æœ‰é™å…¬å¸
 ///@file FtdcStruct.h
-///@brief ¶¨ÒåÁË¿Í»§¶Ë½Ó¿ÚÊ¹ÓÃµÄÒµÎñÊı¾İ½á¹¹
+///@brief å®šä¹‰äº†å®¢æˆ·ç«¯æ¥å£ä½¿ç”¨çš„ä¸šåŠ¡æ•°æ®ç»“æ„
 ///@history 
-///20070227	zhangjie		´´½¨¸ÃÎÄ¼ş
+///20070227	zhangjie		åˆ›å»ºè¯¥æ–‡ä»¶
 /////////////////////////////////////////////////////////////////////////
 
 #if !defined(_FTDCSYSSTRUCT_H)
@@ -16,2195 +16,2195 @@
 
 #include "FtdcSysUserApiDataType.h"
 
-///ĞÅÏ¢·Ö·¢
+///ä¿¡æ¯åˆ†å‘
 struct CShfeFtdcDisseminationField
 {
-	///ĞòÁĞÏµÁĞºÅ
+	///åºåˆ—ç³»åˆ—å·
 	TShfeFtdcSequenceSeriesType	SequenceSeries;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcSequenceNoType	SequenceNo;
 };
 
-///ÏìÓ¦ĞÅÏ¢
+///å“åº”ä¿¡æ¯
 struct CShfeFtdcRspInfoField
 {
-	///´íÎó´úÂë
+	///é”™è¯¯ä»£ç 
 	TShfeFtdcErrorIDType	ErrorID;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
 };
 
-///Í¨Ñ¶½×¶Î
+///é€šè®¯é˜¶æ®µ
 struct CShfeFtdcCommPhaseField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///Í¨Ñ¶Ê±¶ÎºÅ
+	///é€šè®¯æ—¶æ®µå·
 	TShfeFtdcCommPhaseNoType	CommPhaseNo;
 };
 
-///½»Ò×Ëù½»Ò×ÈÕ
+///äº¤æ˜“æ‰€äº¤æ˜“æ—¥
 struct CShfeFtdcExchangeTradingDayField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½»Ò×Ëù´úÂë
+	///äº¤æ˜“æ‰€ä»£ç 
 	TShfeFtdcExchangeIDType	ExchangeID;
 };
 
-///½áËã»á»°
+///ç»“ç®—ä¼šè¯
 struct CShfeFtdcSettlementSessionField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
 };
 
-///µ±Ç°Ê±¼ä
+///å½“å‰æ—¶é—´
 struct CShfeFtdcCurrentTimeField
 {
-	///µ±Ç°ÈÕÆÚ
+	///å½“å‰æ—¥æœŸ
 	TShfeFtdcDateType	CurrDate;
-	///µ±Ç°Ê±¼ä
+	///å½“å‰æ—¶é—´
 	TShfeFtdcTimeType	CurrTime;
-	///µ±Ç°Ê±¼ä£¨ºÁÃë£©
+	///å½“å‰æ—¶é—´ï¼ˆæ¯«ç§’ï¼‰
 	TShfeFtdcMillisecType	CurrMillisec;
 };
 
-///ÓÃ»§µÇÂ¼ÇëÇó
+///ç”¨æˆ·ç™»å½•è¯·æ±‚
 struct CShfeFtdcReqUserLoginField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///ÓÃ»§¶Ë²úÆ·ĞÅÏ¢
+	///ç”¨æˆ·ç«¯äº§å“ä¿¡æ¯
 	TShfeFtdcProductInfoType	UserProductInfo;
-	///½Ó¿Ú¶Ë²úÆ·ĞÅÏ¢
+	///æ¥å£ç«¯äº§å“ä¿¡æ¯
 	TShfeFtdcProductInfoType	InterfaceProductInfo;
-	///Ğ­ÒéĞÅÏ¢
+	///åè®®ä¿¡æ¯
 	TShfeFtdcProtocolInfoType	ProtocolInfo;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
 };
 
-///ÓÃ»§µÇÂ¼Ó¦´ğ
+///ç”¨æˆ·ç™»å½•åº”ç­”
 struct CShfeFtdcRspUserLoginField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///µÇÂ¼³É¹¦Ê±¼ä
+	///ç™»å½•æˆåŠŸæ—¶é—´
 	TShfeFtdcTimeType	LoginTime;
-	///×î´ó±¾µØ±¨µ¥ºÅ
+	///æœ€å¤§æœ¬åœ°æŠ¥å•å·
 	TShfeFtdcOrderLocalIDType	MaxOrderLocalID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÏµÍ³Ãû³Æ
+	///äº¤æ˜“ç³»ç»Ÿåç§°
 	TShfeFtdcTradingSystemNameType	TradingSystemName;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
-	///»áÔ±Ë½ÓĞÁ÷µ±Ç°³¤¶È
+	///ä¼šå‘˜ç§æœ‰æµå½“å‰é•¿åº¦
 	TShfeFtdcSequenceNoType	PrivateFlowSize;
-	///½»Ò×Ô±Ë½ÓĞÁ÷µ±Ç°³¤¶È
+	///äº¤æ˜“å‘˜ç§æœ‰æµå½“å‰é•¿åº¦
 	TShfeFtdcSequenceNoType	UserFlowSize;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///ÓÃ»§µÇ³öÇëÇó
+///ç”¨æˆ·ç™»å‡ºè¯·æ±‚
 struct CShfeFtdcReqUserLogoutField
 {
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
 };
 
-///ÓÃ»§µÇ³öÓ¦´ğ
+///ç”¨æˆ·ç™»å‡ºåº”ç­”
 struct CShfeFtdcRspUserLogoutField
 {
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
 };
 
-///ÊäÈë±¨µ¥
+///è¾“å…¥æŠ¥å•
 struct CShfeFtdcInputOrderField
 {
-	///±¨µ¥?àº?
+	///æŠ¥å•?å—ª?
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///±¨µ¥¼Û¸ñÌõ¼ş
+	///æŠ¥å•ä»·æ ¼æ¡ä»¶
 	TShfeFtdcOrderPriceTypeType	OrderPriceType;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///GTDÈÕÆÚ
+	///GTDæ—¥æœŸ
 	TShfeFtdcDateType	GTDDate;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
-	///´¥·¢Ìõ¼ş
+	///è§¦å‘æ¡ä»¶
 	TShfeFtdcContingentConditionType	ContingentCondition;
-	///Ö¹Ëğ¼Û
+	///æ­¢æŸä»·
 	TShfeFtdcPriceType	StopPrice;
-	///Ç¿Æ½Ô­Òò
+	///å¼ºå¹³åŸå› 
 	TShfeFtdcForceCloseReasonType	ForceCloseReason;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///×Ô¶¯¹ÒÆğ±êÖ¾
+	///è‡ªåŠ¨æŒ‚èµ·æ ‡å¿—
 	TShfeFtdcBoolType	IsAutoSuspend;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///±¨µ¥²Ù×÷
+///æŠ¥å•æ“ä½œ
 struct CShfeFtdcOrderActionField
 {
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///±¨µ¥²Ù×÷±êÖ¾
+	///æŠ¥å•æ“ä½œæ ‡å¿—
 	TShfeFtdcActionFlagType	ActionFlag;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿±ä»¯
+	///æ•°é‡å˜åŒ–
 	TShfeFtdcVolumeType	VolumeChange;
-	///²Ù×÷±¾µØ±àºÅ
+	///æ“ä½œæœ¬åœ°ç¼–å·
 	TShfeFtdcOrderLocalIDType	ActionLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///OTC±¨µ¥
+///OTCæŠ¥å•
 struct CShfeFtdcOTCOrderField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///OTC±¨µ¥±àºÅ
+	///OTCæŠ¥å•ç¼–å·
 	TShfeFtdcOTCOrderSysIDType	OTCOrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///¿ªÆ½±êÖ¾
+	///å¼€å¹³æ ‡å¿—
 	TShfeFtdcOffsetFlagType	OffsetFlag;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	Price;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///¶ÔÊÖ·½»áÔ±´úÂë
+	///å¯¹æ‰‹æ–¹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	OtherParticipantID;
-	///¶ÔÊÖ·½¿Í»§´úÂë
+	///å¯¹æ‰‹æ–¹å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	OtherClientID;
-	///¶ÔÊÖ·½½»Ò×ÓÃ»§´úÂë
+	///å¯¹æ‰‹æ–¹äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	OtherUserID;
-	///¶ÔÊÖ·½¿ªÆ½±êÖ¾
+	///å¯¹æ‰‹æ–¹å¼€å¹³æ ‡å¿—
 	TShfeFtdcOffsetFlagType	OtherOffsetFlag;
-	///¶ÔÊÖ·½Ì×±£±êÖ¾
+	///å¯¹æ‰‹æ–¹å¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	OtherHedgeFlag;
-	///±¾µØOTC±¨µ¥±àºÅ
+	///æœ¬åœ°OTCæŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OTCOrderLocalID;
-	///OTC±¨µ¥×´Ì¬
+	///OTCæŠ¥å•çŠ¶æ€
 	TShfeFtdcOTCOrderStatusType	OTCOrderStatus;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///³·ÏúÊ±¼ä
+	///æ’¤é”€æ—¶é—´
 	TShfeFtdcTimeType	CancelTime;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///¶ÔÊÖ·½½áËã»áÔ±±àºÅ
+	///å¯¹æ‰‹æ–¹ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	OtherClearingPartID;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
-	///efp¶ÔÓ¦ÆÚ»õºÏÔ¼´úÂë
+	///efpå¯¹åº”æœŸè´§åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	EfpInstrumentID;
 };
 
-///±¨µ¥»á»°
+///æŠ¥å•ä¼šè¯
 struct CShfeFtdcOrderSessionField
 {
-	///Ç°ÖÃ±àºÅ
+	///å‰ç½®ç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///»á»°±àºÅ
+	///ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	SessionID;
-	///ÇëÇó±àºÅ
+	///è¯·æ±‚ç¼–å·
 	TShfeFtdcSequenceNoType	RequestID;
 };
 
-///ÊäÈë±¨¼Û
+///è¾“å…¥æŠ¥ä»·
 struct CShfeFtdcInputQuoteField
 {
-	///±¨¼Û±àºÅ
+	///æŠ¥ä»·ç¼–å·
 	TShfeFtdcQuoteSysIDType	QuoteSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///±¾µØ±¨¼Û±àºÅ
+	///æœ¬åœ°æŠ¥ä»·ç¼–å·
 	TShfeFtdcOrderLocalIDType	QuoteLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///Âò·½×éºÏ¿ªÆ½±êÖ¾
+	///ä¹°æ–¹ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	BidCombOffsetFlag;
-	///Âò·½×éºÏÌ×±£±êÖ¾
+	///ä¹°æ–¹ç»„åˆå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	BidCombHedgeFlag;
-	///Âò·½¼Û¸ñ
+	///ä¹°æ–¹ä»·æ ¼
 	TShfeFtdcPriceType	BidPrice;
-	///Âô·½×éºÏ¿ªÆ½±êÖ¾
+	///å–æ–¹ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	AskCombOffsetFlag;
-	///Âô·½×éºÏÌ×±£±êÖ¾
+	///å–æ–¹ç»„åˆå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	AskCombHedgeFlag;
-	///Âô·½¼Û¸ñ
+	///å–æ–¹ä»·æ ¼
 	TShfeFtdcPriceType	AskPrice;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///±¨¼Û²Ù×÷
+///æŠ¥ä»·æ“ä½œ
 struct CShfeFtdcQuoteActionField
 {
-	///±¨¼Û±àºÅ
+	///æŠ¥ä»·ç¼–å·
 	TShfeFtdcQuoteSysIDType	QuoteSysID;
-	///±¾µØ±¨¼Û±àºÅ
+	///æœ¬åœ°æŠ¥ä»·ç¼–å·
 	TShfeFtdcOrderLocalIDType	QuoteLocalID;
-	///±¨µ¥²Ù×÷±êÖ¾
+	///æŠ¥å•æ“ä½œæ ‡å¿—
 	TShfeFtdcActionFlagType	ActionFlag;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///²Ù×÷±¾µØ±àºÅ
+	///æ“ä½œæœ¬åœ°ç¼–å·
 	TShfeFtdcOrderLocalIDType	ActionLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///ÊäÈëÖ´ĞĞĞû¸æ
+///è¾“å…¥æ‰§è¡Œå®£å‘Š
 struct CShfeFtdcInputExecOrderField
 {
-	///ºÏÔ¼±àºÅ
+	///åˆçº¦ç¼–å·
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¾µØÖ´ĞĞĞû¸æ±àºÅ
+	///æœ¬åœ°æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcOrderLocalIDType	ExecOrderLocalID;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///¿ªÆ½±êÖ¾
+	///å¼€å¹³æ ‡å¿—
 	TShfeFtdcOffsetFlagType	OffsetFlag;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///Ö´ĞĞĞû¸æ²Ù×÷
+///æ‰§è¡Œå®£å‘Šæ“ä½œ
 struct CShfeFtdcExecOrderActionField
 {
-	///Ö´ĞĞĞû¸æ±àºÅ
+	///æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcExecOrderSysIDType	ExecOrderSysID;
-	///±¾µØÖ´ĞĞĞû¸æ±àºÅ
+	///æœ¬åœ°æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcOrderLocalIDType	ExecOrderLocalID;
-	///±¨µ¥²Ù×÷±êÖ¾
+	///æŠ¥å•æ“ä½œæ ‡å¿—
 	TShfeFtdcActionFlagType	ActionFlag;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///²Ù×÷±¾µØ±àºÅ
+	///æ“ä½œæœ¬åœ°ç¼–å·
 	TShfeFtdcOrderLocalIDType	ActionLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///ÓÃ»§µÇÂ¼ÍË³ö
+///ç”¨æˆ·ç™»å½•é€€å‡º
 struct CShfeFtdcUserLogoutField
 {
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
 };
 
-///ÓÃ»§¿ÚÁîĞŞ¸Ä
+///ç”¨æˆ·å£ä»¤ä¿®æ”¹
 struct CShfeFtdcUserPasswordUpdateField
 {
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¾ÉÃÜÂë
+	///æ—§å¯†ç 
 	TShfeFtdcPasswordType	OldPassword;
-	///ĞÂÃÜÂë
+	///æ–°å¯†ç 
 	TShfeFtdcPasswordType	NewPassword;
 };
 
-///ÊäÈë·Ç±ê×éºÏ±¨µ¥
+///è¾“å…¥éæ ‡ç»„åˆæŠ¥å•
 struct CShfeFtdcInputCombOrderField
 {
-	///×éºÏ±¨µ¥±àºÅ
+	///ç»„åˆæŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	CombOrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	CombOrderLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ºÏÔ¼´úÂë1
+	///åˆçº¦ä»£ç 1
 	TShfeFtdcInstrumentIDType	InstrumentID1;
-	///ÂòÂô·½Ïò1
+	///ä¹°å–æ–¹å‘1
 	TShfeFtdcDirectionType	Direction1;
-	///·ÖÍÈ³ËÊı1
+	///åˆ†è…¿ä¹˜æ•°1
 	TShfeFtdcLegMultipleType	LegMultiple1;
-	///¿ªÆ½±êÖ¾1
+	///å¼€å¹³æ ‡å¿—1
 	TShfeFtdcOffsetFlagType	OffsetFlag1;
-	///Í¶»úÌ×±£±êÖ¾1
+	///æŠ•æœºå¥—ä¿æ ‡å¿—1
 	TShfeFtdcHedgeFlagType	HedgeFlag1;
-	///ºÏÔ¼´úÂë2
+	///åˆçº¦ä»£ç 2
 	TShfeFtdcInstrumentIDType	InstrumentID2;
-	///ÂòÂô·½Ïò2
+	///ä¹°å–æ–¹å‘2
 	TShfeFtdcDirectionType	Direction2;
-	///·ÖÍÈ³ËÊı2
+	///åˆ†è…¿ä¹˜æ•°2
 	TShfeFtdcLegMultipleType	LegMultiple2;
-	///¿ªÆ½±êÖ¾2
+	///å¼€å¹³æ ‡å¿—2
 	TShfeFtdcOffsetFlagType	OffsetFlag2;
-	///Í¶»úÌ×±£±êÖ¾2
+	///æŠ•æœºå¥—ä¿æ ‡å¿—2
 	TShfeFtdcHedgeFlagType	HedgeFlag2;
-	///ºÏÔ¼´úÂë3
+	///åˆçº¦ä»£ç 3
 	TShfeFtdcInstrumentIDType	InstrumentID3;
-	///ÂòÂô·½Ïò3
+	///ä¹°å–æ–¹å‘3
 	TShfeFtdcDirectionType	Direction3;
-	///·ÖÍÈ³ËÊı3
+	///åˆ†è…¿ä¹˜æ•°3
 	TShfeFtdcLegMultipleType	LegMultiple3;
-	///¿ªÆ½±êÖ¾3
+	///å¼€å¹³æ ‡å¿—3
 	TShfeFtdcOffsetFlagType	OffsetFlag3;
-	///Í¶»úÌ×±£±êÖ¾3
+	///æŠ•æœºå¥—ä¿æ ‡å¿—3
 	TShfeFtdcHedgeFlagType	HedgeFlag3;
-	///ºÏÔ¼´úÂë4
+	///åˆçº¦ä»£ç 4
 	TShfeFtdcInstrumentIDType	InstrumentID4;
-	///ÂòÂô·½Ïò4
+	///ä¹°å–æ–¹å‘4
 	TShfeFtdcDirectionType	Direction4;
-	///·ÖÍÈ³ËÊı4
+	///åˆ†è…¿ä¹˜æ•°4
 	TShfeFtdcLegMultipleType	LegMultiple4;
-	///¿ªÆ½±êÖ¾4
+	///å¼€å¹³æ ‡å¿—4
 	TShfeFtdcOffsetFlagType	OffsetFlag4;
-	///Í¶»úÌ×±£±êÖ¾4
+	///æŠ•æœºå¥—ä¿æ ‡å¿—4
 	TShfeFtdcHedgeFlagType	HedgeFlag4;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
 };
 
-///Ç¿ÖÆÓÃ»§ÍË³ö
+///å¼ºåˆ¶ç”¨æˆ·é€€å‡º
 struct CShfeFtdcForceUserExitField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///»áÔ±×Ê½ğÕÊ»§Èë½ğ
+///ä¼šå‘˜èµ„é‡‘å¸æˆ·å…¥é‡‘
 struct CShfeFtdcAccountDepositField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///×Ê½ğÕËºÅ
+	///èµ„é‡‘è´¦å·
 	TShfeFtdcAccountIDType	Account;
-	///Èë½ğ½ğ¶î
+	///å…¥é‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Deposit;
 };
 
-///±¨µ¥²éÑ¯
+///æŠ¥å•æŸ¥è¯¢
 struct CShfeFtdcQryOrderField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿ªÊ¼Ê±¼ä
+	///å¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	TimeStart;
-	///½áÊøÊ±¼ä
+	///ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	TimeEnd;
 };
 
-///±¨¼Û²éÑ¯
+///æŠ¥ä»·æŸ¥è¯¢
 struct CShfeFtdcQryQuoteField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///±¨¼Û±àºÅ
+	///æŠ¥ä»·ç¼–å·
 	TShfeFtdcQuoteSysIDType	QuoteSysID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///³É½»²éÑ¯
+///æˆäº¤æŸ¥è¯¢
 struct CShfeFtdcQryTradeField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
-	///³É½»±àºÅ
+	///æˆäº¤ç¼–å·
 	TShfeFtdcTradeIDType	TradeID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿ªÊ¼Ê±¼ä
+	///å¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	TimeStart;
-	///½áÊøÊ±¼ä
+	///ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	TimeEnd;
 };
 
-///ĞĞÇé²éÑ¯
+///è¡Œæƒ…æŸ¥è¯¢
 struct CShfeFtdcQryMarketDataField
 {
-	///²úÆ·´úÂë
+	///äº§å“ä»£ç 
 	TShfeFtdcProductIDType	ProductID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
 };
 
-///¿Í»§²éÑ¯
+///å®¢æˆ·æŸ¥è¯¢
 struct CShfeFtdcQryClientField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼¿Í»§´úÂë
+	///èµ·å§‹å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDStart;
-	///½áÊø¿Í»§´úÂë
+	///ç»“æŸå®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDEnd;
 };
 
-///»áÔ±³Ö²Ö²éÑ¯
+///ä¼šå‘˜æŒä»“æŸ¥è¯¢
 struct CShfeFtdcQryPartPositionField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
 };
 
-///¿Í»§³Ö²Ö²éÑ¯
+///å®¢æˆ·æŒä»“æŸ¥è¯¢
 struct CShfeFtdcQryClientPositionField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼¿Í»§´úÂë
+	///èµ·å§‹å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDStart;
-	///½áÊø¿Í»§´úÂë
+	///ç»“æŸå®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDEnd;
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
 };
 
-///½»Ò××Ê½ğ²éÑ¯
+///äº¤æ˜“èµ„é‡‘æŸ¥è¯¢
 struct CShfeFtdcQryPartAccountField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///×Ê½ğÕÊºÅ
+	///èµ„é‡‘å¸å·
 	TShfeFtdcAccountIDType	AccountID;
 };
 
-///ºÏÔ¼²éÑ¯
+///åˆçº¦æŸ¥è¯¢
 struct CShfeFtdcQryInstrumentField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///²úÆ·×é´úÂë
+	///äº§å“ç»„ä»£ç 
 	TShfeFtdcProductGroupIDType	ProductGroupID;
-	///²úÆ·´úÂë
+	///äº§å“ä»£ç 
 	TShfeFtdcProductIDType	ProductID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
 };
 
-///ºÏÔ¼×´Ì¬²éÑ¯
+///åˆçº¦çŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcQryInstrumentStatusField
 {
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
 };
 
-///½áËã×é×´Ì¬²éÑ¯
+///ç»“ç®—ç»„çŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcQrySGDataSyncStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
 };
 
-///ÓÃ»§ÔÚÏß²éÑ¯
+///ç”¨æˆ·åœ¨çº¿æŸ¥è¯¢
 struct CShfeFtdcQryUserSessionField
 {
-	///ÆğÊ¼½»Ò×ÓÃ»§´úÂë
+	///èµ·å§‹äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserIDStart;
-	///½áÊø½»Ò×ÓÃ»§´úÂë
+	///ç»“æŸäº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserIDEnd;
 };
 
-///ÓÃ»§²éÑ¯
+///ç”¨æˆ·æŸ¥è¯¢
 struct CShfeFtdcQryUserField
 {
-	///ÆğÊ¼½»Ò×ÓÃ»§´úÂë
+	///èµ·å§‹äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserIDStart;
-	///½áÊø½»Ò×ÓÃ»§´úÂë
+	///ç»“æŸäº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserIDEnd;
 };
 
-///¹«¸æ²éÑ¯
+///å…¬å‘ŠæŸ¥è¯¢
 struct CShfeFtdcQryBulletinField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///ÊĞ³¡´úÂë
+	///å¸‚åœºä»£ç 
 	TShfeFtdcMarketIDType	MarketID;
-	///¹«¸æ±àºÅ
+	///å…¬å‘Šç¼–å·
 	TShfeFtdcBulletinIDType	BulletinID;
-	///¹«¸æÀàĞÍ
+	///å…¬å‘Šç±»å‹
 	TShfeFtdcNewsTypeType	NewsType;
-	///½ô¼±³Ì¶È
+	///ç´§æ€¥ç¨‹åº¦
 	TShfeFtdcNewsUrgencyType	NewsUrgency;
 };
 
-///»áÔ±²éÑ¯
+///ä¼šå‘˜æŸ¥è¯¢
 struct CShfeFtdcQryParticipantField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
 };
 
-///±£Öµ¶î¶È²éÑ¯
+///ä¿å€¼é¢åº¦æŸ¥è¯¢
 struct CShfeFtdcQryHedgeVolumeField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼¿Í»§´úÂë
+	///èµ·å§‹å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDStart;
-	///½áÊø¿Í»§´úÂë
+	///ç»“æŸå®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDEnd;
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
 };
 
-///ºÏÔ¼¼ÛÎ»²éÑ¯
+///åˆçº¦ä»·ä½æŸ¥è¯¢
 struct CShfeFtdcQryMBLMarketDataField
 {
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
 };
 
-///ĞÅÓÃÏŞ¶î²éÑ¯
+///ä¿¡ç”¨é™é¢æŸ¥è¯¢
 struct CShfeFtdcQryCreditLimitField
 {
-	///½»Ò×»áÔ±±àºÅ
+	///äº¤æ˜“ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
 };
 
-///Ö´ĞĞĞû¸æ²éÑ¯
+///æ‰§è¡Œå®£å‘ŠæŸ¥è¯¢
 struct CShfeFtdcQryExecOrderField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///Ö´ĞĞĞû¸æ±àºÅ
+	///æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcExecOrderSysIDType	ExecOrderSysID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿ªÊ¼Ê±¼ä
+	///å¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	TimeStart;
-	///½áÊøÊ±¼ä
+	///ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	TimeEnd;
 };
 
-///·Ç±ê×éºÏ±¨µ¥²éÑ¯
+///éæ ‡ç»„åˆæŠ¥å•æŸ¥è¯¢
 struct CShfeFtdcQryCombOrderField
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///×éºÏ±¨µ¥±àºÅ
+	///ç»„åˆæŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	CombOrderSysID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///»áÔ±×Ê½ğÓ¦´ğ
+///ä¼šå‘˜èµ„é‡‘åº”ç­”
 struct CShfeFtdcRspPartAccountField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///ÉÏ´Î½áËã×¼±¸½ğ
+	///ä¸Šæ¬¡ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	PreBalance;
-	///µ±Ç°±£Ö¤½ğ×Ü¶î
+	///å½“å‰ä¿è¯é‡‘æ€»é¢
 	TShfeFtdcMoneyType	CurrMargin;
-	///Æ½²ÖÓ¯¿÷
+	///å¹³ä»“ç›ˆäº
 	TShfeFtdcMoneyType	CloseProfit;
-	///ÆÚÈ¨È¨Àû½ğÊÕÖ§
+	///æœŸæƒæƒåˆ©é‡‘æ”¶æ”¯
 	TShfeFtdcMoneyType	Premium;
-	///Èë½ğ½ğ¶î
+	///å…¥é‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Deposit;
-	///³ö½ğ½ğ¶î
+	///å‡ºé‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Withdraw;
-	///ÆÚ»õ½áËã×¼±¸½ğ
+	///æœŸè´§ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	Balance;
-	///¿ÉÌá×Ê½ğ
+	///å¯æèµ„é‡‘
 	TShfeFtdcMoneyType	Available;
-	///×Ê½ğÕÊºÅ
+	///èµ„é‡‘å¸å·
 	TShfeFtdcAccountIDType	AccountID;
-	///¶³½áµÄ±£Ö¤½ğ
+	///å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	FrozenMargin;
-	///¶³½áµÄÈ¨Àû½ğ
+	///å†»ç»“çš„æƒåˆ©é‡‘
 	TShfeFtdcMoneyType	FrozenPremium;
-	///»ù±¾×¼±¸½ğ
+	///åŸºæœ¬å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	BaseReserve;
 };
 
-///»áÔ±³Ö²ÖÓ¦´ğ
+///ä¼šå‘˜æŒä»“åº”ç­”
 struct CShfeFtdcRspPartPositionField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///ÉÏÈÕ³Ö²Ö
+	///ä¸Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	YdPosition;
-	///½ñÈÕ³Ö²Ö
+	///ä»Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	Position;
-	///¶àÍ·¶³½á
+	///å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	LongFrozen;
-	///¿ÕÍ·¶³½á
+	///ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	ShortFrozen;
-	///×òÈÕ¶àÍ·¶³½á
+	///æ˜¨æ—¥å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdLongFrozen;
-	///×òÈÕ¿ÕÍ·¶³½á
+	///æ˜¨æ—¥ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdShortFrozen;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
 };
 
-///¿Í»§³Ö²ÖÓ¦´ğ
+///å®¢æˆ·æŒä»“åº”ç­”
 struct CShfeFtdcRspClientPositionField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///ÉÏÈÕ³Ö²Ö
+	///ä¸Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	YdPosition;
-	///½ñÈÕ³Ö²Ö
+	///ä»Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	Position;
-	///¶àÍ·¶³½á
+	///å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	LongFrozen;
-	///¿ÕÍ·¶³½á
+	///ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	ShortFrozen;
-	///×òÈÕ¶àÍ·¶³½á
+	///æ˜¨æ—¥å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdLongFrozen;
-	///×òÈÕ¿ÕÍ·¶³½á
+	///æ˜¨æ—¥ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdShortFrozen;
-	///µ±ÈÕÂò³É½»Á¿
+	///å½“æ—¥ä¹°æˆäº¤é‡
 	TShfeFtdcVolumeType	BuyTradeVolume;
-	///µ±ÈÕÂô³É½»Á¿
+	///å½“æ—¥å–æˆäº¤é‡
 	TShfeFtdcVolumeType	SellTradeVolume;
-	///³Ö²Ö³É±¾
+	///æŒä»“æˆæœ¬
 	TShfeFtdcMoneyType	PositionCost;
-	///×òÈÕ³Ö²Ö³É±¾
+	///æ˜¨æ—¥æŒä»“æˆæœ¬
 	TShfeFtdcMoneyType	YdPositionCost;
-	///Õ¼ÓÃµÄ±£Ö¤½ğ
+	///å ç”¨çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	UseMargin;
-	///¶³½áµÄ±£Ö¤½ğ
+	///å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	FrozenMargin;
-	///¶àÍ·¶³½áµÄ±£Ö¤½ğ
+	///å¤šå¤´å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	LongFrozenMargin;
-	///¿ÕÍ·¶³½áµÄ±£Ö¤½ğ
+	///ç©ºå¤´å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	ShortFrozenMargin;
-	///¶³½áµÄÈ¨Àû½ğ
+	///å†»ç»“çš„æƒåˆ©é‡‘
 	TShfeFtdcMoneyType	FrozenPremium;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
 };
 
-///ºÏÔ¼²éÑ¯Ó¦´ğ
+///åˆçº¦æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspInstrumentField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///²úÆ·´úÂë
+	///äº§å“ä»£ç 
 	TShfeFtdcProductIDType	ProductID;
-	///²úÆ·×é´úÂë
+	///äº§å“ç»„ä»£ç 
 	TShfeFtdcProductGroupIDType	ProductGroupID;
-	///»ù´¡ÉÌÆ·´úÂë
+	///åŸºç¡€å•†å“ä»£ç 
 	TShfeFtdcInstrumentIDType	UnderlyingInstrID;
-	///²úÆ·ÀàĞÍ
+	///äº§å“ç±»å‹
 	TShfeFtdcProductClassType	ProductClass;
-	///³Ö²ÖÀàĞÍ
+	///æŒä»“ç±»å‹
 	TShfeFtdcPositionTypeType	PositionType;
-	///Ö´ĞĞ¼Û
+	///æ‰§è¡Œä»·
 	TShfeFtdcPriceType	StrikePrice;
-	///ÆÚÈ¨ÀàĞÍ
+	///æœŸæƒç±»å‹
 	TShfeFtdcOptionsTypeType	OptionsType;
-	///ºÏÔ¼ÊıÁ¿³ËÊı
+	///åˆçº¦æ•°é‡ä¹˜æ•°
 	TShfeFtdcVolumeMultipleType	VolumeMultiple;
-	///ºÏÔ¼»ù´¡ÉÌÆ·³ËÊı
+	///åˆçº¦åŸºç¡€å•†å“ä¹˜æ•°
 	TShfeFtdcUnderlyingMultipleType	UnderlyingMultiple;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼Ãû³Æ
+	///åˆçº¦åç§°
 	TShfeFtdcInstrumentNameType	InstrumentName;
-	///½»¸îÄê·İ
+	///äº¤å‰²å¹´ä»½
 	TShfeFtdcYearType	DeliveryYear;
-	///½»¸îÔÂ
+	///äº¤å‰²æœˆ
 	TShfeFtdcMonthType	DeliveryMonth;
-	///ÌáÇ°ÔÂ·İ
+	///æå‰æœˆä»½
 	TShfeFtdcAdvanceMonthType	AdvanceMonth;
-	///µ±Ç°ÊÇ·ñ½»Ò×
+	///å½“å‰æ˜¯å¦äº¤æ˜“
 	TShfeFtdcBoolType	IsTrading;
-	///´´½¨ÈÕ
+	///åˆ›å»ºæ—¥
 	TShfeFtdcDateType	CreateDate;
-	///ÉÏÊĞÈÕ
+	///ä¸Šå¸‚æ—¥
 	TShfeFtdcDateType	OpenDate;
-	///µ½ÆÚÈÕ
+	///åˆ°æœŸæ—¥
 	TShfeFtdcDateType	ExpireDate;
-	///¿ªÊ¼½»¸îÈÕ
+	///å¼€å§‹äº¤å‰²æ—¥
 	TShfeFtdcDateType	StartDelivDate;
-	///×îºó½»¸îÈÕ
+	///æœ€åäº¤å‰²æ—¥
 	TShfeFtdcDateType	EndDelivDate;
-	///¹ÒÅÆ»ù×¼¼Û
+	///æŒ‚ç‰ŒåŸºå‡†ä»·
 	TShfeFtdcPriceType	BasisPrice;
-	///ÊĞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxMarketOrderVolume;
-	///ÊĞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinMarketOrderVolume;
-	///ÏŞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///é™ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxLimitOrderVolume;
-	///ÏŞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///é™ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinLimitOrderVolume;
-	///×îĞ¡±ä¶¯¼ÛÎ»
+	///æœ€å°å˜åŠ¨ä»·ä½
 	TShfeFtdcPriceType	PriceTick;
-	///½»¸îÔÂ×ÔÈ»ÈË¿ª²Ö
+	///äº¤å‰²æœˆè‡ªç„¶äººå¼€ä»“
 	TShfeFtdcMonthCountType	AllowDelivPersonOpen;
-	///±ÒÖÖ´úÂë
+	///å¸ç§ä»£ç 
 	TShfeFtdcCurrencyIDType	CurrencyID;
 };
 
-///ĞÅÏ¢²éÑ¯
+///ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcQryInformationField
 {
-	///ÆğÊ¼ĞÅÏ¢´úÂë
+	///èµ·å§‹ä¿¡æ¯ä»£ç 
 	TShfeFtdcInformationIDType	InformationIDStart;
-	///½áÊøĞÅÏ¢´úÂë
+	///ç»“æŸä¿¡æ¯ä»£ç 
 	TShfeFtdcInformationIDType	InformationIDEnd;
 };
 
-///ĞÅÏ¢²éÑ¯
+///ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcInformationField
 {
-	///ĞÅÏ¢±àºÅ
+	///ä¿¡æ¯ç¼–å·
 	TShfeFtdcInformationIDType	InformationID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcSequenceNoType	SequenceNo;
-	///ÏûÏ¢ÕıÎÄ
+	///æ¶ˆæ¯æ­£æ–‡
 	TShfeFtdcContentType	Content;
-	///ÕıÎÄ³¤¶È
+	///æ­£æ–‡é•¿åº¦
 	TShfeFtdcContentLengthType	ContentLength;
-	///ÊÇ·ñÍê³É
+	///æ˜¯å¦å®Œæˆ
 	TShfeFtdcBoolType	IsAccomplished;
 };
 
-///ĞÅÓÃÏŞ¶î
+///ä¿¡ç”¨é™é¢
 struct CShfeFtdcCreditLimitField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///ÉÏ´Î½áËã×¼±¸½ğ
+	///ä¸Šæ¬¡ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	PreBalance;
-	///µ±Ç°±£Ö¤½ğ×Ü¶î
+	///å½“å‰ä¿è¯é‡‘æ€»é¢
 	TShfeFtdcMoneyType	CurrMargin;
-	///Æ½²ÖÓ¯¿÷
+	///å¹³ä»“ç›ˆäº
 	TShfeFtdcMoneyType	CloseProfit;
-	///ÆÚÈ¨È¨Àû½ğÊÕÖ§
+	///æœŸæƒæƒåˆ©é‡‘æ”¶æ”¯
 	TShfeFtdcMoneyType	Premium;
-	///Èë½ğ½ğ¶î
+	///å…¥é‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Deposit;
-	///³ö½ğ½ğ¶î
+	///å‡ºé‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Withdraw;
-	///ÆÚ»õ½áËã×¼±¸½ğ
+	///æœŸè´§ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	Balance;
-	///¿ÉÌá×Ê½ğ
+	///å¯æèµ„é‡‘
 	TShfeFtdcMoneyType	Available;
-	///½»Ò×»áÔ±±àºÅ
+	///äº¤æ˜“ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///¶³½áµÄ±£Ö¤½ğ
+	///å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	FrozenMargin;
-	///¶³½áµÄÈ¨Àû½ğ
+	///å†»ç»“çš„æƒåˆ©é‡‘
 	TShfeFtdcMoneyType	FrozenPremium;
 };
 
-///¿Í»§²éÑ¯Ó¦´ğ
+///å®¢æˆ·æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspClientField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ô­Ö¤¼şºÅÂë
+	///åŸè¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoV1Type	UseLess;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
 };
 
-///Êı¾İÁ÷»ØÍË
+///æ•°æ®æµå›é€€
 struct CShfeFtdcFlowMessageCancelField
 {
-	///ĞòÁĞÏµÁĞºÅ
+	///åºåˆ—ç³»åˆ—å·
 	TShfeFtdcSequenceSeriesType	SequenceSeries;
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
-	///»ØÍËÆğÊ¼ĞòÁĞºÅ
+	///å›é€€èµ·å§‹åºåˆ—å·
 	TShfeFtdcSequenceNoType	StartSequenceNo;
-	///»ØÍË½áÊøĞòÁĞºÅ
+	///å›é€€ç»“æŸåºåˆ—å·
 	TShfeFtdcSequenceNoType	EndSequenceNo;
 };
 
-///»ãÂÊ²éÑ¯
+///æ±‡ç‡æŸ¥è¯¢
 struct CShfeFtdcQryExchangeRateField
 {
-	///±ÒÖÖ´úÂë
+	///å¸ç§ä»£ç 
 	TShfeFtdcCurrencyIDType	CurrencyID;
 };
 
-///»ãÂÊ²éÑ¯Ó¦´ğ
+///æ±‡ç‡æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspExchangeRateField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///±ÒÖÖ´úÂë
+	///å¸ç§ä»£ç 
 	TShfeFtdcCurrencyIDType	CurrencyID;
-	///Íâ»ã½»Ò×µ¥Î»
+	///å¤–æ±‡äº¤æ˜“å•ä½
 	TShfeFtdcRateUnitType	RateUnit;
-	///Íâ»ãÖĞ¼ä¼Û
+	///å¤–æ±‡ä¸­é—´ä»·
 	TShfeFtdcExRatePriceType	RatePrice;
 };
 
-///»áÔ±
+///ä¼šå‘˜
 struct CShfeFtdcParticipantField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///»áÔ±¼ò³Æ
+	///ä¼šå‘˜ç®€ç§°
 	TShfeFtdcParticipantAbbrType	ParticipantAbbr;
-	///»áÔ±ÀàĞÍ
+	///ä¼šå‘˜ç±»å‹
 	TShfeFtdcMemberTypeType	MemberType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
 };
 
-///ÓÃ»§
+///ç”¨æˆ·
 struct CShfeFtdcUserField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///½»Ò×ÓÃ»§ÀàĞÍ
+	///äº¤æ˜“ç”¨æˆ·ç±»å‹
 	TShfeFtdcUserTypeType	UserType;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///½»Ò×Ô±È¨ÏŞ
+	///äº¤æ˜“å‘˜æƒé™
 	TShfeFtdcUserActiveType	IsActive;
 };
 
-///¿Í»§
+///å®¢æˆ·
 struct CShfeFtdcClientField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
 };
 
-///ÓÃ»§»á»°
+///ç”¨æˆ·ä¼šè¯
 struct CShfeFtdcUserSessionField
 {
-	///Ç°ÖÃ±àºÅ
+	///å‰ç½®ç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///½»Ò×ÓÃ»§ÀàĞÍ
+	///äº¤æ˜“ç”¨æˆ·ç±»å‹
 	TShfeFtdcUserTypeType	UserType;
-	///»á»°±àºÅ
+	///ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	SessionID;
-	///µÇÂ¼Ê±¼ä
+	///ç™»å½•æ—¶é—´
 	TShfeFtdcTimeType	LoginTime;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÓÃ»§¶Ë²úÆ·ĞÅÏ¢
+	///ç”¨æˆ·ç«¯äº§å“ä¿¡æ¯
 	TShfeFtdcProductInfoType	UserProductInfo;
-	///½Ó¿Ú¶Ë²úÆ·ĞÅÏ¢
+	///æ¥å£ç«¯äº§å“ä¿¡æ¯
 	TShfeFtdcProductInfoType	InterfaceProductInfo;
-	///Ğ­ÒéĞÅÏ¢
+	///åè®®ä¿¡æ¯
 	TShfeFtdcProtocolInfoType	ProtocolInfo;
-	///»á»°ÀàĞÍ
+	///ä¼šè¯ç±»å‹
 	TShfeFtdcSessionTypeType	SessionType;
 };
 
-///²úÆ·×é
+///äº§å“ç»„
 struct CShfeFtdcProductGroupField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///²úÆ·×é´úÂë
+	///äº§å“ç»„ä»£ç 
 	TShfeFtdcProductGroupIDType	ProductGroupID;
-	///²úÆ·×éÃû³Æ
+	///äº§å“ç»„åç§°
 	TShfeFtdcProductGroupNameType	ProductGroupName;
-	///ÉÌÆ·´úÂë
+	///å•†å“ä»£ç 
 	TShfeFtdcCommodityIDType	CommodityID;
 };
 
-///²úÆ·
+///äº§å“
 struct CShfeFtdcProductField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///²úÆ·´úÂë
+	///äº§å“ä»£ç 
 	TShfeFtdcProductIDType	ProductID;
-	///²úÆ·×é´úÂë
+	///äº§å“ç»„ä»£ç 
 	TShfeFtdcProductGroupIDType	ProductGroupID;
-	///²úÆ·Ãû³Æ
+	///äº§å“åç§°
 	TShfeFtdcProductNameType	ProductName;
-	///²úÆ·ÀàĞÍ
+	///äº§å“ç±»å‹
 	TShfeFtdcProductClassType	ProductClass;
 };
 
-///ºÏÔ¼
+///åˆçº¦
 struct CShfeFtdcInstrumentField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///²úÆ·´úÂë
+	///äº§å“ä»£ç 
 	TShfeFtdcProductIDType	ProductID;
-	///²úÆ·×é´úÂë
+	///äº§å“ç»„ä»£ç 
 	TShfeFtdcProductGroupIDType	ProductGroupID;
-	///»ù´¡ÉÌÆ·´úÂë
+	///åŸºç¡€å•†å“ä»£ç 
 	TShfeFtdcInstrumentIDType	UnderlyingInstrID;
-	///²úÆ·ÀàĞÍ
+	///äº§å“ç±»å‹
 	TShfeFtdcProductClassType	ProductClass;
-	///³Ö²ÖÀàĞÍ
+	///æŒä»“ç±»å‹
 	TShfeFtdcPositionTypeType	PositionType;
-	///Ö´ĞĞ¼Û
+	///æ‰§è¡Œä»·
 	TShfeFtdcPriceType	StrikePrice;
-	///ÆÚÈ¨ÀàĞÍ
+	///æœŸæƒç±»å‹
 	TShfeFtdcOptionsTypeType	OptionsType;
-	///ºÏÔ¼ÊıÁ¿³ËÊı
+	///åˆçº¦æ•°é‡ä¹˜æ•°
 	TShfeFtdcVolumeMultipleType	VolumeMultiple;
-	///ºÏÔ¼»ù´¡ÉÌÆ·³ËÊı
+	///åˆçº¦åŸºç¡€å•†å“ä¹˜æ•°
 	TShfeFtdcUnderlyingMultipleType	UnderlyingMultiple;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼Ãû³Æ
+	///åˆçº¦åç§°
 	TShfeFtdcInstrumentNameType	InstrumentName;
-	///½»¸îÄê·İ
+	///äº¤å‰²å¹´ä»½
 	TShfeFtdcYearType	DeliveryYear;
-	///½»¸îÔÂ
+	///äº¤å‰²æœˆ
 	TShfeFtdcMonthType	DeliveryMonth;
-	///ÌáÇ°ÔÂ·İ
+	///æå‰æœˆä»½
 	TShfeFtdcAdvanceMonthType	AdvanceMonth;
-	///µ±Ç°ÊÇ·ñ½»Ò×
+	///å½“å‰æ˜¯å¦äº¤æ˜“
 	TShfeFtdcBoolType	IsTrading;
-	///±ÒÖÖ´úÂë
+	///å¸ç§ä»£ç 
 	TShfeFtdcCurrencyIDType	CurrencyID;
 };
 
-///×éºÏ½»Ò×ºÏÔ¼µÄµ¥ÍÈ
+///ç»„åˆäº¤æ˜“åˆçº¦çš„å•è…¿
 struct CShfeFtdcCombinationLegField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///×éºÏºÏÔ¼´úÂë
+	///ç»„åˆåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	CombInstrumentID;
-	///µ¥ÍÈ±àºÅ
+	///å•è…¿ç¼–å·
 	TShfeFtdcLegIDType	LegID;
-	///µ¥ÍÈºÏÔ¼´úÂë
+	///å•è…¿åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	LegInstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///µ¥ÍÈ³ËÊı
+	///å•è…¿ä¹˜æ•°
 	TShfeFtdcLegMultipleType	LegMultiple;
-	///ÍÆµ¼²ãÊı
+	///æ¨å¯¼å±‚æ•°
 	TShfeFtdcImplyLevelType	ImplyLevel;
 };
 
-///ÕË»§×Ê½ğĞÅÏ¢
+///è´¦æˆ·èµ„é‡‘ä¿¡æ¯
 struct CShfeFtdcAccountInfoField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///ÉÏ´Î½áËã×¼±¸½ğ
+	///ä¸Šæ¬¡ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	PreBalance;
-	///µ±Ç°±£Ö¤½ğ×Ü¶î
+	///å½“å‰ä¿è¯é‡‘æ€»é¢
 	TShfeFtdcMoneyType	CurrMargin;
-	///Æ½²ÖÓ¯¿÷
+	///å¹³ä»“ç›ˆäº
 	TShfeFtdcMoneyType	CloseProfit;
-	///ÆÚÈ¨È¨Àû½ğÊÕÖ§
+	///æœŸæƒæƒåˆ©é‡‘æ”¶æ”¯
 	TShfeFtdcMoneyType	Premium;
-	///Èë½ğ½ğ¶î
+	///å…¥é‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Deposit;
-	///³ö½ğ½ğ¶î
+	///å‡ºé‡‘é‡‘é¢
 	TShfeFtdcMoneyType	Withdraw;
-	///ÆÚ»õ½áËã×¼±¸½ğ
+	///æœŸè´§ç»“ç®—å‡†å¤‡é‡‘
 	TShfeFtdcMoneyType	Balance;
-	///¿ÉÌá×Ê½ğ
+	///å¯æèµ„é‡‘
 	TShfeFtdcMoneyType	Available;
-	///¿ª»§ÈÕÆÚ
+	///å¼€æˆ·æ—¥æœŸ
 	TShfeFtdcDateType	DateAccountOpen;
-	///ÉÏ´Î½áËãµÄÈÕÆÚ
+	///ä¸Šæ¬¡ç»“ç®—çš„æ—¥æœŸ
 	TShfeFtdcDateType	PreDate;
-	///ÉÏ½áËãµÄ±àºÅ
+	///ä¸Šç»“ç®—çš„ç¼–å·
 	TShfeFtdcSettlementIDType	PreSettlementID;
-	///ÉÏ´Î±£Ö¤½ğ×Ü¶î
+	///ä¸Šæ¬¡ä¿è¯é‡‘æ€»é¢
 	TShfeFtdcMoneyType	PreMargin;
-	///ÆÚ»õ±£Ö¤½ğ
+	///æœŸè´§ä¿è¯é‡‘
 	TShfeFtdcMoneyType	FuturesMargin;
-	///ÆÚÈ¨±£Ö¤½ğ
+	///æœŸæƒä¿è¯é‡‘
 	TShfeFtdcMoneyType	OptionsMargin;
-	///³Ö²ÖÓ¯¿÷
+	///æŒä»“ç›ˆäº
 	TShfeFtdcMoneyType	PositionProfit;
-	///µ±ÈÕÓ¯¿÷
+	///å½“æ—¥ç›ˆäº
 	TShfeFtdcMoneyType	Profit;
-	///ÀûÏ¢ÊÕÈë
+	///åˆ©æ¯æ”¶å…¥
 	TShfeFtdcMoneyType	Interest;
-	///ÊÖĞø·Ñ
+	///æ‰‹ç»­è´¹
 	TShfeFtdcMoneyType	Fee;
-	///×ÜÖÊÑº½ğ¶î
+	///æ€»è´¨æŠ¼é‡‘é¢
 	TShfeFtdcMoneyType	TotalCollateral;
-	///ÓÃÖÊÑºµÖµÄ±£Ö¤½ğ½ğ¶î
+	///ç”¨è´¨æŠ¼æŠµçš„ä¿è¯é‡‘é‡‘é¢
 	TShfeFtdcMoneyType	CollateralForMargin;
-	///ÉÏ´Î×Ê½ğÀûÏ¢»ıÊı
+	///ä¸Šæ¬¡èµ„é‡‘åˆ©æ¯ç§¯æ•°
 	TShfeFtdcMoneyType	PreAccmulateInterest;
-	///×Ê½ğÀûÏ¢»ıÊı
+	///èµ„é‡‘åˆ©æ¯ç§¯æ•°
 	TShfeFtdcMoneyType	AccumulateInterest;
-	///ÖÊÑºÊÖĞø·Ñ»ıÊı
+	///è´¨æŠ¼æ‰‹ç»­è´¹ç§¯æ•°
 	TShfeFtdcMoneyType	AccumulateFee;
-	///¶³½á×Ê½ğ
+	///å†»ç»“èµ„é‡‘
 	TShfeFtdcMoneyType	ForzenDeposit;
-	///ÕÊ»§×´Ì¬
+	///å¸æˆ·çŠ¶æ€
 	TShfeFtdcAccountStatusType	AccountStatus;
-	///×Ê½ğÕÊºÅ
+	///èµ„é‡‘å¸å·
 	TShfeFtdcAccountIDType	AccountID;
 };
 
-///»áÔ±ºÏÔ¼³Ö²Ö
+///ä¼šå‘˜åˆçº¦æŒä»“
 struct CShfeFtdcPartPositionField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///ÉÏÈÕ³Ö²Ö
+	///ä¸Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	YdPosition;
-	///½ñÈÕ³Ö²Ö
+	///ä»Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	Position;
-	///¶àÍ·¶³½á
+	///å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	LongFrozen;
-	///¿ÕÍ·¶³½á
+	///ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	ShortFrozen;
-	///×òÈÕ¶àÍ·¶³½á
+	///æ˜¨æ—¥å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdLongFrozen;
-	///×òÈÕ¿ÕÍ·¶³½á
+	///æ˜¨æ—¥ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdShortFrozen;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
 };
 
-///¿Í»§ºÏÔ¼³Ö²Ö
+///å®¢æˆ·åˆçº¦æŒä»“
 struct CShfeFtdcClientPositionField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///ÉÏÈÕ³Ö²Ö
+	///ä¸Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	YdPosition;
-	///½ñÈÕ³Ö²Ö
+	///ä»Šæ—¥æŒä»“
 	TShfeFtdcVolumeType	Position;
-	///¶àÍ·¶³½á
+	///å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	LongFrozen;
-	///¿ÕÍ·¶³½á
+	///ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	ShortFrozen;
-	///×òÈÕ¶àÍ·¶³½á
+	///æ˜¨æ—¥å¤šå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdLongFrozen;
-	///×òÈÕ¿ÕÍ·¶³½á
+	///æ˜¨æ—¥ç©ºå¤´å†»ç»“
 	TShfeFtdcVolumeType	YdShortFrozen;
-	///µ±ÈÕÂò³É½»Á¿
+	///å½“æ—¥ä¹°æˆäº¤é‡
 	TShfeFtdcVolumeType	BuyTradeVolume;
-	///µ±ÈÕÂô³É½»Á¿
+	///å½“æ—¥å–æˆäº¤é‡
 	TShfeFtdcVolumeType	SellTradeVolume;
-	///³Ö²Ö³É±¾
+	///æŒä»“æˆæœ¬
 	TShfeFtdcMoneyType	PositionCost;
-	///×òÈÕ³Ö²Ö³É±¾
+	///æ˜¨æ—¥æŒä»“æˆæœ¬
 	TShfeFtdcMoneyType	YdPositionCost;
-	///Õ¼ÓÃµÄ±£Ö¤½ğ
+	///å ç”¨çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	UseMargin;
-	///¶³½áµÄ±£Ö¤½ğ
+	///å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	FrozenMargin;
-	///¶àÍ·¶³½áµÄ±£Ö¤½ğ
+	///å¤šå¤´å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	LongFrozenMargin;
-	///¿ÕÍ·¶³½áµÄ±£Ö¤½ğ
+	///ç©ºå¤´å†»ç»“çš„ä¿è¯é‡‘
 	TShfeFtdcMoneyType	ShortFrozenMargin;
-	///¶³½áµÄÈ¨Àû½ğ
+	///å†»ç»“çš„æƒåˆ©é‡‘
 	TShfeFtdcMoneyType	FrozenPremium;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
 };
 
-///±£Öµ¶î¶ÈÁ¿
+///ä¿å€¼é¢åº¦é‡
 struct CShfeFtdcHedgeVolumeField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¶àÍ·±£Öµ¶î¶È×î³õÉêÇëÁ¿
+	///å¤šå¤´ä¿å€¼é¢åº¦æœ€åˆç”³è¯·é‡
 	TShfeFtdcVolumeType	LongVolumeOriginal;
-	///¿ÕÍ·±£Öµ¶î¶È×î³õÉêÇëÁ¿
+	///ç©ºå¤´ä¿å€¼é¢åº¦æœ€åˆç”³è¯·é‡
 	TShfeFtdcVolumeType	ShortVolumeOriginal;
-	///¶àÍ·±£Öµ¶î¶È
+	///å¤šå¤´ä¿å€¼é¢åº¦
 	TShfeFtdcVolumeType	LongVolume;
-	///¿ÕÍ·±£Öµ¶î¶È
+	///ç©ºå¤´ä¿å€¼é¢åº¦
 	TShfeFtdcVolumeType	ShortVolume;
 };
 
-///ÊĞ³¡ĞĞÇé
+///å¸‚åœºè¡Œæƒ…
 struct CShfeFtdcMarketDataField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///×îĞÂ¼Û
+	///æœ€æ–°ä»·
 	TShfeFtdcPriceType	LastPrice;
-	///×ò½áËã
+	///æ˜¨ç»“ç®—
 	TShfeFtdcPriceType	PreSettlementPrice;
-	///×òÊÕÅÌ
+	///æ˜¨æ”¶ç›˜
 	TShfeFtdcPriceType	PreClosePrice;
-	///×ò³Ö²ÖÁ¿
+	///æ˜¨æŒä»“é‡
 	TShfeFtdcLargeVolumeType	PreOpenInterest;
-	///½ñ¿ªÅÌ
+	///ä»Šå¼€ç›˜
 	TShfeFtdcPriceType	OpenPrice;
-	///×î¸ß¼Û
+	///æœ€é«˜ä»·
 	TShfeFtdcPriceType	HighestPrice;
-	///×îµÍ¼Û
+	///æœ€ä½ä»·
 	TShfeFtdcPriceType	LowestPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///³É½»½ğ¶î
+	///æˆäº¤é‡‘é¢
 	TShfeFtdcMoneyType	Turnover;
-	///³Ö²ÖÁ¿
+	///æŒä»“é‡
 	TShfeFtdcLargeVolumeType	OpenInterest;
-	///½ñÊÕÅÌ
+	///ä»Šæ”¶ç›˜
 	TShfeFtdcPriceType	ClosePrice;
-	///½ñ½áËã
+	///ä»Šç»“ç®—
 	TShfeFtdcPriceType	SettlementPrice;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
-	///×òĞéÊµ¶È
+	///æ˜¨è™šå®åº¦
 	TShfeFtdcRatioType	PreDelta;
-	///½ñĞéÊµ¶È
+	///ä»Šè™šå®åº¦
 	TShfeFtdcRatioType	CurrDelta;
-	///×îºóĞŞ¸ÄÊ±¼ä
+	///æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	UpdateTime;
-	///×îºóĞŞ¸ÄºÁÃë
+	///æœ€åä¿®æ”¹æ¯«ç§’
 	TShfeFtdcMillisecType	UpdateMillisec;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///Éî¶ÈÊĞ³¡ĞĞÇé
+///æ·±åº¦å¸‚åœºè¡Œæƒ…
 struct CShfeFtdcDepthMarketDataField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///×îĞÂ¼Û
+	///æœ€æ–°ä»·
 	TShfeFtdcPriceType	LastPrice;
-	///×ò½áËã
+	///æ˜¨ç»“ç®—
 	TShfeFtdcPriceType	PreSettlementPrice;
-	///×òÊÕÅÌ
+	///æ˜¨æ”¶ç›˜
 	TShfeFtdcPriceType	PreClosePrice;
-	///×ò³Ö²ÖÁ¿
+	///æ˜¨æŒä»“é‡
 	TShfeFtdcLargeVolumeType	PreOpenInterest;
-	///½ñ¿ªÅÌ
+	///ä»Šå¼€ç›˜
 	TShfeFtdcPriceType	OpenPrice;
-	///×î¸ß¼Û
+	///æœ€é«˜ä»·
 	TShfeFtdcPriceType	HighestPrice;
-	///×îµÍ¼Û
+	///æœ€ä½ä»·
 	TShfeFtdcPriceType	LowestPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///³É½»½ğ¶î
+	///æˆäº¤é‡‘é¢
 	TShfeFtdcMoneyType	Turnover;
-	///³Ö²ÖÁ¿
+	///æŒä»“é‡
 	TShfeFtdcLargeVolumeType	OpenInterest;
-	///½ñÊÕÅÌ
+	///ä»Šæ”¶ç›˜
 	TShfeFtdcPriceType	ClosePrice;
-	///½ñ½áËã
+	///ä»Šç»“ç®—
 	TShfeFtdcPriceType	SettlementPrice;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
-	///×òĞéÊµ¶È
+	///æ˜¨è™šå®åº¦
 	TShfeFtdcRatioType	PreDelta;
-	///½ñĞéÊµ¶È
+	///ä»Šè™šå®åº¦
 	TShfeFtdcRatioType	CurrDelta;
-	///×îºóĞŞ¸ÄÊ±¼ä
+	///æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	UpdateTime;
-	///×îºóĞŞ¸ÄºÁÃë
+	///æœ€åä¿®æ”¹æ¯«ç§’
 	TShfeFtdcMillisecType	UpdateMillisec;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÉêÂò¼ÛÒ»
+	///ç”³ä¹°ä»·ä¸€
 	TShfeFtdcPriceType	BidPrice1;
-	///ÉêÂòÁ¿Ò»
+	///ç”³ä¹°é‡ä¸€
 	TShfeFtdcVolumeType	BidVolume1;
-	///ÉêÂô¼ÛÒ»
+	///ç”³å–ä»·ä¸€
 	TShfeFtdcPriceType	AskPrice1;
-	///ÉêÂôÁ¿Ò»
+	///ç”³å–é‡ä¸€
 	TShfeFtdcVolumeType	AskVolume1;
-	///ÉêÂò¼Û¶ş
+	///ç”³ä¹°ä»·äºŒ
 	TShfeFtdcPriceType	BidPrice2;
-	///ÉêÂòÁ¿¶ş
+	///ç”³ä¹°é‡äºŒ
 	TShfeFtdcVolumeType	BidVolume2;
-	///ÉêÂô¼Û¶ş
+	///ç”³å–ä»·äºŒ
 	TShfeFtdcPriceType	AskPrice2;
-	///ÉêÂôÁ¿¶ş
+	///ç”³å–é‡äºŒ
 	TShfeFtdcVolumeType	AskVolume2;
-	///ÉêÂò¼ÛÈı
+	///ç”³ä¹°ä»·ä¸‰
 	TShfeFtdcPriceType	BidPrice3;
-	///ÉêÂòÁ¿Èı
+	///ç”³ä¹°é‡ä¸‰
 	TShfeFtdcVolumeType	BidVolume3;
-	///ÉêÂô¼ÛÈı
+	///ç”³å–ä»·ä¸‰
 	TShfeFtdcPriceType	AskPrice3;
-	///ÉêÂôÁ¿Èı
+	///ç”³å–é‡ä¸‰
 	TShfeFtdcVolumeType	AskVolume3;
-	///ÉêÂò¼ÛËÄ
+	///ç”³ä¹°ä»·å››
 	TShfeFtdcPriceType	BidPrice4;
-	///ÉêÂòÁ¿ËÄ
+	///ç”³ä¹°é‡å››
 	TShfeFtdcVolumeType	BidVolume4;
-	///ÉêÂô¼ÛËÄ
+	///ç”³å–ä»·å››
 	TShfeFtdcPriceType	AskPrice4;
-	///ÉêÂôÁ¿ËÄ
+	///ç”³å–é‡å››
 	TShfeFtdcVolumeType	AskVolume4;
-	///ÉêÂò¼ÛÎå
+	///ç”³ä¹°ä»·äº”
 	TShfeFtdcPriceType	BidPrice5;
-	///ÉêÂòÁ¿Îå
+	///ç”³ä¹°é‡äº”
 	TShfeFtdcVolumeType	BidVolume5;
-	///ÉêÂô¼ÛÎå
+	///ç”³å–ä»·äº”
 	TShfeFtdcPriceType	AskPrice5;
-	///ÉêÂôÁ¿Îå
+	///ç”³å–é‡äº”
 	TShfeFtdcVolumeType	AskVolume5;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///·Ö¼Û±í
+///åˆ†ä»·è¡¨
 struct CShfeFtdcMBLMarketDataField
 {
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	Price;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
 };
 
-///±ğÃû¶¨Òå
+///åˆ«åå®šä¹‰
 struct CShfeFtdcAliasDefineField
 {
-	///ÆğÊ¼Î»ÖÃ
+	///èµ·å§‹ä½ç½®
 	TShfeFtdcStartPosType	StartPos;
-	///±ğÃû
+	///åˆ«å
 	TShfeFtdcAliasType	Alias;
-	///Ô­ÎÄ
+	///åŸæ–‡
 	TShfeFtdcOriginalTextType	OriginalText;
 };
 
-///ĞĞÇé»ù´¡ÊôĞÔ
+///è¡Œæƒ…åŸºç¡€å±æ€§
 struct CShfeFtdcMarketDataBaseField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///×ò½áËã
+	///æ˜¨ç»“ç®—
 	TShfeFtdcPriceType	PreSettlementPrice;
-	///×òÊÕÅÌ
+	///æ˜¨æ”¶ç›˜
 	TShfeFtdcPriceType	PreClosePrice;
-	///×ò³Ö²ÖÁ¿
+	///æ˜¨æŒä»“é‡
 	TShfeFtdcLargeVolumeType	PreOpenInterest;
-	///×òĞéÊµ¶È
+	///æ˜¨è™šå®åº¦
 	TShfeFtdcRatioType	PreDelta;
 };
 
-///ĞĞÇé¾²Ì¬ÊôĞÔ
+///è¡Œæƒ…é™æ€å±æ€§
 struct CShfeFtdcMarketDataStaticField
 {
-	///½ñ¿ªÅÌ
+	///ä»Šå¼€ç›˜
 	TShfeFtdcPriceType	OpenPrice;
-	///×î¸ß¼Û
+	///æœ€é«˜ä»·
 	TShfeFtdcPriceType	HighestPrice;
-	///×îµÍ¼Û
+	///æœ€ä½ä»·
 	TShfeFtdcPriceType	LowestPrice;
-	///½ñÊÕÅÌ
+	///ä»Šæ”¶ç›˜
 	TShfeFtdcPriceType	ClosePrice;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
-	///½ñ½áËã
+	///ä»Šç»“ç®—
 	TShfeFtdcPriceType	SettlementPrice;
-	///½ñĞéÊµ¶È
+	///ä»Šè™šå®åº¦
 	TShfeFtdcRatioType	CurrDelta;
 };
 
-///ĞĞÇé×îĞÂ³É½»ÊôĞÔ
+///è¡Œæƒ…æœ€æ–°æˆäº¤å±æ€§
 struct CShfeFtdcMarketDataLastMatchField
 {
-	///×îĞÂ¼Û
+	///æœ€æ–°ä»·
 	TShfeFtdcPriceType	LastPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///³É½»½ğ¶î
+	///æˆäº¤é‡‘é¢
 	TShfeFtdcMoneyType	Turnover;
-	///³Ö²ÖÁ¿
+	///æŒä»“é‡
 	TShfeFtdcLargeVolumeType	OpenInterest;
 };
 
-///ĞĞÇé×îÓÅ¼ÛÊôĞÔ
+///è¡Œæƒ…æœ€ä¼˜ä»·å±æ€§
 struct CShfeFtdcMarketDataBestPriceField
 {
-	///ÉêÂò¼ÛÒ»
+	///ç”³ä¹°ä»·ä¸€
 	TShfeFtdcPriceType	BidPrice1;
-	///ÉêÂòÁ¿Ò»
+	///ç”³ä¹°é‡ä¸€
 	TShfeFtdcVolumeType	BidVolume1;
-	///ÉêÂô¼ÛÒ»
+	///ç”³å–ä»·ä¸€
 	TShfeFtdcPriceType	AskPrice1;
-	///ÉêÂôÁ¿Ò»
+	///ç”³å–é‡ä¸€
 	TShfeFtdcVolumeType	AskVolume1;
 };
 
-///ĞĞÇéÉêÂò¶ş¡¢ÈıÊôĞÔ
+///è¡Œæƒ…ç”³ä¹°äºŒã€ä¸‰å±æ€§
 struct CShfeFtdcMarketDataBid23Field
 {
-	///ÉêÂò¼Û¶ş
+	///ç”³ä¹°ä»·äºŒ
 	TShfeFtdcPriceType	BidPrice2;
-	///ÉêÂòÁ¿¶ş
+	///ç”³ä¹°é‡äºŒ
 	TShfeFtdcVolumeType	BidVolume2;
-	///ÉêÂò¼ÛÈı
+	///ç”³ä¹°ä»·ä¸‰
 	TShfeFtdcPriceType	BidPrice3;
-	///ÉêÂòÁ¿Èı
+	///ç”³ä¹°é‡ä¸‰
 	TShfeFtdcVolumeType	BidVolume3;
 };
 
-///ĞĞÇéÉêÂô¶ş¡¢ÈıÊôĞÔ
+///è¡Œæƒ…ç”³å–äºŒã€ä¸‰å±æ€§
 struct CShfeFtdcMarketDataAsk23Field
 {
-	///ÉêÂô¼Û¶ş
+	///ç”³å–ä»·äºŒ
 	TShfeFtdcPriceType	AskPrice2;
-	///ÉêÂôÁ¿¶ş
+	///ç”³å–é‡äºŒ
 	TShfeFtdcVolumeType	AskVolume2;
-	///ÉêÂô¼ÛÈı
+	///ç”³å–ä»·ä¸‰
 	TShfeFtdcPriceType	AskPrice3;
-	///ÉêÂôÁ¿Èı
+	///ç”³å–é‡ä¸‰
 	TShfeFtdcVolumeType	AskVolume3;
 };
 
-///ĞĞÇéÉêÂòËÄ¡¢ÎåÊôĞÔ
+///è¡Œæƒ…ç”³ä¹°å››ã€äº”å±æ€§
 struct CShfeFtdcMarketDataBid45Field
 {
-	///ÉêÂò¼ÛËÄ
+	///ç”³ä¹°ä»·å››
 	TShfeFtdcPriceType	BidPrice4;
-	///ÉêÂòÁ¿ËÄ
+	///ç”³ä¹°é‡å››
 	TShfeFtdcVolumeType	BidVolume4;
-	///ÉêÂò¼ÛÎå
+	///ç”³ä¹°ä»·äº”
 	TShfeFtdcPriceType	BidPrice5;
-	///ÉêÂòÁ¿Îå
+	///ç”³ä¹°é‡äº”
 	TShfeFtdcVolumeType	BidVolume5;
 };
 
-///ĞĞÇéÉêÂôËÄ¡¢ÎåÊôĞÔ
+///è¡Œæƒ…ç”³å–å››ã€äº”å±æ€§
 struct CShfeFtdcMarketDataAsk45Field
 {
-	///ÉêÂô¼ÛËÄ
+	///ç”³å–ä»·å››
 	TShfeFtdcPriceType	AskPrice4;
-	///ÉêÂôÁ¿ËÄ
+	///ç”³å–é‡å››
 	TShfeFtdcVolumeType	AskVolume4;
-	///ÉêÂô¼ÛÎå
+	///ç”³å–ä»·äº”
 	TShfeFtdcPriceType	AskPrice5;
-	///ÉêÂôÁ¿Îå
+	///ç”³å–é‡äº”
 	TShfeFtdcVolumeType	AskVolume5;
 };
 
-///ĞĞÇé¸üĞÂÊ±¼äÊôĞÔ
+///è¡Œæƒ…æ›´æ–°æ—¶é—´å±æ€§
 struct CShfeFtdcMarketDataUpdateTimeField
 {
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///×îºóĞŞ¸ÄÊ±¼ä
+	///æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	UpdateTime;
-	///×îºóĞŞ¸ÄºÁÃë
+	///æœ€åä¿®æ”¹æ¯«ç§’
 	TShfeFtdcMillisecType	UpdateMillisec;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///±¨¼Û
+///æŠ¥ä»·
 struct CShfeFtdcQuoteField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///±¨¼Û±àºÅ
+	///æŠ¥ä»·ç¼–å·
 	TShfeFtdcQuoteSysIDType	QuoteSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///±¾µØ±¨¼Û±àºÅ
+	///æœ¬åœ°æŠ¥ä»·ç¼–å·
 	TShfeFtdcOrderLocalIDType	QuoteLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///Âò·½×éºÏ¿ªÆ½±êÖ¾
+	///ä¹°æ–¹ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	BidCombOffsetFlag;
-	///Âò·½×éºÏÌ×±£±êÖ¾
+	///ä¹°æ–¹ç»„åˆå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	BidCombHedgeFlag;
-	///Âò·½¼Û¸ñ
+	///ä¹°æ–¹ä»·æ ¼
 	TShfeFtdcPriceType	BidPrice;
-	///Âô·½×éºÏ¿ªÆ½±êÖ¾
+	///å–æ–¹ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	AskCombOffsetFlag;
-	///Âô·½×éºÏÌ×±£±êÖ¾
+	///å–æ–¹ç»„åˆå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	AskCombHedgeFlag;
-	///Âô·½¼Û¸ñ
+	///å–æ–¹ä»·æ ¼
 	TShfeFtdcPriceType	AskPrice;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///³·ÏúÊ±¼ä
+	///æ’¤é”€æ—¶é—´
 	TShfeFtdcTimeType	CancelTime;
-	///³É½»Ê±¼ä
+	///æˆäº¤æ—¶é—´
 	TShfeFtdcTimeType	TradeTime;
-	///Âò·½±¨µ¥±àºÅ
+	///ä¹°æ–¹æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	BidOrderSysID;
-	///Âô·½±¨µ¥±àºÅ
+	///å–æ–¹æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	AskOrderSysID;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///³É½»
+///æˆäº¤
 struct CShfeFtdcTradeField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///³É½»±àºÅ
+	///æˆäº¤ç¼–å·
 	TShfeFtdcTradeIDType	TradeID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///×Ê½ğÕÊºÅ
+	///èµ„é‡‘å¸å·
 	TShfeFtdcAccountIDType	AccountID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿ªÆ½±êÖ¾
+	///å¼€å¹³æ ‡å¿—
 	TShfeFtdcOffsetFlagType	OffsetFlag;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	Price;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///³É½»Ê±¼ä
+	///æˆäº¤æ—¶é—´
 	TShfeFtdcTimeType	TradeTime;
-	///³É½»ÀàĞÍ
+	///æˆäº¤ç±»å‹
 	TShfeFtdcTradeTypeType	TradeType;
-	///³É½»¼ÛÀ´Ô´
+	///æˆäº¤ä»·æ¥æº
 	TShfeFtdcPriceSourceType	PriceSource;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///±¨µ¥
+///æŠ¥å•
 struct CShfeFtdcOrderField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///±¨µ¥?àº?
+	///æŠ¥å•?å—ª?
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///±¨µ¥¼Û¸ñÌõ¼ş
+	///æŠ¥å•ä»·æ ¼æ¡ä»¶
 	TShfeFtdcOrderPriceTypeType	OrderPriceType;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///GTDÈÕÆÚ
+	///GTDæ—¥æœŸ
 	TShfeFtdcDateType	GTDDate;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
-	///´¥·¢Ìõ¼ş
+	///è§¦å‘æ¡ä»¶
 	TShfeFtdcContingentConditionType	ContingentCondition;
-	///Ö¹Ëğ¼Û
+	///æ­¢æŸä»·
 	TShfeFtdcPriceType	StopPrice;
-	///Ç¿Æ½Ô­Òò
+	///å¼ºå¹³åŸå› 
 	TShfeFtdcForceCloseReasonType	ForceCloseReason;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///×Ô¶¯¹ÒÆğ±êÖ¾
+	///è‡ªåŠ¨æŒ‚èµ·æ ‡å¿—
 	TShfeFtdcBoolType	IsAutoSuspend;
-	///±¨µ¥À´Ô´
+	///æŠ¥å•æ¥æº
 	TShfeFtdcOrderSourceType	OrderSource;
-	///±¨µ¥×´Ì¬
+	///æŠ¥å•çŠ¶æ€
 	TShfeFtdcOrderStatusType	OrderStatus;
-	///±¨µ¥ÀàĞÍ
+	///æŠ¥å•ç±»å‹
 	TShfeFtdcOrderTypeType	OrderType;
-	///½ñ³É½»ÊıÁ¿
+	///ä»Šæˆäº¤æ•°é‡
 	TShfeFtdcVolumeType	VolumeTraded;
-	///Ê£ÓàÊıÁ¿
+	///å‰©ä½™æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotal;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	InsertDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///¼¤»îÊ±¼ä
+	///æ¿€æ´»æ—¶é—´
 	TShfeFtdcTimeType	ActiveTime;
-	///¹ÒÆğÊ±¼ä
+	///æŒ‚èµ·æ—¶é—´
 	TShfeFtdcTimeType	SuspendTime;
-	///×îºóĞŞ¸ÄÊ±¼ä
+	///æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	UpdateTime;
-	///³·ÏúÊ±¼ä
+	///æ’¤é”€æ—¶é—´
 	TShfeFtdcTimeType	CancelTime;
-	///×îºóĞŞ¸Ä½»Ò×ÓÃ»§´úÂë
+	///æœ€åä¿®æ”¹äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	ActiveUserID;
-	///ÓÅÏÈÈ¨
+	///ä¼˜å…ˆæƒ
 	TShfeFtdcPriorityType	Priority;
-	///°´Ê±¼äÅÅ¶ÓµÄĞòºÅ
+	///æŒ‰æ—¶é—´æ’é˜Ÿçš„åºå·
 	TShfeFtdcTimeSortIDType	TimeSortID;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///Ö´ĞĞĞû¸æ
+///æ‰§è¡Œå®£å‘Š
 struct CShfeFtdcExecOrderField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///ºÏÔ¼±àºÅ
+	///åˆçº¦ç¼–å·
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¾µØÖ´ĞĞĞû¸æ±àºÅ
+	///æœ¬åœ°æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcOrderLocalIDType	ExecOrderLocalID;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///¿ªÆ½±êÖ¾
+	///å¼€å¹³æ ‡å¿—
 	TShfeFtdcOffsetFlagType	OffsetFlag;
-	///Ö´ĞĞĞû¸æ±àºÅ
+	///æ‰§è¡Œå®£å‘Šç¼–å·
 	TShfeFtdcExecOrderSysIDType	ExecOrderSysID;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	InsertDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///³·ÏúÊ±¼ä
+	///æ’¤é”€æ—¶é—´
 	TShfeFtdcTimeType	CancelTime;
-	///Ö´ĞĞ½á¹û
+	///æ‰§è¡Œç»“æœ
 	TShfeFtdcExecResultType	ExecResult;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///·Ç±ê×éºÏ±¨µ¥
+///éæ ‡ç»„åˆæŠ¥å•
 struct CShfeFtdcCombOrderField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///×éºÏ±¨µ¥±àºÅ
+	///ç»„åˆæŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	CombOrderSysID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	CombOrderLocalID;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ºÏÔ¼´úÂë1
+	///åˆçº¦ä»£ç 1
 	TShfeFtdcInstrumentIDType	InstrumentID1;
-	///ÂòÂô·½Ïò1
+	///ä¹°å–æ–¹å‘1
 	TShfeFtdcDirectionType	Direction1;
-	///·ÖÍÈ³ËÊı1
+	///åˆ†è…¿ä¹˜æ•°1
 	TShfeFtdcLegMultipleType	LegMultiple1;
-	///¿ªÆ½±êÖ¾1
+	///å¼€å¹³æ ‡å¿—1
 	TShfeFtdcOffsetFlagType	OffsetFlag1;
-	///Í¶»úÌ×±£±êÖ¾1
+	///æŠ•æœºå¥—ä¿æ ‡å¿—1
 	TShfeFtdcHedgeFlagType	HedgeFlag1;
-	///ºÏÔ¼´úÂë2
+	///åˆçº¦ä»£ç 2
 	TShfeFtdcInstrumentIDType	InstrumentID2;
-	///ÂòÂô·½Ïò2
+	///ä¹°å–æ–¹å‘2
 	TShfeFtdcDirectionType	Direction2;
-	///·ÖÍÈ³ËÊı2
+	///åˆ†è…¿ä¹˜æ•°2
 	TShfeFtdcLegMultipleType	LegMultiple2;
-	///¿ªÆ½±êÖ¾2
+	///å¼€å¹³æ ‡å¿—2
 	TShfeFtdcOffsetFlagType	OffsetFlag2;
-	///Í¶»úÌ×±£±êÖ¾2
+	///æŠ•æœºå¥—ä¿æ ‡å¿—2
 	TShfeFtdcHedgeFlagType	HedgeFlag2;
-	///ºÏÔ¼´úÂë3
+	///åˆçº¦ä»£ç 3
 	TShfeFtdcInstrumentIDType	InstrumentID3;
-	///ÂòÂô·½Ïò3
+	///ä¹°å–æ–¹å‘3
 	TShfeFtdcDirectionType	Direction3;
-	///·ÖÍÈ³ËÊı3
+	///åˆ†è…¿ä¹˜æ•°3
 	TShfeFtdcLegMultipleType	LegMultiple3;
-	///¿ªÆ½±êÖ¾3
+	///å¼€å¹³æ ‡å¿—3
 	TShfeFtdcOffsetFlagType	OffsetFlag3;
-	///Í¶»úÌ×±£±êÖ¾3
+	///æŠ•æœºå¥—ä¿æ ‡å¿—3
 	TShfeFtdcHedgeFlagType	HedgeFlag3;
-	///ºÏÔ¼´úÂë4
+	///åˆçº¦ä»£ç 4
 	TShfeFtdcInstrumentIDType	InstrumentID4;
-	///ÂòÂô·½Ïò4
+	///ä¹°å–æ–¹å‘4
 	TShfeFtdcDirectionType	Direction4;
-	///·ÖÍÈ³ËÊı4
+	///åˆ†è…¿ä¹˜æ•°4
 	TShfeFtdcLegMultipleType	LegMultiple4;
-	///¿ªÆ½±êÖ¾4
+	///å¼€å¹³æ ‡å¿—4
 	TShfeFtdcOffsetFlagType	OffsetFlag4;
-	///Í¶»úÌ×±£±êÖ¾4
+	///æŠ•æœºå¥—ä¿æ ‡å¿—4
 	TShfeFtdcHedgeFlagType	HedgeFlag4;
-	///±¨µ¥À´Ô´
+	///æŠ¥å•æ¥æº
 	TShfeFtdcOrderSourceType	OrderSource;
-	///½ñ³É½»ÊıÁ¿
+	///ä»Šæˆäº¤æ•°é‡
 	TShfeFtdcVolumeType	VolumeTraded;
-	///Ê£ÓàÊıÁ¿
+	///å‰©ä½™æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotal;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	InsertDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///±¾µØÒµÎñ±êÊ¶
+	///æœ¬åœ°ä¸šåŠ¡æ ‡è¯†
 	TShfeFtdcBusinessLocalIDType	BusinessLocalID;
-	///ÒµÎñ·¢ÉúÈÕÆÚ
+	///ä¸šåŠ¡å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	ActionDay;
 };
 
-///¹ÜÀí±¨µ¥
+///ç®¡ç†æŠ¥å•
 struct CShfeFtdcAdminOrderField
 {
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¹ÜÀí±¨µ¥ÃüÁî
+	///ç®¡ç†æŠ¥å•å‘½ä»¤
 	TShfeFtdcAdminOrderCommandFlagType	AdminOrderCommand;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///½»Ò×»áÔ±±àºÅ
+	///äº¤æ˜“ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcMoneyType	Amount;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
 };
 
-///¹ÜÀí±¨µ¥ÊäÈë
+///ç®¡ç†æŠ¥å•è¾“å…¥
 struct CShfeFtdcInputAdminOrderField
 {
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¹ÜÀí±¨µ¥ÃüÁî
+	///ç®¡ç†æŠ¥å•å‘½ä»¤
 	TShfeFtdcAdminOrderCommandFlagType	AdminOrderCommand;
-	///½áËã»áÔ±±àºÅ
+	///ç»“ç®—ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ClearingPartID;
-	///½»Ò×»áÔ±±àºÅ
+	///äº¤æ˜“ä¼šå‘˜ç¼–å·
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcMoneyType	Amount;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
 };
 
-///¹«¸æ
+///å…¬å‘Š
 struct CShfeFtdcBulletinField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///¹«¸æ±àºÅ
+	///å…¬å‘Šç¼–å·
 	TShfeFtdcBulletinIDType	BulletinID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcSequenceNoType	SequenceNo;
-	///¹«¸æÀàĞÍ
+	///å…¬å‘Šç±»å‹
 	TShfeFtdcNewsTypeType	NewsType;
-	///½ô¼±³Ì¶È
+	///ç´§æ€¥ç¨‹åº¦
 	TShfeFtdcNewsUrgencyType	NewsUrgency;
-	///·¢ËÍÊ±¼ä
+	///å‘é€æ—¶é—´
 	TShfeFtdcTimeType	SendTime;
-	///ÏûÏ¢ÕªÒª
+	///æ¶ˆæ¯æ‘˜è¦
 	TShfeFtdcAbstractType	Abstract;
-	///ÏûÏ¢À´Ô´
+	///æ¶ˆæ¯æ¥æº
 	TShfeFtdcComeFromType	ComeFrom;
-	///ÏûÏ¢ÕıÎÄ
+	///æ¶ˆæ¯æ­£æ–‡
 	TShfeFtdcContentType	Content;
-	///WEBµØÖ·
+	///WEBåœ°å€
 	TShfeFtdcURLLinkType	URLLink;
-	///ÊĞ³¡´úÂë
+	///å¸‚åœºä»£ç 
 	TShfeFtdcMarketIDType	MarketID;
 };
 
-///½»Ò×ËùÊı¾İÍ¬²½×´Ì¬
+///äº¤æ˜“æ‰€æ•°æ®åŒæ­¥çŠ¶æ€
 struct CShfeFtdcExchangeDataSyncStatusField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½»Ò×Ëù´úÂë
+	///äº¤æ˜“æ‰€ä»£ç 
 	TShfeFtdcExchangeIDType	ExchangeID;
-	///½»Ò×ËùÊı¾İÍ¬²½×´Ì¬
+	///äº¤æ˜“æ‰€æ•°æ®åŒæ­¥çŠ¶æ€
 	TShfeFtdcExchangeDataSyncStatusType	ExchangeDataSyncStatus;
 };
 
-///½áËã×éÊı¾İÍ¬²½×´Ì¬
+///ç»“ç®—ç»„æ•°æ®åŒæ­¥çŠ¶æ€
 struct CShfeFtdcSGDataSyncStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///½áËã±àºÅ
+	///ç»“ç®—ç¼–å·
 	TShfeFtdcSettlementIDType	SettlementID;
-	///½áËã×éÊı¾İÍ¬²½×´Ì¬
+	///ç»“ç®—ç»„æ•°æ®åŒæ­¥çŠ¶æ€
 	TShfeFtdcSGDataSyncStatusType	SGDataSyncStatus;
 };
 
-///ºÏÔ¼×´Ì¬
+///åˆçº¦çŠ¶æ€
 struct CShfeFtdcInstrumentStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½øÈë±¾×´Ì¬Ê±¼ä
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¶é—´
 	TShfeFtdcTimeType	EnterTime;
-	///½øÈë±¾×´Ì¬Ô­Òò
+	///è¿›å…¥æœ¬çŠ¶æ€åŸå› 
 	TShfeFtdcInstStatusEnterReasonType	EnterReason;
-	///½øÈë±¾×´Ì¬ÈÕÆÚ
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¥æœŸ
 	TShfeFtdcDateType	EnterDate;
 };
 
-///RTT¶ÈÁ¿
+///RTTåº¦é‡
 struct CShfeFtdcRTTMeasureField
 {
-	///Íù·µÊ±ÑÓ
+	///å¾€è¿”æ—¶å»¶
 	int	RTT;
 };
 
-///¿Í»§³Ö²Ö²éÑ¯
+///å®¢æˆ·æŒä»“æŸ¥è¯¢
 struct CShfeFtdcQryClientPositionV1Field
 {
-	///ÆğÊ¼»áÔ±´úÂë
+	///èµ·å§‹ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDStart;
-	///½áÊø»áÔ±´úÂë
+	///ç»“æŸä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	PartIDEnd;
-	///ÆğÊ¼¿Í»§´úÂë
+	///èµ·å§‹å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDStart;
-	///½áÊø¿Í»§´úÂë
+	///ç»“æŸå®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientIDEnd;
-	///ÆğÊ¼ºÏÔ¼´úÂë
+	///èµ·å§‹åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDStart;
-	///½áÊøºÏÔ¼´úÂë
+	///ç»“æŸåˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstIDEnd;
 };
 
-///ÓÃ»§Á÷¿Ø²ÎÊı
+///ç”¨æˆ·æµæ§å‚æ•°
 struct CShfeFtdcUserCommFluxControlField
 {
-	///×î´ó½»Ò×±¨ÎÄËÙ¶È
+	///æœ€å¤§äº¤æ˜“æŠ¥æ–‡é€Ÿåº¦
 	TShfeFtdcCommFluxType	MaxTradeCommFlux;
-	///×î´ó½»Ò×ÔÚÍ¾±¨ÎÄÊıÄ¿
+	///æœ€å¤§äº¤æ˜“åœ¨é€”æŠ¥æ–‡æ•°ç›®
 	TShfeFtdcCommFluxType	MaxTradeOnWayCommFlux;
-	///×î´ó²éÑ¯±¨ÎÄËÙ¶È
+	///æœ€å¤§æŸ¥è¯¢æŠ¥æ–‡é€Ÿåº¦
 	TShfeFtdcCommFluxType	MaxQueryCommFlux;
-	///×î´ó²éÑ¯ÔÚÍ¾±¨ÎÄÊıÄ¿
+	///æœ€å¤§æŸ¥è¯¢åœ¨é€”æŠ¥æ–‡æ•°ç›®
 	TShfeFtdcCommFluxType	MaxQueryOnWayCommFlux;
 };
 
-///»ØÂ·¶ÈÁ¿
+///å›è·¯åº¦é‡
 struct CShfeFtdcLoopMeasureField
 {
-	///ÓÃ»§±àºÅ
+	///ç”¨æˆ·ç¼–å·
 	TShfeFtdcUserIDType	UserID;
-	///»á»°ÀàĞÍ
+	///ä¼šè¯ç±»å‹
 	TShfeFtdcSessionTypeType	SessionType;
-	///¶ÈÁ¿ĞòÁĞºÅ
+	///åº¦é‡åºåˆ—å·
 	TShfeFtdcSequenceNoType	MeasureSeq;
-	///Ç°ÖÃ±àºÅ
+	///å‰ç½®ç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///»á»°±àºÅ
+	///ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	SessionID;
 };
 
-///½Úµã¶ÈÁ¿
+///èŠ‚ç‚¹åº¦é‡
 struct CShfeFtdcNodeMeasureField
 {
-	///½Úµã±ê¼Ç 
+	///èŠ‚ç‚¹æ ‡è®° 
 	TShfeFtdcBusinessUnitType	NodeID;
-	///½×¶Î±àºÅ
+	///é˜¶æ®µç¼–å·
 	TShfeFtdcPeriodIDType	PeriodID;
-	///»ØÂ·±¨ÎÄ¶ÈÁ¿Ê±¼äµã
+	///å›è·¯æŠ¥æ–‡åº¦é‡æ—¶é—´ç‚¹
 	TShfeFtdcMeasureSecType	Sec;
-	///»ØÂ·±¨ÎÄ¶ÈÁ¿Ê±¼äµãÎ¢ÃëÖµ
+	///å›è·¯æŠ¥æ–‡åº¦é‡æ—¶é—´ç‚¹å¾®ç§’å€¼
 	TShfeFtdcMeasureUsecType	Usec;
 };
 
-///ĞĞÇé´úÀíĞÅÏ¢
+///è¡Œæƒ…ä»£ç†ä¿¡æ¯
 struct CShfeFtdcMDProxyField
 {
-	///´úÀí±àºÅ
+	///ä»£ç†ç¼–å·
 	TShfeFtdcFrontIDType	ProxyID;
-	///ÉÏÒ»²ã´úÀí»á»°±àºÅ
+	///ä¸Šä¸€å±‚ä»£ç†ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	UpperProxySessionID;
-	///´úÀí»á»°±àºÅ
+	///ä»£ç†ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	CurrProxySessionID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÇëÇó±àºÅ
+	///è¯·æ±‚ç¼–å·
 	TShfeFtdcSequenceNoType	RequestID;
-	///´úÀíÉî¶È
+	///ä»£ç†æ·±åº¦
 	TShfeFtdcDepthType	Depth;
-	///Á¬½Ó×´Ì¬
+	///è¿æ¥çŠ¶æ€
 	TShfeFtdcSessionStatusType	SessionStatus;
-	///É¾³ıµÄ»á»°±àºÅ
+	///åˆ é™¤çš„ä¼šè¯ç¼–å·
 	TShfeFtdcSessionIDType	DeletedSessionID;
 };
 
-///CPU×ÊÔ´Ê¹ÓÃ²éÑ¯
+///CPUèµ„æºä½¿ç”¨æŸ¥è¯¢
 struct CShfeFtdcReqQryTopCpuInfoField
 {
 	///
@@ -2219,20 +2219,20 @@ struct CShfeFtdcReqQryTopCpuInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///CPU×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///CPUèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryTopCpuInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///CPUµÄ±àºÅ
+	///CPUçš„ç¼–å·
 	TShfeFtdcTypeCPUIdType	CPU;
 	///
 	TShfeFtdcRatioType	LOAD;
@@ -2254,16 +2254,16 @@ struct CShfeFtdcRspQryTopCpuInfoField
 	TShfeFtdcRatioType	SSYS;
 };
 
-///CPU×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///CPUèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnTopCpuInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///CPUµÄ±àºÅ
+	///CPUçš„ç¼–å·
 	TShfeFtdcTypeCPUIdType	CPU;
 	///
 	TShfeFtdcRatioType	LOAD;
@@ -2285,7 +2285,7 @@ struct CShfeFtdcRtnTopCpuInfoField
 	TShfeFtdcRatioType	SSYS;
 };
 
-///Mem×ÊÔ´Ê¹ÓÃ²éÑ¯
+///Memèµ„æºä½¿ç”¨æŸ¥è¯¢
 struct CShfeFtdcReqQryTopMemInfoField
 {
 	///
@@ -2298,18 +2298,18 @@ struct CShfeFtdcReqQryTopMemInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///Mem×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///Memèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryTopMemInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///Total Real Memory
 	TShfeFtdcVolumeType	TOTALREAL;
@@ -2323,14 +2323,14 @@ struct CShfeFtdcRspQryTopMemInfoField
 	TShfeFtdcVolumeType	FREE;
 };
 
-///Mem×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///Memèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnTopMemInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///Total Real Memory
 	TShfeFtdcVolumeType	TOTALREAL;
@@ -2344,7 +2344,7 @@ struct CShfeFtdcRtnTopMemInfoField
 	TShfeFtdcVolumeType	FREE;
 };
 
-///process×ÊÔ´Ê¹ÓÃ²éÑ¯
+///processèµ„æºä½¿ç”¨æŸ¥è¯¢
 struct CShfeFtdcReqQryTopProcessInfoField
 {
 	///
@@ -2357,85 +2357,85 @@ struct CShfeFtdcReqQryTopProcessInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///process×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///processèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryTopProcessInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÆ÷ºÅ
+	///å¤„ç†å™¨å·
 	TShfeFtdcTypeCPUIdType	CPU;
-	///ÖÕ¶ËÃû
+	///ç»ˆç«¯å
 	TShfeFtdcTypeChar10Type	TTY;
-	///½ø³ÌºÅ
+	///è¿›ç¨‹å·
 	TShfeFtdcVolumeType	PID;
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeChar10Type	USERNAME;
-	///ÈÎÎñµÄÓÅÏÈ¼¶
+	///ä»»åŠ¡çš„ä¼˜å…ˆçº§
 	TShfeFtdcVolumeType	PRI;
-	///ÈÎÎñµÄniceÖµ
+	///ä»»åŠ¡çš„niceå€¼
 	TShfeFtdcVolumeType	NI;
-	///ÈÎÎñµÄ´úÂë¼ÓÉÏÊı¾İÔÙ¼ÓÉÏÕ»¿Õ¼äµÄ´óĞ¡
+	///ä»»åŠ¡çš„ä»£ç åŠ ä¸Šæ•°æ®å†åŠ ä¸Šæ ˆç©ºé—´çš„å¤§å°
 	TShfeFtdcVolumeType	SIZE;
-	///ÈÎÎñÊ¹ÓÃµÄÎïÀíÄÚ´æµÄ×ÜÊıÁ¿
+	///ä»»åŠ¡ä½¿ç”¨çš„ç‰©ç†å†…å­˜çš„æ€»æ•°é‡
 	TShfeFtdcVolumeType	RES;
-	///ÈÎÎñµÄ×´Ì¬
+	///ä»»åŠ¡çš„çŠ¶æ€
 	TShfeFtdcTypeChar10Type	STATE;
-	///×ÔÈÎÎñ¿ªÊ¼Ê±Ê¹ÓÃµÄ×ÜCPUÊ±¼ä
+	///è‡ªä»»åŠ¡å¼€å§‹æ—¶ä½¿ç”¨çš„æ€»CPUæ—¶é—´
 	TShfeFtdcTimeType	TIME;
-	///½ø³ÌµÄCPUÀûÓÃÂÊÈ¨ÖØ°Ù·Ö±È
+	///è¿›ç¨‹çš„CPUåˆ©ç”¨ç‡æƒé‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pWCPU;
-	///½ø³ÌµÄÔ­Ê¼µÄCPUÀûÓÃÂÊ°Ù·Ö±È
+	///è¿›ç¨‹çš„åŸå§‹çš„CPUåˆ©ç”¨ç‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pCPU;
-	///Æô¶¯½ø³ÌµÄÃüÁîÃû
+	///å¯åŠ¨è¿›ç¨‹çš„å‘½ä»¤å
 	TShfeFtdcTypeCommandType	COMMAND;
 };
 
-///process×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///processèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnTopProcessInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÆ÷ºÅ
+	///å¤„ç†å™¨å·
 	TShfeFtdcTypeCPUIdType	CPU;
-	///ÖÕ¶ËÃû
+	///ç»ˆç«¯å
 	TShfeFtdcTypeChar10Type	TTY;
-	///½ø³ÌºÅ
+	///è¿›ç¨‹å·
 	TShfeFtdcVolumeType	PID;
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeChar10Type	USERNAME;
-	///ÈÎÎñµÄÓÅÏÈ¼¶
+	///ä»»åŠ¡çš„ä¼˜å…ˆçº§
 	TShfeFtdcVolumeType	PRI;
-	///ÈÎÎñµÄniceÖµ
+	///ä»»åŠ¡çš„niceå€¼
 	TShfeFtdcVolumeType	NI;
-	///ÈÎÎñµÄ´úÂë¼ÓÉÏÊı¾İÔÙ¼ÓÉÏÕ»¿Õ¼äµÄ´óĞ¡
+	///ä»»åŠ¡çš„ä»£ç åŠ ä¸Šæ•°æ®å†åŠ ä¸Šæ ˆç©ºé—´çš„å¤§å°
 	TShfeFtdcVolumeType	SIZE;
-	///ÈÎÎñÊ¹ÓÃµÄÎïÀíÄÚ´æµÄ×ÜÊıÁ¿
+	///ä»»åŠ¡ä½¿ç”¨çš„ç‰©ç†å†…å­˜çš„æ€»æ•°é‡
 	TShfeFtdcVolumeType	RES;
-	///ÈÎÎñµÄ×´Ì¬
+	///ä»»åŠ¡çš„çŠ¶æ€
 	TShfeFtdcTypeChar10Type	STATE;
-	///×ÔÈÎÎñ¿ªÊ¼Ê±Ê¹ÓÃµÄ×ÜCPUÊ±¼ä
+	///è‡ªä»»åŠ¡å¼€å§‹æ—¶ä½¿ç”¨çš„æ€»CPUæ—¶é—´
 	TShfeFtdcTimeType	TIME;
-	///½ø³ÌµÄCPUÀûÓÃÂÊÈ¨ÖØ°Ù·Ö±È
+	///è¿›ç¨‹çš„CPUåˆ©ç”¨ç‡æƒé‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pWCPU;
-	///½ø³ÌµÄÔ­Ê¼µÄCPUÀûÓÃÂÊ°Ù·Ö±È
+	///è¿›ç¨‹çš„åŸå§‹çš„CPUåˆ©ç”¨ç‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pCPU;
-	///Æô¶¯½ø³ÌµÄÃüÁîÃû
+	///å¯åŠ¨è¿›ç¨‹çš„å‘½ä»¤å
 	TShfeFtdcTypeCommandType	COMMAND;
 };
 
-///filesystem×ÊÔ´Ê¹ÓÃ²éÑ¯
+///filesystemèµ„æºä½¿ç”¨æŸ¥è¯¢
 struct CShfeFtdcReqQryFileSystemInfoField
 {
 	///
@@ -2448,78 +2448,78 @@ struct CShfeFtdcReqQryFileSystemInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///filesystem×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///filesystemèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryFileSystemInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÏµÍ³ÎïÀíÃû
+	///æ–‡ä»¶ç³»ç»Ÿç‰©ç†å
 	TShfeFtdcTypeCommandType	FILESYSTEM;
-	///¿Õ¼ä×ÜÊı
+	///ç©ºé—´æ€»æ•°
 	TShfeFtdcVolumeType	SIZE;
-	///ÒÑÓÃ¿Õ¼ä´óĞ¡
+	///å·²ç”¨ç©ºé—´å¤§å°
 	TShfeFtdcVolumeType	USED;
-	///¿ÉÓÃ¿Õ¼ä´óĞ¡
+	///å¯ç”¨ç©ºé—´å¤§å°
 	TShfeFtdcVolumeType	AVAIL;
-	///ÒÑÓÃµÄ°Ù·Ö±È
+	///å·²ç”¨çš„ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pUSERD;
-	///inode×ÜÊı
+	///inodeæ€»æ•°
 	TShfeFtdcVolumeType	ISIZE;
-	///ÒÑÓÃinode´óĞ¡
+	///å·²ç”¨inodeå¤§å°
 	TShfeFtdcVolumeType	IUSED;
-	///¿ÉÓÃinode´óĞ¡
+	///å¯ç”¨inodeå¤§å°
 	TShfeFtdcVolumeType	IFREE;
-	///ÒÑÓÃµÄ°Ù·Ö±È
+	///å·²ç”¨çš„ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pIUSED;
-	///¼ÓÔØÎ»ÖÃ
+	///åŠ è½½ä½ç½®
 	TShfeFtdcTypeCommandType	MountedOn;
 };
 
-///filesystem×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///filesystemèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnFileSystemInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÏµÍ³ÎïÀíÃû
+	///æ–‡ä»¶ç³»ç»Ÿç‰©ç†å
 	TShfeFtdcTypeCommandType	FILESYSTEM;
-	///¿Õ¼ä×ÜÊı
+	///ç©ºé—´æ€»æ•°
 	TShfeFtdcVolumeType	SIZE;
-	///ÒÑÓÃ¿Õ¼ä´óĞ¡
+	///å·²ç”¨ç©ºé—´å¤§å°
 	TShfeFtdcVolumeType	USED;
-	///¿ÉÓÃ¿Õ¼ä´óĞ¡
+	///å¯ç”¨ç©ºé—´å¤§å°
 	TShfeFtdcVolumeType	AVAIL;
-	///ÒÑÓÃµÄ°Ù·Ö±È
+	///å·²ç”¨çš„ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pUSERD;
-	///inode×ÜÊı
+	///inodeæ€»æ•°
 	TShfeFtdcVolumeType	ISIZE;
-	///ÒÑÓÃinode´óĞ¡
+	///å·²ç”¨inodeå¤§å°
 	TShfeFtdcVolumeType	IUSED;
-	///¿ÉÓÃinode´óĞ¡
+	///å¯ç”¨inodeå¤§å°
 	TShfeFtdcVolumeType	IFREE;
-	///ÒÑÓÃµÄ°Ù·Ö±È
+	///å·²ç”¨çš„ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pIUSED;
-	///¼ÓÔØÎ»ÖÃ
+	///åŠ è½½ä½ç½®
 	TShfeFtdcTypeCommandType	MountedOn;
 };
 
-///network×ÊÔ´Ê¹ÓÃ²éÑ¯
+///networkèµ„æºä½¿ç”¨æŸ¥è¯¢
 struct CShfeFtdcReqQryNetworkInfoField
 {
 	///
 	TShfeFtdcTypeObjectIDType	HostName;
-	///Íø¿¨Ãû
+	///ç½‘å¡å
 	TShfeFtdcTypeLanNameType	LANNAME;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -2529,77 +2529,77 @@ struct CShfeFtdcReqQryNetworkInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///network×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///networkèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryNetworkInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Íø¿¨Ãû
+	///ç½‘å¡å
 	TShfeFtdcTypeLanNameType	LANNAME;
-	///Íø¿¨µÄup»òdown×´Ì¬
+	///ç½‘å¡çš„upæˆ–downçŠ¶æ€
 	TShfeFtdcTypeLanStatusType	LANSTATUS;
-	///Íø¿¨µÄipµØÖ·
+	///ç½‘å¡çš„ipåœ°å€
 	TShfeFtdcIPAddressType	IPADDRESS;
-	///Íø¿¨½ÓÊÕµÄÁ÷Á¿
+	///ç½‘å¡æ¥æ”¶çš„æµé‡
 	TShfeFtdcLargeNumberType	RECVBYTES;
-	///Íø¿¨½ÓÊÕµÄÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVERRORPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVDROPPACKETS;
-	///Íø¿¨·¢ËÍµÄÁ÷Á¿
+	///ç½‘å¡å‘é€çš„æµé‡
 	TShfeFtdcLargeNumberType	SENDBYTES;
-	///Íø¿¨·¢ËÍµÄÊı¾İ°ü
+	///ç½‘å¡å‘é€çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDERRORPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDDROPPACKETS;
 };
 
-///network×ÊÔ´Ê¹ÓÃĞÅÏ¢
+///networkèµ„æºä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnNetworkInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Íø¿¨Ãû
+	///ç½‘å¡å
 	TShfeFtdcTypeLanNameType	LANNAME;
-	///Íø¿¨µÄup»òdown×´Ì¬
+	///ç½‘å¡çš„upæˆ–downçŠ¶æ€
 	TShfeFtdcTypeLanStatusType	LANSTATUS;
-	///Íø¿¨µÄipµØÖ·
+	///ç½‘å¡çš„ipåœ°å€
 	TShfeFtdcIPAddressType	IPADDRESS;
-	///Íø¿¨½ÓÊÕµÄÁ÷Á¿
+	///ç½‘å¡æ¥æ”¶çš„æµé‡
 	TShfeFtdcLargeNumberType	RECVBYTES;
-	///Íø¿¨½ÓÊÕµÄÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVERRORPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVDROPPACKETS;
-	///Íø¿¨·¢ËÍµÄÁ÷Á¿
+	///ç½‘å¡å‘é€çš„æµé‡
 	TShfeFtdcLargeNumberType	SENDBYTES;
-	///Íø¿¨·¢ËÍµÄÊı¾İ°ü
+	///ç½‘å¡å‘é€çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDERRORPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDDROPPACKETS;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢²éÑ¯ÇëÇó
+///ä¸»æœºç¯å¢ƒä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryHostEnvField
 {
 	///
@@ -2612,62 +2612,62 @@ struct CShfeFtdcReqQryHostEnvField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvCommonField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ö÷»úĞÍºÅ
+	///ä¸»æœºå‹å·
 	TShfeFtdcTypeHostModelType	HostModel;
-	///ÄÚ´æ´óĞ¡(K)
+	///å†…å­˜å¤§å°(K)
 	TShfeFtdcVolumeType	MainMemory;
-	///CPU³§ÉÌ
+	///CPUå‚å•†
 	TShfeFtdcTypeHostModelType	CPUVendor;
-	///CPUĞÍºÅ
+	///CPUå‹å·
 	TShfeFtdcTypeHostModelType	CPUModel;
-	///CPUÖ÷Æµ
+	///CPUä¸»é¢‘
 	TShfeFtdcTypeHostModelType	CPUMHz;
-	///CPU»º´æ
+	///CPUç¼“å­˜
 	TShfeFtdcTypeHostModelType	CPUCache;
-	///CPUÄÚºËÊı
+	///CPUå†…æ ¸æ•°
 	TShfeFtdcVolumeType	CPUCores;
-	///CPU¸öÊı
+	///CPUä¸ªæ•°
 	TShfeFtdcVolumeType	Processors;
-	///32Î»»¹ÊÇ64Î»²Ù×÷ÏµÍ³
+	///32ä½è¿˜æ˜¯64ä½æ“ä½œç³»ç»Ÿ
 	TShfeFtdcVolumeType	OsMode;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvLanField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///LanID
 	TShfeFtdcTypeHostModelType	LanHardwareID;
-	///MacµØÖ·
+	///Macåœ°å€
 	TShfeFtdcTypeHostModelType	LanHardwareValue;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvStorageField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///Storage Devices
 	TShfeFtdcTypeHostModelType	StorageDev;
@@ -2677,14 +2677,14 @@ struct CShfeFtdcRspQryHostEnvStorageField
 	TShfeFtdcTypeHostModelType	Interface;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvIOField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///IO Class
 	TShfeFtdcTypeChar10Type	IoClass;
@@ -2696,14 +2696,14 @@ struct CShfeFtdcRspQryHostEnvIOField
 	TShfeFtdcTypeDescriptionType	IoDescription;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvFSField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///LVM Device file
 	TShfeFtdcTypeHostModelType	LVMDeviceFile;
@@ -2715,14 +2715,14 @@ struct CShfeFtdcRspQryHostEnvFSField
 	TShfeFtdcTypeChar10Type	FSType;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvSwapField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///type
 	TShfeFtdcTypeChar10Type	type;
@@ -2734,14 +2734,14 @@ struct CShfeFtdcRspQryHostEnvSwapField
 	TShfeFtdcTypeHostModelType	location;
 };
 
-///Ö÷»ú»·¾³ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///ä¸»æœºç¯å¢ƒä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryHostEnvLanCfgField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///
 	TShfeFtdcTypeLanNameType	LanName;
@@ -2751,28 +2751,28 @@ struct CShfeFtdcRspQryHostEnvLanCfgField
 	TShfeFtdcIPAddressType	IpMask;
 };
 
-///¿Í»§¶ËµÇÂ¼²éÑ¯ÇëÇó
+///å®¢æˆ·ç«¯ç™»å½•æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryClientLoginField
 {
-	///µÇÂ¼ÓÃ»§Ãû
+	///ç™»å½•ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	UserName;
-	///µÇÂ¼ÃÜÂë
+	///ç™»å½•å¯†ç 
 	TShfeFtdcTypeUserNameType	PassWord;
 };
 
-///¿Í»§¶ËµÇÂ¼Ó¦´ğĞÅÏ¢
+///å®¢æˆ·ç«¯ç™»å½•åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryClientLoginField
 {
-	///µÇÂ¼ÓÃ»§Ãû
+	///ç™»å½•ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	UserName;
-	///µÇÂ¼È¨ÏŞ
+	///ç™»å½•æƒé™
 	TShfeFtdcTypeUserNameType	Privalage;
 };
 
-///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢²éÑ¯ÇëÇó
+///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryMonitorObjectField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -2782,36 +2782,36 @@ struct CShfeFtdcReqQryMonitorObjectField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢Ó¦´ğĞÅÏ¢
+///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryMonitorObjectField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///±¾¼¶ÒµÎñ½ø³Ì¶ÔÏóÃû×Ö
+	///æœ¬çº§ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡åå­—
 	TShfeFtdcTypeLongObjectNameType	ObjectName;
-	///¸æ¾¯ÊÂ¼ş²úÉú±êÖ¾Î»
+	///å‘Šè­¦äº‹ä»¶äº§ç”Ÿæ ‡å¿—ä½
 	TShfeFtdcTypeIsActiveType	WarningActive;
 };
 
-///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢Ó¦´ğĞÅÏ¢
+///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnMonitorObjectField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///±¾¼¶ÒµÎñ½ø³Ì¶ÔÏóÃû×Ö
+	///æœ¬çº§ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡åå­—
 	TShfeFtdcTypeLongObjectNameType	ObjectName;
-	///¸æ¾¯ÊÂ¼ş²úÉú±êÖ¾Î»
+	///å‘Šè­¦äº‹ä»¶äº§ç”Ÿæ ‡å¿—ä½
 	TShfeFtdcTypeIsActiveType	WarningActive;
 };
 
-///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµ²éÑ¯ÇëÇó
+///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryObjectRationalField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -2821,137 +2821,137 @@ struct CShfeFtdcReqQryObjectRationalField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµÓ¦´ğĞÅÏ¢
+///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryObjectRationalField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///ÒµÎñ½ø³ÌËùÔÚµÄÖ÷»úID
+	///ä¸šåŠ¡è¿›ç¨‹æ‰€åœ¨çš„ä¸»æœºID
 	TShfeFtdcTypeObjectIDType	HostObjectID;
 };
 
-///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµÓ¦´ğĞÅÏ¢
+///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnObjectRationalField
 {
-	///ÒµÎñ½ø³Ì¶ÔÏóID
+	///ä¸šåŠ¡è¿›ç¨‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///ÒµÎñ½ø³ÌËùÔÚµÄÖ÷»úID
+	///ä¸šåŠ¡è¿›ç¨‹æ‰€åœ¨çš„ä¸»æœºID
 	TShfeFtdcTypeObjectIDType	HostObjectID;
 };
 
-///ÈÕÖ¾ÎÄ¼şÄÚÈİ²éÑ¯ÇëÇó
+///æ—¥å¿—æ–‡ä»¶å†…å®¹æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQrySyslogInfoField
 {
-	///ÇëÇóÎÄ¼şÂ·¾¶
+	///è¯·æ±‚æ–‡ä»¶è·¯å¾„
 	TShfeFtdcTypeObjectIDType	FileName;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcTypeObjectIDType	subFileName;
 };
 
-///ÈÕÖ¾ÎÄ¼şÄÚÈİÓ¦´ğĞÅÏ¢
+///æ—¥å¿—æ–‡ä»¶å†…å®¹åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQrySyslogInfoField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcAttrTypeType	AttrType;
-	///ÎÄ¼şÄÚÈİ³¤¶È
+	///æ–‡ä»¶å†…å®¹é•¿åº¦
 	TShfeFtdcTypeContLenType	ContLen;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcTypeFileContentType	FileContent;
 };
 
-///ÈÕÖ¾ÎÄ¼şÄÚÈİÓ¦´ğĞÅÏ¢
+///æ—¥å¿—æ–‡ä»¶å†…å®¹åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnSyslogInfoField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcAttrTypeType	AttrType;
-	///ÎÄ¼şÄÚÈİ³¤¶È
+	///æ–‡ä»¶å†…å®¹é•¿åº¦
 	TShfeFtdcTypeContLenType	ContLen;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcTypeFileContentType	FileContent;
 };
 
-///¼à¿ØÄÚÈİ¶©ÔÄÇëÇó
+///ç›‘æ§å†…å®¹è®¢é˜…è¯·æ±‚
 struct CShfeFtdcReqQrySubscriberField
 {
-	///¶©ÔÄ¶ÔÏóÃû
+	///è®¢é˜…å¯¹è±¡å
 	TShfeFtdcTypeSubcriberObjectIDType	ObjectID;
-	///³õ´Î·µ»Ø¶ÔÏóÊı
+	///åˆæ¬¡è¿”å›å¯¹è±¡æ•°
 	TShfeFtdcVolumeType	ObjectNum;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
-	///·µ»ØµÄ³õÊ¼ÈÕÆÚ
+	///è¿”å›çš„åˆå§‹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///·µ»ØµÄ³õÊ¼Ê±¼ä
+	///è¿”å›çš„åˆå§‹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
-///¼à¿ØÄÚÈİ¶©ÔÄÓ¦´ğĞÅÏ¢
+///ç›‘æ§å†…å®¹è®¢é˜…åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQrySubscriberField
 {
-	///´íÎó´úÂë
+	///é”™è¯¯ä»£ç 
 	TShfeFtdcErrorIDType	ErrorID;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 };
 
-///¼à¿ØÄÚÈİ¶©ÔÄÓ¦´ğĞÅÏ¢
+///ç›‘æ§å†…å®¹è®¢é˜…åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnSubscriberField
 {
-	///´íÎó´úÂë
+	///é”™è¯¯ä»£ç 
 	TShfeFtdcErrorIDType	ErrorID;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 };
 
-///¶ÔÏó¹ØÏµ²éÑ¯ÇëÇó
+///å¯¹è±¡å…³ç³»æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryOidRelationField
 {
 	///
 	TShfeFtdcTypeObjectIDType	ObjectID;
 };
 
-///¶ÔÏó¹ØÏµ²éÑ¯Ó¦´ğĞÅÏ¢
+///å¯¹è±¡å…³ç³»æŸ¥è¯¢åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryOidRelationField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	HoldObjectID;
 };
 
-///¶ÔÏó¹ØÏµ²éÑ¯Ó¦´ğĞÅÏ¢
+///å¯¹è±¡å…³ç³»æŸ¥è¯¢åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnOidRelationField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	HoldObjectID;
 };
 
-///ÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇó
+///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryUserInfoField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -2963,56 +2963,56 @@ struct CShfeFtdcReqQryUserInfoField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÓÃ»§ĞÅÏ¢²éÑ¯Ó¦´ğĞÅÏ¢
+///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryUserInfoField
 {
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	USERNAME;
-	///ÓÃ»§ID
+	///ç”¨æˆ·ID
 	TShfeFtdcVolumeType	USERID;
-	///ÓÃ»§×éÃû
+	///ç”¨æˆ·ç»„å
 	TShfeFtdcTypeUserNameType	GROUPNAME;
-	///ÓÃ»§×éID
+	///ç”¨æˆ·ç»„ID
 	TShfeFtdcVolumeType	GROUPID;
-	///HOMEÂ·¾¶
+	///HOMEè·¯å¾„
 	TShfeFtdcTypeUserNameType	HOMEPATH;
-	///ÓÃ»§Ê¹ÓÃSHELL»·¾³
+	///ç”¨æˆ·ä½¿ç”¨SHELLç¯å¢ƒ
 	TShfeFtdcTypeUserNameType	SHELL;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
 };
 
-///ÓÃ»§ĞÅÏ¢²éÑ¯Ó¦´ğĞÅÏ¢
+///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnUserInfoField
 {
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	USERNAME;
-	///ÓÃ»§ID
+	///ç”¨æˆ·ID
 	TShfeFtdcVolumeType	USERID;
-	///ÓÃ»§×éÃû
+	///ç”¨æˆ·ç»„å
 	TShfeFtdcTypeUserNameType	GROUPNAME;
-	///ÓÃ»§×éID
+	///ç”¨æˆ·ç»„ID
 	TShfeFtdcVolumeType	GROUPID;
-	///HOMEÂ·¾¶
+	///HOMEè·¯å¾„
 	TShfeFtdcTypeUserNameType	HOMEPATH;
-	///ÓÃ»§Ê¹ÓÃSHELL»·¾³
+	///ç”¨æˆ·ä½¿ç”¨SHELLç¯å¢ƒ
 	TShfeFtdcTypeUserNameType	SHELL;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
 };
 
-///ÔÚÏßÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇó
+///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryOnlineUserInfoField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -3024,88 +3024,88 @@ struct CShfeFtdcReqQryOnlineUserInfoField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÔÚÏßÓÃ»§ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryOnlineUserInfoField
 {
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	USERNAME;
-	///µÇÂ¼Ê±¼ä
+	///ç™»å½•æ—¶é—´
 	TShfeFtdcTypeUserNameType	TIME;
-	///ÖÕ¶ËÀàĞÍ
+	///ç»ˆç«¯ç±»å‹
 	TShfeFtdcTypeUserNameType	TTY;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcTypeUserNameType	IP;
-	///Á¬½ÓÊ±¼ä
+	///è¿æ¥æ—¶é—´
 	TShfeFtdcTypeUserNameType	CONNECTIME;
-	///½ø³ÌID
+	///è¿›ç¨‹ID
 	TShfeFtdcVolumeType	PID;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
 };
 
-///ÔÚÏßÓÃ»§ĞÅÏ¢Ó¦´ğĞÅÏ¢
+///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnOnlineUserInfoField
 {
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeUserNameType	USERNAME;
-	///µÇÂ¼Ê±¼ä
+	///ç™»å½•æ—¶é—´
 	TShfeFtdcTypeUserNameType	TIME;
-	///ÖÕ¶ËÀàĞÍ
+	///ç»ˆç«¯ç±»å‹
 	TShfeFtdcTypeUserNameType	TTY;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcTypeUserNameType	IP;
-	///Á¬½ÓÊ±¼ä
+	///è¿æ¥æ—¶é—´
 	TShfeFtdcTypeUserNameType	CONNECTIME;
-	///½ø³ÌID
+	///è¿›ç¨‹ID
 	TShfeFtdcVolumeType	PID;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
 };
 
-///¸æ¾¯ÊÂ¼ş
+///å‘Šè­¦äº‹ä»¶
 struct CShfeFtdcSysWarningEventField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
 };
 
-///¸æ¾¯ÊÂ¼ş²éÑ¯ÇëÇó
+///å‘Šè­¦äº‹ä»¶æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryWarningEventField
 {
 	///
@@ -3116,109 +3116,109 @@ struct CShfeFtdcReqQryWarningEventField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
 };
 
-///¸æ¾¯ÊÂ¼şÓ¦´ğĞÅÏ¢
+///å‘Šè­¦äº‹ä»¶åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryWarningEventField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
 };
 
-///¸æ¾¯ÊÂ¼şÓ¦´ğĞÅÏ¢
+///å‘Šè­¦äº‹ä»¶åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnWarningEventField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
-	///ÊÂ¼şÌõÊı
+	///äº‹ä»¶æ¡æ•°
 	TShfeFtdcCounterType	EventCount;
 };
 
-///KeyFileÇëÇó
+///KeyFileè¯·æ±‚
 struct CShfeFtdcReqQryKeyFileInfoField
 {
-	///ÇëÇóÎÄ¼şÃûID
+	///è¯·æ±‚æ–‡ä»¶åID
 	TShfeFtdcTypeObjectIDType	FileName;
-	///ÇëÇóÎÄ¼şÃûÂ·¾¶
+	///è¯·æ±‚æ–‡ä»¶åè·¯å¾„
 	TShfeFtdcTypeObjectIDType	PathName;
 };
 
-///HostMonitorCfgÇëÇó
+///HostMonitorCfgè¯·æ±‚
 struct CShfeFtdcReqQryHostMonitorCfgField
 {
 	///
 	TShfeFtdcTypeMonitorTypeType	MonitorType;
-	///ÇëÇóÎÄ¼şÃûÂ·¾¶
+	///è¯·æ±‚æ–‡ä»¶åè·¯å¾„
 	TShfeFtdcTypeObjectIDType	PathName;
 	///
 	TShfeFtdcVolumeType	Interval;
 };
 
-///AppMonitorCfgÇëÇó
+///AppMonitorCfgè¯·æ±‚
 struct CShfeFtdcReqQryAppMonitorCfgField
 {
 	///
@@ -3227,10 +3227,10 @@ struct CShfeFtdcReqQryAppMonitorCfgField
 	TShfeFtdcTypePositionType	FSPosition;
 };
 
-///CPUÊ¹ÓÃÂÊ²éÑ¯ÇëÇó
+///CPUä½¿ç”¨ç‡æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryCPUUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -3242,36 +3242,36 @@ struct CShfeFtdcReqQryCPUUsageField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///CPUÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///CPUä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryCPUUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///CPUÊ¹ÓÃÂÊ
+	///CPUä½¿ç”¨ç‡
 	TShfeFtdcRatioType	CPUUsage;
 };
 
-///CPUÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///CPUä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnCPUUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///CPUÊ¹ÓÃÂÊ
+	///CPUä½¿ç”¨ç‡
 	TShfeFtdcRatioType	CPUUsage;
 };
 
-///ÄÚ´æÊ¹ÓÃÂÊ²éÑ¯ÇëÇó
+///å†…å­˜ä½¿ç”¨ç‡æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryMemoryUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -3283,36 +3283,36 @@ struct CShfeFtdcReqQryMemoryUsageField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÄÚ´æÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///å†…å­˜ä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryMemoryUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÄÚ´æÊ¹ÓÃÂÊ
+	///å†…å­˜ä½¿ç”¨ç‡
 	TShfeFtdcRatioType	MemoryUsage;
 };
 
-///ÄÚ´æÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///å†…å­˜ä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnMemoryUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÄÚ´æÊ¹ÓÃÂÊ
+	///å†…å­˜ä½¿ç”¨ç‡
 	TShfeFtdcRatioType	MemoryUsage;
 };
 
-///Ó²ÅÌÊ¹ÓÃÂÊ²éÑ¯ÇëÇó
+///ç¡¬ç›˜ä½¿ç”¨ç‡æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryDiskUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -3324,38 +3324,38 @@ struct CShfeFtdcReqQryDiskUsageField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///Ó²ÅÌÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///ç¡¬ç›˜ä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRspQryDiskUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ó²ÅÌÊ¹ÓÃÂÊ
+	///ç¡¬ç›˜ä½¿ç”¨ç‡
 	TShfeFtdcRatioType	DiskUsage;
 };
 
-///Ó²ÅÌÊ¹ÓÃÂÊÓ¦´ğĞÅÏ¢
+///ç¡¬ç›˜ä½¿ç”¨ç‡åº”ç­”ä¿¡æ¯
 struct CShfeFtdcRtnDiskUsageField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ó²ÅÌÊ¹ÓÃÂÊ
+	///ç¡¬ç›˜ä½¿ç”¨ç‡
 	TShfeFtdcRatioType	DiskUsage;
 };
 
-///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯
+///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢
 struct CShfeFtdcReqQryObjectAttrField
 {
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -3367,41 +3367,41 @@ struct CShfeFtdcReqQryObjectAttrField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryObjectAttrField
 {
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿ØÖ¸±êµÄÖµÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡çš„å€¼ç±»å‹
 	TShfeFtdcValueTypeType	ValueType;
-	///¼à¿ØÖ¸±êµÄ¾ßÌåÖµ
+	///ç›‘æ§æŒ‡æ ‡çš„å…·ä½“å€¼
 	TShfeFtdcAttrValueType	AttrValue;
 };
 
-///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnObjectAttrField
 {
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿ØÖ¸±êµÄÖµÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡çš„å€¼ç±»å‹
 	TShfeFtdcValueTypeType	ValueType;
-	///¼à¿ØÖ¸±êµÄ¾ßÌåÖµ
+	///ç›‘æ§æŒ‡æ ‡çš„å…·ä½“å€¼
 	TShfeFtdcAttrValueType	AttrValue;
 };
 
-///Ö÷»úÅäÖÃ²éÑ¯ÇëÇó
+///ä¸»æœºé…ç½®æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryHostConfigField
 {
 	///
@@ -3418,7 +3418,7 @@ struct CShfeFtdcReqQryHostConfigField
 	TShfeFtdcTypeObjectIDType	CfgAttend;
 };
 
-///ÎŞĞ§±¨µ¥²éÑ¯
+///æ— æ•ˆæŠ¥å•æŸ¥è¯¢
 struct CShfeFtdcReqQryInvalidateOrderField
 {
 	///
@@ -3431,85 +3431,85 @@ struct CShfeFtdcReqQryInvalidateOrderField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÎŞĞ§±¨µ¥²éÑ¯Ó¦´ğ
+///æ— æ•ˆæŠ¥å•æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryInvalidateOrderField
 {
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///²åÈëÈÕÆÚ
+	///æ’å…¥æ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
 };
 
-///ÎŞĞ§±¨µ¥²éÑ¯Ó¦´ğ
+///æ— æ•ˆæŠ¥å•æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnInvalidateOrderField
 {
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///²åÈëÈÕÆÚ
+	///æ’å…¥æ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
 };
 
-///±¨µ¥×´Ì¬²éÑ¯
+///æŠ¥å•çŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcReqQryOrderStatusField
 {
 	///
@@ -3522,93 +3522,93 @@ struct CShfeFtdcReqQryOrderStatusField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///±¨µ¥×´Ì¬²éÑ¯Ó¦´ğ
+///æŠ¥å•çŠ¶æ€æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryOrderStatusField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	InsertDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///±¨µ¥×´Ì¬
+	///æŠ¥å•çŠ¶æ€
 	TShfeFtdcOrderStatusType	OrderStatus;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
 };
 
-///±¨µ¥×´Ì¬²éÑ¯Ó¦´ğ
+///æŠ¥å•çŠ¶æ€æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnOrderStatusField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///±¾µØ±¨µ¥±àºÅ
+	///æœ¬åœ°æŠ¥å•ç¼–å·
 	TShfeFtdcOrderLocalIDType	OrderLocalID;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	InsertDate;
-	///²åÈëÊ±¼ä
+	///æ’å…¥æ—¶é—´
 	TShfeFtdcTimeType	InsertTime;
-	///±¨µ¥×´Ì¬
+	///æŠ¥å•çŠ¶æ€
 	TShfeFtdcOrderStatusType	OrderStatus;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÂòÂô·½Ïò
+	///ä¹°å–æ–¹å‘
 	TShfeFtdcDirectionType	Direction;
-	///×éºÏ¿ªÆ½±êÖ¾
+	///ç»„åˆå¼€å¹³æ ‡å¿—
 	TShfeFtdcCombOffsetFlagType	CombOffsetFlag;
-	///×éºÏÍ¶»úÌ×±£±êÖ¾
+	///ç»„åˆæŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcCombHedgeFlagType	CombHedgeFlag;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	LimitPrice;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	VolumeTotalOriginal;
-	///ÓĞĞ§ÆÚÀàĞÍ
+	///æœ‰æ•ˆæœŸç±»å‹
 	TShfeFtdcTimeConditionType	TimeCondition;
-	///³É½»Á¿ÀàĞÍ
+	///æˆäº¤é‡ç±»å‹
 	TShfeFtdcVolumeConditionType	VolumeCondition;
-	///×îĞ¡³É½»Á¿
+	///æœ€å°æˆäº¤é‡
 	TShfeFtdcVolumeType	MinVolume;
 };
 
-///±¨µ¥³É½»²éÑ¯
+///æŠ¥å•æˆäº¤æŸ¥è¯¢
 struct CShfeFtdcReqQryBargainOrderField
 {
 	///
@@ -3621,57 +3621,57 @@ struct CShfeFtdcReqQryBargainOrderField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///±¨µ¥³É½»²éÑ¯Ó¦´ğ
+///æŠ¥å•æˆäº¤æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryBargainOrderField
 {
-	///³É½»ÈÕÆÚ
+	///æˆäº¤æ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///³É½»Ê±¼ä
+	///æˆäº¤æ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///³É½»±àºÅ
+	///æˆäº¤ç¼–å·
 	TShfeFtdcTradeIDType	TradeID;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	Price;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
 };
 
-///±¨µ¥³É½»²éÑ¯Ó¦´ğ
+///æŠ¥å•æˆäº¤æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnBargainOrderField
 {
-	///³É½»ÈÕÆÚ
+	///æˆäº¤æ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///³É½»Ê±¼ä
+	///æˆäº¤æ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///³É½»±àºÅ
+	///æˆäº¤ç¼–å·
 	TShfeFtdcTradeIDType	TradeID;
-	///±¨µ¥±àºÅ
+	///æŠ¥å•ç¼–å·
 	TShfeFtdcOrderSysIDType	OrderSysID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¼Û¸ñ
+	///ä»·æ ¼
 	TShfeFtdcPriceType	Price;
-	///ÊıÁ¿
+	///æ•°é‡
 	TShfeFtdcVolumeType	Volume;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
 };
 
-///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯
+///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢
 struct CShfeFtdcReqQryInstPropertyField
 {
 	///
@@ -3680,101 +3680,101 @@ struct CShfeFtdcReqQryInstPropertyField
 	TShfeFtdcDateType	EndDate;
 };
 
-///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯Ó¦´ğ
+///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryInstPropertyField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///»ù´¡ÉÌÆ·´úÂë
+	///åŸºç¡€å•†å“ä»£ç 
 	TShfeFtdcInstrumentIDType	UnderlyingInstrID;
-	///²úÆ·ÀàĞÍ
+	///äº§å“ç±»å‹
 	TShfeFtdcProductClassType	ProductClass;
-	///³Ö²ÖÀàĞÍ
+	///æŒä»“ç±»å‹
 	TShfeFtdcPositionTypeType	PositionType;
-	///ºÏÔ¼ÊıÁ¿³ËÊı
+	///åˆçº¦æ•°é‡ä¹˜æ•°
 	TShfeFtdcVolumeMultipleType	VolumeMultiple;
-	///ºÏÔ¼»ù´¡ÉÌÆ·³ËÊı
+	///åˆçº¦åŸºç¡€å•†å“ä¹˜æ•°
 	TShfeFtdcUnderlyingMultipleType	UnderlyingMultiple;
-	///ºÏÔ¼ÉúÃüÖÜÆÚ×´Ì¬
+	///åˆçº¦ç”Ÿå‘½å‘¨æœŸçŠ¶æ€
 	TShfeFtdcInstLifePhaseType	InstLifePhase;
-	///ÉÏÊĞÈÕ
+	///ä¸Šå¸‚æ—¥
 	TShfeFtdcDateType	OpenDate;
-	///µ½ÆÚÈÕ
+	///åˆ°æœŸæ—¥
 	TShfeFtdcDateType	ExpireDate;
-	///¿ªÊ¼½»¸îÈÕ
+	///å¼€å§‹äº¤å‰²æ—¥
 	TShfeFtdcDateType	StartDelivDate;
-	///×îºó½»¸îÈÕ
+	///æœ€åäº¤å‰²æ—¥
 	TShfeFtdcDateType	EndDelivDate;
-	///¹ÒÅÆ»ù×¼¼Û
+	///æŒ‚ç‰ŒåŸºå‡†ä»·
 	TShfeFtdcPriceType	BasisPrice;
-	///ÊĞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxMarketOrderVolume;
-	///ÊĞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinMarketOrderVolume;
-	///ÏŞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///é™ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxLimitOrderVolume;
-	///ÏŞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///é™ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinLimitOrderVolume;
-	///×îĞ¡±ä¶¯¼ÛÎ»
+	///æœ€å°å˜åŠ¨ä»·ä½
 	TShfeFtdcPriceType	PriceTick;
-	///½»¸îÔÂ×ÔÈ»ÈË¿ª²Ö
+	///äº¤å‰²æœˆè‡ªç„¶äººå¼€ä»“
 	TShfeFtdcMonthCountType	AllowDelivPersonOpen;
 };
 
-///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯Ó¦´ğ
+///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnInstPropertyField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///»ù´¡ÉÌÆ·´úÂë
+	///åŸºç¡€å•†å“ä»£ç 
 	TShfeFtdcInstrumentIDType	UnderlyingInstrID;
-	///²úÆ·ÀàĞÍ
+	///äº§å“ç±»å‹
 	TShfeFtdcProductClassType	ProductClass;
-	///³Ö²ÖÀàĞÍ
+	///æŒä»“ç±»å‹
 	TShfeFtdcPositionTypeType	PositionType;
-	///ºÏÔ¼ÊıÁ¿³ËÊı
+	///åˆçº¦æ•°é‡ä¹˜æ•°
 	TShfeFtdcVolumeMultipleType	VolumeMultiple;
-	///ºÏÔ¼»ù´¡ÉÌÆ·³ËÊı
+	///åˆçº¦åŸºç¡€å•†å“ä¹˜æ•°
 	TShfeFtdcUnderlyingMultipleType	UnderlyingMultiple;
-	///ºÏÔ¼ÉúÃüÖÜÆÚ×´Ì¬
+	///åˆçº¦ç”Ÿå‘½å‘¨æœŸçŠ¶æ€
 	TShfeFtdcInstLifePhaseType	InstLifePhase;
-	///ÉÏÊĞÈÕ
+	///ä¸Šå¸‚æ—¥
 	TShfeFtdcDateType	OpenDate;
-	///µ½ÆÚÈÕ
+	///åˆ°æœŸæ—¥
 	TShfeFtdcDateType	ExpireDate;
-	///¿ªÊ¼½»¸îÈÕ
+	///å¼€å§‹äº¤å‰²æ—¥
 	TShfeFtdcDateType	StartDelivDate;
-	///×îºó½»¸îÈÕ
+	///æœ€åäº¤å‰²æ—¥
 	TShfeFtdcDateType	EndDelivDate;
-	///¹ÒÅÆ»ù×¼¼Û
+	///æŒ‚ç‰ŒåŸºå‡†ä»·
 	TShfeFtdcPriceType	BasisPrice;
-	///ÊĞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxMarketOrderVolume;
-	///ÊĞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///å¸‚ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinMarketOrderVolume;
-	///ÏŞ¼Ûµ¥×î´óÏÂµ¥Á¿
+	///é™ä»·å•æœ€å¤§ä¸‹å•é‡
 	TShfeFtdcVolumeType	MaxLimitOrderVolume;
-	///ÏŞ¼Ûµ¥×îĞ¡ÏÂµ¥Á¿
+	///é™ä»·å•æœ€å°ä¸‹å•é‡
 	TShfeFtdcVolumeType	MinLimitOrderVolume;
-	///×îĞ¡±ä¶¯¼ÛÎ»
+	///æœ€å°å˜åŠ¨ä»·ä½
 	TShfeFtdcPriceType	PriceTick;
-	///½»¸îÔÂ×ÔÈ»ÈË¿ª²Ö
+	///äº¤å‰²æœˆè‡ªç„¶äººå¼€ä»“
 	TShfeFtdcMonthCountType	AllowDelivPersonOpen;
 };
 
-///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯
+///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢
 struct CShfeFtdcReqQryMarginRateField
 {
 	///
@@ -3783,53 +3783,53 @@ struct CShfeFtdcReqQryMarginRateField
 	TShfeFtdcDateType	EndDate;
 };
 
-///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯Ó¦´ğ
+///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryMarginRateField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·±£Ö¤½ğÂÊ
+	///å¤šå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	LongMarginRatio;
-	///¿ÕÍ·±£Ö¤½ğÂÊ
+	///ç©ºå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	ShortMarginRatio;
 };
 
-///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯Ó¦´ğ
+///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnMarginRateField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·±£Ö¤½ğÂÊ
+	///å¤šå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	LongMarginRatio;
-	///¿ÕÍ·±£Ö¤½ğÂÊ
+	///ç©ºå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	ShortMarginRatio;
 };
 
-///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯
+///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢
 struct CShfeFtdcReqQryPriceLimitField
 {
 	///
@@ -3838,45 +3838,45 @@ struct CShfeFtdcReqQryPriceLimitField
 	TShfeFtdcDateType	EndDate;
 };
 
-///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯Ó¦´ğ
+///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryPriceLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///ÉáÈë·½Ê½
+	///èˆå…¥æ–¹å¼
 	TShfeFtdcRoundingModeType	RoundingMode;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯Ó¦´ğ
+///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnPriceLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///ÉáÈë·½Ê½
+	///èˆå…¥æ–¹å¼
 	TShfeFtdcRoundingModeType	RoundingMode;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///»áÔ±ÏŞ²Ö²éÑ¯
+///ä¼šå‘˜é™ä»“æŸ¥è¯¢
 struct CShfeFtdcReqQryPartPosiLimitField
 {
 	///
@@ -3885,61 +3885,61 @@ struct CShfeFtdcReqQryPartPosiLimitField
 	TShfeFtdcDateType	EndDate;
 };
 
-///»áÔ±ÏŞ²Ö²éÑ¯Ó¦´ğ
+///ä¼šå‘˜é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryPartPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///»áÔ±ÏŞ²Ö²éÑ¯Ó¦´ğ
+///ä¼šå‘˜é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnPartPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///¿Í»§ÏŞ²Ö²éÑ¯
+///å®¢æˆ·é™ä»“æŸ¥è¯¢
 struct CShfeFtdcReqQryClientPosiLimitField
 {
 	///
@@ -3948,61 +3948,61 @@ struct CShfeFtdcReqQryClientPosiLimitField
 	TShfeFtdcDateType	EndDate;
 };
 
-///¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+///å®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryClientPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+///å®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnClientPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯
+///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢
 struct CShfeFtdcReqQrySpecialPosiLimitField
 {
 	///
@@ -4011,61 +4011,61 @@ struct CShfeFtdcReqQrySpecialPosiLimitField
 	TShfeFtdcDateType	EndDate;
 };
 
-///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQrySpecialPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnSpecialPosiLimitField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
 };
 
-///ÕË»§³öÈë½ğ²éÑ¯
+///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢
 struct CShfeFtdcReqQryTransactionChgField
 {
 	///
@@ -4078,41 +4078,41 @@ struct CShfeFtdcReqQryTransactionChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÕË»§³öÈë½ğ²éÑ¯Ó¦´ğ
+///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryTransactionChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ÕÊ»§ÍùÀ´Á÷Ë®ºÅ
+	///å¸æˆ·å¾€æ¥æµæ°´å·
 	TShfeFtdcSerialNoType	BillSN;
-	///×Ê½ğÕË»§
+	///èµ„é‡‘è´¦æˆ·
 	TShfeFtdcAccountIDType	ParticipantAccount;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///·¢Éú¶î
+	///å‘ç”Ÿé¢
 	TShfeFtdcMoneyType	Amount;
 };
 
-///ÕË»§³öÈë½ğ²éÑ¯Ó¦´ğ
+///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnTransactionChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ÕÊ»§ÍùÀ´Á÷Ë®ºÅ
+	///å¸æˆ·å¾€æ¥æµæ°´å·
 	TShfeFtdcSerialNoType	BillSN;
-	///×Ê½ğÕË»§
+	///èµ„é‡‘è´¦æˆ·
 	TShfeFtdcAccountIDType	ParticipantAccount;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///·¢Éú¶î
+	///å‘ç”Ÿé¢
 	TShfeFtdcMoneyType	Amount;
 };
 
-///¿Í»§Êı¾İ±ä¶¯²éÑ¯
+///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryClientChgField
 {
 	///
@@ -4125,53 +4125,53 @@ struct CShfeFtdcReqQryClientChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///¿Í»§Êı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryClientChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///¿Í»§Êı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnClientChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯
+///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryPartClientChgField
 {
 	///
@@ -4184,37 +4184,37 @@ struct CShfeFtdcReqQryPartClientChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯Ó¦´ğ
+///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryPartClientChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯Ó¦´ğ
+///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnPartClientChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryPosiLimitChgField
 {
 	///
@@ -4227,57 +4227,57 @@ struct CShfeFtdcReqQryPosiLimitChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///±£Öµ¶î¶È±ä¶¯²éÑ¯
+///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryHedgeDetailChgField
 {
 	///
@@ -4290,61 +4290,61 @@ struct CShfeFtdcReqQryHedgeDetailChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///±£Öµ¶î¶È±ä¶¯²éÑ¯Ó¦´ğ
+///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHedgeDetailChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcOperatorIDType	OperatorID;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	Time;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///·¢Éú¶î
+	///å‘ç”Ÿé¢
 	TShfeFtdcVolumeType	TradingVolume;
-	///±£Öµ¶î¶È
+	///ä¿å€¼é¢åº¦
 	TShfeFtdcVolumeType	HedgeQuota;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///±£Öµ¶î¶È±ä¶¯²éÑ¯Ó¦´ğ
+///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnHedgeDetailChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcOperatorIDType	OperatorID;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	Time;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///³Ö²Ö¶à¿Õ·½Ïò
+	///æŒä»“å¤šç©ºæ–¹å‘
 	TShfeFtdcPosiDirectionType	PosiDirection;
-	///·¢Éú¶î
+	///å‘ç”Ÿé¢
 	TShfeFtdcVolumeType	TradingVolume;
-	///±£Öµ¶î¶È
+	///ä¿å€¼é¢åº¦
 	TShfeFtdcVolumeType	HedgeQuota;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±±ä¶¯²éÑ¯
+///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryParticipantChgField
 {
 	///
@@ -4357,49 +4357,49 @@ struct CShfeFtdcReqQryParticipantChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///»áÔ±±ä¶¯²éÑ¯Ó¦´ğ
+///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryParticipantChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///»áÔ±¼ò³Æ
+	///ä¼šå‘˜ç®€ç§°
 	TShfeFtdcParticipantAbbrType	ParticipantAbbr;
-	///»áÔ±ÀàĞÍ
+	///ä¼šå‘˜ç±»å‹
 	TShfeFtdcMemberTypeType	MemberType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±±ä¶¯²éÑ¯Ó¦´ğ
+///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnParticipantChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///»áÔ±¼ò³Æ
+	///ä¼šå‘˜ç®€ç§°
 	TShfeFtdcParticipantAbbrType	ParticipantAbbr;
-	///»áÔ±ÀàĞÍ
+	///ä¼šå‘˜ç±»å‹
 	TShfeFtdcMemberTypeType	MemberType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯
+///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryMarginRateChgField
 {
 	///
@@ -4412,57 +4412,57 @@ struct CShfeFtdcReqQryMarginRateChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯Ó¦´ğ
+///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryMarginRateChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·±£Ö¤½ğÂÊ
+	///å¤šå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	LongMarginRatio;
-	///¿ÕÍ·±£Ö¤½ğÂÊ
+	///ç©ºå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	ShortMarginRatio;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯Ó¦´ğ
+///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnMarginRateChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///Í¶»úÌ×±£±êÖ¾
+	///æŠ•æœºå¥—ä¿æ ‡å¿—
 	TShfeFtdcHedgeFlagType	HedgeFlag;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·±£Ö¤½ğÂÊ
+	///å¤šå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	LongMarginRatio;
-	///¿ÕÍ·±£Ö¤½ğÂÊ
+	///ç©ºå¤´ä¿è¯é‡‘ç‡
 	TShfeFtdcRatioType	ShortMarginRatio;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///IPµØÖ·±ä¶¯²éÑ¯
+///IPåœ°å€å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryUserIpChgField
 {
 	///
@@ -4475,41 +4475,41 @@ struct CShfeFtdcReqQryUserIpChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///IPµØÖ·±ä¶¯²éÑ¯Ó¦´ğ
+///IPåœ°å€å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryUserIpChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///IPµØÖ·ÑÚÂë
+	///IPåœ°å€æ©ç 
 	TShfeFtdcIPAddressType	IPMask;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///IPµØÖ·±ä¶¯²éÑ¯Ó¦´ğ
+///IPåœ°å€å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnUserIpChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///IPµØÖ·ÑÚÂë
+	///IPåœ°å€æ©ç 
 	TShfeFtdcIPAddressType	IPMask;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQryClientPosiLimitChgField
 {
 	///
@@ -4522,57 +4522,57 @@ struct CShfeFtdcReqQryClientPosiLimitChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryClientPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnClientPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 struct CShfeFtdcReqQrySpecPosiLimitChgField
 {
 	///
@@ -4585,62 +4585,62 @@ struct CShfeFtdcReqQrySpecPosiLimitChgField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQrySpecPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnSpecPosiLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcPositionTradingRoleType	TradingRole;
-	///ÏŞ²ÖÆğµã
+	///é™ä»“èµ·ç‚¹
 	TShfeFtdcLargeVolumeType	StartTotalPosition;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///¶àÍ·ÏŞ²Ö
+	///å¤šå¤´é™ä»“
 	TShfeFtdcRatioType	LongPosLimit;
-	///¿ÕÍ·ÏŞ²Ö
+	///ç©ºå¤´é™ä»“
 	TShfeFtdcRatioType	ShortPosLimit;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÀúÊ·¶ÔÏó×´Ì¬²éÑ¯
+///å†å²å¯¹è±¡çŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcReqQryHistoryObjectAttrField
 {
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -4652,65 +4652,65 @@ struct CShfeFtdcReqQryHistoryObjectAttrField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÀúÊ·¶ÔÏó×´Ì¬²éÑ¯Ó¦´ğ
+///å†å²å¯¹è±¡çŠ¶æ€æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHistoryObjectAttrField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¾ÖÜÆÚ¿ªÊ¼Ê±¼ä
+	///æœ¬å‘¨æœŸå¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	BeginTime;
-	///±¾ÖÜÆÚ½áÊøÊ±¼ä
+	///æœ¬å‘¨æœŸç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	EndTime;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///¼à¿ØÖ¸±êµÄÖµÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡çš„å€¼ç±»å‹
 	TShfeFtdcValueTypeType	ValueType;
-	///±¾ÖÜÆÚÊÕµ½µÚÒ»¸öÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°ç¬¬ä¸€ä¸ªå€¼
 	TShfeFtdcCapValueType	FirstValue;
-	///±¾ÖÜÆÚÊÕµ½×îºóÒ»¸öÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€åä¸€ä¸ªå€¼
 	TShfeFtdcCapValueType	EndValue;
-	///±¾ÖÜÆÚÆ½¾ùÖµ
+	///æœ¬å‘¨æœŸå¹³å‡å€¼
 	TShfeFtdcCapValueType	AvgValue;
-	///±¾ÖÜÆÚÊÕµ½×îĞ¡Öµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€å°å€¼
 	TShfeFtdcCapValueType	MinValue;
-	///±¾ÖÜÆÚÊÕµ½×î´óÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€å¤§å€¼
 	TShfeFtdcCapValueType	MaxValue;
-	///±¾ÖÜÆÚÊÕµ½Ö¸±ê¸öÊı
+	///æœ¬å‘¨æœŸæ”¶åˆ°æŒ‡æ ‡ä¸ªæ•°
 	TShfeFtdcVolumeType	ValueCount;
 };
 
-///ÀúÊ·¶ÔÏó×´Ì¬²éÑ¯Ó¦´ğ
+///å†å²å¯¹è±¡çŠ¶æ€æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnHistoryObjectAttrField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¾ÖÜÆÚ¿ªÊ¼Ê±¼ä
+	///æœ¬å‘¨æœŸå¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	BeginTime;
-	///±¾ÖÜÆÚ½áÊøÊ±¼ä
+	///æœ¬å‘¨æœŸç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	EndTime;
-	///¶¨Òå¶ÔÏóÃû
+	///å®šä¹‰å¯¹è±¡å
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///¼à¿ØÖ¸±êµÄÖµÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡çš„å€¼ç±»å‹
 	TShfeFtdcValueTypeType	ValueType;
-	///±¾ÖÜÆÚÊÕµ½µÚÒ»¸öÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°ç¬¬ä¸€ä¸ªå€¼
 	TShfeFtdcCapValueType	FirstValue;
-	///±¾ÖÜÆÚÊÕµ½×îºóÒ»¸öÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€åä¸€ä¸ªå€¼
 	TShfeFtdcCapValueType	EndValue;
-	///±¾ÖÜÆÚÆ½¾ùÖµ
+	///æœ¬å‘¨æœŸå¹³å‡å€¼
 	TShfeFtdcCapValueType	AvgValue;
-	///±¾ÖÜÆÚÊÕµ½×îĞ¡Öµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€å°å€¼
 	TShfeFtdcCapValueType	MinValue;
-	///±¾ÖÜÆÚÊÕµ½×î´óÖµ
+	///æœ¬å‘¨æœŸæ”¶åˆ°æœ€å¤§å€¼
 	TShfeFtdcCapValueType	MaxValue;
-	///±¾ÖÜÆÚÊÕµ½Ö¸±ê¸öÊı
+	///æœ¬å‘¨æœŸæ”¶åˆ°æŒ‡æ ‡ä¸ªæ•°
 	TShfeFtdcVolumeType	ValueCount;
 };
 
-///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯
+///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryFrontInfoField
 {
 	///
@@ -4723,300 +4723,300 @@ struct CShfeFtdcReqQryFrontInfoField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯Ó¦´ğ
+///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryFrontInfoField
 {
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¾ÖÜÆÚ¿ªÊ¼Ê±¼ä
+	///æœ¬å‘¨æœŸå¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ç°ÖÃ»úÃû
+	///å‰ç½®æœºå
 	TShfeFtdcTypeObjectIDType	FrontId;
-	///Ç°ÖÃÏìÓ¦Ê±¼äÌõ¼ş
+	///å‰ç½®å“åº”æ—¶é—´æ¡ä»¶
 	TShfeFtdcVolumeType	RspCondition;
-	///ÇëÇóÊı
+	///è¯·æ±‚æ•°
 	TShfeFtdcVolumeType	ReqCount;
-	///ËùÕ¼×Ü±ÊÊı±ÈÂÊ
+	///æ‰€å æ€»ç¬”æ•°æ¯”ç‡
 	TShfeFtdcRatioType	ReqRate;
 };
 
-///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯Ó¦´ğ
+///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnFrontInfoField
 {
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¾ÖÜÆÚ¿ªÊ¼Ê±¼ä
+	///æœ¬å‘¨æœŸå¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ç°ÖÃ»úÃû
+	///å‰ç½®æœºå
 	TShfeFtdcTypeObjectIDType	FrontId;
-	///Ç°ÖÃÏìÓ¦Ê±¼äÌõ¼ş
+	///å‰ç½®å“åº”æ—¶é—´æ¡ä»¶
 	TShfeFtdcVolumeType	RspCondition;
-	///ÇëÇóÊı
+	///è¯·æ±‚æ•°
 	TShfeFtdcVolumeType	ReqCount;
-	///ËùÕ¼×Ü±ÊÊı±ÈÂÊ
+	///æ‰€å æ€»ç¬”æ•°æ¯”ç‡
 	TShfeFtdcRatioType	ReqRate;
 };
 
-///ÓÃ»§µÇÂ¼²éÑ¯
+///ç”¨æˆ·ç™»å½•æŸ¥è¯¢
 struct CShfeFtdcReqQrySysUserLoginField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///°æ±¾ºÅ
+	///ç‰ˆæœ¬å·
 	TShfeFtdcVersionIDType	VersionID;
 };
 
-///ÓÃ»§µÇÂ¼Ó¦´ğ
+///ç”¨æˆ·ç™»å½•åº”ç­”
 struct CShfeFtdcRspQrySysUserLoginField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///µÇÂ¼³É¹¦Ê±¼ä
+	///ç™»å½•æˆåŠŸæ—¶é—´
 	TShfeFtdcTimeType	LoginTime;
-	///ÓÃ»§È¨ÏŞ
+	///ç”¨æˆ·æƒé™
 	TShfeFtdcPrivilegeType	Privilege;
-	///°æ±¾Æ¥Åä±êÊ¶
+	///ç‰ˆæœ¬åŒ¹é…æ ‡è¯†
 	TShfeFtdcVersionFlagType	VersionFlag;
 };
 
-///ÓÃ»§µÇ³ö
+///ç”¨æˆ·ç™»å‡º
 struct CShfeFtdcReqQrySysUserLogoutField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///ÓÃ»§µÇ³öÓ¦´ğ
+///ç”¨æˆ·ç™»å‡ºåº”ç­”
 struct CShfeFtdcRspQrySysUserLogoutField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///ÓÃ»§ĞŞ¸ÄÃÜÂë
+///ç”¨æˆ·ä¿®æ”¹å¯†ç 
 struct CShfeFtdcReqQrySysUserPasswordUpdateField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///¾ÉÃÜÂë
+	///æ—§å¯†ç 
 	TShfeFtdcPasswordType	OldPassword;
-	///ĞÂÃÜÂë
+	///æ–°å¯†ç 
 	TShfeFtdcPasswordType	NewPassword;
 };
 
-///ÓÃ»§ĞŞ¸ÄÃÜÂëÓ¦´ğ
+///ç”¨æˆ·ä¿®æ”¹å¯†ç åº”ç­”
 struct CShfeFtdcRspQrySysUserPasswordUpdateField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÃÜÂëĞŞ¸Ä·µ»ØĞÅÏ¢
+	///å¯†ç ä¿®æ”¹è¿”å›ä¿¡æ¯
 	TShfeFtdcActionMsgType	PasswordChgMsg;
 };
 
-///ÓÃ»§×¢²á
+///ç”¨æˆ·æ³¨å†Œ
 struct CShfeFtdcReqQrySysUserRegisterField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÓÃ»§ĞÕÃû
+	///ç”¨æˆ·å§“å
 	TShfeFtdcUserIDType	UserName;
-	///ÓÃ»§ĞÅÏ¢
+	///ç”¨æˆ·ä¿¡æ¯
 	TShfeFtdcUserInfoType	UserInfo;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///ÓÃ»§È¨ÏŞ
+	///ç”¨æˆ·æƒé™
 	TShfeFtdcPrivilegeType	Privilege;
-	///ÓÃ»§µç×ÓÓÊ¼ş
+	///ç”¨æˆ·ç”µå­é‚®ä»¶
 	TShfeFtdcEMailType	EMail;
-	///ÓÃ»§µç×ÓÓÊ¼ş½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·ç”µå­é‚®ä»¶æ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	EMailFlag;
-	///ÓÃ»§¹Ì¶¨µç»°
+	///ç”¨æˆ·å›ºå®šç”µè¯
 	TShfeFtdcTelephoneType	HomePhone;
-	///ÓÃ»§¹Ì¶¨µç»°½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·å›ºå®šç”µè¯æ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	HomePhoneFlag;
-	///ÓÃ»§ÊÖ»ú
+	///ç”¨æˆ·æ‰‹æœº
 	TShfeFtdcTelephoneType	MobilePhone;
-	///ÓÃ»§ÊÖ»ú½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·æ‰‹æœºæ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	MobilePhoneFlag;
 };
 
-///ÓÃ»§×¢²áÓ¦´ğ
+///ç”¨æˆ·æ³¨å†Œåº”ç­”
 struct CShfeFtdcRspQrySysUserRegisterField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÓÃ»§È¨ÏŞ
+	///ç”¨æˆ·æƒé™
 	TShfeFtdcPrivilegeType	Privilege;
 };
 
-///É¾³ıÓÃ»§
+///åˆ é™¤ç”¨æˆ·
 struct CShfeFtdcReqQrySysUserDeleteField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///É¾³ıÓÃ»§Ó¦´ğ
+///åˆ é™¤ç”¨æˆ·åº”ç­”
 struct CShfeFtdcRspQrySysUserDeleteField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
 };
 
-///»áÔ±³õÊ¼»¯Ó¦´ğ
+///ä¼šå‘˜åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRspQryParticipantInitField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///»áÔ±¼ò³Æ
+	///ä¼šå‘˜ç®€ç§°
 	TShfeFtdcParticipantAbbrType	ParticipantAbbr;
-	///»áÔ±ÀàĞÍ
+	///ä¼šå‘˜ç±»å‹
 	TShfeFtdcMemberTypeType	MemberType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±³õÊ¼»¯Ó¦´ğ
+///ä¼šå‘˜åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRtnParticipantInitField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///»áÔ±¼ò³Æ
+	///ä¼šå‘˜ç®€ç§°
 	TShfeFtdcParticipantAbbrType	ParticipantAbbr;
-	///»áÔ±ÀàĞÍ
+	///ä¼šå‘˜ç±»å‹
 	TShfeFtdcMemberTypeType	MemberType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///×ùÏ¯³õÊ¼»¯Ó¦´ğ
+///åº§å¸­åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRspQryUserInitField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///½»Ò×ÓÃ»§ÀàĞÍ
+	///äº¤æ˜“ç”¨æˆ·ç±»å‹
 	TShfeFtdcUserTypeType	UserType;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///½»Ò×Ô±È¨ÏŞ
+	///äº¤æ˜“å‘˜æƒé™
 	TShfeFtdcUserActiveType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///×ùÏ¯³õÊ¼»¯Ó¦´ğ
+///åº§å¸­åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRtnUserInitField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///½»Ò×ÓÃ»§ÀàĞÍ
+	///äº¤æ˜“ç”¨æˆ·ç±»å‹
 	TShfeFtdcUserTypeType	UserType;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///½»Ò×Ô±È¨ÏŞ
+	///äº¤æ˜“å‘˜æƒé™
 	TShfeFtdcUserActiveType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///¿Í»§³õÊ¼»¯Ó¦´ğ
+///å®¢æˆ·åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRspQryClientInitField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///¿Í»§³õÊ¼»¯Ó¦´ğ
+///å®¢æˆ·åˆå§‹åŒ–åº”ç­”
 struct CShfeFtdcRtnClientInitField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///½»Ò×ÈÕÖ¾²éÑ¯
+///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢
 struct CShfeFtdcReqQryTradeLogField
 {
-	///½»Ò×ÈÕ
+	///äº¤æ˜“æ—¥
 	TShfeFtdcDateType	TradingDay;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///Ç°ÖÃºÅ
+	///å‰ç½®å·
 	TShfeFtdcCommodityIDType	FrontID;
-	///ÆğÊ¼»áÔ±ºÅ
+	///èµ·å§‹ä¼šå‘˜å·
 	TShfeFtdcParticipantIDType	StartParticipant;
-	///½áÊø»áÔ±ºÅ
+	///ç»“æŸä¼šå‘˜å·
 	TShfeFtdcParticipantIDType	EndParticipant;
-	///ÆğÊ¼Ï¯Î»ºÅ
+	///èµ·å§‹å¸­ä½å·
 	TShfeFtdcUserIDType	StartUser;
-	///½áÊøÏ¯Î»ºÅ
+	///ç»“æŸå¸­ä½å·
 	TShfeFtdcUserIDType	EndUser;
-	///¿ªÊ¼Ê±¼ä
+	///å¼€å§‹æ—¶é—´
 	TShfeFtdcTimeType	StartTime;
-	///½áÊøÊ±¼ä
+	///ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	EndTime;
-	///ÆğÊ¼»á»°ID
+	///èµ·å§‹ä¼šè¯ID
 	TShfeFtdcCommodityIDType	StartSessionID;
-	///½áÊø»á»°ID
+	///ç»“æŸä¼šè¯ID
 	TShfeFtdcCommodityIDType	EndSessionID;
-	///¸ù¾İIP¹ıÂË±ê¼Ç
+	///æ ¹æ®IPè¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	IPFlag;
-	///¸ù¾İ»áÔ±¹ıÂË±ê¼Ç
+	///æ ¹æ®ä¼šå‘˜è¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	PartFlag;
-	///¸ù¾İÏ¯Î»¹ıÂË±ê¼Ç
+	///æ ¹æ®å¸­ä½è¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	UserIDFlag;
-	///¸ù¾İÊ±¼ä¹ıÂË±ê¼Ç
+	///æ ¹æ®æ—¶é—´è¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	TimeFlag;
-	///¸ù¾İÇ°ÖÃºÅ¹ıÂË±ê¼Ç
+	///æ ¹æ®å‰ç½®å·è¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	FrontFlag;
-	///¸ù¾İ»á»°ºÅ¹ıÂË±ê¼Ç
+	///æ ¹æ®ä¼šè¯å·è¿‡æ»¤æ ‡è®°
 	TShfeFtdcBoolType	SessionFlag;
 };
 
-///½»Ò×ÈÕÖ¾²éÑ¯Ó¦´ğ
+///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryTradeLogField
 {
 	///
@@ -5025,7 +5025,7 @@ struct CShfeFtdcRspQryTradeLogField
 	TShfeFtdcTradeLogStrType	TradeLogStr;
 };
 
-///½»Ò×ÈÕÖ¾²éÑ¯Ó¦´ğ
+///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnTradeLogField
 {
 	///
@@ -5034,46 +5034,46 @@ struct CShfeFtdcRtnTradeLogField
 	TShfeFtdcTradeLogStrType	TradeLogStr;
 };
 
-///¸æ¾¯Ê±¼äĞŞ¸Ä
+///å‘Šè­¦æ—¶é—´ä¿®æ”¹
 struct CShfeFtdcReqQryWarningEventUpdateField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///¸æ¾¯¼¤»îÈÕÆÚ
+	///å‘Šè­¦æ¿€æ´»æ—¥æœŸ
 	TShfeFtdcDateType	ActiveDate;
-	///¸æ¾¯¼¤»îÊ±¼ä
+	///å‘Šè­¦æ¿€æ´»æ—¶é—´
 	TShfeFtdcTimeType	ActiveTime;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
 };
 
-///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢²éÑ¯
+///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryTradeUserLoginInfoField
 {
 	///
@@ -5086,65 +5086,65 @@ struct CShfeFtdcReqQryTradeUserLoginInfoField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢Ó¦´ğ
+///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯åº”ç­”
 struct CShfeFtdcRspQryTradeUserLoginInfoField
 {
-	///¶ÔÏóID
+	///å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///Ğ­ÒéĞÅÏ¢
+	///åè®®ä¿¡æ¯
 	TShfeFtdcProtocolInfoType	ProtocolInfo;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///Ç°ÖÃ»ú±àºÅ
+	///å‰ç½®æœºç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///ÓÃ»§Àà±ğ
+	///ç”¨æˆ·ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	UserType;
-	/// ½ÓÈë·½Ê½
+	/// æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	AccessType;
-	///µÇÂ¼»òµÇ³öÈÕÆÚ
+	///ç™»å½•æˆ–ç™»å‡ºæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///µÇÂ¼»òµÇ³öÊ±¼ä
+	///ç™»å½•æˆ–ç™»å‡ºæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///µÇÂ¼»òµÇ³ö±ê¼Ç
+	///ç™»å½•æˆ–ç™»å‡ºæ ‡è®°
 	TShfeFtdcValueTypeType	ActionFlag;
-	///Êı¾İÖĞĞÄÃû
+	///æ•°æ®ä¸­å¿ƒå
 	TShfeFtdcTypeObjectIDType	DataCenter;
 };
 
-///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢Ó¦´ğ
+///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯åº”ç­”
 struct CShfeFtdcRtnTradeUserLoginInfoField
 {
-	///¶ÔÏóID
+	///å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///Ğ­ÒéĞÅÏ¢
+	///åè®®ä¿¡æ¯
 	TShfeFtdcProtocolInfoType	ProtocolInfo;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///Ç°ÖÃ»ú±àºÅ
+	///å‰ç½®æœºç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///ÓÃ»§Àà±ğ
+	///ç”¨æˆ·ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	UserType;
-	/// ½ÓÈë·½Ê½
+	/// æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	AccessType;
-	///µÇÂ¼»òµÇ³öÈÕÆÚ
+	///ç™»å½•æˆ–ç™»å‡ºæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///µÇÂ¼»òµÇ³öÊ±¼ä
+	///ç™»å½•æˆ–ç™»å‡ºæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///µÇÂ¼»òµÇ³ö±ê¼Ç
+	///ç™»å½•æˆ–ç™»å‡ºæ ‡è®°
 	TShfeFtdcValueTypeType	ActionFlag;
-	///Êı¾İÖĞĞÄÃû
+	///æ•°æ®ä¸­å¿ƒå
 	TShfeFtdcTypeObjectIDType	DataCenter;
 };
 
-///»áÔ±½»Ò×²éÑ¯
+///ä¼šå‘˜äº¤æ˜“æŸ¥è¯¢
 struct CShfeFtdcReqQryPartTradeField
 {
 	///
@@ -5157,34 +5157,34 @@ struct CShfeFtdcReqQryPartTradeField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///»áÔ±½»Ò×²éÑ¯Ó¦´ğ
+///ä¼šå‘˜äº¤æ˜“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryPartTradeField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///×Ü±¨Âòµ¥Á¿
+	///æ€»æŠ¥ä¹°å•é‡
 	TShfeFtdcVolumeType	TotalPositiveOrder;
-	///×Ü±¨µ¥ÂôÁ¿
+	///æ€»æŠ¥å•å–é‡
 	TShfeFtdcVolumeType	TotalNegativeOrder;
-	///Âòµ¥×Ü³É½»Á¿
+	///ä¹°å•æ€»æˆäº¤é‡
 	TShfeFtdcVolumeType	TotalPositiveTrade;
-	///Âôµ¥×Ü³É½»Á¿
+	///å–å•æ€»æˆäº¤é‡
 	TShfeFtdcVolumeType	TotalNegativeTrade;
-	///×Ü¶àÍ·³Ö²ÖÁ¿
+	///æ€»å¤šå¤´æŒä»“é‡
 	TShfeFtdcVolumeType	TotalPositivePosi;
-	///×Ü¿ÕÍ·³Ö²ÖÁ¿
+	///æ€»ç©ºå¤´æŒä»“é‡
 	TShfeFtdcVolumeType	TotalNegativePosi;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///½»Ò×·åÖµ²éÑ¯
+///äº¤æ˜“å³°å€¼æŸ¥è¯¢
 struct CShfeFtdcReqQryTradepeakField
 {
 	///
@@ -5199,89 +5199,89 @@ struct CShfeFtdcReqQryTradepeakField
 	TShfeFtdcTradepeakFlagType	TradepeakFlag;
 };
 
-///½»Ò×·åÖµ²éÑ¯Ó¦´ğ
+///äº¤æ˜“å³°å€¼æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryTradepeakField
 {
-	///Í³¼ÆĞÅÏ¢²½³¤·ÖÀà
+	///ç»Ÿè®¡ä¿¡æ¯æ­¥é•¿åˆ†ç±»
 	TShfeFtdcTradepeakFlagType	TradepeakFlag;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	PeakTime;
-	///±¨µ¥ÉêÇëÁ¿
+	///æŠ¥å•ç”³è¯·é‡
 	TShfeFtdcVolumeType	InsertOrder;
-	///±¨µ¥²Ù×÷Á¿
+	///æŠ¥å•æ“ä½œé‡
 	TShfeFtdcVolumeType	ActionOrder;
-	///ÎŞĞ§±¨µ¥Á¿
+	///æ— æ•ˆæŠ¥å•é‡
 	TShfeFtdcVolumeType	InvalidOrder;
-	///½»Ò×ºÏ¼Æ
+	///äº¤æ˜“åˆè®¡
 	TShfeFtdcVolumeType	TotalBusiness;
-	///³É½»Êı
+	///æˆäº¤æ•°
 	TShfeFtdcVolumeType	TradeCount;
-	///ºÏ¼Æ
+	///åˆè®¡
 	TShfeFtdcVolumeType	TotalCount;
 };
 
 ///
 struct CShfeFtdcRtnUpdateSysConfigField
 {
-	///¸üĞÂÀàĞÍ
+	///æ›´æ–°ç±»å‹
 	TShfeFtdcTypeObjectIDType	UpdateType;
-	///¾ÉÖµ
+	///æ—§å€¼
 	TShfeFtdcTypeObjectIDType	OldValue;
-	///ĞÂÖµ
+	///æ–°å€¼
 	TShfeFtdcTypeObjectIDType	NewValue;
-	///±¸ÓÃ
+	///å¤‡ç”¨
 	TShfeFtdcTypeObjectIDType	Standby;
 };
 
 ///
 struct CShfeFtdcRtnSysUserField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///ÓÃ»§ĞÕÃû
+	///ç”¨æˆ·å§“å
 	TShfeFtdcUserIDType	UserName;
-	///ÓÃ»§ĞÅÏ¢
+	///ç”¨æˆ·ä¿¡æ¯
 	TShfeFtdcUserInfoType	UserInfo;
-	///ÃÜÂë
+	///å¯†ç 
 	TShfeFtdcPasswordType	Password;
-	///ÓÃ»§È¨ÏŞ
+	///ç”¨æˆ·æƒé™
 	TShfeFtdcPrivilegeType	Privilege;
-	///ÓÃ»§µç×ÓÓÊ¼ş
+	///ç”¨æˆ·ç”µå­é‚®ä»¶
 	TShfeFtdcEMailType	EMail;
-	///ÓÃ»§µç×ÓÓÊ¼ş½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·ç”µå­é‚®ä»¶æ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	EMailFlag;
-	///ÓÃ»§¹Ì¶¨µç»°
+	///ç”¨æˆ·å›ºå®šç”µè¯
 	TShfeFtdcTelephoneType	HomePhone;
-	///ÓÃ»§¹Ì¶¨µç»°½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·å›ºå®šç”µè¯æ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	HomePhoneFlag;
-	///ÓÃ»§ÊÖ»ú
+	///ç”¨æˆ·æ‰‹æœº
 	TShfeFtdcTelephoneType	MobilePhone;
-	///ÓÃ»§ÊÖ»ú½ÓÊÕ±ê¼Ç
+	///ç”¨æˆ·æ‰‹æœºæ¥æ”¶æ ‡è®°
 	TShfeFtdcReciveFlagType	MobilePhoneFlag;
 };
 
 ///
 struct CShfeFtdcRtnPriceLimitChgField
 {
-	///²Ù×÷ÈÕÆÚ
+	///æ“ä½œæ—¥æœŸ
 	TShfeFtdcDateType	ActionDate;
-	///²Ù×÷Ê±¼ä
+	///æ“ä½œæ—¶é—´
 	TShfeFtdcTimeType	ActionTime;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///È¡Öµ·½Ê½
+	///å–å€¼æ–¹å¼
 	TShfeFtdcValueModeType	ValueMode;
-	///ÉáÈë·½Ê½
+	///èˆå…¥æ–¹å¼
 	TShfeFtdcRoundingModeType	RoundingMode;
-	///ÕÇÍ£°å¼Û
+	///æ¶¨åœæ¿ä»·
 	TShfeFtdcPriceType	UpperLimitPrice;
-	///µøÍ£°å¼Û
+	///è·Œåœæ¿ä»·
 	TShfeFtdcPriceType	LowerLimitPrice;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///¹ÜÀíÆ½Ì¨³õÊ¼»¯ĞÅÏ¢²éÑ¯
+///ç®¡ç†å¹³å°åˆå§‹åŒ–ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryParticipantInitField
 {
 	///
@@ -5294,7 +5294,7 @@ struct CShfeFtdcReqQryParticipantInitField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///¹ÜÀíÆ½Ì¨³õÊ¼»¯ĞÅÏ¢²éÑ¯
+///ç®¡ç†å¹³å°åˆå§‹åŒ–ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryUserInitField
 {
 	///
@@ -5307,7 +5307,7 @@ struct CShfeFtdcReqQryUserInitField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÎÄ¼ş¶ÁĞ´±ê¼Ç
+///æ–‡ä»¶è¯»å†™æ ‡è®°
 struct CShfeFtdcSysFileAccessInfoField
 {
 	///
@@ -5318,7 +5318,7 @@ struct CShfeFtdcSysFileAccessInfoField
 	TShfeFtdcLargeVolumeType	FileTime;
 };
 
-///ÀúÊ·Cpu×´Ì¬²éÑ¯
+///å†å²CpuçŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcReqQryHistoryCpuInfoField
 {
 	///
@@ -5333,20 +5333,20 @@ struct CShfeFtdcReqQryHistoryCpuInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///ÀúÊ·Cpu²éÑ¯Ó¦´ğ
+///å†å²CpuæŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHistoryCpuInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///CPUµÄ±àºÅ
+	///CPUçš„ç¼–å·
 	TShfeFtdcTypeCPUIdType	CPU;
 	///
 	TShfeFtdcRatioType	LOAD;
@@ -5368,7 +5368,7 @@ struct CShfeFtdcRspQryHistoryCpuInfoField
 	TShfeFtdcRatioType	SSYS;
 };
 
-///ÀúÊ·Mem×´Ì¬²éÑ¯
+///å†å²MemçŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcReqQryHistoryMemInfoField
 {
 	///
@@ -5381,18 +5381,18 @@ struct CShfeFtdcReqQryHistoryMemInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///ÀúÊ·Mem²éÑ¯Ó¦´ğ
+///å†å²MemæŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHistoryMemInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 	///Total Real Memory
 	TShfeFtdcVolumeType	TOTALREAL;
@@ -5406,12 +5406,12 @@ struct CShfeFtdcRspQryHistoryMemInfoField
 	TShfeFtdcVolumeType	FREE;
 };
 
-///ÀúÊ·ÍøÂç×´Ì¬²éÑ¯
+///å†å²ç½‘ç»œçŠ¶æ€æŸ¥è¯¢
 struct CShfeFtdcReqQryHistoryNetworkInfoField
 {
 	///
 	TShfeFtdcTypeObjectIDType	HostName;
-	///Íø¿¨Ãû
+	///ç½‘å¡å
 	TShfeFtdcTypeLanNameType	LANNAME;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -5421,44 +5421,44 @@ struct CShfeFtdcReqQryHistoryNetworkInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///ÀúÊ·ÍøÂç²éÑ¯Ó¦´ğ
+///å†å²ç½‘ç»œæŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHistoryNetworkInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Íø¿¨Ãû
+	///ç½‘å¡å
 	TShfeFtdcTypeLanNameType	LANNAME;
-	///Íø¿¨µÄup»òdown×´Ì¬
+	///ç½‘å¡çš„upæˆ–downçŠ¶æ€
 	TShfeFtdcTypeLanStatusType	LANSTATUS;
-	///Íø¿¨µÄipµØÖ·
+	///ç½‘å¡çš„ipåœ°å€
 	TShfeFtdcIPAddressType	IPADDRESS;
-	///Íø¿¨½ÓÊÕµÄÁ÷Á¿
+	///ç½‘å¡æ¥æ”¶çš„æµé‡
 	TShfeFtdcLargeNumberType	RECVBYTES;
-	///Íø¿¨½ÓÊÕµÄÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVERRORPACKETS;
-	///Íø¿¨½ÓÊÕ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡æ¥æ”¶ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	RECVDROPPACKETS;
-	///Íø¿¨·¢ËÍµÄÁ÷Á¿
+	///ç½‘å¡å‘é€çš„æµé‡
 	TShfeFtdcLargeNumberType	SENDBYTES;
-	///Íø¿¨·¢ËÍµÄÊı¾İ°ü
+	///ç½‘å¡å‘é€çš„æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë´íÎóÊı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯é”™è¯¯æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDERRORPACKETS;
-	///Íø¿¨·¢ËÍ¶Ë¶ªÊ§Êı¾İ°ü
+	///ç½‘å¡å‘é€ç«¯ä¸¢å¤±æ•°æ®åŒ…
 	TShfeFtdcLargeNumberType	SENDDROPPACKETS;
 };
 
-///Ö÷»úÅäÖÃ²éÑ¯ÇëÇóÓ¦´ğ
+///ä¸»æœºé…ç½®æŸ¥è¯¢è¯·æ±‚åº”ç­”
 struct CShfeFtdcRspQryHostConfigField
 {
 	///
@@ -5475,7 +5475,7 @@ struct CShfeFtdcRspQryHostConfigField
 	TShfeFtdcTypeObjectIDType	CfgAttend;
 };
 
-///¼à¿ØÏµÍ³ÔÚÏßÓÃ»§²éÑ¯
+///ç›‘æ§ç³»ç»Ÿåœ¨çº¿ç”¨æˆ·æŸ¥è¯¢
 struct CShfeFtdcReqQryMonitorOnlineUserField
 {
 	///
@@ -5488,16 +5488,16 @@ struct CShfeFtdcReqQryMonitorOnlineUserField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///¼à¿ØÏµÍ³ÔÚÏßÓÃ»§Ó¦´ğ
+///ç›‘æ§ç³»ç»Ÿåœ¨çº¿ç”¨æˆ·åº”ç­”
 struct CShfeFtdcRspQryMonitorOnlineUserField
 {
-	///ÓÃ»§´úÂë
+	///ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃÍ³¼Æ²éÑ¯
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®ç»Ÿè®¡æŸ¥è¯¢
 struct CShfeFtdcReqQryFrontStatField
 {
 	///
@@ -5510,42 +5510,42 @@ struct CShfeFtdcReqQryFrontStatField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃÍ³¼ÆÓ¦´ğ
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®ç»Ÿè®¡åº”ç­”
 struct CShfeFtdcRspQryFrontStatField
 {
-	///Ç°ÖÃ»ú±àºÅ
+	///å‰ç½®æœºç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///×Ü±¨Âò±ÊÊı
+	///æ€»æŠ¥ä¹°ç¬”æ•°
 	TShfeFtdcVolumeType	PositiveOrder;
-	///×Ü±¨Âô±ÊÊı
+	///æ€»æŠ¥å–ç¬”æ•°
 	TShfeFtdcVolumeType	NegativeOrder;
-	///×Ü±¨ÂòÊÖÊı
+	///æ€»æŠ¥ä¹°æ‰‹æ•°
 	TShfeFtdcVolumeType	TotalPositiveOrder;
-	///×Ü±¨ÂôÊÖÊı
+	///æ€»æŠ¥å–æ‰‹æ•°
 	TShfeFtdcVolumeType	TotalNegativeOrder;
-	///±¨µ¥×´Ì¬¸Ä±ä±ÊÊı
+	///æŠ¥å•çŠ¶æ€æ”¹å˜ç¬”æ•°
 	TShfeFtdcVolumeType	OrderAction;
-	///±¨µ¥×´Ì¬¸Ä±äÊÖÊı
+	///æŠ¥å•çŠ¶æ€æ”¹å˜æ‰‹æ•°
 	TShfeFtdcVolumeType	TotalOrderAction;
 };
 
-///¼à¿ØÏµÍ³Ê±ÖÓÍ¬²½
+///ç›‘æ§ç³»ç»Ÿæ—¶é’ŸåŒæ­¥
 struct CShfeFtdcRtnSysTimeSyncField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
-///Êı¾İÖĞĞÄÇĞ»»Í¨Öª
+///æ•°æ®ä¸­å¿ƒåˆ‡æ¢é€šçŸ¥
 struct CShfeFtdcRtnDataCenterChgField
 {
-	///Ö÷Êı¾İÖĞĞÄÃû
+	///ä¸»æ•°æ®ä¸­å¿ƒå
 	TShfeFtdcTypeObjectIDType	DataCenterID;
 };
 
-///ÀúÊ··åÖµ²éÑ¯
+///å†å²å³°å€¼æŸ¥è¯¢
 struct CShfeFtdcReqQryHistoryTradePeakField
 {
 	///
@@ -5558,77 +5558,77 @@ struct CShfeFtdcReqQryHistoryTradePeakField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///ÀúÊ··åÖµ²éÑ¯Ó¦´ğ
+///å†å²å³°å€¼æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryHistoryTradePeakField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿Ø×îĞÂÈÕÆÚ
+	///ç›‘æ§æœ€æ–°æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿Ø×îĞÂÊ±¼ä
+	///ç›‘æ§æœ€æ–°æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcAttrTypeType	AttrType;
-	///¼à¿Ø×îĞÂÖµ
+	///ç›‘æ§æœ€æ–°å€¼
 	TShfeFtdcMoneyType	AttrValue;
-	///Ïà¹ØÖ¸±ê
+	///ç›¸å…³æŒ‡æ ‡
 	TShfeFtdcAttrTypeType	RltAttrType;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	RltAttrValue;
-	///×î´óÖµµÄÈÕÆÚ
+	///æœ€å¤§å€¼çš„æ—¥æœŸ
 	TShfeFtdcDateType	MaxMonDate;
-	///×î´óÖµµÄÊ±¼ä
+	///æœ€å¤§å€¼çš„æ—¶é—´
 	TShfeFtdcTimeType	MaxMonTime;
-	///Ö¸±êÀúÊ·×î´óÖµ
+	///æŒ‡æ ‡å†å²æœ€å¤§å€¼
 	TShfeFtdcMoneyType	MaxAttrValue;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	MaxRltAttrValue;
-	///´ÎĞÂÖµµÄÈÕÆÚ
+	///æ¬¡æ–°å€¼çš„æ—¥æœŸ
 	TShfeFtdcDateType	OldMonDate;
-	///´ÎĞÂÖµµÄÊ±¼ä
+	///æ¬¡æ–°å€¼çš„æ—¶é—´
 	TShfeFtdcTimeType	OldMonTime;
-	///¼à¿ØÖ¸±êµÄ´ÎĞÂÖµ
+	///ç›‘æ§æŒ‡æ ‡çš„æ¬¡æ–°å€¼
 	TShfeFtdcMoneyType	OldAttrValue;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	OldRltAttrValue;
 };
 
-///ÀúÊ··åÖµ²éÑ¯Ó¦´ğ
+///å†å²å³°å€¼æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnHistoryTradePeakField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿Ø×îĞÂÈÕÆÚ
+	///ç›‘æ§æœ€æ–°æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿Ø×îĞÂÊ±¼ä
+	///ç›‘æ§æœ€æ–°æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcAttrTypeType	AttrType;
-	///¼à¿Ø×îĞÂÖµ
+	///ç›‘æ§æœ€æ–°å€¼
 	TShfeFtdcMoneyType	AttrValue;
-	///Ïà¹ØÖ¸±ê
+	///ç›¸å…³æŒ‡æ ‡
 	TShfeFtdcAttrTypeType	RltAttrType;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	RltAttrValue;
-	///×î´óÖµµÄÈÕÆÚ
+	///æœ€å¤§å€¼çš„æ—¥æœŸ
 	TShfeFtdcDateType	MaxMonDate;
-	///×î´óÖµµÄÊ±¼ä
+	///æœ€å¤§å€¼çš„æ—¶é—´
 	TShfeFtdcTimeType	MaxMonTime;
-	///Ö¸±êÀúÊ·×î´óÖµ
+	///æŒ‡æ ‡å†å²æœ€å¤§å€¼
 	TShfeFtdcMoneyType	MaxAttrValue;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	MaxRltAttrValue;
-	///´ÎĞÂÖµµÄÈÕÆÚ
+	///æ¬¡æ–°å€¼çš„æ—¥æœŸ
 	TShfeFtdcDateType	OldMonDate;
-	///´ÎĞÂÖµµÄÊ±¼ä
+	///æ¬¡æ–°å€¼çš„æ—¶é—´
 	TShfeFtdcTimeType	OldMonTime;
-	///¼à¿ØÖ¸±êµÄ´ÎĞÂÖµ
+	///ç›‘æ§æŒ‡æ ‡çš„æ¬¡æ–°å€¼
 	TShfeFtdcMoneyType	OldAttrValue;
-	///Ïà¹ØÖ¸±êµ±Ê±µÄÖµ
+	///ç›¸å…³æŒ‡æ ‡å½“æ—¶çš„å€¼
 	TShfeFtdcMoneyType	OldRltAttrValue;
 };
 
-///ÈÕÖ¾ÊÂ¼ş²éÑ¯
+///æ—¥å¿—äº‹ä»¶æŸ¥è¯¢
 struct CShfeFtdcReqQrySyslogEventField
 {
 	///
@@ -5639,844 +5639,844 @@ struct CShfeFtdcReqQrySyslogEventField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
 };
 
-///ÈÕÖ¾ÊÂ¼ş²éÑ¯Ó¦´ğ
+///æ—¥å¿—äº‹ä»¶æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQrySyslogEventField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
-	///ÊÂ¼şÌõÊı
+	///äº‹ä»¶æ¡æ•°
 	TShfeFtdcCounterType	EventCount;
 };
 
-///ÈÕÖ¾ÊÂ¼şÓ¦´ğ
+///æ—¥å¿—äº‹ä»¶åº”ç­”
 struct CShfeFtdcRtnSyslogEventField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
 };
 
-///ÈÕÖ¾ÊÂ¼ş¶©ÔÄÇëÇó
+///æ—¥å¿—äº‹ä»¶è®¢é˜…è¯·æ±‚
 struct CShfeFtdcReqQrySyslogEventSubcriberField
 {
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///¹ıÂËÌõ¼ş×é
+	///è¿‡æ»¤æ¡ä»¶ç»„
 	TShfeFtdcTypeSubcriberObjectIDType	filter;
-	///·´¹ıÂËÌõ¼ş×é
+	///åè¿‡æ»¤æ¡ä»¶ç»„
 	TShfeFtdcTypeSubcriberObjectIDType	antifilter;
-	///³õ´Î·µ»Ø¶ÔÏóÊı
+	///åˆæ¬¡è¿”å›å¯¹è±¡æ•°
 	TShfeFtdcVolumeType	ObjectNum;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
-	///·µ»ØµÄ³õÊ¼ÈÕÆÚ
+	///è¿”å›çš„åˆå§‹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///·µ»ØµÄ³õÊ¼Ê±¼ä
+	///è¿”å›çš„åˆå§‹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
 };
 
-///½»Ò×ÈÕÇĞ»»Í¨Öª
+///äº¤æ˜“æ—¥åˆ‡æ¢é€šçŸ¥
 struct CShfeFtdcReqQryTradeDayChangeField
 {
-	///ÇĞ»»ÀàĞÍ
+	///åˆ‡æ¢ç±»å‹
 	TShfeFtdcTypeObjectIDType	ChangeType;
-	///Ô­½»Ò×ÈÕ
+	///åŸäº¤æ˜“æ—¥
 	TShfeFtdcDateType	OldDate;
-	///ĞÂ½»Ò×ÈÕ
+	///æ–°äº¤æ˜“æ—¥
 	TShfeFtdcDateType	NewDate;
 };
 
-///½»Ò×ÈÕÇĞ»»Í¨Öª
+///äº¤æ˜“æ—¥åˆ‡æ¢é€šçŸ¥
 struct CShfeFtdcRspQryTradeDayChangeField
 {
-	///ÇĞ»»ÀàĞÍ
+	///åˆ‡æ¢ç±»å‹
 	TShfeFtdcTypeObjectIDType	ChangeType;
-	///Ô­½»Ò×ÈÕ
+	///åŸäº¤æ˜“æ—¥
 	TShfeFtdcDateType	OldDate;
-	///ĞÂ½»Ò×ÈÕ
+	///æ–°äº¤æ˜“æ—¥
 	TShfeFtdcDateType	NewDate;
 };
 
-///tomcatĞÅÏ¢²éÑ¯
+///tomcatä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryTomcatInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///WebÓ¦ÓÃĞÅÏ¢
+///Webåº”ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryWebAppInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///WebÓ¦ÓÃÃû³Æ
+	///Webåº”ç”¨åç§°
 	TShfeFtdcCfgNameType	AppName;
-	///Ó¦ÓÃÔËĞĞ×´Ì¬
+	///åº”ç”¨è¿è¡ŒçŠ¶æ€
 	TShfeFtdcTypeObjectNameType	Status;
-	///Ó¦ÓÃÃèÊöĞÅÏ¢
+	///åº”ç”¨æè¿°ä¿¡æ¯
 	TShfeFtdcTypeDescriptionType	Desc;
-	///Ó¦ÓÃÆô¶¯Ê±¼ä
+	///åº”ç”¨å¯åŠ¨æ—¶é—´
 	TShfeFtdcTypeCurrentTimeType	StartTime;
-	///Ó¦ÓÃservletÊıÁ¿
+	///åº”ç”¨servletæ•°é‡
 	TShfeFtdcTypeChar10Type	ServletNum;
-	///Ó¦ÓÃ´¦Àí×ÜÊ±³¤
+	///åº”ç”¨å¤„ç†æ€»æ—¶é•¿
 	TShfeFtdcTypeCommandType	ProcessTime;
-	///Ó¦ÓÃÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///åº”ç”¨ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcTypeCommandType	RequestNum;
-	///Ó¦ÓÃÀÛ¼Æ´íÎóÊı
+	///åº”ç”¨ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcTypeCommandType	ErrorNum;
-	///Ó¦ÓÃµ±Ç°»á»°Êı
+	///åº”ç”¨å½“å‰ä¼šè¯æ•°
 	TShfeFtdcTypeChar10Type	SessionSize;
-	///»á»°³¬Ê±Ê±³¤(Ãë)
+	///ä¼šè¯è¶…æ—¶æ—¶é•¿(ç§’)
 	TShfeFtdcTypeChar10Type	TimeOut;
-	///Ó¦ÓÃJDBCÁ¬½ÓÊ¹ÓÃÂÊ
+	///åº”ç”¨JDBCè¿æ¥ä½¿ç”¨ç‡
 	TShfeFtdcTypeChar10Type	JDBCUsage;
-	///Ó¦ÓÃJSPÎÄ¼şÊıÁ¿
+	///åº”ç”¨JSPæ–‡ä»¶æ•°é‡
 	TShfeFtdcTypeChar10Type	JSPNum;
 };
 
-///WebÓ¦ÓÃĞÅÏ¢
+///Webåº”ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnWebAppInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///WebÓ¦ÓÃÃû³Æ
+	///Webåº”ç”¨åç§°
 	TShfeFtdcCfgNameType	AppName;
-	///Ó¦ÓÃÔËĞĞ×´Ì¬
+	///åº”ç”¨è¿è¡ŒçŠ¶æ€
 	TShfeFtdcTypeObjectNameType	Status;
-	///Ó¦ÓÃÃèÊöĞÅÏ¢
+	///åº”ç”¨æè¿°ä¿¡æ¯
 	TShfeFtdcTypeDescriptionType	Desc;
-	///Ó¦ÓÃÆô¶¯Ê±¼ä
+	///åº”ç”¨å¯åŠ¨æ—¶é—´
 	TShfeFtdcTypeCurrentTimeType	StartTime;
-	///Ó¦ÓÃservletÊıÁ¿
+	///åº”ç”¨servletæ•°é‡
 	TShfeFtdcTypeChar10Type	ServletNum;
-	///Ó¦ÓÃ´¦Àí×ÜÊ±³¤
+	///åº”ç”¨å¤„ç†æ€»æ—¶é•¿
 	TShfeFtdcTypeCommandType	ProcessTime;
-	///Ó¦ÓÃÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///åº”ç”¨ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcTypeCommandType	RequestNum;
-	///Ó¦ÓÃÀÛ¼Æ´íÎóÊı
+	///åº”ç”¨ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcTypeCommandType	ErrorNum;
-	///Ó¦ÓÃµ±Ç°»á»°Êı
+	///åº”ç”¨å½“å‰ä¼šè¯æ•°
 	TShfeFtdcTypeChar10Type	SessionSize;
-	///»á»°³¬Ê±Ê±³¤(Ãë)
+	///ä¼šè¯è¶…æ—¶æ—¶é•¿(ç§’)
 	TShfeFtdcTypeChar10Type	TimeOut;
-	///Ó¦ÓÃJDBCÁ¬½ÓÊ¹ÓÃÂÊ
+	///åº”ç”¨JDBCè¿æ¥ä½¿ç”¨ç‡
 	TShfeFtdcTypeChar10Type	JDBCUsage;
-	///Ó¦ÓÃJSPÎÄ¼şÊıÁ¿
+	///åº”ç”¨JSPæ–‡ä»¶æ•°é‡
 	TShfeFtdcTypeChar10Type	JSPNum;
 };
 
-///Ó¦ÓÃservletĞÅÏ¢
+///åº”ç”¨servletä¿¡æ¯
 struct CShfeFtdcRspQryServletInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///servletÃû³Æ
+	///servletåç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///¼ÓÔØºÄÊ±
+	///åŠ è½½è€—æ—¶
 	TShfeFtdcTypeContLenType	LoadTime;
-	///½ÓÊÕÇëÇóÊıÁ¿
+	///æ¥æ”¶è¯·æ±‚æ•°é‡
 	TShfeFtdcRatioType	RequestNum;
-	///´íÎóÊıÁ¿
+	///é”™è¯¯æ•°é‡
 	TShfeFtdcRatioType	RequestErrNum;
-	///´¦ÀíÊ±³¤
+	///å¤„ç†æ—¶é•¿
 	TShfeFtdcRatioType	ProcessTime;
-	///×îĞ¡´¦ÀíÊ±¼ä
+	///æœ€å°å¤„ç†æ—¶é—´
 	TShfeFtdcTypeContLenType	MixTime;
-	///×î´ó´¦ÀíÊ±¼ä
+	///æœ€å¤§å¤„ç†æ—¶é—´
 	TShfeFtdcTypeContLenType	MaxTime;
 };
 
-///Ó¦ÓÃservletĞÅÏ¢
+///åº”ç”¨servletä¿¡æ¯
 struct CShfeFtdcRtnServletInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///servletÃû³Æ
+	///servletåç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///¼ÓÔØºÄÊ±
+	///åŠ è½½è€—æ—¶
 	TShfeFtdcTypeContLenType	LoadTime;
-	///½ÓÊÕÇëÇóÊıÁ¿
+	///æ¥æ”¶è¯·æ±‚æ•°é‡
 	TShfeFtdcRatioType	RequestNum;
-	///´íÎóÊıÁ¿
+	///é”™è¯¯æ•°é‡
 	TShfeFtdcRatioType	RequestErrNum;
-	///´¦ÀíÊ±³¤
+	///å¤„ç†æ—¶é•¿
 	TShfeFtdcRatioType	ProcessTime;
-	///×îĞ¡´¦ÀíÊ±¼ä
+	///æœ€å°å¤„ç†æ—¶é—´
 	TShfeFtdcTypeContLenType	MixTime;
-	///×î´ó´¦ÀíÊ±¼ä
+	///æœ€å¤§å¤„ç†æ—¶é—´
 	TShfeFtdcTypeContLenType	MaxTime;
 };
 
-///ÎÄ¼şĞÅÏ¢
+///æ–‡ä»¶ä¿¡æ¯
 struct CShfeFtdcRspQryFileInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÈ«Â·¾¶Ãû
+	///æ–‡ä»¶å…¨è·¯å¾„å
 	TShfeFtdcFilePathNameType	PathName;
-	///ÎÄ¼ş´óĞ¡
+	///æ–‡ä»¶å¤§å°
 	TShfeFtdcTypeChar10Type	FileSize;
-	///ÎÄ¼ş×îºóĞŞ¸ÄÊ±¼ä
+	///æ–‡ä»¶æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTypeMonitorTypeType	LastModDate;
-	///ÎÄ¼şÊôĞÔ
+	///æ–‡ä»¶å±æ€§
 	TShfeFtdcTypeObjectNameType	FileType;
 };
 
-///ÎÄ¼şĞÅÏ¢
+///æ–‡ä»¶ä¿¡æ¯
 struct CShfeFtdcRtnFileInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÈ«Â·¾¶Ãû
+	///æ–‡ä»¶å…¨è·¯å¾„å
 	TShfeFtdcFilePathNameType	PathName;
-	///ÎÄ¼ş´óĞ¡
+	///æ–‡ä»¶å¤§å°
 	TShfeFtdcTypeChar10Type	FileSize;
-	///ÎÄ¼ş×îºóĞŞ¸ÄÊ±¼ä
+	///æ–‡ä»¶æœ€åä¿®æ”¹æ—¶é—´
 	TShfeFtdcTypeMonitorTypeType	LastModDate;
-	///ÎÄ¼şÊôĞÔ
+	///æ–‡ä»¶å±æ€§
 	TShfeFtdcTypeObjectNameType	FileType;
 };
 
-///Ó¦ÓÃ»á»°ĞÅÏ¢
+///åº”ç”¨ä¼šè¯ä¿¡æ¯
 struct CShfeFtdcRspQrySessionInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Session±àºÅ
+	///Sessionç¼–å·
 	TShfeFtdcCfgNameType	SessionID;
-	///SessionÃû³Æ
+	///Sessionåç§°
 	TShfeFtdcTypeObjectIDType	SessionName;
-	///Session¶ÔÓ¦¿Í»§¶ËIPµØÖ·
+	///Sessionå¯¹åº”å®¢æˆ·ç«¯IPåœ°å€
 	TShfeFtdcTypeObjectNameType	RemoteIP;
-	///Session´´½¨Ê±¼ä
+	///Sessionåˆ›å»ºæ—¶é—´
 	TShfeFtdcTypeHostModelType	BeginTime;
-	///Session×îĞÂÇëÇóÊ±¼ä
+	///Sessionæœ€æ–°è¯·æ±‚æ—¶é—´
 	TShfeFtdcTypeHostModelType	LatestTime;
-	///Session³¬Ê±Ê±¼ä(Ãë)
+	///Sessionè¶…æ—¶æ—¶é—´(ç§’)
 	TShfeFtdcTypeContLenType	MaxIdleTime;
 };
 
-///Ó¦ÓÃ»á»°ĞÅÏ¢
+///åº”ç”¨ä¼šè¯ä¿¡æ¯
 struct CShfeFtdcRtnSessionInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Session±àºÅ
+	///Sessionç¼–å·
 	TShfeFtdcCfgNameType	SessionID;
-	///SessionÃû³Æ
+	///Sessionåç§°
 	TShfeFtdcTypeObjectIDType	SessionName;
-	///Session¶ÔÓ¦¿Í»§¶ËIPµØÖ·
+	///Sessionå¯¹åº”å®¢æˆ·ç«¯IPåœ°å€
 	TShfeFtdcTypeObjectNameType	RemoteIP;
-	///Session´´½¨Ê±¼ä
+	///Sessionåˆ›å»ºæ—¶é—´
 	TShfeFtdcTypeHostModelType	BeginTime;
-	///Session×îĞÂÇëÇóÊ±¼ä
+	///Sessionæœ€æ–°è¯·æ±‚æ—¶é—´
 	TShfeFtdcTypeHostModelType	LatestTime;
-	///Session³¬Ê±Ê±¼ä(Ãë)
+	///Sessionè¶…æ—¶æ—¶é—´(ç§’)
 	TShfeFtdcTypeContLenType	MaxIdleTime;
 };
 
-///JDBCĞÅÏ¢
+///JDBCä¿¡æ¯
 struct CShfeFtdcRspQryJDBCInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ó¦ÓÃ³ÌĞòÃû³Æ
+	///åº”ç”¨ç¨‹åºåç§°
 	TShfeFtdcCfgNameType	AppName;
-	///JDBCÁ¬½Ó³ØÃû³Æ
+	///JDBCè¿æ¥æ± åç§°
 	TShfeFtdcCfgNameType	Name;
-	///Á¬½Ó³ØÊ¹ÓÃ±ÈÀı
+	///è¿æ¥æ± ä½¿ç”¨æ¯”ä¾‹
 	TShfeFtdcStockPercentType	Usage;
-	///×î´óÁ¬½ÓÊı
+	///æœ€å¤§è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumMax;
-	///¿ÕÏĞÁ¬½ÓÊı
+	///ç©ºé—²è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumFree;
-	///²»¿ÉÖØÓÃÁ¬½ÓÊı
+	///ä¸å¯é‡ç”¨è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumUnRU;
-	///¿ÉÖØÓÃÁ¬½ÓÊı
+	///å¯é‡ç”¨è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumRU;
-	///¶ÔÓ¦Êı¾İ¿âÓÃ»§
+	///å¯¹åº”æ•°æ®åº“ç”¨æˆ·
 	TShfeFtdcCfgNameType	UserName;
-	///JDBCÀàĞÍ
+	///JDBCç±»å‹
 	TShfeFtdcTypeObjectIDType	Type;
 	///JDBC Url
 	TShfeFtdcTypeObjectIDType	URL;
 };
 
-///JDBCĞÅÏ¢
+///JDBCä¿¡æ¯
 struct CShfeFtdcRtnJDBCInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ó¦ÓÃ³ÌĞòÃû³Æ
+	///åº”ç”¨ç¨‹åºåç§°
 	TShfeFtdcCfgNameType	AppName;
-	///JDBCÁ¬½Ó³ØÃû³Æ
+	///JDBCè¿æ¥æ± åç§°
 	TShfeFtdcCfgNameType	Name;
-	///Á¬½Ó³ØÊ¹ÓÃ±ÈÀı
+	///è¿æ¥æ± ä½¿ç”¨æ¯”ä¾‹
 	TShfeFtdcStockPercentType	Usage;
-	///×î´óÁ¬½ÓÊı
+	///æœ€å¤§è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumMax;
-	///¿ÕÏĞÁ¬½ÓÊı
+	///ç©ºé—²è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumFree;
-	///²»¿ÉÖØÓÃÁ¬½ÓÊı
+	///ä¸å¯é‡ç”¨è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumUnRU;
-	///¿ÉÖØÓÃÁ¬½ÓÊı
+	///å¯é‡ç”¨è¿æ¥æ•°
 	TShfeFtdcTypeContLenType	ConnNumRU;
-	///¶ÔÓ¦Êı¾İ¿âÓÃ»§
+	///å¯¹åº”æ•°æ®åº“ç”¨æˆ·
 	TShfeFtdcCfgNameType	UserName;
-	///JDBCÀàĞÍ
+	///JDBCç±»å‹
 	TShfeFtdcTypeObjectIDType	Type;
 	///JDBC Url
 	TShfeFtdcTypeObjectIDType	URL;
 };
 
-///Ïß³ÌĞÅÏ¢
+///çº¿ç¨‹ä¿¡æ¯
 struct CShfeFtdcRspQryThreadInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ïß³ÌÃû³Æ
+	///çº¿ç¨‹åç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///Ïß³Ì±àºÅ
+	///çº¿ç¨‹ç¼–å·
 	TShfeFtdcTypeContLenType	ThreadNum;
-	///Ïß³Ì×´Ì¬
+	///çº¿ç¨‹çŠ¶æ€
 	TShfeFtdcTypeObjectNameType	ThreadStatus;
-	///Ïß³ÌNative±êÊ¶
+	///çº¿ç¨‹Nativeæ ‡è¯†
 	TShfeFtdcTypeContLenType	InNative;
-	///Ïß³ÌSuspended±êÊ¶
+	///çº¿ç¨‹Suspendedæ ‡è¯†
 	TShfeFtdcTypeLanNameType	Suspended;
-	///Ïß³Ì×èÈû×ÜÊı
+	///çº¿ç¨‹é˜»å¡æ€»æ•°
 	TShfeFtdcTypeLanNameType	BlockCount;
-	///Ïß³ÌµÈ´ı×ÜÊı
+	///çº¿ç¨‹ç­‰å¾…æ€»æ•°
 	TShfeFtdcTypeContLenType	WaitCount;
-	///Ïß³ÌCPUÊ±¼ä
+	///çº¿ç¨‹CPUæ—¶é—´
 	TShfeFtdcRatioType	CpuTime;
-	///Ïß³ÌÓÃ»§Ê±¼ä
+	///çº¿ç¨‹ç”¨æˆ·æ—¶é—´
 	TShfeFtdcRatioType	UserTime;
 };
 
-///Ïß³ÌĞÅÏ¢
+///çº¿ç¨‹ä¿¡æ¯
 struct CShfeFtdcRtnThreadInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ïß³ÌÃû³Æ
+	///çº¿ç¨‹åç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///Ïß³Ì±àºÅ
+	///çº¿ç¨‹ç¼–å·
 	TShfeFtdcTypeContLenType	ThreadNum;
-	///Ïß³Ì×´Ì¬
+	///çº¿ç¨‹çŠ¶æ€
 	TShfeFtdcTypeObjectNameType	ThreadStatus;
-	///Ïß³ÌNative±êÊ¶
+	///çº¿ç¨‹Nativeæ ‡è¯†
 	TShfeFtdcTypeContLenType	InNative;
-	///Ïß³ÌSuspended±êÊ¶
+	///çº¿ç¨‹Suspendedæ ‡è¯†
 	TShfeFtdcTypeLanNameType	Suspended;
-	///Ïß³Ì×èÈû×ÜÊı
+	///çº¿ç¨‹é˜»å¡æ€»æ•°
 	TShfeFtdcTypeLanNameType	BlockCount;
-	///Ïß³ÌµÈ´ı×ÜÊı
+	///çº¿ç¨‹ç­‰å¾…æ€»æ•°
 	TShfeFtdcTypeContLenType	WaitCount;
-	///Ïß³ÌCPUÊ±¼ä
+	///çº¿ç¨‹CPUæ—¶é—´
 	TShfeFtdcRatioType	CpuTime;
-	///Ïß³ÌÓÃ»§Ê±¼ä
+	///çº¿ç¨‹ç”¨æˆ·æ—¶é—´
 	TShfeFtdcRatioType	UserTime;
 };
 
-///ĞéÄâ»úĞÅÏ¢²éÑ¯
+///è™šæ‹Ÿæœºä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryVMInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///ĞéÄâ»úĞÅÏ¢
+///è™šæ‹Ÿæœºä¿¡æ¯
 struct CShfeFtdcRspQryVMInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ĞéÄâ»úÃû³Æ
+	///è™šæ‹Ÿæœºåç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///ĞéÄâ»úÀàĞÍ
+	///è™šæ‹Ÿæœºç±»å‹
 	TShfeFtdcTypeObjectIDType	VmName;
-	///¹©Ó¦ÉÌ
+	///ä¾›åº”å•†
 	TShfeFtdcTypeObjectIDType	VmVendor;
-	///ĞéÄâ»ú°æ±¾
+	///è™šæ‹Ÿæœºç‰ˆæœ¬
 	TShfeFtdcTypeObjectIDType	VmVersion;
-	///Æô¶¯Ê±¼ä
+	///å¯åŠ¨æ—¶é—´
 	TShfeFtdcTypeObjectIDType	StartTime;
-	///Æô¶¯ÀàÂ·¾¶
+	///å¯åŠ¨ç±»è·¯å¾„
 	TShfeFtdcTypeFileContentType	BootClassPath;
-	///ÀàÂ·¾¶
+	///ç±»è·¯å¾„
 	TShfeFtdcTypeFileContentType	ClassPath;
-	///¿âÂ·¾¶
+	///åº“è·¯å¾„
 	TShfeFtdcTypeFileContentType	LibraryPath;
-	///Æô¶¯²ÎÊı
+	///å¯åŠ¨å‚æ•°
 	TShfeFtdcTypeFileContentType	Arguments;
 };
 
-///ĞéÄâ»úĞÅÏ¢
+///è™šæ‹Ÿæœºä¿¡æ¯
 struct CShfeFtdcRtnVMInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ĞéÄâ»úÃû³Æ
+	///è™šæ‹Ÿæœºåç§°
 	TShfeFtdcTypeObjectIDType	Name;
-	///ĞéÄâ»úÀàĞÍ
+	///è™šæ‹Ÿæœºç±»å‹
 	TShfeFtdcTypeObjectIDType	VmName;
-	///¹©Ó¦ÉÌ
+	///ä¾›åº”å•†
 	TShfeFtdcTypeObjectIDType	VmVendor;
-	///ĞéÄâ»ú°æ±¾
+	///è™šæ‹Ÿæœºç‰ˆæœ¬
 	TShfeFtdcTypeObjectIDType	VmVersion;
-	///Æô¶¯Ê±¼ä
+	///å¯åŠ¨æ—¶é—´
 	TShfeFtdcTypeObjectIDType	StartTime;
-	///Æô¶¯ÀàÂ·¾¶
+	///å¯åŠ¨ç±»è·¯å¾„
 	TShfeFtdcTypeFileContentType	BootClassPath;
-	///ÀàÂ·¾¶
+	///ç±»è·¯å¾„
 	TShfeFtdcTypeFileContentType	ClassPath;
-	///¿âÂ·¾¶
+	///åº“è·¯å¾„
 	TShfeFtdcTypeFileContentType	LibraryPath;
-	///Æô¶¯²ÎÊı
+	///å¯åŠ¨å‚æ•°
 	TShfeFtdcTypeFileContentType	Arguments;
 };
 
-///ÏµÍ³ÊôĞÔĞÅÏ¢²éÑ¯
+///ç³»ç»Ÿå±æ€§ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryPropertyInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///ÏµÍ³ÊôĞÔĞÅÏ¢
+///ç³»ç»Ÿå±æ€§ä¿¡æ¯
 struct CShfeFtdcRspQryPropertyInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeObjectIDType	Property;
-	///·Ö¸î±êÊ¶
+	///åˆ†å‰²æ ‡è¯†
 	TShfeFtdcTypeContLenType	ClipFlag;
-	///ÊôĞÔÖµ
+	///å±æ€§å€¼
 	TShfeFtdcFilePathNameType	Value;
 };
 
-///ÏµÍ³ÊôĞÔĞÅÏ¢
+///ç³»ç»Ÿå±æ€§ä¿¡æ¯
 struct CShfeFtdcRtnPropertyInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeObjectIDType	Property;
-	///·Ö¸î±êÊ¶
+	///åˆ†å‰²æ ‡è¯†
 	TShfeFtdcTypeContLenType	ClipFlag;
-	///ÊôĞÔÖµ
+	///å±æ€§å€¼
 	TShfeFtdcFilePathNameType	Value;
 };
 
-///ÏµÍ³ÄÚ´æ³ØĞÅÏ¢²éÑ¯
+///ç³»ç»Ÿå†…å­˜æ± ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryMemPoolInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///ÏµÍ³ÄÚ´æ³ØĞÅÏ¢
+///ç³»ç»Ÿå†…å­˜æ± ä¿¡æ¯
 struct CShfeFtdcRspQryMemPoolInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcCfgNameType	PoolName;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeChar10Type	Usage;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	committedbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	initbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	maxbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	usedbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeChar10Type	Type;
 };
 
-///ÏµÍ³ÄÚ´æ³ØĞÅÏ¢
+///ç³»ç»Ÿå†…å­˜æ± ä¿¡æ¯
 struct CShfeFtdcRtnMemPoolInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcCfgNameType	PoolName;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeChar10Type	Usage;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	committedbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	initbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	maxbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeCommandType	usedbytes;
-	///ÏµÍ³ÊôĞÔÃû
+	///ç³»ç»Ÿå±æ€§å
 	TShfeFtdcTypeChar10Type	Type;
 };
 
-///ÎÄ¼şÄÚÈİĞÅÏ¢²éÑ¯
+///æ–‡ä»¶å†…å®¹ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryFileContentInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///ÎÄ¼şÄÚÈİĞÅÏ¢
+///æ–‡ä»¶å†…å®¹ä¿¡æ¯
 struct CShfeFtdcRspQryFileContentInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcFilePathNameType	FileName;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcTypeFileContentType	FileContent;
 };
 
-///ÎÄ¼şÄÚÈİĞÅÏ¢
+///æ–‡ä»¶å†…å®¹ä¿¡æ¯
 struct CShfeFtdcRtnFileContentInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcFilePathNameType	FileName;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcTypeFileContentType	FileContent;
 };
 
-///Á¬½ÓĞÅÏ¢²éÑ¯
+///è¿æ¥ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryConnectionInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///Á¬½ÓĞÅÏ¢
+///è¿æ¥ä¿¡æ¯
 struct CShfeFtdcRspQryConnectionInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///·şÎñÏß³ÌÃû
+	///æœåŠ¡çº¿ç¨‹å
 	TShfeFtdcCfgNameType	ServiceName;
-	///µ±Ç°×´Ì¬
+	///å½“å‰çŠ¶æ€
 	TShfeFtdcTypeChar10Type	Stage;
-	///ÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcRatioType	RequestCount;
-	///ÀÛ¼Æ´íÎóÊı
+	///ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcRatioType	ErrorCount;
-	///ÀÛ¼Æ´¦ÀíÊ±³¤
+	///ç´¯è®¡å¤„ç†æ—¶é•¿
 	TShfeFtdcRatioType	ProcTime;
-	///ÀÛ¼Æ½ÓÊÕ×Ö½ÚÊı
+	///ç´¯è®¡æ¥æ”¶å­—èŠ‚æ•°
 	TShfeFtdcRatioType	BytesReceived;
-	///ÀÛ¼Æ·¢ËÍ×Ö½ÚÊı
+	///ç´¯è®¡å‘é€å­—èŠ‚æ•°
 	TShfeFtdcRatioType	BytesSent;
-	///Ô¶³ÌIPµØÖ·
+	///è¿œç¨‹IPåœ°å€
 	TShfeFtdcTypeObjectNameType	RemoteIP;
-	///×î´óÇëÇóURI
+	///æœ€å¤§è¯·æ±‚URI
 	TShfeFtdcAttrTypeType	MaxAccessURI;
 };
 
-///Á¬½ÓĞÅÏ¢
+///è¿æ¥ä¿¡æ¯
 struct CShfeFtdcRtnConnectionInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///·şÎñÏß³ÌÃû
+	///æœåŠ¡çº¿ç¨‹å
 	TShfeFtdcCfgNameType	ServiceName;
-	///µ±Ç°×´Ì¬
+	///å½“å‰çŠ¶æ€
 	TShfeFtdcTypeChar10Type	Stage;
-	///ÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcRatioType	RequestCount;
-	///ÀÛ¼Æ´íÎóÊı
+	///ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcRatioType	ErrorCount;
-	///ÀÛ¼Æ´¦ÀíÊ±³¤
+	///ç´¯è®¡å¤„ç†æ—¶é•¿
 	TShfeFtdcRatioType	ProcTime;
-	///ÀÛ¼Æ½ÓÊÕ×Ö½ÚÊı
+	///ç´¯è®¡æ¥æ”¶å­—èŠ‚æ•°
 	TShfeFtdcRatioType	BytesReceived;
-	///ÀÛ¼Æ·¢ËÍ×Ö½ÚÊı
+	///ç´¯è®¡å‘é€å­—èŠ‚æ•°
 	TShfeFtdcRatioType	BytesSent;
-	///Ô¶³ÌIPµØÖ·
+	///è¿œç¨‹IPåœ°å€
 	TShfeFtdcTypeObjectNameType	RemoteIP;
-	///×î´óÇëÇóURI
+	///æœ€å¤§è¯·æ±‚URI
 	TShfeFtdcAttrTypeType	MaxAccessURI;
 };
 
-///Á¬½ÓÆ÷ĞÅÏ¢²éÑ¯
+///è¿æ¥å™¨ä¿¡æ¯æŸ¥è¯¢
 struct CShfeFtdcReqQryConnectorInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
 };
 
-///Á¬½ÓÆ÷ĞÅÏ¢
+///è¿æ¥å™¨ä¿¡æ¯
 struct CShfeFtdcRspQryConnectorInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Á¬½ÓÆ÷Ãû³Æ
+	///è¿æ¥å™¨åç§°
 	TShfeFtdcTypeObjectNameType	Name;
-	///µ±Ç°´¦ÀíÏß³ÌÊı
+	///å½“å‰å¤„ç†çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	ThreadsCount;
-	///µ±Ç°·±Ã¦Ïß³ÌÊı
+	///å½“å‰ç¹å¿™çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	BusyThreadsCount;
-	///×î´óÏß³ÌÊı
+	///æœ€å¤§çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MaxThreads;
-	///×î´ó¿ÕÏĞÏß³ÌÊı
+	///æœ€å¤§ç©ºé—²çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MaxSpareThreads;
-	///×îĞ¡¿ÕÏĞÏß³ÌÊı
+	///æœ€å°ç©ºé—²çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MinSpareThreads;
-	///×î³¤Á¬½ÓÊ±¼ä
+	///æœ€é•¿è¿æ¥æ—¶é—´
 	TShfeFtdcTypeCommandType	MaxTime;
-	///×î³¤´¦ÀíÊ±¼ä
+	///æœ€é•¿å¤„ç†æ—¶é—´
 	TShfeFtdcTypeCommandType	MaxProcTime;
-	///ÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcTypeCommandType	RequestCount;
-	///ÀÛ¼Æ´íÎóÊı
+	///ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcTypeCommandType	ErrorCount;
-	///ÀÛ¼Æ½ÓÊÕ×Ö½ÚÊı
+	///ç´¯è®¡æ¥æ”¶å­—èŠ‚æ•°
 	TShfeFtdcTypeChar10Type	BytesReceived;
-	///ÀÛ¼Æ·¢ËÍ×Ö½ÚÊı
+	///ç´¯è®¡å‘é€å­—èŠ‚æ•°
 	TShfeFtdcTypeChar10Type	BytesSent;
 };
 
-///Á¬½ÓÆ÷ĞÅÏ¢
+///è¿æ¥å™¨ä¿¡æ¯
 struct CShfeFtdcRtnConnectorInfoField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Á¬½ÓÆ÷Ãû³Æ
+	///è¿æ¥å™¨åç§°
 	TShfeFtdcTypeObjectNameType	Name;
-	///µ±Ç°´¦ÀíÏß³ÌÊı
+	///å½“å‰å¤„ç†çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	ThreadsCount;
-	///µ±Ç°·±Ã¦Ïß³ÌÊı
+	///å½“å‰ç¹å¿™çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	BusyThreadsCount;
-	///×î´óÏß³ÌÊı
+	///æœ€å¤§çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MaxThreads;
-	///×î´ó¿ÕÏĞÏß³ÌÊı
+	///æœ€å¤§ç©ºé—²çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MaxSpareThreads;
-	///×îĞ¡¿ÕÏĞÏß³ÌÊı
+	///æœ€å°ç©ºé—²çº¿ç¨‹æ•°
 	TShfeFtdcTypeChar10Type	MinSpareThreads;
-	///×î³¤Á¬½ÓÊ±¼ä
+	///æœ€é•¿è¿æ¥æ—¶é—´
 	TShfeFtdcTypeCommandType	MaxTime;
-	///×î³¤´¦ÀíÊ±¼ä
+	///æœ€é•¿å¤„ç†æ—¶é—´
 	TShfeFtdcTypeCommandType	MaxProcTime;
-	///ÀÛ¼Æ½ÓÊÕÇëÇóÊı
+	///ç´¯è®¡æ¥æ”¶è¯·æ±‚æ•°
 	TShfeFtdcTypeCommandType	RequestCount;
-	///ÀÛ¼Æ´íÎóÊı
+	///ç´¯è®¡é”™è¯¯æ•°
 	TShfeFtdcTypeCommandType	ErrorCount;
-	///ÀÛ¼Æ½ÓÊÕ×Ö½ÚÊı
+	///ç´¯è®¡æ¥æ”¶å­—èŠ‚æ•°
 	TShfeFtdcTypeChar10Type	BytesReceived;
-	///ÀÛ¼Æ·¢ËÍ×Ö½ÚÊı
+	///ç´¯è®¡å‘é€å­—èŠ‚æ•°
 	TShfeFtdcTypeChar10Type	BytesSent;
 };
 
-///Êı¾İ¿â²éÑ¯
+///æ•°æ®åº“æŸ¥è¯¢
 struct CShfeFtdcReqQryDBQueryField
 {
-	///Êı¾İ¿âÊµÀı¶ÔÏóID
+	///æ•°æ®åº“å®ä¾‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///´æ´¢¹ı³ÌÃû
+	///å­˜å‚¨è¿‡ç¨‹å
 	TShfeFtdcAttrTypeType	AttrType;
 	///
 	TShfeFtdcDateType	StartDate;
@@ -6488,165 +6488,165 @@ struct CShfeFtdcReqQryDBQueryField
 	TShfeFtdcTimeType	EndTime;
 };
 
-///Êı¾İ¿â²éÑ¯Ó¦´ğ
+///æ•°æ®åº“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRspQryDBQueryField
 {
-	///Êı¾İ¿âÊµÀı¶ÔÏóID
+	///æ•°æ®åº“å®ä¾‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///´æ´¢¹ı³ÌÃû
+	///å­˜å‚¨è¿‡ç¨‹å
 	TShfeFtdcAttrTypeType	AttrType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Êı¾İ¿â²éÑ¯½á¹û
+	///æ•°æ®åº“æŸ¥è¯¢ç»“æœ
 	TShfeFtdcDBQueryResultType	DBQueryResult;
 };
 
-///Êı¾İ¿â²éÑ¯Ó¦´ğ
+///æ•°æ®åº“æŸ¥è¯¢åº”ç­”
 struct CShfeFtdcRtnDBQueryField
 {
-	///Êı¾İ¿âÊµÀı¶ÔÏóID
+	///æ•°æ®åº“å®ä¾‹å¯¹è±¡ID
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///´æ´¢¹ı³ÌÃû
+	///å­˜å‚¨è¿‡ç¨‹å
 	TShfeFtdcAttrTypeType	AttrType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Êı¾İ¿â²éÑ¯½á¹û
+	///æ•°æ®åº“æŸ¥è¯¢ç»“æœ
 	TShfeFtdcDBQueryResultType	DBQueryResult;
 };
 
-///Í¨ÓÃ·µ»ØÓ¦´ğ
+///é€šç”¨è¿”å›åº”ç­”
 struct CShfeFtdcSysGeneralFieldField
 {
-	///¼à¿ØÈÕÆÚ
+	///ç›‘æ§æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///¼à¿ØÊ±¼ä
+	///ç›‘æ§æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///×Ó¼à¿Ø¶ÔÏó
+	///å­ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	SubObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
-	///Í¨ÓÃ·µ»Ø×Ö¶Î
+	///é€šç”¨è¿”å›å­—æ®µ
 	TShfeFtdcGeneralResultType	Content;
 };
 
-///ÎÄ¼ş´«ÊäÇëÇó
+///æ–‡ä»¶ä¼ è¾“è¯·æ±‚
 struct CShfeFtdcReqQryGetFileField
 {
-	///ÎÄ¼şÃû³Æ
+	///æ–‡ä»¶åç§°
 	TShfeFtdcNetAttrTypeType	FileName;
-	///ÎÄ¼ş°æ±¾
+	///æ–‡ä»¶ç‰ˆæœ¬
 	TShfeFtdcFileVersionType	Version;
-	///ÎÄ¼şÆ«ÒÆ
+	///æ–‡ä»¶åç§»
 	TShfeFtdcOffsetType	Offset;
 };
 
-///ÎÄ¼ş´«ÊäÓ¦´ğ
+///æ–‡ä»¶ä¼ è¾“åº”ç­”
 struct CShfeFtdcRspQryGetFileField
 {
-	///ÎÄ¼şÃû³Æ
+	///æ–‡ä»¶åç§°
 	TShfeFtdcNetAttrTypeType	FileName;
-	///ÎÄ¼ş°æ±¾
+	///æ–‡ä»¶ç‰ˆæœ¬
 	TShfeFtdcFileVersionType	Version;
-	///ÎÄ¼şÆ«ÒÆ
+	///æ–‡ä»¶åç§»
 	TShfeFtdcOffsetType	Offset;
-	///CommentÖĞÊµ¼ÊÄÚÈİ³¤¶È
+	///Commentä¸­å®é™…å†…å®¹é•¿åº¦
 	TShfeFtdcCommLengthType	Length;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcFileCommentType	Comment;
 };
 
-///ÈÕÖ¾ÊÂ¼şĞŞ¸ÄÇëÇó
+///æ—¥å¿—äº‹ä»¶ä¿®æ”¹è¯·æ±‚
 struct CShfeFtdcReqQrySyslogEventUpdateField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼ş·¢ÉúÈÕÆÚ
+	///äº‹ä»¶å‘ç”Ÿæ—¥æœŸ
 	TShfeFtdcDateType	OccurDate;
-	///ÊÂ¼ş·¢ÉúÊ±¼ä
+	///äº‹ä»¶å‘ç”Ÿæ—¶é—´
 	TShfeFtdcTimeType	OccurTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///·¢ÉúÊÂ¼şµÄ¶ÔÏóIDÖ¸±ê
+	///å‘ç”Ÿäº‹ä»¶çš„å¯¹è±¡IDæŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÊÂ¼şÃû
+	///äº‹ä»¶å
 	TShfeFtdcTypeObjectIDType	EventName;
-	///ÊÂ¼ş±êÇ©
+	///äº‹ä»¶æ ‡ç­¾
 	TShfeFtdcVolumeType	EventNum;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventType;
-	///ÊÂ¼şÃèÊö
+	///äº‹ä»¶æè¿°
 	TShfeFtdcTypeDescriptionType	EventDes;
-	///Çå³ı±ê¼Ç
+	///æ¸…é™¤æ ‡è®°
 	TShfeFtdcTypeProcessFlagType	ProcessFlag;
-	///¾¯¸æ¼¶±ğ
+	///è­¦å‘Šçº§åˆ«
 	TShfeFtdcTypeWarningLevelType	WarningLevel;
-	///ÊÂ¼ş´¦ÀíÃèÊö
+	///äº‹ä»¶å¤„ç†æè¿°
 	TShfeFtdcTypeObjectIDType	EventDealDes;
-	///ÊÂ¼şÈ«Ãû
+	///äº‹ä»¶å…¨å
 	TShfeFtdcNetAttrTypeType	FullEventName;
 };
 
-///¸æ¾¯Ã÷Ï¸²éÑ¯
+///å‘Šè­¦æ˜ç»†æŸ¥è¯¢
 struct CShfeFtdcReqQryWarningQueryField
 {
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
 };
 
-///¸æ¾¯Ã÷Ï¸
+///å‘Šè­¦æ˜ç»†
 struct CShfeFtdcRspQryWarningQueryField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///Êı¾İ¿â²éÑ¯½á¹û
+	///æ•°æ®åº“æŸ¥è¯¢ç»“æœ
 	TShfeFtdcDBQueryResultType	DBQueryResult;
 };
 
-///¸æ¾¯Ã÷Ï¸
+///å‘Šè­¦æ˜ç»†
 struct CShfeFtdcRtnWarningQueryField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÊÂ¼şID
+	///äº‹ä»¶ID
 	TShfeFtdcVolumeType	EvendID;
-	///Êı¾İ¿â²éÑ¯½á¹û
+	///æ•°æ®åº“æŸ¥è¯¢ç»“æœ
 	TShfeFtdcDBQueryResultType	DBQueryResult;
 };
 
-///ÍøÕ¾·ÃÎÊ²éÑ¯
+///ç½‘ç«™è®¿é—®æŸ¥è¯¢
 struct CShfeFtdcReqQryWebVisitField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///¼à¿ØÖ¸±ê
+	///ç›‘æ§æŒ‡æ ‡
 	TShfeFtdcFilePathNameType	AttrType;
-	///ÆğÊ¼ÈÕÆÚ
+	///èµ·å§‹æ—¥æœŸ
 	TShfeFtdcDateType	BeginDate;
-	///ÆğÊ¼Ê±¼ä
+	///èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	BeginTime;
-	///½áÊøÈÕÆÚ
+	///ç»“æŸæ—¥æœŸ
 	TShfeFtdcDateType	EndDate;
-	///½áÊøÊ±¼ä
+	///ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	EndTime;
 };
 
-///Ö÷»úÅäÖÃ²éÑ¯¶©ÔÄÓ¦´ğ
+///ä¸»æœºé…ç½®æŸ¥è¯¢è®¢é˜…åº”ç­”
 struct CShfeFtdcRtnHostConfigField
 {
 	///
@@ -6663,328 +6663,328 @@ struct CShfeFtdcRtnHostConfigField
 	TShfeFtdcTypeObjectIDType	CfgAttend;
 };
 
-///¸æ¾¯¼¤»î±ä¸ü
+///å‘Šè­¦æ¿€æ´»å˜æ›´
 struct CShfeFtdcReqQryWarningActiveChangeField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¸æ¾¯ÊÂ¼ş²úÉú±êÖ¾Î»
+	///å‘Šè­¦äº‹ä»¶äº§ç”Ÿæ ‡å¿—ä½
 	TShfeFtdcTypeIsActiveType	WarningActive;
 };
 
-///¸æ¾¯¼¤»î±ä¸ü
+///å‘Šè­¦æ¿€æ´»å˜æ›´
 struct CShfeFtdcRspQryWarningActiveChangeField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¸æ¾¯ÊÂ¼ş²úÉú±êÖ¾Î»
+	///å‘Šè­¦äº‹ä»¶äº§ç”Ÿæ ‡å¿—ä½
 	TShfeFtdcTypeIsActiveType	WarningActive;
 };
 
-///¸æ¾¯¼¤»î±ä¸ü
+///å‘Šè­¦æ¿€æ´»å˜æ›´
 struct CShfeFtdcRtnWarningActiveChangeField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¸æ¾¯ÊÂ¼ş²úÉú±êÖ¾Î»
+	///å‘Šè­¦äº‹ä»¶äº§ç”Ÿæ ‡å¿—ä½
 	TShfeFtdcTypeIsActiveType	WarningActive;
 };
 
-///Í¨ÓÃ²Ù×÷
+///é€šç”¨æ“ä½œ
 struct CShfeFtdcReqQryGeneralOperateField
 {
-	///Í¨ÓÃ²Ù×÷ÀàĞÍ
+	///é€šç”¨æ“ä½œç±»å‹
 	TShfeFtdcGeneralOperateTypeType	GeneralOperateType;
-	///Í¨ÓÃ²Ù×÷±í
+	///é€šç”¨æ“ä½œè¡¨
 	TShfeFtdcGeneralOperateTableType	GeneralOperateTable;
-	///Í¨ÓÃ²Ù×÷Ñ¡Ïî
+	///é€šç”¨æ“ä½œé€‰é¡¹
 	TShfeFtdcGeneralOperateOptionType	GeneralOperateOption;
-	///Í¨ÓÃ²Ù×÷¼¯
+	///é€šç”¨æ“ä½œé›†
 	TShfeFtdcGeneralOperateSetType	GeneralOperateSet;
 };
 
-///Í¨ÓÃ²Ù×÷
+///é€šç”¨æ“ä½œ
 struct CShfeFtdcRspQryGeneralOperateField
 {
-	///Í¨ÓÃ²Ù×÷ÀàĞÍ
+	///é€šç”¨æ“ä½œç±»å‹
 	TShfeFtdcGeneralOperateTypeType	GeneralOperateType;
-	///Í¨ÓÃ²Ù×÷±í
+	///é€šç”¨æ“ä½œè¡¨
 	TShfeFtdcGeneralOperateTableType	GeneralOperateTable;
-	///Í¨ÓÃ²Ù×÷Ñ¡Ïî
+	///é€šç”¨æ“ä½œé€‰é¡¹
 	TShfeFtdcGeneralOperateOptionType	GeneralOperateOption;
-	///Í¨ÓÃ²Ù×÷¼¯
+	///é€šç”¨æ“ä½œé›†
 	TShfeFtdcGeneralOperateSetType	GeneralOperateSet;
 };
 
-///Í¨ÓÃ²Ù×÷
+///é€šç”¨æ“ä½œ
 struct CShfeFtdcRtnGeneralOperateField
 {
-	///Í¨ÓÃ²Ù×÷ÀàĞÍ
+	///é€šç”¨æ“ä½œç±»å‹
 	TShfeFtdcGeneralOperateTypeType	GeneralOperateType;
-	///Í¨ÓÃ²Ù×÷±í
+	///é€šç”¨æ“ä½œè¡¨
 	TShfeFtdcGeneralOperateTableType	GeneralOperateTable;
-	///Í¨ÓÃ²Ù×÷Ñ¡Ïî
+	///é€šç”¨æ“ä½œé€‰é¡¹
 	TShfeFtdcGeneralOperateOptionType	GeneralOperateOption;
-	///Í¨ÓÃ²Ù×÷¼¯
+	///é€šç”¨æ“ä½œé›†
 	TShfeFtdcGeneralOperateSetType	GeneralOperateSet;
 };
 
-///ÍøÂçÉè±¸Á¬½Ó¹ØÏµÇëÇó
+///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»è¯·æ±‚
 struct CShfeFtdcReqQryNetDeviceLinkedField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÈËÎª»®·ÖµÄÖ°ÄÜÇøÓò
+	///äººä¸ºåˆ’åˆ†çš„èŒèƒ½åŒºåŸŸ
 	TShfeFtdcTypeObjectIDType	FuctionArea;
-	///IPÂë
+	///IPç 
 	TShfeFtdcVolumeType	IPDECODE;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
 };
 
-///ÍøÂçÉè±¸Á¬½Ó¹ØÏµ
+///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»
 struct CShfeFtdcRspQryNetDeviceLinkedField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	NetDeviceID;
-	///Éè±¸¶Ë¿ÚID
+	///è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	NetPortID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	NetObjectID;
-	///¼à¿Ø¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	NetPortType;
-	///Á¬½ÓÉè±¸ID
+	///è¿æ¥è®¾å¤‡ID
 	TShfeFtdcVolumeType	LinkNetDeviceID;
-	///Á¬½ÓÉè±¸¶Ë¿ÚID
+	///è¿æ¥è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	LinkNetPortID;
-	///Á¬½Ó¶ÔÏó
+	///è¿æ¥å¯¹è±¡
 	TShfeFtdcNetObjectIDType	LinkNetObjectID;
-	///Á¬½Ó¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///è¿æ¥å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	LinkNetPortType;
-	///Á´½ÓÀ´Ô´
+	///é“¾æ¥æ¥æº
 	TShfeFtdcVolumeType	LinkSource;
 };
 
-///ÍøÂçÉè±¸Á¬½Ó¹ØÏµ
+///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»
 struct CShfeFtdcRtnNetDeviceLinkedField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	NetDeviceID;
-	///Éè±¸¶Ë¿ÚID
+	///è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	NetPortID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	NetObjectID;
-	///¼à¿Ø¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	NetPortType;
-	///Á¬½ÓÉè±¸ID
+	///è¿æ¥è®¾å¤‡ID
 	TShfeFtdcVolumeType	LinkNetDeviceID;
-	///Á¬½ÓÉè±¸¶Ë¿ÚID
+	///è¿æ¥è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	LinkNetPortID;
-	///Á¬½Ó¶ÔÏó
+	///è¿æ¥å¯¹è±¡
 	TShfeFtdcNetObjectIDType	LinkNetObjectID;
-	///Á¬½Ó¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///è¿æ¥å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	LinkNetPortType;
-	///Á´½ÓÀ´Ô´
+	///é“¾æ¥æ¥æº
 	TShfeFtdcVolumeType	LinkSource;
 };
 
-///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢ÇëÇó
+///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯è¯·æ±‚
 struct CShfeFtdcReqQryTradeUserLoginStatField
 {
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
 };
 
-///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢
+///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯
 struct CShfeFtdcRspQryTradeUserLoginStatField
 {
-	///µÇÂ¼ÈÕÆÚ
+	///ç™»å½•æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///µÇÂ¼Ê±¼ä
+	///ç™»å½•æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///Ç°ÖÃ»úÃû
+	///å‰ç½®æœºå
 	TShfeFtdcTypeObjectIDType	FrontId;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 struct CShfeFtdcReqQryTradeFrontOrderRttStatField
 {
-	///Ç°ÖÃ¶ÔÏó
+	///å‰ç½®å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥²éÑ¯ÆğÊ¼Ê±¼ä
+	///æŠ¥å•æŸ¥è¯¢èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	MonStartTime;
-	///±¨µ¥²éÑ¯½áÊøÊ±¼ä
+	///æŠ¥å•æŸ¥è¯¢ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	MonEndTime;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 struct CShfeFtdcRspQryTradeFrontOrderRttStatField
 {
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥Ê±¼ä
+	///æŠ¥å•æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ç°ÖÃ¶ÔÏó
+	///å‰ç½®å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///±¨µ¥Á¿
+	///æŠ¥å•é‡
 	TShfeFtdcLargeNumberType	OrderCount;
-	///±¨µ¥ÏìÓ¦Ê±¼äºÍ
+	///æŠ¥å•å“åº”æ—¶é—´å’Œ
 	TShfeFtdcLargeNumberType	OrderRttSum;
-	///×î´ó±¨µ¥ÏìÓ¦Ê±¼ä
+	///æœ€å¤§æŠ¥å•å“åº”æ—¶é—´
 	TShfeFtdcVolumeType	OrderMaxRtt;
-	///×îĞ¡±¨µ¥ÏìÓ¦Ê±¼ä
+	///æœ€å°æŠ¥å•å“åº”æ—¶é—´
 	TShfeFtdcVolumeType	OrderMinRtt;
-	///1ÃëÄÚÏìÓ¦Ê±¼ä¾ù²î
+	///1ç§’å†…å“åº”æ—¶é—´å‡å·®
 	TShfeFtdcVolumeType	OrderRttSqu;
-	///1ÃëÄÚÏìÓ¦Ê±¼ä·Ö²¼
+	///1ç§’å†…å“åº”æ—¶é—´åˆ†å¸ƒ
 	TShfeFtdcNumberListsType	OrderRttCutDistrib;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 struct CShfeFtdcRtnTradeFrontOrderRttStatField
 {
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥Ê±¼ä
+	///æŠ¥å•æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ç°ÖÃ¶ÔÏó
+	///å‰ç½®å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	ObjectID;
-	///±¨µ¥Á¿
+	///æŠ¥å•é‡
 	TShfeFtdcLargeNumberType	OrderCount;
-	///±¨µ¥ÏìÓ¦Ê±¼äºÍ
+	///æŠ¥å•å“åº”æ—¶é—´å’Œ
 	TShfeFtdcLargeNumberType	OrderRttSum;
-	///×î´ó±¨µ¥ÏìÓ¦Ê±¼ä
+	///æœ€å¤§æŠ¥å•å“åº”æ—¶é—´
 	TShfeFtdcVolumeType	OrderMaxRtt;
-	///×îĞ¡±¨µ¥ÏìÓ¦Ê±¼ä
+	///æœ€å°æŠ¥å•å“åº”æ—¶é—´
 	TShfeFtdcVolumeType	OrderMinRtt;
-	///1ÃëÄÚÏìÓ¦Ê±¼ä¾ù²î
+	///1ç§’å†…å“åº”æ—¶é—´å‡å·®
 	TShfeFtdcVolumeType	OrderRttSqu;
-	///1ÃëÄÚÏìÓ¦Ê±¼ä·Ö²¼
+	///1ç§’å†…å“åº”æ—¶é—´åˆ†å¸ƒ
 	TShfeFtdcNumberListsType	OrderRttCutDistrib;
 };
 
-///»áÔ±Ï¯Î»½»Ò××´Ì¬
+///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 struct CShfeFtdcReqQryParticTradeOrderStatesField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¨µ¥ÈÕÆÚ
+	///æŠ¥å•æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥²éÑ¯ÆğÊ¼Ê±¼ä
+	///æŠ¥å•æŸ¥è¯¢èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	MonStartTime;
-	///±¨µ¥²éÑ¯½áÊøÊ±¼ä
+	///æŠ¥å•æŸ¥è¯¢ç»“æŸæ—¶é—´
 	TShfeFtdcTimeType	MonEndTime;
 };
 
-///»áÔ±Ï¯Î»½»Ò××´Ì¬
+///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 struct CShfeFtdcRspQryParticTradeOrderStatesField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¨µ¥Í³¼ÆÈÕÆÚ
+	///æŠ¥å•ç»Ÿè®¡æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥Í³¼ÆÊ±¼ä
+	///æŠ¥å•ç»Ÿè®¡æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Í³¼ÆÊ±³¤(sec)
+	///ç»Ÿè®¡æ—¶é•¿(sec)
 	TShfeFtdcVolumeType	StaticWidth;
-	///Ç°ÖÃID
+	///å‰ç½®ID
 	TShfeFtdcVolumeType	FrontID;
-	///±¨µ¥Êı
+	///æŠ¥å•æ•°
 	TShfeFtdcVolumeType	OrderCount;
-	///³·µ¥Êı
+	///æ’¤å•æ•°
 	TShfeFtdcVolumeType	CancleCount;
-	///²éÑ¯Êı
+	///æŸ¥è¯¢æ•°
 	TShfeFtdcVolumeType	QueryCount;
-	///³É½»Êı
+	///æˆäº¤æ•°
 	TShfeFtdcVolumeType	TradeCount;
-	///³É½»½ğ¶î
+	///æˆäº¤é‡‘é¢
 	TShfeFtdcVolumeType	TradeMoney;
-	///×î´ó±¨µ¥Êı
+	///æœ€å¤§æŠ¥å•æ•°
 	TShfeFtdcVolumeType	OrderCntMax;
-	///×î´ó³·µ¥Êı
+	///æœ€å¤§æ’¤å•æ•°
 	TShfeFtdcVolumeType	CancleCntMax;
-	///×î´ó²éÑ¯Êı
+	///æœ€å¤§æŸ¥è¯¢æ•°
 	TShfeFtdcVolumeType	QueryCntMax;
-	///×î´ó³É½»Êı
+	///æœ€å¤§æˆäº¤æ•°
 	TShfeFtdcVolumeType	TradeCntMax;
-	///×î´ó³É½»½ğ¶î
+	///æœ€å¤§æˆäº¤é‡‘é¢
 	TShfeFtdcVolumeType	TradeMoneyMax;
 };
 
-///»áÔ±Ï¯Î»½»Ò××´Ì¬
+///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 struct CShfeFtdcRtnParticTradeOrderStatesField
 {
-	///»áÔ±´úÂë
+	///ä¼šå‘˜ä»£ç 
 	TShfeFtdcParticipantIDType	ParticipantID;
-	///½»Ò×ÓÃ»§´úÂë
+	///äº¤æ˜“ç”¨æˆ·ä»£ç 
 	TShfeFtdcUserIDType	UserID;
-	///±¨µ¥Í³¼ÆÈÕÆÚ
+	///æŠ¥å•ç»Ÿè®¡æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///±¨µ¥Í³¼ÆÊ±¼ä
+	///æŠ¥å•ç»Ÿè®¡æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Í³¼ÆÊ±³¤(sec)
+	///ç»Ÿè®¡æ—¶é•¿(sec)
 	TShfeFtdcVolumeType	StaticWidth;
-	///Ç°ÖÃID
+	///å‰ç½®ID
 	TShfeFtdcVolumeType	FrontID;
-	///±¨µ¥Êı
+	///æŠ¥å•æ•°
 	TShfeFtdcVolumeType	OrderCount;
-	///³·µ¥Êı
+	///æ’¤å•æ•°
 	TShfeFtdcVolumeType	CancleCount;
-	///²éÑ¯Êı
+	///æŸ¥è¯¢æ•°
 	TShfeFtdcVolumeType	QueryCount;
-	///³É½»Êı
+	///æˆäº¤æ•°
 	TShfeFtdcVolumeType	TradeCount;
-	///³É½»½ğ¶î
+	///æˆäº¤é‡‘é¢
 	TShfeFtdcVolumeType	TradeMoney;
-	///×î´ó±¨µ¥Êı
+	///æœ€å¤§æŠ¥å•æ•°
 	TShfeFtdcVolumeType	OrderCntMax;
-	///×î´ó³·µ¥Êı
+	///æœ€å¤§æ’¤å•æ•°
 	TShfeFtdcVolumeType	CancleCntMax;
-	///×î´ó²éÑ¯Êı
+	///æœ€å¤§æŸ¥è¯¢æ•°
 	TShfeFtdcVolumeType	QueryCntMax;
-	///×î´ó³É½»Êı
+	///æœ€å¤§æˆäº¤æ•°
 	TShfeFtdcVolumeType	TradeCntMax;
-	///×î´ó³É½»½ğ¶î
+	///æœ€å¤§æˆäº¤é‡‘é¢
 	TShfeFtdcVolumeType	TradeMoneyMax;
 };
 
-///ÏµÍ³Â·ÓÉĞÅÏ¢
+///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 struct CShfeFtdcReqQryRouterInfoField
 {
 	///
@@ -6997,77 +6997,77 @@ struct CShfeFtdcReqQryRouterInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///ÏµÍ³Â·ÓÉĞÅÏ¢
+///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 struct CShfeFtdcRspQryRouterInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Éè±¸½Ó¿ÚÃû
+	///è®¾å¤‡æ¥å£å
 	TShfeFtdcTypeCommandType	Dev;
-	///Ä¿±êÍø¶ÎipµØÖ·
+	///ç›®æ ‡ç½‘æ®µipåœ°å€
 	TShfeFtdcIPAddressType	Destination;
-	///Íø¹ØipµØÖ·
+	///ç½‘å…³ipåœ°å€
 	TShfeFtdcIPAddressType	Gateway;
-	///ÑÚÂëipµØÖ·
+	///æ©ç ipåœ°å€
 	TShfeFtdcIPAddressType	Mask;
-	///ÍøÂç×´Ì¬
+	///ç½‘ç»œçŠ¶æ€
 	TShfeFtdcTypeLanStatusType	Flag;
-	///¹ØÁª¼ÆÊı
+	///å…³è”è®¡æ•°
 	TShfeFtdcVolumeType	RefCnt;
-	///Ê¹ÓÃ¼ÆÊı
+	///ä½¿ç”¨è®¡æ•°
 	TShfeFtdcVolumeType	Use;
-	///metricÖµ
+	///metricå€¼
 	TShfeFtdcVolumeType	Metric;
-	///mtuÖµ
+	///mtuå€¼
 	TShfeFtdcVolumeType	Mtu;
-	///winÖµ
+	///winå€¼
 	TShfeFtdcVolumeType	Win;
-	///rttÖµ
+	///rttå€¼
 	TShfeFtdcVolumeType	Rtt;
 };
 
-///ÏµÍ³Â·ÓÉĞÅÏ¢
+///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 struct CShfeFtdcRtnRouterInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Éè±¸½Ó¿ÚÃû
+	///è®¾å¤‡æ¥å£å
 	TShfeFtdcTypeCommandType	Dev;
-	///Ä¿±êÍø¶ÎipµØÖ·
+	///ç›®æ ‡ç½‘æ®µipåœ°å€
 	TShfeFtdcIPAddressType	Destination;
-	///Íø¹ØipµØÖ·
+	///ç½‘å…³ipåœ°å€
 	TShfeFtdcIPAddressType	Gateway;
-	///ÑÚÂëipµØÖ·
+	///æ©ç ipåœ°å€
 	TShfeFtdcIPAddressType	Mask;
-	///ÍøÂç×´Ì¬
+	///ç½‘ç»œçŠ¶æ€
 	TShfeFtdcTypeLanStatusType	Flag;
-	///¹ØÁª¼ÆÊı
+	///å…³è”è®¡æ•°
 	TShfeFtdcVolumeType	RefCnt;
-	///Ê¹ÓÃ¼ÆÊı
+	///ä½¿ç”¨è®¡æ•°
 	TShfeFtdcVolumeType	Use;
-	///metricÖµ
+	///metricå€¼
 	TShfeFtdcVolumeType	Metric;
-	///mtuÖµ
+	///mtuå€¼
 	TShfeFtdcVolumeType	Mtu;
-	///winÖµ
+	///winå€¼
 	TShfeFtdcVolumeType	Win;
-	///rttÖµ
+	///rttå€¼
 	TShfeFtdcVolumeType	Rtt;
 };
 
-///´ÅÅÌI/OĞÅÏ¢
+///ç£ç›˜I/Oä¿¡æ¯
 struct CShfeFtdcReqQryDiskIOField
 {
 	///
@@ -7080,77 +7080,77 @@ struct CShfeFtdcReqQryDiskIOField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///´ÅÅÌI/OĞÅÏ¢
+///ç£ç›˜I/Oä¿¡æ¯
 struct CShfeFtdcRspQryDiskIOField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///·ÖÇøÃû
+	///åˆ†åŒºå
 	TShfeFtdcTypeCommandType	PartName;
-	///Ã¿ÃëReadMergeÊı
+	///æ¯ç§’ReadMergeæ•°
 	TShfeFtdcPriceType	ReadMerges;
-	///Ã¿ÃëWriteMergeÊı
+	///æ¯ç§’WriteMergeæ•°
 	TShfeFtdcPriceType	WriteMerges;
-	///Ã¿ÃëReadIOÊı
+	///æ¯ç§’ReadIOæ•°
 	TShfeFtdcPriceType	ReadIOs;
-	///Ã¿ÃëWriteIOÊı
+	///æ¯ç§’WriteIOæ•°
 	TShfeFtdcPriceType	WriteIOs;
-	///Ã¿ÃëRead×Ö½ÚÊı
+	///æ¯ç§’Readå­—èŠ‚æ•°
 	TShfeFtdcPriceType	ReadKBs;
-	///Ã¿ÃëWrite×Ö½ÚÊı
+	///æ¯ç§’Writeå­—èŠ‚æ•°
 	TShfeFtdcPriceType	WriteKBs;
-	///SizeÖµ
+	///Sizeå€¼
 	TShfeFtdcPriceType	SizeVal;
-	///QueueÖµ
+	///Queueå€¼
 	TShfeFtdcPriceType	QueueVal;
-	///Svc_tÖµ
+	///Svc_tå€¼
 	TShfeFtdcPriceType	Svc_t;
-	///·±Ã¦°Ù·ÖÂÊ
+	///ç¹å¿™ç™¾åˆ†ç‡
 	TShfeFtdcRatioType	Busy;
 };
 
-///´ÅÅÌI/OĞÅÏ¢
+///ç£ç›˜I/Oä¿¡æ¯
 struct CShfeFtdcRtnDiskIOField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///·ÖÇøÃû
+	///åˆ†åŒºå
 	TShfeFtdcTypeCommandType	PartName;
-	///Ã¿ÃëReadMergeÊı
+	///æ¯ç§’ReadMergeæ•°
 	TShfeFtdcPriceType	ReadMerges;
-	///Ã¿ÃëWriteMergeÊı
+	///æ¯ç§’WriteMergeæ•°
 	TShfeFtdcPriceType	WriteMerges;
-	///Ã¿ÃëReadIOÊı
+	///æ¯ç§’ReadIOæ•°
 	TShfeFtdcPriceType	ReadIOs;
-	///Ã¿ÃëWriteIOÊı
+	///æ¯ç§’WriteIOæ•°
 	TShfeFtdcPriceType	WriteIOs;
-	///Ã¿ÃëRead×Ö½ÚÊı
+	///æ¯ç§’Readå­—èŠ‚æ•°
 	TShfeFtdcPriceType	ReadKBs;
-	///Ã¿ÃëWrite×Ö½ÚÊı
+	///æ¯ç§’Writeå­—èŠ‚æ•°
 	TShfeFtdcPriceType	WriteKBs;
-	///SizeÖµ
+	///Sizeå€¼
 	TShfeFtdcPriceType	SizeVal;
-	///QueueÖµ
+	///Queueå€¼
 	TShfeFtdcPriceType	QueueVal;
-	///Svc_tÖµ
+	///Svc_tå€¼
 	TShfeFtdcPriceType	Svc_t;
-	///·±Ã¦°Ù·ÖÂÊ
+	///ç¹å¿™ç™¾åˆ†ç‡
 	TShfeFtdcRatioType	Busy;
 };
 
-///ÏµÍ³×´Ì¬ĞÅÏ¢
+///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 struct CShfeFtdcReqQryStatInfoField
 {
 	///
@@ -7163,736 +7163,736 @@ struct CShfeFtdcReqQryStatInfoField
 	TShfeFtdcDateType	EndDate;
 	///
 	TShfeFtdcTimeType	EndTime;
-	///³ÖĞø¶©ÔÄ±ê¼Ç
+	///æŒç»­è®¢é˜…æ ‡è®°
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
 };
 
-///ÏµÍ³×´Ì¬ĞÅÏ¢
+///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 struct CShfeFtdcRspQryStatInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///»îÔ¾½ø³ÌÊı
+	///æ´»è·ƒè¿›ç¨‹æ•°
 	TShfeFtdcVolumeType	ProcRun;
-	///×èÈû½ø³ÌÊı
+	///é˜»å¡è¿›ç¨‹æ•°
 	TShfeFtdcVolumeType	ProcBlk;
-	///Ã¿ÃëÓÉ´ÅÅÌ½øÈëSwapµÄÒ³ÃæÊı
+	///æ¯ç§’ç”±ç£ç›˜è¿›å…¥Swapçš„é¡µé¢æ•°
 	TShfeFtdcVolumeType	SwapIn;
-	///Ã¿ÃëÓÉSwap½øÈë´ÅÅÌµÄÒ³ÃæÊı
+	///æ¯ç§’ç”±Swapè¿›å…¥ç£ç›˜çš„é¡µé¢æ•°
 	TShfeFtdcVolumeType	SwapOut;
-	///Ã¿Ãë´Ó¿éÉè±¸¶ÁÈëµÄBlockÊı
+	///æ¯ç§’ä»å—è®¾å¤‡è¯»å…¥çš„Blockæ•°
 	TShfeFtdcVolumeType	BlockIn;
-	///Ã¿ÃëÏò¿éÉè±¸Ğ´ÈëµÄBlockÊı
+	///æ¯ç§’å‘å—è®¾å¤‡å†™å…¥çš„Blockæ•°
 	TShfeFtdcVolumeType	BlockOut;
-	///Ã¿ÃëÉè±¸ÖĞ¶Î´ÎÊı
+	///æ¯ç§’è®¾å¤‡ä¸­æ®µæ¬¡æ•°
 	TShfeFtdcVolumeType	Inter;
-	///Ã¿ÃëÉÏÏÂÎÄÇĞ»»´ÎÊı
+	///æ¯ç§’ä¸Šä¸‹æ–‡åˆ‡æ¢æ¬¡æ•°
 	TShfeFtdcVolumeType	Context;
-	///ÓÃ»§Ì¬CPU°Ù·ÖÂÊ
+	///ç”¨æˆ·æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUUser;
-	///ÏµÍ³Ì¬CPU°Ù·ÖÂÊ
+	///ç³»ç»Ÿæ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUSys;
-	///¿ÕÏĞÌ¬CPU°Ù·ÖÂÊ
+	///ç©ºé—²æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUIdle;
-	///IOµÈ´ıÌ¬CPU°Ù·ÖÂÊ
+	///IOç­‰å¾…æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUIOWait;
-	///ÇÔÈ¡Ì¬CPU°Ù·ÖÂÊ
+	///çªƒå–æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUSteal;
 };
 
-///ÏµÍ³×´Ì¬ĞÅÏ¢
+///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 struct CShfeFtdcRtnStatInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///»îÔ¾½ø³ÌÊı
+	///æ´»è·ƒè¿›ç¨‹æ•°
 	TShfeFtdcVolumeType	ProcRun;
-	///×èÈû½ø³ÌÊı
+	///é˜»å¡è¿›ç¨‹æ•°
 	TShfeFtdcVolumeType	ProcBlk;
-	///Ã¿ÃëÓÉ´ÅÅÌ½øÈëSwapµÄÒ³ÃæÊı
+	///æ¯ç§’ç”±ç£ç›˜è¿›å…¥Swapçš„é¡µé¢æ•°
 	TShfeFtdcVolumeType	SwapIn;
-	///Ã¿ÃëÓÉSwap½øÈë´ÅÅÌµÄÒ³ÃæÊı
+	///æ¯ç§’ç”±Swapè¿›å…¥ç£ç›˜çš„é¡µé¢æ•°
 	TShfeFtdcVolumeType	SwapOut;
-	///Ã¿Ãë´Ó¿éÉè±¸¶ÁÈëµÄBlockÊı
+	///æ¯ç§’ä»å—è®¾å¤‡è¯»å…¥çš„Blockæ•°
 	TShfeFtdcVolumeType	BlockIn;
-	///Ã¿ÃëÏò¿éÉè±¸Ğ´ÈëµÄBlockÊı
+	///æ¯ç§’å‘å—è®¾å¤‡å†™å…¥çš„Blockæ•°
 	TShfeFtdcVolumeType	BlockOut;
-	///Ã¿ÃëÉè±¸ÖĞ¶Î´ÎÊı
+	///æ¯ç§’è®¾å¤‡ä¸­æ®µæ¬¡æ•°
 	TShfeFtdcVolumeType	Inter;
-	///Ã¿ÃëÉÏÏÂÎÄÇĞ»»´ÎÊı
+	///æ¯ç§’ä¸Šä¸‹æ–‡åˆ‡æ¢æ¬¡æ•°
 	TShfeFtdcVolumeType	Context;
-	///ÓÃ»§Ì¬CPU°Ù·ÖÂÊ
+	///ç”¨æˆ·æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUUser;
-	///ÏµÍ³Ì¬CPU°Ù·ÖÂÊ
+	///ç³»ç»Ÿæ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUSys;
-	///¿ÕÏĞÌ¬CPU°Ù·ÖÂÊ
+	///ç©ºé—²æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUIdle;
-	///IOµÈ´ıÌ¬CPU°Ù·ÖÂÊ
+	///IOç­‰å¾…æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUIOWait;
-	///ÇÔÈ¡Ì¬CPU°Ù·ÖÂÊ
+	///çªƒå–æ€CPUç™¾åˆ†ç‡
 	TShfeFtdcRatioType	CPUSteal;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 struct CShfeFtdcReqQryTradeOrderRttCutLineField
 {
-	///Çø¼äÉúĞ§ÈÕÆÚ
+	///åŒºé—´ç”Ÿæ•ˆæ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Çø¼äĞŞ¸ÄÊ±¼ä
+	///åŒºé—´ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ĞŞ¸ÄÓÃ»§¶ÔÏó
+	///ä¿®æ”¹ç”¨æˆ·å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	UserName;
-	///ÏìÓ¦Ê±¼ä·Ö²¼
+	///å“åº”æ—¶é—´åˆ†å¸ƒ
 	TShfeFtdcNumberListsType	OrderRttCutLine;
-	///Í³¼Æ¿ÅÁ£¶È
+	///ç»Ÿè®¡é¢—ç²’åº¦
 	TShfeFtdcVolumeType	OrderRttWidth;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 struct CShfeFtdcRspQryTradeOrderRttCutLineField
 {
-	///Çø¼äÉúĞ§ÈÕÆÚ
+	///åŒºé—´ç”Ÿæ•ˆæ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Çø¼äĞŞ¸ÄÊ±¼ä
+	///åŒºé—´ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ĞŞ¸ÄÓÃ»§¶ÔÏó
+	///ä¿®æ”¹ç”¨æˆ·å¯¹è±¡
 	TShfeFtdcTypeObjectIDType	UserName;
-	///ÏìÓ¦Ê±¼ä·Ö²¼
+	///å“åº”æ—¶é—´åˆ†å¸ƒ
 	TShfeFtdcNumberListsType	OrderRttCutLine;
-	///Í³¼Æ¿ÅÁ£¶È
+	///ç»Ÿè®¡é¢—ç²’åº¦
 	TShfeFtdcVolumeType	OrderRttWidth;
 };
 
-///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 struct CShfeFtdcRtnTradeOrderRttCutLineField
 {
-	///Çø¼äÉúĞ§ÈÕÆÚ
+	///åŒºé—´ç”Ÿæ•ˆæ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ÏìÓ¦Ê±¼ä·Ö²¼
+	///å“åº”æ—¶é—´åˆ†å¸ƒ
 	TShfeFtdcNumberListsType	OrderRttCutLine;
 };
 
-///»áÔ±¿Í»§ĞÅÏ¢
+///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 struct CShfeFtdcReqQryClientInfoField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
 };
 
-///»áÔ±¿Í»§ĞÅÏ¢
+///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 struct CShfeFtdcRspQryClientInfoField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///»áÔ±¿Í»§ĞÅÏ¢
+///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 struct CShfeFtdcRtnClientInfoField
 {
-	///¿Í»§´úÂë
+	///å®¢æˆ·ä»£ç 
 	TShfeFtdcClientIDType	ClientID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///Ö¤¼şÀàĞÍ
+	///è¯ä»¶ç±»å‹
 	TShfeFtdcIdCardTypeType	IdentifiedCardType;
-	///Ö¤¼şºÅÂë
+	///è¯ä»¶å·ç 
 	TShfeFtdcIdentifiedCardNoType	IdentifiedCardNo;
-	///½»Ò×½ÇÉ«
+	///äº¤æ˜“è§’è‰²
 	TShfeFtdcTradingRoleType	TradingRole;
-	///¿Í»§ÀàĞÍ
+	///å®¢æˆ·ç±»å‹
 	TShfeFtdcClientTypeType	ClientType;
-	///ÊÇ·ñ»îÔ¾
+	///æ˜¯å¦æ´»è·ƒ
 	TShfeFtdcBoolType	IsActive;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcDBOperationTypeType	OperationType;
 };
 
-///ÊÂ¼şÃèÊöÇëÇó
+///äº‹ä»¶æè¿°è¯·æ±‚
 struct CShfeFtdcReqQryEventDescriptionField
 {
-	///´¦ÀíIDºÅ
+	///å¤„ç†IDå·
 	TShfeFtdcEventDesIDType	EventDesID;
-	///ÊÂ¼ş´¦ÀíÈË
+	///äº‹ä»¶å¤„ç†äºº
 	TShfeFtdcTypeObjectIDType	UserName;
-	///ÊÂ¼ş´¦ÀíÈÕÆÚ
+	///äº‹ä»¶å¤„ç†æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ÊÂ¼ş´¦ÀíÊ±¼ä
+	///äº‹ä»¶å¤„ç†æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÃèÊö
+	///å¤„ç†æè¿°
 	TShfeFtdcDescriptionType	EventDes;
 };
 
-///ÊÂ¼şÃèÊö·µ»ØÇëÇó
+///äº‹ä»¶æè¿°è¿”å›è¯·æ±‚
 struct CShfeFtdcRspQryEventDescriptionField
 {
-	///´¦ÀíIDºÅ
+	///å¤„ç†IDå·
 	TShfeFtdcEventDesIDType	EventDesID;
-	///ÊÂ¼ş´¦ÀíÈË
+	///äº‹ä»¶å¤„ç†äºº
 	TShfeFtdcTypeObjectIDType	UserName;
-	///ÊÂ¼ş´¦ÀíÈÕÆÚ
+	///äº‹ä»¶å¤„ç†æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ÊÂ¼ş´¦ÀíÊ±¼ä
+	///äº‹ä»¶å¤„ç†æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÃèÊö
+	///å¤„ç†æè¿°
 	TShfeFtdcDescriptionType	EventDes;
 };
 
-///ÊÂ¼şÃèÊö¶©ÔÄ
+///äº‹ä»¶æè¿°è®¢é˜…
 struct CShfeFtdcRtnEventDescriptionField
 {
-	///´¦ÀíIDºÅ
+	///å¤„ç†IDå·
 	TShfeFtdcEventDesIDType	EventDesID;
-	///ÊÂ¼ş´¦ÀíÈË
+	///äº‹ä»¶å¤„ç†äºº
 	TShfeFtdcTypeObjectIDType	UserName;
-	///ÊÂ¼ş´¦ÀíÈÕÆÚ
+	///äº‹ä»¶å¤„ç†æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ÊÂ¼ş´¦ÀíÊ±¼ä
+	///äº‹ä»¶å¤„ç†æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÃèÊö
+	///å¤„ç†æè¿°
 	TShfeFtdcDescriptionType	EventDes;
 };
 
-///Ç°ÖÃÎ¨Ò»IDÇëÇó
+///å‰ç½®å”¯ä¸€IDè¯·æ±‚
 struct CShfeFtdcReqQryFrontUniqueIDField
 {
-	///Ç°ÖÃÎ¨Ò»ID±àºÅ
+	///å‰ç½®å”¯ä¸€IDç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///Ç°ÖÃ±àºÅÈ«Ãû
+	///å‰ç½®ç¼–å·å…¨å
 	TShfeFtdcFrontSerialNumType	FrontName;
 };
 
-///Ç°ÖÃÎ¨Ò»ID·µ»Ø
+///å‰ç½®å”¯ä¸€IDè¿”å›
 struct CShfeFtdcRspQryFrontUniqueIDField
 {
-	///Ç°ÖÃÎ¨Ò»ID±àºÅ
+	///å‰ç½®å”¯ä¸€IDç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///Ç°ÖÃ±àºÅÈ«Ãû
+	///å‰ç½®ç¼–å·å…¨å
 	TShfeFtdcFrontSerialNumType	FrontName;
 };
 
-///¶©ÔÄÇ°ÖÃÎ¨Ò»IDĞÅÏ¢
+///è®¢é˜…å‰ç½®å”¯ä¸€IDä¿¡æ¯
 struct CShfeFtdcRtnFrontUniqueIDField
 {
-	///Ç°ÖÃÎ¨Ò»ID±àºÅ
+	///å‰ç½®å”¯ä¸€IDç¼–å·
 	TShfeFtdcFrontIDType	FrontID;
-	///Ç°ÖÃ±àºÅÈ«Ãû
+	///å‰ç½®ç¼–å·å…¨å
 	TShfeFtdcFrontSerialNumType	FrontName;
 };
 
-///»áÔ±ÏßÂ·µØÖ·±ä¸üÇëÇó
+///ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´è¯·æ±‚
 struct CShfeFtdcReqQryNetPartyLinkAddrChangeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///ID
 	TShfeFtdcVolumeType	RelationID;
-	///±ä¸üÇ°µØÖ·
+	///å˜æ›´å‰åœ°å€
 	TShfeFtdcNetAttrTypeType	OLDADDRESS;
-	///±ä¸üºóµØÖ·
+	///å˜æ›´ååœ°å€
 	TShfeFtdcNetAttrTypeType	NEWADDRESS;
-	///²Ù×÷ÈË
+	///æ“ä½œäºº
 	TShfeFtdcCfgNameType	OPERATOR;
-	///ĞŞ¸ÄÈÕÆÚ
+	///ä¿®æ”¹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ĞŞ¸ÄÊ±¼ä
+	///ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
-///»áÔ±ÏßÂ·µØÖ·±ä¸ü»ØÓ¦
+///ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´å›åº”
 struct CShfeFtdcRspQryNetPartyLinkAddrChangeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///ID
 	TShfeFtdcVolumeType	RelationID;
-	///±ä¸üÇ°µØÖ·
+	///å˜æ›´å‰åœ°å€
 	TShfeFtdcNetAttrTypeType	OLDADDRESS;
-	///±ä¸üºóµØÖ·
+	///å˜æ›´ååœ°å€
 	TShfeFtdcNetAttrTypeType	NEWADDRESS;
-	///²Ù×÷ÈË
+	///æ“ä½œäºº
 	TShfeFtdcCfgNameType	OPERATOR;
-	///ĞŞ¸ÄÈÕÆÚ
+	///ä¿®æ”¹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ĞŞ¸ÄÊ±¼ä
+	///ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
-///¶©ÔÄ»áÔ±ÏßÂ·µØÖ·±ä¸üĞÅÏ¢
+///è®¢é˜…ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´ä¿¡æ¯
 struct CShfeFtdcRtnNetPartyLinkAddrChangeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///ID
 	TShfeFtdcVolumeType	RelationID;
-	///±ä¸üÇ°µØÖ·
+	///å˜æ›´å‰åœ°å€
 	TShfeFtdcNetAttrTypeType	OLDADDRESS;
-	///±ä¸üºóµØÖ·
+	///å˜æ›´ååœ°å€
 	TShfeFtdcNetAttrTypeType	NEWADDRESS;
-	///²Ù×÷ÈË
+	///æ“ä½œäºº
 	TShfeFtdcCfgNameType	OPERATOR;
-	///ĞŞ¸ÄÈÕÆÚ
+	///ä¿®æ”¹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ĞŞ¸ÄÊ±¼ä
+	///ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
-///ÇëÇóÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+///è¯·æ±‚å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 struct CShfeFtdcReqQryNetDelPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///Ó¦´ğÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+///åº”ç­”å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 struct CShfeFtdcRspQryNetDelPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///¶©ÔÄÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+///è®¢é˜…å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 struct CShfeFtdcRtnNetDelPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///ÇëÇóÍøÂçĞÔÄÜÅÅĞò
+///è¯·æ±‚ç½‘ç»œæ€§èƒ½æ’åº
 struct CShfeFtdcReqQryPerformanceTopField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcAttrTypeType	AttrType;
-	///ÍøÂçÇøÓò
+	///ç½‘ç»œåŒºåŸŸ
 	TShfeFtdcNetAreaType	NetArea;
-	///ÍøÂç×ÓÇøÓò
+	///ç½‘ç»œå­åŒºåŸŸ
 	TShfeFtdcNetSubAreaType	NetSubArea;
-	///²éÑ¯¹Ø¼ü×Ö
+	///æŸ¥è¯¢å…³é”®å­—
 	TShfeFtdcKeyWordType	KeyWord;
-	///ËùÅÅĞòÖµÀàĞÍ
+	///æ‰€æ’åºå€¼ç±»å‹
 	TShfeFtdcSortValueType	SortValue;
-	///ÅÅĞòÀàĞÍ
+	///æ’åºç±»å‹
 	TShfeFtdcSortTypeType	SortType;
-	///²éÑ¯Ê±¼äÀàĞÍ
+	///æŸ¥è¯¢æ—¶é—´ç±»å‹
 	TShfeFtdcDuringTimeTypeType	DuringTimeType;
-	///²éÑ¯Ê±¼äÖµ
+	///æŸ¥è¯¢æ—¶é—´å€¼
 	TShfeFtdcDuringTimeValueType	DuringTimeValue;
-	///Ç°NµÄÖµ
+	///å‰Nçš„å€¼
 	TShfeFtdcTopNType	TopN;
-	///ĞÔÄÜÅÅĞò½á¹û
+	///æ€§èƒ½æ’åºç»“æœ
 	TShfeFtdcTopResultType	TopResult;
 };
 
-///·µ»ØÍøÂçĞÔÄÜÅÅĞò
+///è¿”å›ç½‘ç»œæ€§èƒ½æ’åº
 struct CShfeFtdcRspQryPerformanceTopField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcAttrTypeType	AttrType;
-	///ÍøÂçÇøÓò
+	///ç½‘ç»œåŒºåŸŸ
 	TShfeFtdcNetAreaType	NetArea;
-	///ÍøÂç×ÓÇøÓò
+	///ç½‘ç»œå­åŒºåŸŸ
 	TShfeFtdcNetSubAreaType	NetSubArea;
-	///²éÑ¯¹Ø¼ü×Ö
+	///æŸ¥è¯¢å…³é”®å­—
 	TShfeFtdcKeyWordType	KeyWord;
-	///ËùÅÅĞòÖµÀàĞÍ
+	///æ‰€æ’åºå€¼ç±»å‹
 	TShfeFtdcSortValueType	SortValue;
-	///ÅÅĞòÀàĞÍ
+	///æ’åºç±»å‹
 	TShfeFtdcSortTypeType	SortType;
-	///²éÑ¯Ê±¼äÀàĞÍ
+	///æŸ¥è¯¢æ—¶é—´ç±»å‹
 	TShfeFtdcDuringTimeTypeType	DuringTimeType;
-	///²éÑ¯Ê±¼äÖµ
+	///æŸ¥è¯¢æ—¶é—´å€¼
 	TShfeFtdcDuringTimeValueType	DuringTimeValue;
-	///Ç°NµÄÖµ
+	///å‰Nçš„å€¼
 	TShfeFtdcTopNType	TopN;
-	///ĞÔÄÜÅÅĞò½á¹û
+	///æ€§èƒ½æ’åºç»“æœ
 	TShfeFtdcTopResultType	TopResult;
 };
 
-///¶©ÔÄÍøÂçĞÔÄÜÅÅĞò
+///è®¢é˜…ç½‘ç»œæ€§èƒ½æ’åº
 struct CShfeFtdcRtnPerformanceTopField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿ØÖ¸±êÀàĞÍ
+	///ç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcAttrTypeType	AttrType;
-	///ÍøÂçÇøÓò
+	///ç½‘ç»œåŒºåŸŸ
 	TShfeFtdcNetAreaType	NetArea;
-	///ÍøÂç×ÓÇøÓò
+	///ç½‘ç»œå­åŒºåŸŸ
 	TShfeFtdcNetSubAreaType	NetSubArea;
-	///²éÑ¯¹Ø¼ü×Ö
+	///æŸ¥è¯¢å…³é”®å­—
 	TShfeFtdcKeyWordType	KeyWord;
-	///ËùÅÅĞòÖµÀàĞÍ
+	///æ‰€æ’åºå€¼ç±»å‹
 	TShfeFtdcSortValueType	SortValue;
-	///ÅÅĞòÀàĞÍ
+	///æ’åºç±»å‹
 	TShfeFtdcSortTypeType	SortType;
-	///²éÑ¯Ê±¼äÀàĞÍ
+	///æŸ¥è¯¢æ—¶é—´ç±»å‹
 	TShfeFtdcDuringTimeTypeType	DuringTimeType;
-	///²éÑ¯Ê±¼äÖµ
+	///æŸ¥è¯¢æ—¶é—´å€¼
 	TShfeFtdcDuringTimeValueType	DuringTimeValue;
-	///Ç°NµÄÖµ
+	///å‰Nçš„å€¼
 	TShfeFtdcTopNType	TopN;
-	///ĞÔÄÜÅÅĞò½á¹û
+	///æ€§èƒ½æ’åºç»“æœ
 	TShfeFtdcTopResultType	TopResult;
 };
 
-///ÇëÇóºÏÔ¼×´Ì¬ÇĞ»»
+///è¯·æ±‚åˆçº¦çŠ¶æ€åˆ‡æ¢
 struct CShfeFtdcReqQryInstrumentStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½øÈë±¾×´Ì¬Ê±¼ä
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¶é—´
 	TShfeFtdcTimeType	EnterTime;
-	///½øÈë±¾×´Ì¬Ô­Òò
+	///è¿›å…¥æœ¬çŠ¶æ€åŸå› 
 	TShfeFtdcInstStatusEnterReasonType	EnterReason;
-	///½øÈë±¾×´Ì¬ÈÕÆÚ
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¥æœŸ
 	TShfeFtdcDateType	EnterDate;
 };
 
-///·µ»ØºÏÔ¼×´Ì¬ÇĞ»»
+///è¿”å›åˆçº¦çŠ¶æ€åˆ‡æ¢
 struct CShfeFtdcRspQryInstrumentStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½øÈë±¾×´Ì¬Ê±¼ä
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¶é—´
 	TShfeFtdcTimeType	EnterTime;
-	///½øÈë±¾×´Ì¬Ô­Òò
+	///è¿›å…¥æœ¬çŠ¶æ€åŸå› 
 	TShfeFtdcInstStatusEnterReasonType	EnterReason;
-	///½øÈë±¾×´Ì¬ÈÕÆÚ
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¥æœŸ
 	TShfeFtdcDateType	EnterDate;
 };
 
-///¶©ÔÄºÏÔ¼×´Ì¬ÇĞ»»
+///è®¢é˜…åˆçº¦çŠ¶æ€åˆ‡æ¢
 struct CShfeFtdcRtnInstrumentStatusField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½øÈë±¾×´Ì¬Ê±¼ä
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¶é—´
 	TShfeFtdcTimeType	EnterTime;
-	///½øÈë±¾×´Ì¬Ô­Òò
+	///è¿›å…¥æœ¬çŠ¶æ€åŸå› 
 	TShfeFtdcInstStatusEnterReasonType	EnterReason;
-	///½øÈë±¾×´Ì¬ÈÕÆÚ
+	///è¿›å…¥æœ¬çŠ¶æ€æ—¥æœŸ
 	TShfeFtdcDateType	EnterDate;
 };
 
-///ÇëÇóºÏÔ¼½»Ò×½ÚĞÅÏ¢
+///è¯·æ±‚åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 struct CShfeFtdcReqQryCurrTradingSegmentAttrField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½»Ò×½×¶ÎÃû³Æ
+	///äº¤æ˜“é˜¶æ®µåç§°
 	TShfeFtdcTradingSegmentNameType	TradingSegmentName;
-	///ÆğÊ¼Ê±¼ä
+	///èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	StartTime;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÌáÇ°ÌìÊı
+	///æå‰å¤©æ•°
 	TShfeFtdcAdvanceDaysType	AdvanceDays;
 };
 
-///·µ»ØºÏÔ¼½»Ò×½ÚĞÅÏ¢
+///è¿”å›åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 struct CShfeFtdcRspQryCurrTradingSegmentAttrField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½»Ò×½×¶ÎÃû³Æ
+	///äº¤æ˜“é˜¶æ®µåç§°
 	TShfeFtdcTradingSegmentNameType	TradingSegmentName;
-	///ÆğÊ¼Ê±¼ä
+	///èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	StartTime;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÌáÇ°ÌìÊı
+	///æå‰å¤©æ•°
 	TShfeFtdcAdvanceDaysType	AdvanceDays;
 };
 
-///¶©ÔÄºÏÔ¼½»Ò×½ÚĞÅÏ¢
+///è®¢é˜…åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 struct CShfeFtdcRtnCurrTradingSegmentAttrField
 {
-	///½áËã×é´úÂë
+	///ç»“ç®—ç»„ä»£ç 
 	TShfeFtdcSettlementGroupIDType	SettlementGroupID;
-	///½»Ò×½×¶Î±àºÅ
+	///äº¤æ˜“é˜¶æ®µç¼–å·
 	TShfeFtdcTradingSegmentSNType	TradingSegmentSN;
-	///½»Ò×½×¶ÎÃû³Æ
+	///äº¤æ˜“é˜¶æ®µåç§°
 	TShfeFtdcTradingSegmentNameType	TradingSegmentName;
-	///ÆğÊ¼Ê±¼ä
+	///èµ·å§‹æ—¶é—´
 	TShfeFtdcTimeType	StartTime;
-	///ºÏÔ¼½»Ò××´Ì¬
+	///åˆçº¦äº¤æ˜“çŠ¶æ€
 	TShfeFtdcInstrumentStatusType	InstrumentStatus;
-	///ºÏÔ¼´úÂë
+	///åˆçº¦ä»£ç 
 	TShfeFtdcInstrumentIDType	InstrumentID;
-	///ÌáÇ°ÌìÊı
+	///æå‰å¤©æ•°
 	TShfeFtdcAdvanceDaysType	AdvanceDays;
 };
 
-///ÊµÊ±ÍøÂç¶ÔÏóÇëÇó
+///å®æ—¶ç½‘ç»œå¯¹è±¡è¯·æ±‚
 struct CShfeFtdcReqQryRealTimeNetObjectAttrField
 {
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
 };
 
-///ÍøÂç¶ÔÏóÇëÇó
+///ç½‘ç»œå¯¹è±¡è¯·æ±‚
 struct CShfeFtdcReqQryNetAreaField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRspQryNetAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRtnNetAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÍøÂç¶ÔÏóÇëÇó
+///ç½‘ç»œå¯¹è±¡è¯·æ±‚
 struct CShfeFtdcReqQryNetSubAreaField
 {
 	///ID
@@ -7901,37 +7901,37 @@ struct CShfeFtdcReqQryNetSubAreaField
 	TShfeFtdcVolumeType	SysNetAreaID;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRspQryNetSubAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetArea
 	TShfeFtdcVolumeType	SysNetAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRtnNetSubAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetArea
 	TShfeFtdcVolumeType	SysNetAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÍøÂç¶ÔÏóÇëÇó
+///ç½‘ç»œå¯¹è±¡è¯·æ±‚
 struct CShfeFtdcReqQryNetSubAreaIPField
 {
 	///ID
@@ -7942,92 +7942,92 @@ struct CShfeFtdcReqQryNetSubAreaIPField
 	TShfeFtdcVolumeType	SysNetSubAreaID;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRspQryNetSubAreaIPField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ipµØÖ·
+	///ipåœ°å€
 	TShfeFtdcIPAddressType	IP;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	Mask;
 };
 
-///ÍøÂç¶ÔÏóÓ¦´ğ
+///ç½‘ç»œå¯¹è±¡åº”ç­”
 struct CShfeFtdcRtnNetSubAreaIPField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ipµØÖ·
+	///ipåœ°å€
 	TShfeFtdcIPAddressType	IP;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	Mask;
 };
 
-///ÍøÂçÉè±¸Ì½²âÇëÇó
+///ç½‘ç»œè®¾å¤‡æ¢æµ‹è¯·æ±‚
 struct CShfeFtdcReqQryNetDeviceDetectField
 {
 	///SysNetArea
 	TShfeFtdcVolumeType	SysNetAreaID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ipµØÖ·
+	///ipåœ°å€
 	TShfeFtdcIPAddressType	IP;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	Mask;
 };
 
-///ÍøÂçÉè±¸²éÑ¯ÇëÇó
+///ç½‘ç»œè®¾å¤‡æŸ¥è¯¢è¯·æ±‚
 struct CShfeFtdcReqQryNetDeviceRequestField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÈËÎª»®·ÖµÄÖ°ÄÜÇøÓò
+	///äººä¸ºåˆ’åˆ†çš„èŒèƒ½åŒºåŸŸ
 	TShfeFtdcTypeObjectIDType	FuctionArea;
-	///IPÂë
+	///IPç 
 	TShfeFtdcVolumeType	IPDECODE;
 };
 
-///ÍøÂçÉè±¸
+///ç½‘ç»œè®¾å¤‡
 struct CShfeFtdcRspQryNetDeviceField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///·ÖÀàID  
+	///åˆ†ç±»ID  
 	TShfeFtdcVolumeType	CATEGORY_ID;
-	///ÈËÎª»®·ÖµÄÖ°ÄÜÇøÓò  
+	///äººä¸ºåˆ’åˆ†çš„èŒèƒ½åŒºåŸŸ  
 	TShfeFtdcTypeObjectIDType	FuctionArea;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///IPÂë    
+	///IPç     
 	TShfeFtdcVolumeType	IPDECODE;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
 	///             
 	TShfeFtdcVolumeType	PORTNUMBER;
 	///          
 	TShfeFtdcTypeObjectIDType	CONFIGFILE;
-	///¹²Í¬ÌåÃû  
+	///å…±åŒä½“å  
 	TShfeFtdcTypeObjectIDType	RCOMMUNITY;
-	///snmp°æ±¾     
+	///snmpç‰ˆæœ¬     
 	TShfeFtdcVolumeType	SNMPVERSION;
 	///ramsize(B)   
 	TShfeFtdcVolumeType	RAMSIZE;
@@ -8035,70 +8035,70 @@ struct CShfeFtdcRspQryNetDeviceField
 	TShfeFtdcVolumeType	FLASHSIZE;
 	///nvramsize(B) 
 	TShfeFtdcVolumeType	NVRAMSIZE;
-	///ËùÊô»ú¹ñ
+	///æ‰€å±æœºæŸœ
 	TShfeFtdcVolumeType	CABINET_ID;
 	///
 	TShfeFtdcVolumeType	ROOM_ID;
-	///Èí¼ş°æ±¾
+	///è½¯ä»¶ç‰ˆæœ¬
 	TShfeFtdcVolumeType	IOSVERSION_ID;
-	///ÏµÍ³ÃèÊö
+	///ç³»ç»Ÿæè¿°
 	TShfeFtdcNetAttrTypeType	DESCRIPTION;
-	///µÇÂ¼ÓÃ»§Ãû
+	///ç™»å½•ç”¨æˆ·å
 	TShfeFtdcTypeObjectIDType	USERNAME;
-	///µÇÂ¼ÃÜÂë
+	///ç™»å½•å¯†ç 
 	TShfeFtdcNetAttrTypeType	PASSWD;
-	///enableÃÜÂë
+	///enableå¯†ç 
 	TShfeFtdcNetAttrTypeType	ENPASSWD;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///ÅäÖÃ±¸·İĞ­Òé
+	///é…ç½®å¤‡ä»½åè®®
 	TShfeFtdcVolumeType	CFGSAVETYPE;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	DEVICETYPE;
-	///ÊÇ·ñ¶ÌĞÅ¸æ¾¯
+	///æ˜¯å¦çŸ­ä¿¡å‘Šè­¦
 	TShfeFtdcVolumeType	SENDSMS;
-	///ÊÇ·ñ×Ô¶¯snmpÌ½²â
+	///æ˜¯å¦è‡ªåŠ¨snmpæ¢æµ‹
 	TShfeFtdcVolumeType	ISSNMP;
-	///²ÛÎ»Êı
+	///æ§½ä½æ•°
 	TShfeFtdcVolumeType	SLOTNUM;
-	///ÊÇ·ñ×Ô¶¯ping
+	///æ˜¯å¦è‡ªåŠ¨ping
 	TShfeFtdcVolumeType	ISPING;
-	///¶Ë¿ÚÊıÁ¿
+	///ç«¯å£æ•°é‡
 	TShfeFtdcVolumeType	IFNUM;
-	///Ñ²¼ì·ÖÇø
+	///å·¡æ£€åˆ†åŒº
 	TShfeFtdcVolumeType	APPLICATION_ID;
 };
 
-///ÍøÂçÉè±¸
+///ç½‘ç»œè®¾å¤‡
 struct CShfeFtdcRtnNetDeviceField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///·ÖÀàID  
+	///åˆ†ç±»ID  
 	TShfeFtdcVolumeType	CATEGORY_ID;
-	///ÈËÎª»®·ÖµÄÖ°ÄÜÇøÓò  
+	///äººä¸ºåˆ’åˆ†çš„èŒèƒ½åŒºåŸŸ  
 	TShfeFtdcTypeObjectIDType	FuctionArea;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///IPÂë    
+	///IPç     
 	TShfeFtdcVolumeType	IPDECODE;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
 	///             
 	TShfeFtdcVolumeType	PORTNUMBER;
 	///          
 	TShfeFtdcTypeObjectIDType	CONFIGFILE;
-	///¹²Í¬ÌåÃû  
+	///å…±åŒä½“å  
 	TShfeFtdcTypeObjectIDType	RCOMMUNITY;
-	///snmp°æ±¾     
+	///snmpç‰ˆæœ¬     
 	TShfeFtdcVolumeType	SNMPVERSION;
 	///ramsize(B)   
 	TShfeFtdcVolumeType	RAMSIZE;
@@ -8106,87 +8106,87 @@ struct CShfeFtdcRtnNetDeviceField
 	TShfeFtdcVolumeType	FLASHSIZE;
 	///nvramsize(B) 
 	TShfeFtdcVolumeType	NVRAMSIZE;
-	///ËùÊô»ú¹ñ
+	///æ‰€å±æœºæŸœ
 	TShfeFtdcVolumeType	CABINET_ID;
 	///
 	TShfeFtdcVolumeType	ROOM_ID;
-	///Èí¼ş°æ±¾
+	///è½¯ä»¶ç‰ˆæœ¬
 	TShfeFtdcVolumeType	IOSVERSION_ID;
-	///ÏµÍ³ÃèÊö
+	///ç³»ç»Ÿæè¿°
 	TShfeFtdcNetAttrTypeType	DESCRIPTION;
-	///µÇÂ¼ÓÃ»§Ãû
+	///ç™»å½•ç”¨æˆ·å
 	TShfeFtdcTypeObjectIDType	USERNAME;
-	///µÇÂ¼ÃÜÂë
+	///ç™»å½•å¯†ç 
 	TShfeFtdcNetAttrTypeType	PASSWD;
-	///enableÃÜÂë
+	///enableå¯†ç 
 	TShfeFtdcNetAttrTypeType	ENPASSWD;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///ÅäÖÃ±¸·İĞ­Òé
+	///é…ç½®å¤‡ä»½åè®®
 	TShfeFtdcVolumeType	CFGSAVETYPE;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	DEVICETYPE;
-	///ÊÇ·ñ¶ÌĞÅ¸æ¾¯
+	///æ˜¯å¦çŸ­ä¿¡å‘Šè­¦
 	TShfeFtdcVolumeType	SENDSMS;
-	///ÊÇ·ñ×Ô¶¯snmpÌ½²â
+	///æ˜¯å¦è‡ªåŠ¨snmpæ¢æµ‹
 	TShfeFtdcVolumeType	ISSNMP;
-	///²ÛÎ»Êı
+	///æ§½ä½æ•°
 	TShfeFtdcVolumeType	SLOTNUM;
-	///ÊÇ·ñ×Ô¶¯ping
+	///æ˜¯å¦è‡ªåŠ¨ping
 	TShfeFtdcVolumeType	ISPING;
-	///¶Ë¿ÚÊıÁ¿
+	///ç«¯å£æ•°é‡
 	TShfeFtdcVolumeType	IFNUM;
-	///Ñ²¼ì·ÖÇø
+	///å·¡æ£€åˆ†åŒº
 	TShfeFtdcVolumeType	APPLICATION_ID;
 };
 
-///ÍøÂçÉè±¸Ì½²âÇëÇóÓ¦´ğ
+///ç½‘ç»œè®¾å¤‡æ¢æµ‹è¯·æ±‚åº”ç­”
 struct CShfeFtdcRspQryNetDeviceDetectField
 {
 	///SysNetArea
 	TShfeFtdcVolumeType	SysNetAreaID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ipµØÖ·
+	///ipåœ°å€
 	TShfeFtdcIPAddressType	IP;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	Mask;
 };
 
-///´óÂ¥²éÑ¯
+///å¤§æ¥¼æŸ¥è¯¢
 struct CShfeFtdcReqQryNetBuildingField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
 };
 
-///´óÂ¥
+///å¤§æ¥¼
 struct CShfeFtdcRspQryNetBuildingField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///´óÂ¥
+///å¤§æ¥¼
 struct CShfeFtdcRtnNetBuildingField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///»ú·¿²éÑ¯
+///æœºæˆ¿æŸ¥è¯¢
 struct CShfeFtdcReqQryNetRoomField
 {
 	///ID
@@ -8195,37 +8195,37 @@ struct CShfeFtdcReqQryNetRoomField
 	TShfeFtdcVolumeType	SysNetBuildingID;
 };
 
-///»ú·¿
+///æœºæˆ¿
 struct CShfeFtdcRspQryNetRoomField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///´óÂ¥
+	///å¤§æ¥¼
 	TShfeFtdcVolumeType	SysNetBuildingID;
-	///»ú·¿ÖĞÎÄÃû
+	///æœºæˆ¿ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///»ú·¿Ó¢ÎÄÃû
+	///æœºæˆ¿è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///»ú·¿
+///æœºæˆ¿
 struct CShfeFtdcRtnNetRoomField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///´óÂ¥
+	///å¤§æ¥¼
 	TShfeFtdcVolumeType	SysNetBuildingID;
-	///»ú·¿ÖĞÎÄÃû
+	///æœºæˆ¿ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///»ú·¿Ó¢ÎÄÃû
+	///æœºæˆ¿è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///»ú¹ñ
+///æœºæŸœ
 struct CShfeFtdcReqQryNetCabinetsField
 {
 	///ID
@@ -8236,10 +8236,10 @@ struct CShfeFtdcReqQryNetCabinetsField
 	TShfeFtdcVolumeType	SysNetBuildingID;
 };
 
-///»ú¹ñ
+///æœºæŸœ
 struct CShfeFtdcRspQryNetCabinetsField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
@@ -8247,18 +8247,18 @@ struct CShfeFtdcRspQryNetCabinetsField
 	TShfeFtdcVolumeType	SysNetRoomID;
 	///SysNetBuildingID
 	TShfeFtdcVolumeType	SysNetBuildingID;
-	///»ú·¿ÖĞÎÄÃû
+	///æœºæˆ¿ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///»ú·¿Ó¢ÎÄÃû
+	///æœºæˆ¿è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///»ú¹ñÀàĞÍ
+	///æœºæŸœç±»å‹
 	TShfeFtdcTypeObjectIDType	CabinetsType;
 };
 
-///»ú¹ñ
+///æœºæŸœ
 struct CShfeFtdcRtnNetCabinetsField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
@@ -8266,590 +8266,590 @@ struct CShfeFtdcRtnNetCabinetsField
 	TShfeFtdcVolumeType	SysNetRoomID;
 	///SysNetBuildingID
 	TShfeFtdcVolumeType	SysNetBuildingID;
-	///»ú·¿ÖĞÎÄÃû
+	///æœºæˆ¿ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///»ú·¿Ó¢ÎÄÃû
+	///æœºæˆ¿è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///»ú¹ñÀàĞÍ
+	///æœºæŸœç±»å‹
 	TShfeFtdcTypeObjectIDType	CabinetsType;
 };
 
 ///OID
 struct CShfeFtdcReqQryNetOIDField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
 ///OID
 struct CShfeFtdcRspQryNetOIDField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
 ///OID
 struct CShfeFtdcRtnNetOIDField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
-///Ê±¼ä²ßÂÔ
+///æ—¶é—´ç­–ç•¥
 struct CShfeFtdcReqQryNetTimePolicyField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ê±¼ä²ßÂÔÖĞÎÄÃû
+	///æ—¶é—´ç­–ç•¥ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ê±¼ä²ßÂÔÓ¢ÎÄÃû
+	///æ—¶é—´ç­–ç•¥è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///²ßÂÔÀàĞÍ
+	///ç­–ç•¥ç±»å‹
 	TShfeFtdcVolumeType	PolicyType;
-	///²ßÂÔÏîÅäÖÃ´®
+	///ç­–ç•¥é¡¹é…ç½®ä¸²
 	TShfeFtdcPolicyStringTypeType	PolicyString;
-	///½»Ò×ÈÕÏŞÖÆ
+	///äº¤æ˜“æ—¥é™åˆ¶
 	TShfeFtdcVolumeType	TradingDay;
-	///²ßÂÔÏîÃèÊö
+	///ç­–ç•¥é¡¹æè¿°
 	TShfeFtdcNetAttrTypeType	Description;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	Operation;
 };
 
-///Ê±¼ä²ßÂÔ
+///æ—¶é—´ç­–ç•¥
 struct CShfeFtdcRspQryNetTimePolicyField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ê±¼ä²ßÂÔÖĞÎÄÃû
+	///æ—¶é—´ç­–ç•¥ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ê±¼ä²ßÂÔÓ¢ÎÄÃû
+	///æ—¶é—´ç­–ç•¥è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///²ßÂÔÀàĞÍ
+	///ç­–ç•¥ç±»å‹
 	TShfeFtdcVolumeType	PolicyType;
-	///²ßÂÔÏîÅäÖÃ´®
+	///ç­–ç•¥é¡¹é…ç½®ä¸²
 	TShfeFtdcPolicyStringTypeType	PolicyString;
-	///½»Ò×ÈÕÏŞÖÆ
+	///äº¤æ˜“æ—¥é™åˆ¶
 	TShfeFtdcVolumeType	TradingDay;
-	///²ßÂÔÏîÃèÊö
+	///ç­–ç•¥é¡¹æè¿°
 	TShfeFtdcNetAttrTypeType	Description;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	Operation;
 };
 
-///Ê±¼ä²ßÂÔ
+///æ—¶é—´ç­–ç•¥
 struct CShfeFtdcRtnNetTimePolicyField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ê±¼ä²ßÂÔÖĞÎÄÃû
+	///æ—¶é—´ç­–ç•¥ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ê±¼ä²ßÂÔÓ¢ÎÄÃû
+	///æ—¶é—´ç­–ç•¥è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///²ßÂÔÀàĞÍ
+	///ç­–ç•¥ç±»å‹
 	TShfeFtdcVolumeType	PolicyType;
-	///²ßÂÔÏîÅäÖÃ´®
+	///ç­–ç•¥é¡¹é…ç½®ä¸²
 	TShfeFtdcPolicyStringTypeType	PolicyString;
-	///½»Ò×ÈÕÏŞÖÆ
+	///äº¤æ˜“æ—¥é™åˆ¶
 	TShfeFtdcVolumeType	TradingDay;
-	///²ßÂÔÏîÃèÊö
+	///ç­–ç•¥é¡¹æè¿°
 	TShfeFtdcNetAttrTypeType	Description;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	Operation;
 };
 
-///²É¼¯ÈÎÎñ²éÑ¯
+///é‡‡é›†ä»»åŠ¡æŸ¥è¯¢
 struct CShfeFtdcReqQryNetGatherTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
-	///·µ»ØÀàĞÍ
+	///è¿”å›ç±»å‹
 	TShfeFtdcVolumeType	DataType;
-	///ÀàĞÍ±êÊ¶
+	///ç±»å‹æ ‡è¯†
 	TShfeFtdcVolumeType	TypeFlag;
 };
 
-///²É¼¯ÈÎÎñ
+///é‡‡é›†ä»»åŠ¡
 struct CShfeFtdcRspQryNetGatherTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
-	///·µ»ØÀàĞÍ
+	///è¿”å›ç±»å‹
 	TShfeFtdcVolumeType	DataType;
-	///ÀàĞÍ±êÊ¶
+	///ç±»å‹æ ‡è¯†
 	TShfeFtdcVolumeType	TypeFlag;
 };
 
-///²É¼¯ÈÎÎñ
+///é‡‡é›†ä»»åŠ¡
 struct CShfeFtdcRtnNetGatherTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
-	///·µ»ØÀàĞÍ
+	///è¿”å›ç±»å‹
 	TShfeFtdcVolumeType	DataType;
-	///ÀàĞÍ±êÊ¶
+	///ç±»å‹æ ‡è¯†
 	TShfeFtdcVolumeType	TypeFlag;
 };
 
-///²É¼¯ÈÎÎñ²éÑ¯
+///é‡‡é›†ä»»åŠ¡æŸ¥è¯¢
 struct CShfeFtdcReqQryNetDeviceChgField
 {
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	OldObjectID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	NewObjectID;
 };
 
-///²É¼¯ÈÎÎñ
+///é‡‡é›†ä»»åŠ¡
 struct CShfeFtdcRspQryNetDeviceChgField
 {
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	OldObjectID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	NewObjectID;
 };
 
-///²É¼¯ÈÎÎñ
+///é‡‡é›†ä»»åŠ¡
 struct CShfeFtdcRtnNetDeviceChgField
 {
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	OldObjectID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	NewObjectID;
 };
 
-///³£ÓÃÉè±¸ĞÍºÅÇëÇó
+///å¸¸ç”¨è®¾å¤‡å‹å·è¯·æ±‚
 struct CShfeFtdcReqQryNetDeviceTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
 };
 
-///³£ÓÃÉè±¸ĞÍºÅ
+///å¸¸ç”¨è®¾å¤‡å‹å·
 struct CShfeFtdcRspQryNetDeviceTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
 };
 
-///³£ÓÃÉè±¸ĞÍºÅ
+///å¸¸ç”¨è®¾å¤‡å‹å·
 struct CShfeFtdcRtnNetDeviceTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
 };
 
-///³£ÓÃÉè±¸Àà±ğÇëÇó
+///å¸¸ç”¨è®¾å¤‡ç±»åˆ«è¯·æ±‚
 struct CShfeFtdcReqQryNetDeviceCategoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Àà±ğÖĞÎÄÃû
+	///ç±»åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Àà±ğÓ¢ÎÄÃû
+	///ç±»åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///³£ÓÃÉè±¸Àà±ğ
+///å¸¸ç”¨è®¾å¤‡ç±»åˆ«
 struct CShfeFtdcRspQryNetDeviceCategoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Àà±ğÖĞÎÄÃû
+	///ç±»åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Àà±ğÓ¢ÎÄÃû
+	///ç±»åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///³£ÓÃÉè±¸Àà±ğ
+///å¸¸ç”¨è®¾å¤‡ç±»åˆ«
 struct CShfeFtdcRtnNetDeviceCategoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Àà±ğÖĞÎÄÃû
+	///ç±»åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Àà±ğÓ¢ÎÄÃû
+	///ç±»åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Éè±¸³§ÉÌÇëÇó
+///è®¾å¤‡å‚å•†è¯·æ±‚
 struct CShfeFtdcReqQryNetManufactoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÖĞÎÄÃû
+	///å‚å•†ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///³§ÉÌÓ¢ÎÄÃû
+	///å‚å•†è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Éè±¸³§ÉÌ
+///è®¾å¤‡å‚å•†
 struct CShfeFtdcRspQryNetManufactoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÖĞÎÄÃû
+	///å‚å•†ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///³§ÉÌÓ¢ÎÄÃû
+	///å‚å•†è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Éè±¸³§ÉÌ
+///è®¾å¤‡å‚å•†
 struct CShfeFtdcRtnNetManufactoryField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÖĞÎÄÃû
+	///å‚å•†ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///³§ÉÌÓ¢ÎÄÃû
+	///å‚å•†è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Éè±¸¹²Í¬ÌåÇëÇó
+///è®¾å¤‡å…±åŒä½“è¯·æ±‚
 struct CShfeFtdcReqQryNetCommunityField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPADDR;
-	///¹²Í¬ÌåÃû
+	///å…±åŒä½“å
 	TShfeFtdcTypeObjectIDType	COMMUNITY;
 };
 
-///Éè±¸¹²Í¬Ìå
+///è®¾å¤‡å…±åŒä½“
 struct CShfeFtdcRspQryNetCommunityField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPADDR;
-	///¹²Í¬ÌåÃû
+	///å…±åŒä½“å
 	TShfeFtdcTypeObjectIDType	COMMUNITY;
 };
 
-///Éè±¸¹²Í¬Ìå
+///è®¾å¤‡å…±åŒä½“
 struct CShfeFtdcRtnNetCommunityField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPADDR;
-	///¹²Í¬ÌåÃû
+	///å…±åŒä½“å
 	TShfeFtdcTypeObjectIDType	COMMUNITY;
 };
 
-///¶Ë¿ÚÀàĞÍÇëÇó
+///ç«¯å£ç±»å‹è¯·æ±‚
 struct CShfeFtdcReqQryNetPortTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
-///¶Ë¿ÚÀàĞÍ
+///ç«¯å£ç±»å‹
 struct CShfeFtdcRspQryNetPortTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
-///¶Ë¿ÚÀàĞÍ
+///ç«¯å£ç±»å‹
 struct CShfeFtdcRtnNetPortTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
-///»áÔ±½ÓÈëµØµãÇëÇó
+///ä¼šå‘˜æ¥å…¥åœ°ç‚¹è¯·æ±‚
 struct CShfeFtdcReqQryNetPartAccessSpotField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///»áÔ±½ÓÈëµØµã
+///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 struct CShfeFtdcRspQryNetPartAccessSpotField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///»áÔ±½ÓÈëµØµã
+///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 struct CShfeFtdcRtnNetPartAccessSpotField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÃû
+	///ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ó¢ÎÄÃû
+	///è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///¶Ë¿ÚÇëÇó
+///ç«¯å£è¯·æ±‚
 struct CShfeFtdcReqQryNetInterfaceField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	TShfeFtdcVolumeType	IfType;
-	///¶Ë¿ÚÃû
+	///ç«¯å£å
 	TShfeFtdcTypeObjectIDType	EName;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IpAddress;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	IpMask;
-	///¶Ë¿Ú×´Ì¬
+	///ç«¯å£çŠ¶æ€
 	TShfeFtdcVolumeType	IfStatus;
-	///ÎïÀíµØÖ·
+	///ç‰©ç†åœ°å€
 	TShfeFtdcTypeObjectIDType	MAC;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///ËùÊôÉè±¸¶Ë¿ÚË÷Òı
+	///æ‰€å±è®¾å¤‡ç«¯å£ç´¢å¼•
 	TShfeFtdcTypeObjectNameType	DeviceIndex;
-	///ÊÇ·ñÂÖÑ¯
+	///æ˜¯å¦è½®è¯¢
 	TShfeFtdcVolumeType	isPolling;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
-///¶Ë¿Ú
+///ç«¯å£
 struct CShfeFtdcRspQryNetInterfaceField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	TShfeFtdcVolumeType	IfType;
-	///¶Ë¿ÚÃû
+	///ç«¯å£å
 	TShfeFtdcTypeObjectIDType	EName;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IpAddress;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	IpMask;
-	///¶Ë¿Ú×´Ì¬
+	///ç«¯å£çŠ¶æ€
 	TShfeFtdcVolumeType	IfStatus;
-	///ÎïÀíµØÖ·
+	///ç‰©ç†åœ°å€
 	TShfeFtdcTypeObjectIDType	MAC;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///ËùÊôÉè±¸¶Ë¿ÚË÷Òı
+	///æ‰€å±è®¾å¤‡ç«¯å£ç´¢å¼•
 	TShfeFtdcTypeObjectNameType	DeviceIndex;
-	///ÊÇ·ñÂÖÑ¯
+	///æ˜¯å¦è½®è¯¢
 	TShfeFtdcVolumeType	isPolling;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
-///¶Ë¿Ú
+///ç«¯å£
 struct CShfeFtdcRtnNetInterfaceField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	TShfeFtdcVolumeType	IfType;
-	///¶Ë¿ÚÃû
+	///ç«¯å£å
 	TShfeFtdcTypeObjectIDType	EName;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IpAddress;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	IpMask;
-	///¶Ë¿Ú×´Ì¬
+	///ç«¯å£çŠ¶æ€
 	TShfeFtdcVolumeType	IfStatus;
-	///ÎïÀíµØÖ·
+	///ç‰©ç†åœ°å€
 	TShfeFtdcTypeObjectIDType	MAC;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///ËùÊôÉè±¸¶Ë¿ÚË÷Òı
+	///æ‰€å±è®¾å¤‡ç«¯å£ç´¢å¼•
 	TShfeFtdcTypeObjectNameType	DeviceIndex;
-	///ÊÇ·ñÂÖÑ¯
+	///æ˜¯å¦è½®è¯¢
 	TShfeFtdcVolumeType	isPolling;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
@@ -8863,1299 +8863,1299 @@ struct CShfeFtdcReqQryNetGeneralOIDField
 ///GeneralOID
 struct CShfeFtdcRspQryNetGeneralOIDField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
 ///GeneralOID
 struct CShfeFtdcRtnNetGeneralOIDField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
-///¼à¿Ø¶ÔÏóÀà±ğ
+///ç›‘æ§å¯¹è±¡ç±»åˆ«
 struct CShfeFtdcReqQryNetMonitorTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///¼à¿Ø¶ÔÏóÀà±ğ
+///ç›‘æ§å¯¹è±¡ç±»åˆ«
 struct CShfeFtdcRspQryNetMonitorTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///¼à¿Ø¶ÔÏóÀà±ğ
+///ç›‘æ§å¯¹è±¡ç±»åˆ«
 struct CShfeFtdcRtnNetMonitorTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Ö¸±êÍ³±í
+///æŒ‡æ ‡ç»Ÿè¡¨
 struct CShfeFtdcReqQryNetMonitorAttrScopeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ö¸±êÖĞÎÄÃû
+	///æŒ‡æ ‡ä¸­æ–‡å
 	TShfeFtdcNetAttrTypeType	CName;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	EName;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///Ö¸±êÍ³±í
+///æŒ‡æ ‡ç»Ÿè¡¨
 struct CShfeFtdcRspQryNetMonitorAttrScopeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ö¸±êÖĞÎÄÃû
+	///æŒ‡æ ‡ä¸­æ–‡å
 	TShfeFtdcNetAttrTypeType	CName;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	EName;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///Ö¸±êÍ³±í
+///æŒ‡æ ‡ç»Ÿè¡¨
 struct CShfeFtdcRtnNetMonitorAttrScopeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ö¸±êÖĞÎÄÃû
+	///æŒ‡æ ‡ä¸­æ–‡å
 	TShfeFtdcNetAttrTypeType	CName;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	EName;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///¼à¿ØÖ¸±ê±í
+///ç›‘æ§æŒ‡æ ‡è¡¨
 struct CShfeFtdcReqQryNetMonitorAttrTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ÍøÂç¼à¿ØÖ¸±êID
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ID
 	TShfeFtdcVolumeType	AttrType_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	MANUFACTORY;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
 };
 
-///¼à¿ØÖ¸±ê±í
+///ç›‘æ§æŒ‡æ ‡è¡¨
 struct CShfeFtdcRspQryNetMonitorAttrTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ÍøÂç¼à¿ØÖ¸±êID
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ID
 	TShfeFtdcVolumeType	AttrType_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	MANUFACTORY;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
 };
 
-///¼à¿ØÖ¸±ê±í
+///ç›‘æ§æŒ‡æ ‡è¡¨
 struct CShfeFtdcRtnNetMonitorAttrTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ÍøÂç¼à¿ØÖ¸±êID
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ID
 	TShfeFtdcVolumeType	AttrType_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	MANUFACTORY;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
 };
 
-///¼à¿Ø¶ÔÏóÖ¸±ê±í
+///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 struct CShfeFtdcReqQryNetMonitorObjectAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
 };
 
-///¼à¿Ø¶ÔÏóÖ¸±ê±í
+///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 struct CShfeFtdcRspQryNetMonitorObjectAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
 };
 
-///¼à¿Ø¶ÔÏóÖ¸±ê±í
+///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 struct CShfeFtdcRtnNetMonitorObjectAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
 };
 
-///Ö°ÄÜÇø
+///èŒèƒ½åŒº
 struct CShfeFtdcReqQryNetFuncAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Ö°ÄÜÇø
+///èŒèƒ½åŒº
 struct CShfeFtdcRspQryNetFuncAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///Ö°ÄÜÇø
+///èŒèƒ½åŒº
 struct CShfeFtdcRtnNetFuncAreaField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///¼à¿ØÖ¸Áî±í
+///ç›‘æ§æŒ‡ä»¤è¡¨
 struct CShfeFtdcReqQryNetMonitorCommandTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍID
+	///å‚å•†ç±»å‹ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Éè±¸Àà±ğID
+	///è®¾å¤‡ç±»åˆ«ID
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///Éè±¸ĞÍºÅID
+	///è®¾å¤‡å‹å·ID
 	TShfeFtdcVolumeType	DeviceModle_ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceModle;
-	///¶¯×÷×å
+	///åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///Ö¸ÁîÂë
+	///æŒ‡ä»¤ç 
 	TShfeFtdcNetAttrTypeType	Command;
 };
 
-///¼à¿ØÖ¸Áî±í
+///ç›‘æ§æŒ‡ä»¤è¡¨
 struct CShfeFtdcRspQryNetMonitorCommandTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍID
+	///å‚å•†ç±»å‹ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Éè±¸Àà±ğID
+	///è®¾å¤‡ç±»åˆ«ID
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///Éè±¸ĞÍºÅID
+	///è®¾å¤‡å‹å·ID
 	TShfeFtdcVolumeType	DeviceModle_ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceModle;
-	///¶¯×÷×å
+	///åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///Ö¸ÁîÂë
+	///æŒ‡ä»¤ç 
 	TShfeFtdcNetAttrTypeType	Command;
 };
 
-///¼à¿ØÖ¸Áî±í
+///ç›‘æ§æŒ‡ä»¤è¡¨
 struct CShfeFtdcRtnNetMonitorCommandTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍID
+	///å‚å•†ç±»å‹ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Éè±¸Àà±ğID
+	///è®¾å¤‡ç±»åˆ«ID
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///Éè±¸ĞÍºÅID
+	///è®¾å¤‡å‹å·ID
 	TShfeFtdcVolumeType	DeviceModle_ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceModle;
-	///¶¯×÷×å
+	///åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///Ö¸ÁîÂë
+	///æŒ‡ä»¤ç 
 	TShfeFtdcNetAttrTypeType	Command;
 };
 
-///¶¯×÷×å±í
+///åŠ¨ä½œæ—è¡¨
 struct CShfeFtdcReqQryNetMonitorActionGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åÖĞÎÄÃû
+	///åŠ¨ä½œæ—ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///¶¯×÷×åÓ¢ÎÄÃû
+	///åŠ¨ä½œæ—è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///¶¯×÷ÀàĞÍÂë
+	///åŠ¨ä½œç±»å‹ç 
 	TShfeFtdcVolumeType	ActionType;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///¶¯×÷×å±í
+///åŠ¨ä½œæ—è¡¨
 struct CShfeFtdcRspQryNetMonitorActionGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åÖĞÎÄÃû
+	///åŠ¨ä½œæ—ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///¶¯×÷×åÓ¢ÎÄÃû
+	///åŠ¨ä½œæ—è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///¶¯×÷ÀàĞÍÂë
+	///åŠ¨ä½œç±»å‹ç 
 	TShfeFtdcVolumeType	ActionType;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///¶¯×÷×å±í
+///åŠ¨ä½œæ—è¡¨
 struct CShfeFtdcRtnNetMonitorActionGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åÖĞÎÄÃû
+	///åŠ¨ä½œæ—ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///¶¯×÷×åÓ¢ÎÄÃû
+	///åŠ¨ä½œæ—è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///¶¯×÷ÀàĞÍÂë
+	///åŠ¨ä½œç±»å‹ç 
 	TShfeFtdcVolumeType	ActionType;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///Éè±¸¶ÔÏó×é±í
+///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 struct CShfeFtdcReqQryNetMonitorDeviceGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éÖĞÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Éè±¸¶ÔÏó×éÓ¢ÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¹ıÂËÌõ¼ş
+	///è®¾å¤‡è¿‡æ»¤æ¡ä»¶
 	TShfeFtdcNetString512Type	Condition;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///Éè±¸¶ÔÏó×é±í
+///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 struct CShfeFtdcRspQryNetMonitorDeviceGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éÖĞÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Éè±¸¶ÔÏó×éÓ¢ÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¹ıÂËÌõ¼ş
+	///è®¾å¤‡è¿‡æ»¤æ¡ä»¶
 	TShfeFtdcNetString512Type	Condition;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///Éè±¸¶ÔÏó×é±í
+///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 struct CShfeFtdcRtnNetMonitorDeviceGroupField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éÖĞÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Éè±¸¶ÔÏó×éÓ¢ÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¹ıÂËÌõ¼ş
+	///è®¾å¤‡è¿‡æ»¤æ¡ä»¶
 	TShfeFtdcNetString512Type	Condition;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///ÈÎÎñĞÅÏ¢±í
+///ä»»åŠ¡ä¿¡æ¯è¡¨
 struct CShfeFtdcReqQryNetMonitorTaskInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÈÎÎñÖĞÎÄÃû
+	///ä»»åŠ¡ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÈÎÎñÓ¢ÎÄÃû
+	///ä»»åŠ¡è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///¹ÜÀíÈËÔ±¶ÔÏó×éID
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	ManagerGroup_ID;
-	///ÈÎÎñÊ±¼ä²ßÂÔID
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	TimePolicy_ID;
-	///ÈÎÎñÓÅÏÈ¼¶ID
+	///ä»»åŠ¡ä¼˜å…ˆçº§ID
 	TShfeFtdcVolumeType	TaskPriority_ID;
-	///½á¹ûÊä³ö²ßÂÔID
+	///ç»“æœè¾“å‡ºç­–ç•¥ID
 	TShfeFtdcVolumeType	OutputPolicy_ID;
-	///ÈÎÎñ¶¯×÷×åID
+	///ä»»åŠ¡åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///ÈÎÎñ±í´ïÊ½IDÁªºÏ´®
+	///ä»»åŠ¡è¡¨è¾¾å¼IDè”åˆä¸²
 	TShfeFtdcGeneralResultType	EventExprStr;
-	///Éè±¸¶ÔÏó×é
+	///è®¾å¤‡å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	DeviceGroup;
-	///¹ÜÀíÈËÔ±¶ÔÏó×é
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	ManagerGroup;
-	///ÈÎÎñÊ±¼ä²ßÂÔ
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥
 	TShfeFtdcTypeObjectIDType	TimePolicy;
-	///ÈÎÎñÓÅÏÈ¼¶
+	///ä»»åŠ¡ä¼˜å…ˆçº§
 	TShfeFtdcTypeObjectIDType	TaskPriority;
-	///½á¹ûÊä³ö²ßÂÔ
+	///ç»“æœè¾“å‡ºç­–ç•¥
 	TShfeFtdcTypeObjectIDType	OutputPolicy;
-	///ÈÎÎñ¶¯×÷×å
+	///ä»»åŠ¡åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///ÈÎÎñÓĞĞ§ĞÔ±êÊ¶
+	///ä»»åŠ¡æœ‰æ•ˆæ€§æ ‡è¯†
 	TShfeFtdcVolumeType	ValidFlag;
-	///ÈÎÎñ×´Ì¬±êÊ¶
+	///ä»»åŠ¡çŠ¶æ€æ ‡è¯†
 	TShfeFtdcVolumeType	TaskStatus;
-	///ÈÎÎñÃèÊö
+	///ä»»åŠ¡æè¿°
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///ÈÎÎñĞÅÏ¢±í
+///ä»»åŠ¡ä¿¡æ¯è¡¨
 struct CShfeFtdcRspQryNetMonitorTaskInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÈÎÎñÖĞÎÄÃû
+	///ä»»åŠ¡ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÈÎÎñÓ¢ÎÄÃû
+	///ä»»åŠ¡è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///¹ÜÀíÈËÔ±¶ÔÏó×éID
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	ManagerGroup_ID;
-	///ÈÎÎñÊ±¼ä²ßÂÔID
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	TimePolicy_ID;
-	///ÈÎÎñÓÅÏÈ¼¶ID
+	///ä»»åŠ¡ä¼˜å…ˆçº§ID
 	TShfeFtdcVolumeType	TaskPriority_ID;
-	///½á¹ûÊä³ö²ßÂÔID
+	///ç»“æœè¾“å‡ºç­–ç•¥ID
 	TShfeFtdcVolumeType	OutputPolicy_ID;
-	///ÈÎÎñ¶¯×÷×åID
+	///ä»»åŠ¡åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///ÈÎÎñ±í´ïÊ½IDÁªºÏ´®
+	///ä»»åŠ¡è¡¨è¾¾å¼IDè”åˆä¸²
 	TShfeFtdcGeneralResultType	EventExprStr;
-	///Éè±¸¶ÔÏó×é
+	///è®¾å¤‡å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	DeviceGroup;
-	///¹ÜÀíÈËÔ±¶ÔÏó×é
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	ManagerGroup;
-	///ÈÎÎñÊ±¼ä²ßÂÔ
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥
 	TShfeFtdcTypeObjectIDType	TimePolicy;
-	///ÈÎÎñÓÅÏÈ¼¶
+	///ä»»åŠ¡ä¼˜å…ˆçº§
 	TShfeFtdcTypeObjectIDType	TaskPriority;
-	///½á¹ûÊä³ö²ßÂÔ
+	///ç»“æœè¾“å‡ºç­–ç•¥
 	TShfeFtdcTypeObjectIDType	OutputPolicy;
-	///ÈÎÎñ¶¯×÷×å
+	///ä»»åŠ¡åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///ÈÎÎñÓĞĞ§ĞÔ±êÊ¶
+	///ä»»åŠ¡æœ‰æ•ˆæ€§æ ‡è¯†
 	TShfeFtdcVolumeType	ValidFlag;
-	///ÈÎÎñ×´Ì¬±êÊ¶
+	///ä»»åŠ¡çŠ¶æ€æ ‡è¯†
 	TShfeFtdcVolumeType	TaskStatus;
-	///ÈÎÎñÃèÊö
+	///ä»»åŠ¡æè¿°
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///ÈÎÎñĞÅÏ¢±í
+///ä»»åŠ¡ä¿¡æ¯è¡¨
 struct CShfeFtdcRtnNetMonitorTaskInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÈÎÎñÖĞÎÄÃû
+	///ä»»åŠ¡ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÈÎÎñÓ¢ÎÄÃû
+	///ä»»åŠ¡è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///¹ÜÀíÈËÔ±¶ÔÏó×éID
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	ManagerGroup_ID;
-	///ÈÎÎñÊ±¼ä²ßÂÔID
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	TimePolicy_ID;
-	///ÈÎÎñÓÅÏÈ¼¶ID
+	///ä»»åŠ¡ä¼˜å…ˆçº§ID
 	TShfeFtdcVolumeType	TaskPriority_ID;
-	///½á¹ûÊä³ö²ßÂÔID
+	///ç»“æœè¾“å‡ºç­–ç•¥ID
 	TShfeFtdcVolumeType	OutputPolicy_ID;
-	///ÈÎÎñ¶¯×÷×åID
+	///ä»»åŠ¡åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///ÈÎÎñ±í´ïÊ½IDÁªºÏ´®
+	///ä»»åŠ¡è¡¨è¾¾å¼IDè”åˆä¸²
 	TShfeFtdcGeneralResultType	EventExprStr;
-	///Éè±¸¶ÔÏó×é
+	///è®¾å¤‡å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	DeviceGroup;
-	///¹ÜÀíÈËÔ±¶ÔÏó×é
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	ManagerGroup;
-	///ÈÎÎñÊ±¼ä²ßÂÔ
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥
 	TShfeFtdcTypeObjectIDType	TimePolicy;
-	///ÈÎÎñÓÅÏÈ¼¶
+	///ä»»åŠ¡ä¼˜å…ˆçº§
 	TShfeFtdcTypeObjectIDType	TaskPriority;
-	///½á¹ûÊä³ö²ßÂÔ
+	///ç»“æœè¾“å‡ºç­–ç•¥
 	TShfeFtdcTypeObjectIDType	OutputPolicy;
-	///ÈÎÎñ¶¯×÷×å
+	///ä»»åŠ¡åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///ÈÎÎñÓĞĞ§ĞÔ±êÊ¶
+	///ä»»åŠ¡æœ‰æ•ˆæ€§æ ‡è¯†
 	TShfeFtdcVolumeType	ValidFlag;
-	///ÈÎÎñ×´Ì¬±êÊ¶
+	///ä»»åŠ¡çŠ¶æ€æ ‡è¯†
 	TShfeFtdcVolumeType	TaskStatus;
-	///ÈÎÎñÃèÊö
+	///ä»»åŠ¡æè¿°
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
-///ÈÎÎñ½á¹û±í
+///ä»»åŠ¡ç»“æœè¡¨
 struct CShfeFtdcReqQryNetMonitorTaskResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ö¸Áî´®
+	///æŒ‡ä»¤ä¸²
 	TShfeFtdcNetString256Type	InstructChain;
-	///½á¹û´®
+	///ç»“æœä¸²
 	TShfeFtdcNetString1KType	ResultChain;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û±í
+///ä»»åŠ¡ç»“æœè¡¨
 struct CShfeFtdcRspQryNetMonitorTaskResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ö¸Áî´®
+	///æŒ‡ä»¤ä¸²
 	TShfeFtdcNetString256Type	InstructChain;
-	///½á¹û´®
+	///ç»“æœä¸²
 	TShfeFtdcNetString1KType	ResultChain;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û±í
+///ä»»åŠ¡ç»“æœè¡¨
 struct CShfeFtdcRtnNetMonitorTaskResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ö¸Áî´®
+	///æŒ‡ä»¤ä¸²
 	TShfeFtdcNetString256Type	InstructChain;
-	///½á¹û´®
+	///ç»“æœä¸²
 	TShfeFtdcNetString1KType	ResultChain;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ¶ÔÏó¼¯
+///ä»»åŠ¡å¯¹è±¡é›†
 struct CShfeFtdcReqQryNetMonitorTaskObjectSetField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	Device_ID;
 	///DataCenter
 	TShfeFtdcDataCenterFlagType	DataCenter;
 };
 
-///ÈÎÎñ¶ÔÏó¼¯
+///ä»»åŠ¡å¯¹è±¡é›†
 struct CShfeFtdcRspQryNetMonitorTaskObjectSetField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	Device_ID;
 	///DataCenter
 	TShfeFtdcDataCenterFlagType	DataCenter;
 };
 
-///ÈÎÎñ¶ÔÏó¼¯
+///ä»»åŠ¡å¯¹è±¡é›†
 struct CShfeFtdcRtnNetMonitorTaskObjectSetField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	Device_ID;
 	///DataCenter
 	TShfeFtdcDataCenterFlagType	DataCenter;
 };
 
-///»áÔ±Á´Â·ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcReqQryNetPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///»áÔ±Á´Â·ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcRspQryNetPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///»áÔ±Á´Â·ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcRtnNetPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///¼à¿Ø¶¯×÷Ö¸±ê¶ÔÕÕ±í
+///ç›‘æ§åŠ¨ä½œæŒ‡æ ‡å¯¹ç…§è¡¨
 struct CShfeFtdcReqQryNetMonitorActionAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///¼à¿Ø¶ÔÏóID
+	///ç›‘æ§å¯¹è±¡ID
 	TShfeFtdcVolumeType	MonitorAttr_ID;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	MonitorAttrName;
 };
 
-///¼à¿Ø¶¯×÷Ö¸±ê¶ÔÕÕ±í
+///ç›‘æ§åŠ¨ä½œæŒ‡æ ‡å¯¹ç…§è¡¨
 struct CShfeFtdcRspQryNetMonitorActionAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///¼à¿Ø¶ÔÏóID
+	///ç›‘æ§å¯¹è±¡ID
 	TShfeFtdcVolumeType	MonitorAttr_ID;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	MonitorAttrName;
 };
 
-///¼à¿Ø¶¯×÷Ö¸±ê¶ÔÕÕ±í
+///ç›‘æ§åŠ¨ä½œæŒ‡æ ‡å¯¹ç…§è¡¨
 struct CShfeFtdcRtnNetMonitorActionAttrField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///¼à¿Ø¶ÔÏóID
+	///ç›‘æ§å¯¹è±¡ID
 	TShfeFtdcVolumeType	MonitorAttr_ID;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	MonitorAttrName;
 };
 
-///Ä£¿é
+///æ¨¡å—
 struct CShfeFtdcReqQryNetModuleField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///Ãû×Ö
+	///åå­—
 	TShfeFtdcTypeObjectIDType	Name;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcNetObjectIDType	Description;
-	///Ä£¿éË÷Òı
+	///æ¨¡å—ç´¢å¼•
 	TShfeFtdcVolumeType	ModuleIndex;
-	///ÎïÀíË÷Òı
+	///ç‰©ç†ç´¢å¼•
 	TShfeFtdcVolumeType	EntPhyIndex;
 };
 
-///Ä£¿é
+///æ¨¡å—
 struct CShfeFtdcRspQryNetModuleField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///Ãû×Ö
+	///åå­—
 	TShfeFtdcTypeObjectIDType	Name;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcNetObjectIDType	Description;
-	///Ä£¿éË÷Òı
+	///æ¨¡å—ç´¢å¼•
 	TShfeFtdcVolumeType	ModuleIndex;
-	///ÎïÀíË÷Òı
+	///ç‰©ç†ç´¢å¼•
 	TShfeFtdcVolumeType	EntPhyIndex;
 };
 
-///Ä£¿é
+///æ¨¡å—
 struct CShfeFtdcRtnNetModuleField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///Ãû×Ö
+	///åå­—
 	TShfeFtdcTypeObjectIDType	Name;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcNetObjectIDType	Description;
-	///Ä£¿éË÷Òı
+	///æ¨¡å—ç´¢å¼•
 	TShfeFtdcVolumeType	ModuleIndex;
-	///ÎïÀíË÷Òı
+	///ç‰©ç†ç´¢å¼•
 	TShfeFtdcVolumeType	EntPhyIndex;
 };
 
-///¸æ¾¯±í´ïÊ½ĞÅÏ¢±í
+///å‘Šè­¦è¡¨è¾¾å¼ä¿¡æ¯è¡¨
 struct CShfeFtdcReqQryNetEventExprField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÊÂ¼şÃû
+	///ä¸­æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	CNAME;
-	///Ó¢ÎÄÊÂ¼şÃû
+	///è‹±æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	ENAME;
-	///ÊÂ¼ş¼¶±ğ
+	///äº‹ä»¶çº§åˆ«
 	TShfeFtdcCfgNameType	WarningLEVEL;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventTypeID;
-	///ÊÂ¼ş×ÓÀàĞÍ
+	///äº‹ä»¶å­ç±»å‹
 	TShfeFtdcVolumeType	SubEventTypeID;
-	///¸æ¾¯¼ä¸ôÊ±¼ä
+	///å‘Šè­¦é—´éš”æ—¶é—´
 	TShfeFtdcVolumeType	GIVEUPTIME;
-	///¿ØÖÆ¶¨ÒåÏî
+	///æ§åˆ¶å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	CONTROL;
-	///±í´ïÊ½¶¨ÒåÏî
+	///è¡¨è¾¾å¼å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	EXPR;
-	///ÊÂ¼ş¼òÊö
+	///äº‹ä»¶ç®€è¿°
 	TShfeFtdcTypeObjectIDType	BRIEF;
-	///ÊÂ¼şÃèÊöÏî
+	///äº‹ä»¶æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
-	///ÏûÏ¢×éID
+	///æ¶ˆæ¯ç»„ID
 	TShfeFtdcVolumeType	MSGGROUP_ID;
-	///¹ÜÀíÔ±×éID
+	///ç®¡ç†å‘˜ç»„ID
 	TShfeFtdcVolumeType	ADMINGROUP_ID;
 };
 
-///¸æ¾¯±í´ïÊ½ĞÅÏ¢±í
+///å‘Šè­¦è¡¨è¾¾å¼ä¿¡æ¯è¡¨
 struct CShfeFtdcRspQryNetEventExprField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÊÂ¼şÃû
+	///ä¸­æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	CNAME;
-	///Ó¢ÎÄÊÂ¼şÃû
+	///è‹±æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	ENAME;
-	///ÊÂ¼ş¼¶±ğ
+	///äº‹ä»¶çº§åˆ«
 	TShfeFtdcCfgNameType	WarningLEVEL;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventTypeID;
-	///ÊÂ¼ş×ÓÀàĞÍ
+	///äº‹ä»¶å­ç±»å‹
 	TShfeFtdcVolumeType	SubEventTypeID;
-	///¸æ¾¯¼ä¸ôÊ±¼ä
+	///å‘Šè­¦é—´éš”æ—¶é—´
 	TShfeFtdcVolumeType	GIVEUPTIME;
-	///¿ØÖÆ¶¨ÒåÏî
+	///æ§åˆ¶å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	CONTROL;
-	///±í´ïÊ½¶¨ÒåÏî
+	///è¡¨è¾¾å¼å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	EXPR;
-	///ÊÂ¼ş¼òÊö
+	///äº‹ä»¶ç®€è¿°
 	TShfeFtdcTypeObjectIDType	BRIEF;
-	///ÊÂ¼şÃèÊöÏî
+	///äº‹ä»¶æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
-	///ÏûÏ¢×éID
+	///æ¶ˆæ¯ç»„ID
 	TShfeFtdcVolumeType	MSGGROUP_ID;
-	///¹ÜÀíÔ±×éID
+	///ç®¡ç†å‘˜ç»„ID
 	TShfeFtdcVolumeType	ADMINGROUP_ID;
 };
 
-///¸æ¾¯±í´ïÊ½ĞÅÏ¢±í
+///å‘Šè­¦è¡¨è¾¾å¼ä¿¡æ¯è¡¨
 struct CShfeFtdcRtnNetEventExprField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÊÂ¼şÃû
+	///ä¸­æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	CNAME;
-	///Ó¢ÎÄÊÂ¼şÃû
+	///è‹±æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	ENAME;
-	///ÊÂ¼ş¼¶±ğ
+	///äº‹ä»¶çº§åˆ«
 	TShfeFtdcCfgNameType	WarningLEVEL;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventTypeID;
-	///ÊÂ¼ş×ÓÀàĞÍ
+	///äº‹ä»¶å­ç±»å‹
 	TShfeFtdcVolumeType	SubEventTypeID;
-	///¸æ¾¯¼ä¸ôÊ±¼ä
+	///å‘Šè­¦é—´éš”æ—¶é—´
 	TShfeFtdcVolumeType	GIVEUPTIME;
-	///¿ØÖÆ¶¨ÒåÏî
+	///æ§åˆ¶å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	CONTROL;
-	///±í´ïÊ½¶¨ÒåÏî
+	///è¡¨è¾¾å¼å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	EXPR;
-	///ÊÂ¼ş¼òÊö
+	///äº‹ä»¶ç®€è¿°
 	TShfeFtdcTypeObjectIDType	BRIEF;
-	///ÊÂ¼şÃèÊöÏî
+	///äº‹ä»¶æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
-	///ÏûÏ¢×éID
+	///æ¶ˆæ¯ç»„ID
 	TShfeFtdcVolumeType	MSGGROUP_ID;
-	///¹ÜÀíÔ±×éID
+	///ç®¡ç†å‘˜ç»„ID
 	TShfeFtdcVolumeType	ADMINGROUP_ID;
 };
 
-///ÊÂ¼şÀàĞÍ
+///äº‹ä»¶ç±»å‹
 struct CShfeFtdcReqQryNetEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼şÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼şÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼şÀàĞÍ
+///äº‹ä»¶ç±»å‹
 struct CShfeFtdcRspQryNetEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼şÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼şÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼şÀàĞÍ
+///äº‹ä»¶ç±»å‹
 struct CShfeFtdcRtnNetEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼şÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼şÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼ş×ÓÀàĞÍ
+///äº‹ä»¶å­ç±»å‹
 struct CShfeFtdcReqQryNetSubEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş×ÓÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶å­ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş×ÓÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶å­ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼ş×ÓÀàĞÍ
+///äº‹ä»¶å­ç±»å‹
 struct CShfeFtdcRspQryNetSubEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş×ÓÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶å­ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş×ÓÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶å­ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼ş×ÓÀàĞÍ
+///äº‹ä»¶å­ç±»å‹
 struct CShfeFtdcRtnNetSubEventTypeField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş×ÓÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶å­ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş×ÓÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶å­ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
-///ÊÂ¼ş¼¶±ğ
+///äº‹ä»¶çº§åˆ«
 struct CShfeFtdcReqQryNetEventLevelField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş¼¶±ğÖĞÎÄÃû
+	///äº‹ä»¶çº§åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş¼¶±ğÓ¢ÎÄÃû
+	///äº‹ä»¶çº§åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÊÂ¼ş¼¶±ğÃèÊöÏî
+	///äº‹ä»¶çº§åˆ«æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
 };
 
-///ÊÂ¼ş¼¶±ğ
+///äº‹ä»¶çº§åˆ«
 struct CShfeFtdcRspQryNetEventLevelField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş¼¶±ğÖĞÎÄÃû
+	///äº‹ä»¶çº§åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş¼¶±ğÓ¢ÎÄÃû
+	///äº‹ä»¶çº§åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÊÂ¼ş¼¶±ğÃèÊöÏî
+	///äº‹ä»¶çº§åˆ«æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
 };
 
-///ÊÂ¼ş¼¶±ğ
+///äº‹ä»¶çº§åˆ«
 struct CShfeFtdcRtnNetEventLevelField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş¼¶±ğÖĞÎÄÃû
+	///äº‹ä»¶çº§åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş¼¶±ğÓ¢ÎÄÃû
+	///äº‹ä»¶çº§åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÊÂ¼ş¼¶±ğÃèÊöÏî
+	///äº‹ä»¶çº§åˆ«æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
 };
 
-///ÈÎÎñ½á¹û×´Ì¬±í
+///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 struct CShfeFtdcReqQryNetMonitorTaskStatusResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û×´Ì¬±í
+///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 struct CShfeFtdcRspQryNetMonitorTaskStatusResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û×´Ì¬±í
+///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 struct CShfeFtdcRtnNetMonitorTaskStatusResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
-///µÇÂ½ÅäÖÃ·şÎñµÄÇëÇó
+///ç™»é™†é…ç½®æœåŠ¡çš„è¯·æ±‚
 struct CShfeFtdcReqConfigLoginField
 {
 	///DataCenter
@@ -10168,23 +10168,23 @@ struct CShfeFtdcReqConfigLoginField
 	TShfeFtdcAuthorizationInfoType	Authorization;
 };
 
-///¶ÔµÇÂ½ÅäÖÃ·şÎñÇëÇóµÄÏìÓ¦
+///å¯¹ç™»é™†é…ç½®æœåŠ¡è¯·æ±‚çš„å“åº”
 struct CShfeFtdcRspQryConfigLoginField
 {
-	///´íÎó´úÂë
+	///é”™è¯¯ä»£ç 
 	TShfeFtdcErrorIDType	ErrorID;
-	///´íÎóĞÅÏ¢
+	///é”™è¯¯ä¿¡æ¯
 	TShfeFtdcErrorMsgType	ErrorMsg;
 };
 
-///¶Ôµ±Ç°µÇÂ¼ÅäÖÃµÄ·şÎñ½ÇÉ«µÄÏìÓ¦
+///å¯¹å½“å‰ç™»å½•é…ç½®çš„æœåŠ¡è§’è‰²çš„å“åº”
 struct CShfeFtdcRspServerTypeField
 {
 	///IsMaster
 	TShfeFtdcVolumeType	IsMaster;
 };
 
-///ÍË³ö·şÎñÇëÇó
+///é€€å‡ºæœåŠ¡è¯·æ±‚
 struct CShfeFtdcReqSysServerExitField
 {
 	///Time
@@ -10193,1544 +10193,1544 @@ struct CShfeFtdcReqSysServerExitField
 	TShfeFtdcAuthorizationInfoType	Authorization;
 };
 
-///Éè±¸ÅäÖÃ±í
+///è®¾å¤‡é…ç½®è¡¨
 struct CShfeFtdcReqQryNetCfgFileField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÅäÖÃÎÄ¼şÃû
+	///é…ç½®æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	CfgFileName;
 };
 
-///Éè±¸ÅäÖÃ±í
+///è®¾å¤‡é…ç½®è¡¨
 struct CShfeFtdcRspQryNetCfgFileField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÅäÖÃÎÄ¼şÃû
+	///é…ç½®æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	CfgFileName;
 };
 
-///Éè±¸ÅäÖÃ±í
+///è®¾å¤‡é…ç½®è¡¨
 struct CShfeFtdcRtnNetCfgFileField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÅäÖÃÎÄ¼şÃû
+	///é…ç½®æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	CfgFileName;
 };
 
-///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 struct CShfeFtdcReqQryNetMonitorDeviceTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî
+	///æŒ‡ä»¤
 	TShfeFtdcNetString256Type	InstructChain;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Ö¸Áî²ÎÊı´®
+	///æŒ‡ä»¤å‚æ•°ä¸²
 	TShfeFtdcNetString256Type	InstructArgs;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 struct CShfeFtdcRspQryNetMonitorDeviceTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî
+	///æŒ‡ä»¤
 	TShfeFtdcNetString256Type	InstructChain;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Ö¸Áî²ÎÊı´®
+	///æŒ‡ä»¤å‚æ•°ä¸²
 	TShfeFtdcNetString256Type	InstructArgs;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 struct CShfeFtdcRtnNetMonitorDeviceTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî
+	///æŒ‡ä»¤
 	TShfeFtdcNetString256Type	InstructChain;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Ö¸Áî²ÎÊı´®
+	///æŒ‡ä»¤å‚æ•°ä¸²
 	TShfeFtdcNetString256Type	InstructArgs;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///ÈÎÎñÖ¸ÁîÖ¸±ê¼¯±í
+///ä»»åŠ¡æŒ‡ä»¤æŒ‡æ ‡é›†è¡¨
 struct CShfeFtdcReqQryNetMonitorTaskInstAttrsField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetString128Type	DEVICETYPE;
-	///Ö¸±ê´®
+	///æŒ‡æ ‡ä¸²
 	TShfeFtdcNetString256Type	AttrsChain;
-	///Ö¸±ê¹æÔò´®
+	///æŒ‡æ ‡è§„åˆ™ä¸²
 	TShfeFtdcNetString512Type	DefRegularChain;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
 };
 
-///ÈÎÎñÖ¸ÁîÖ¸±ê¼¯±í
+///ä»»åŠ¡æŒ‡ä»¤æŒ‡æ ‡é›†è¡¨
 struct CShfeFtdcRspQryNetMonitorTaskInstAttrsField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetString128Type	DEVICETYPE;
-	///Ö¸±ê´®
+	///æŒ‡æ ‡ä¸²
 	TShfeFtdcNetString256Type	AttrsChain;
-	///Ö¸±ê¹æÔò´®
+	///æŒ‡æ ‡è§„åˆ™ä¸²
 	TShfeFtdcNetString512Type	DefRegularChain;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
 };
 
-///ÈÎÎñÖ¸ÁîÖ¸±ê¼¯±í
+///ä»»åŠ¡æŒ‡ä»¤æŒ‡æ ‡é›†è¡¨
 struct CShfeFtdcRtnNetMonitorTaskInstAttrsField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetString128Type	DEVICETYPE;
-	///Ö¸±ê´®
+	///æŒ‡æ ‡ä¸²
 	TShfeFtdcNetString256Type	AttrsChain;
-	///Ö¸±ê¹æÔò´®
+	///æŒ‡æ ‡è§„åˆ™ä¸²
 	TShfeFtdcNetString512Type	DefRegularChain;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
 };
 
-///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+///æ–‡ä»¶é€šç”¨æ“ä½œ
 struct CShfeFtdcReqQryFileGeneralOperField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	FileName;
-	///ÎÄ¼ş°æ±¾
+	///æ–‡ä»¶ç‰ˆæœ¬
 	TShfeFtdcFileVersionType	Version;
-	///Ğ¡°æ±¾ºÅ
+	///å°ç‰ˆæœ¬å·
 	TShfeFtdcVolumeType	SubVersion;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼ş²Ù×÷ÓÃ»§
+	///æ–‡ä»¶æ“ä½œç”¨æˆ·
 	TShfeFtdcTypeUserNameType	UserName;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperType;
-	///²Ù×÷½á¹û
+	///æ“ä½œç»“æœ
 	TShfeFtdcVolumeType	OperResult;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
-	///ÎÄ¼şÆ«ÒÆ
+	///æ–‡ä»¶åç§»
 	TShfeFtdcOffsetType	Offset;
-	///ContentÖĞÊµ¼ÊÄÚÈİ³¤¶È
+	///Contentä¸­å®é™…å†…å®¹é•¿åº¦
 	TShfeFtdcCommLengthType	Length;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcFileCommentType	FileContent;
 };
 
-///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+///æ–‡ä»¶é€šç”¨æ“ä½œ
 struct CShfeFtdcRspQryFileGeneralOperField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	FileName;
-	///ÎÄ¼ş°æ±¾
+	///æ–‡ä»¶ç‰ˆæœ¬
 	TShfeFtdcFileVersionType	Version;
-	///Ğ¡°æ±¾ºÅ
+	///å°ç‰ˆæœ¬å·
 	TShfeFtdcVolumeType	SubVersion;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼ş²Ù×÷ÓÃ»§
+	///æ–‡ä»¶æ“ä½œç”¨æˆ·
 	TShfeFtdcTypeUserNameType	UserName;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperType;
-	///²Ù×÷½á¹û
+	///æ“ä½œç»“æœ
 	TShfeFtdcVolumeType	OperResult;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
-	///ÎÄ¼şÆ«ÒÆ
+	///æ–‡ä»¶åç§»
 	TShfeFtdcOffsetType	Offset;
-	///ContentÖĞÊµ¼ÊÄÚÈİ³¤¶È
+	///Contentä¸­å®é™…å†…å®¹é•¿åº¦
 	TShfeFtdcCommLengthType	Length;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcFileCommentType	FileContent;
 };
 
-///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+///æ–‡ä»¶é€šç”¨æ“ä½œ
 struct CShfeFtdcRtnFileGeneralOperField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///ÎÄ¼şÃû
+	///æ–‡ä»¶å
 	TShfeFtdcNetAttrTypeType	FileName;
-	///ÎÄ¼ş°æ±¾
+	///æ–‡ä»¶ç‰ˆæœ¬
 	TShfeFtdcFileVersionType	Version;
-	///Ğ¡°æ±¾ºÅ
+	///å°ç‰ˆæœ¬å·
 	TShfeFtdcVolumeType	SubVersion;
-	///ÈÕÆÚ
+	///æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///Ê±¼ä
+	///æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///ÎÄ¼ş²Ù×÷ÓÃ»§
+	///æ–‡ä»¶æ“ä½œç”¨æˆ·
 	TShfeFtdcTypeUserNameType	UserName;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperType;
-	///²Ù×÷½á¹û
+	///æ“ä½œç»“æœ
 	TShfeFtdcVolumeType	OperResult;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
-	///ÎÄ¼şÆ«ÒÆ
+	///æ–‡ä»¶åç§»
 	TShfeFtdcOffsetType	Offset;
-	///ContentÖĞÊµ¼ÊÄÚÈİ³¤¶È
+	///Contentä¸­å®é™…å†…å®¹é•¿åº¦
 	TShfeFtdcCommLengthType	Length;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcFileCommentType	FileContent;
 };
 
-///»ùÏß±í
+///åŸºçº¿è¡¨
 struct CShfeFtdcReqQryNetBaseLineField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///»ùÏßÃû
+	///åŸºçº¿å
 	TShfeFtdcNetObjectIDType	Name;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	SerialUsed;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcbaseCommentType	data;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»ùÏß±í
+///åŸºçº¿è¡¨
 struct CShfeFtdcRspQryNetBaseLineField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///»ùÏßÃû
+	///åŸºçº¿å
 	TShfeFtdcNetObjectIDType	Name;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	SerialUsed;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcbaseCommentType	data;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»ùÏß±í
+///åŸºçº¿è¡¨
 struct CShfeFtdcRtnNetBaseLineField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///»ùÏßÃû
+	///åŸºçº¿å
 	TShfeFtdcNetObjectIDType	Name;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	SerialUsed;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcbaseCommentType	data;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»ùÏßÈÎÎñ±í
+///åŸºçº¿ä»»åŠ¡è¡¨
 struct CShfeFtdcReqQryNetBaseLineTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÈÎÎñÃû
+	///åŸºçº¿ä»»åŠ¡å
 	TShfeFtdcNetObjectIDType	Name;
-	///»ùÏßIDÁĞ±í
+	///åŸºçº¿IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	BaseLineIDList;
-	///Éè±¸IDÁĞ±í
+	///è®¾å¤‡IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	DeviceIDList;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///»ùÏßÈÎÎñ±í
+///åŸºçº¿ä»»åŠ¡è¡¨
 struct CShfeFtdcRspQryNetBaseLineTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÈÎÎñÃû
+	///åŸºçº¿ä»»åŠ¡å
 	TShfeFtdcNetObjectIDType	Name;
-	///»ùÏßIDÁĞ±í
+	///åŸºçº¿IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	BaseLineIDList;
-	///Éè±¸IDÁĞ±í
+	///è®¾å¤‡IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	DeviceIDList;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///»ùÏßÈÎÎñ±í
+///åŸºçº¿ä»»åŠ¡è¡¨
 struct CShfeFtdcRtnNetBaseLineTaskField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÈÎÎñÃû
+	///åŸºçº¿ä»»åŠ¡å
 	TShfeFtdcNetObjectIDType	Name;
-	///»ùÏßIDÁĞ±í
+	///åŸºçº¿IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	BaseLineIDList;
-	///Éè±¸IDÁĞ±í
+	///è®¾å¤‡IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	DeviceIDList;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///»ùÏß½á¹û±í
+///åŸºçº¿ç»“æœè¡¨
 struct CShfeFtdcReqQryNetBaseLineResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÃû³Æ
+	///åŸºçº¿åç§°
 	TShfeFtdcNetObjectIDType	BaseLineName;
-	///Éè±¸ObjID
+	///è®¾å¤‡ObjID
 	TShfeFtdcNetObjectIDType	DeviceObjID;
-	///Éè±¸IP
+	///è®¾å¤‡IP
 	TShfeFtdcIPAddressType	DeviceIP;
-	///»ùÏß½á¹û
+	///åŸºçº¿ç»“æœ
 	TShfeFtdcFileCommentType	Result;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»ùÏß½á¹û±í
+///åŸºçº¿ç»“æœè¡¨
 struct CShfeFtdcRspQryNetBaseLineResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÃû³Æ
+	///åŸºçº¿åç§°
 	TShfeFtdcNetObjectIDType	BaseLineName;
-	///Éè±¸ObjID
+	///è®¾å¤‡ObjID
 	TShfeFtdcNetObjectIDType	DeviceObjID;
-	///Éè±¸IP
+	///è®¾å¤‡IP
 	TShfeFtdcIPAddressType	DeviceIP;
-	///»ùÏß½á¹û
+	///åŸºçº¿ç»“æœ
 	TShfeFtdcFileCommentType	Result;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»ùÏß½á¹û±í
+///åŸºçº¿ç»“æœè¡¨
 struct CShfeFtdcRtnNetBaseLineResultField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÃû³Æ
+	///åŸºçº¿åç§°
 	TShfeFtdcNetObjectIDType	BaseLineName;
-	///Éè±¸ObjID
+	///è®¾å¤‡ObjID
 	TShfeFtdcNetObjectIDType	DeviceObjID;
-	///Éè±¸IP
+	///è®¾å¤‡IP
 	TShfeFtdcIPAddressType	DeviceIP;
-	///»ùÏß½á¹û
+	///åŸºçº¿ç»“æœ
 	TShfeFtdcFileCommentType	Result;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
-///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 struct CShfeFtdcReqQryNetPartyLinkStatusInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///²éÕÒ·½Ê½
+	///æŸ¥æ‰¾æ–¹å¼
 	TShfeFtdcCompareTypeType	KeyCompare;
-	///Ë÷ÒıÃû³Æ
+	///ç´¢å¼•åç§°
 	TShfeFtdcNetAttrTypeType	KeyName;
-	///Ë÷ÒıÖµ
+	///ç´¢å¼•å€¼
 	TShfeFtdcNetAttrTypeType	KeyValue;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcCfgNameType	SEAT_NO;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///Á´Â·×´Ì¬
+	///é“¾è·¯çŠ¶æ€
 	TShfeFtdcTypeObjectIDType	status;
 };
 
-///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 struct CShfeFtdcRspQryNetPartyLinkStatusInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcCfgNameType	SEAT_NO;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///Á´Â·×´Ì¬
+	///é“¾è·¯çŠ¶æ€
 	TShfeFtdcTypeObjectIDType	status;
 };
 
-///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 struct CShfeFtdcRtnNetPartyLinkStatusInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcCfgNameType	SEAT_NO;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///Á´Â·×´Ì¬
+	///é“¾è·¯çŠ¶æ€
 	TShfeFtdcTypeObjectIDType	status;
 };
 
-///»áÔ±SDHÏßÂ·Ã÷Ï¸±í
+///ä¼šå‘˜SDHçº¿è·¯æ˜ç»†è¡¨
 struct CShfeFtdcReqQryNetMemberSDHLineInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcPartyIDType	MemberNo;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///¿Í»§¾­Àí
+	///å®¢æˆ·ç»ç†
 	TShfeFtdcNetString128Type	ClientManager;
-	///´ø¿í
+	///å¸¦å®½
 	TShfeFtdcNetString128Type	Bandwidth;
-	///½Ó¿ÚÀà
+	///æ¥å£ç±»
 	TShfeFtdcNetString128Type	InterfaceType;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
-	///A¶Ë½ÓÈëµØÖ·
+	///Aç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndALineAddress;
-	///A¶ËÁªÏµÈË
+	///Aç«¯è”ç³»äºº
 	TShfeFtdcNetString128Type	EndAContact;
-	///Z¶Ë½ÓÈëµØÖ·
+	///Zç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndZLineAddress;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcIndividualNameType	ContactName;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÆğÊ¼Éè±¸¶Ë¿Ú
+	///èµ·å§‹è®¾å¤‡ç«¯å£
 	TShfeFtdcNetString256Type	StartPortID;
-	///ÆğÊ¼Éè±¸Ìø½Ó¶Ë
+	///èµ·å§‹è®¾å¤‡è·³æ¥ç«¯
 	TShfeFtdcNetString128Type	StartJump;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
 };
 
-///»áÔ±SDHÏßÂ·Ã÷Ï¸±í
+///ä¼šå‘˜SDHçº¿è·¯æ˜ç»†è¡¨
 struct CShfeFtdcRspQryNetMemberSDHLineInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcPartyIDType	MemberNo;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///¿Í»§¾­Àí
+	///å®¢æˆ·ç»ç†
 	TShfeFtdcNetString128Type	ClientManager;
-	///´ø¿í
+	///å¸¦å®½
 	TShfeFtdcNetString128Type	Bandwidth;
-	///½Ó¿ÚÀà
+	///æ¥å£ç±»
 	TShfeFtdcNetString128Type	InterfaceType;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
-	///A¶Ë½ÓÈëµØÖ·
+	///Aç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndALineAddress;
-	///A¶ËÁªÏµÈË
+	///Aç«¯è”ç³»äºº
 	TShfeFtdcNetString128Type	EndAContact;
-	///Z¶Ë½ÓÈëµØÖ·
+	///Zç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndZLineAddress;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcIndividualNameType	ContactName;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÆğÊ¼Éè±¸¶Ë¿Ú
+	///èµ·å§‹è®¾å¤‡ç«¯å£
 	TShfeFtdcNetString256Type	StartPortID;
-	///ÆğÊ¼Éè±¸Ìø½Ó¶Ë
+	///èµ·å§‹è®¾å¤‡è·³æ¥ç«¯
 	TShfeFtdcNetString128Type	StartJump;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
 };
 
-///»áÔ±SDHÏßÂ·Ã÷Ï¸±í
+///ä¼šå‘˜SDHçº¿è·¯æ˜ç»†è¡¨
 struct CShfeFtdcRtnNetMemberSDHLineInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcPartyIDType	MemberNo;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///¿Í»§¾­Àí
+	///å®¢æˆ·ç»ç†
 	TShfeFtdcNetString128Type	ClientManager;
-	///´ø¿í
+	///å¸¦å®½
 	TShfeFtdcNetString128Type	Bandwidth;
-	///½Ó¿ÚÀà
+	///æ¥å£ç±»
 	TShfeFtdcNetString128Type	InterfaceType;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
-	///A¶Ë½ÓÈëµØÖ·
+	///Aç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndALineAddress;
-	///A¶ËÁªÏµÈË
+	///Aç«¯è”ç³»äºº
 	TShfeFtdcNetString128Type	EndAContact;
-	///Z¶Ë½ÓÈëµØÖ·
+	///Zç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndZLineAddress;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcIndividualNameType	ContactName;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÆğÊ¼Éè±¸¶Ë¿Ú
+	///èµ·å§‹è®¾å¤‡ç«¯å£
 	TShfeFtdcNetString256Type	StartPortID;
-	///ÆğÊ¼Éè±¸Ìø½Ó¶Ë
+	///èµ·å§‹è®¾å¤‡è·³æ¥ç«¯
 	TShfeFtdcNetString128Type	StartJump;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
 };
 
-///DDNÁ´Â·ĞÅÏ¢±í
+///DDNé“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcReqQryNetDDNLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
 };
 
-///DDNÁ´Â·ĞÅÏ¢±í
+///DDNé“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcRspQryNetDDNLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
 };
 
-///DDNÁ´Â·ĞÅÏ¢±í
+///DDNé“¾è·¯ä¿¡æ¯è¡¨
 struct CShfeFtdcRtnNetDDNLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
 };
 
-///·Ç»áÔ±ÏßÂ·Ê¹ÓÃĞÅÏ¢
+///éä¼šå‘˜çº¿è·¯ä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcReqQryNetPseudMemberLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÏßÂ·ÓÃÍ¾
+	///çº¿è·¯ç”¨é€”
 	TShfeFtdcNetString128Type	LineUsage;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///ÒµÎñ
+	///ä¸šåŠ¡
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
-	///ÒÒ¶Ëµç»°ºÅÂë
+	///ä¹™ç«¯ç”µè¯å·ç 
 	TShfeFtdcTelephoneType	Telephone;
-	///ÏßÂ·ĞÅÏ¢
+	///çº¿è·¯ä¿¡æ¯
 	TShfeFtdcTypeObjectIDType	LineInfo;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
 };
 
-///·Ç»áÔ±ÏßÂ·Ê¹ÓÃĞÅÏ¢
+///éä¼šå‘˜çº¿è·¯ä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRspQryNetPseudMemberLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÏßÂ·ÓÃÍ¾
+	///çº¿è·¯ç”¨é€”
 	TShfeFtdcNetString128Type	LineUsage;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///ÒµÎñ
+	///ä¸šåŠ¡
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
-	///ÒÒ¶Ëµç»°ºÅÂë
+	///ä¹™ç«¯ç”µè¯å·ç 
 	TShfeFtdcTelephoneType	Telephone;
-	///ÏßÂ·ĞÅÏ¢
+	///çº¿è·¯ä¿¡æ¯
 	TShfeFtdcTypeObjectIDType	LineInfo;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
 };
 
-///·Ç»áÔ±ÏßÂ·Ê¹ÓÃĞÅÏ¢
+///éä¼šå‘˜çº¿è·¯ä½¿ç”¨ä¿¡æ¯
 struct CShfeFtdcRtnNetPseudMemberLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÏßÂ·ÓÃÍ¾
+	///çº¿è·¯ç”¨é€”
 	TShfeFtdcNetString128Type	LineUsage;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///ÒµÎñ
+	///ä¸šåŠ¡
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
-	///ÒÒ¶Ëµç»°ºÅÂë
+	///ä¹™ç«¯ç”µè¯å·ç 
 	TShfeFtdcTelephoneType	Telephone;
-	///ÏßÂ·ĞÅÏ¢
+	///çº¿è·¯ä¿¡æ¯
 	TShfeFtdcTypeObjectIDType	LineInfo;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
 };
 
-///Ô¶¶ËÉè±¸ĞÅÏ¢
+///è¿œç«¯è®¾å¤‡ä¿¡æ¯
 struct CShfeFtdcReqQryOuterDeviceInfField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///Ô¶¶ËÉè±¸ĞÅÏ¢
+///è¿œç«¯è®¾å¤‡ä¿¡æ¯
 struct CShfeFtdcRspQryOuterDeviceInfField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///Ô¶¶ËÉè±¸ĞÅÏ¢
+///è¿œç«¯è®¾å¤‡ä¿¡æ¯
 struct CShfeFtdcRtnNetOuterDeviceInfField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
-///±¾µØping½á¹û
+///æœ¬åœ°pingç»“æœ
 struct CShfeFtdcReqQryNetLocalPingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
 };
 
-///±¾µØping½á¹û
+///æœ¬åœ°pingç»“æœ
 struct CShfeFtdcRspQryNetLocalPingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
 };
 
-///±¾µØping½á¹û
+///æœ¬åœ°pingç»“æœ
 struct CShfeFtdcRtnNetLocalPingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
 };
 
-///Ô¶³Ìping½á¹û
+///è¿œç¨‹pingç»“æœ
 struct CShfeFtdcReqQryNetRomotePingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
-	///×îĞ¡Ê±ÑÓ
+	///æœ€å°æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMin;
-	///×î´óÊ±ÑÓ
+	///æœ€å¤§æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMax;
-	///Æ½¾ùÊ±ÑÓ
+	///å¹³å‡æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyAvg;
 };
 
-///Ô¶³Ìping½á¹û
+///è¿œç¨‹pingç»“æœ
 struct CShfeFtdcRspQryNetRomotePingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
-	///×îĞ¡Ê±ÑÓ
+	///æœ€å°æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMin;
-	///×î´óÊ±ÑÓ
+	///æœ€å¤§æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMax;
-	///Æ½¾ùÊ±ÑÓ
+	///å¹³å‡æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyAvg;
 };
 
-///Ô¶³Ìping½á¹û
+///è¿œç¨‹pingç»“æœ
 struct CShfeFtdcRtnNetRomotePingResultInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
-	///×îĞ¡Ê±ÑÓ
+	///æœ€å°æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMin;
-	///×î´óÊ±ÑÓ
+	///æœ€å¤§æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMax;
-	///Æ½¾ùÊ±ÑÓ
+	///å¹³å‡æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyAvg;
 };
 
 ///
 struct CShfeFtdcRtnMonitorTopProcessInfoField
 {
-	///Ö÷»úÃû³Æ
+	///ä¸»æœºåç§°
 	TShfeFtdcTypeObjectIDType	HostName;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///´¦ÀíÆ÷ºÅ
+	///å¤„ç†å™¨å·
 	TShfeFtdcTypeCPUIdType	CPU;
-	///ÖÕ¶ËÃû
+	///ç»ˆç«¯å
 	TShfeFtdcTypeChar10Type	TTY;
-	///½ø³ÌºÅ
+	///è¿›ç¨‹å·
 	TShfeFtdcVolumeType	PID;
-	///ÓÃ»§Ãû
+	///ç”¨æˆ·å
 	TShfeFtdcTypeChar10Type	USERNAME;
-	///ÈÎÎñµÄÓÅÏÈ¼¶
+	///ä»»åŠ¡çš„ä¼˜å…ˆçº§
 	TShfeFtdcVolumeType	PRI;
-	///ÈÎÎñµÄniceÖµ
+	///ä»»åŠ¡çš„niceå€¼
 	TShfeFtdcVolumeType	NI;
-	///ÈÎÎñµÄ´úÂë¼ÓÉÏÊı¾İÔÙ¼ÓÉÏÕ»¿Õ¼äµÄ´óĞ¡
+	///ä»»åŠ¡çš„ä»£ç åŠ ä¸Šæ•°æ®å†åŠ ä¸Šæ ˆç©ºé—´çš„å¤§å°
 	TShfeFtdcVolumeType	SSIZE;
-	///ÈÎÎñÊ¹ÓÃµÄÎïÀíÄÚ´æµÄ×ÜÊıÁ¿
+	///ä»»åŠ¡ä½¿ç”¨çš„ç‰©ç†å†…å­˜çš„æ€»æ•°é‡
 	TShfeFtdcVolumeType	RES;
-	///ÈÎÎñµÄ×´Ì¬
+	///ä»»åŠ¡çš„çŠ¶æ€
 	TShfeFtdcTypeChar10Type	STATE;
-	///×ÔÈÎÎñ¿ªÊ¼Ê±Ê¹ÓÃµÄ×ÜCPUÊ±¼ä
+	///è‡ªä»»åŠ¡å¼€å§‹æ—¶ä½¿ç”¨çš„æ€»CPUæ—¶é—´
 	TShfeFtdcTimeType	STIME;
-	///½ø³ÌµÄCPUÀûÓÃÂÊÈ¨ÖØ°Ù·Ö±È
+	///è¿›ç¨‹çš„CPUåˆ©ç”¨ç‡æƒé‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pWCPU;
-	///½ø³ÌµÄÔ­Ê¼µÄCPUÀûÓÃÂÊ°Ù·Ö±È
+	///è¿›ç¨‹çš„åŸå§‹çš„CPUåˆ©ç”¨ç‡ç™¾åˆ†æ¯”
 	TShfeFtdcRatioType	pCPU;
-	///Æô¶¯½ø³ÌµÄÃüÁîÃû
+	///å¯åŠ¨è¿›ç¨‹çš„å‘½ä»¤å
 	TShfeFtdcTypeCommandType	COMMAND;
 };
 
-///ÏµÍ³ÄÚ²¿¼¶Áª¹ØÏµ
+///ç³»ç»Ÿå†…éƒ¨çº§è”å…³ç³»
 struct CShfeFtdcReqQrySysInternalTopologyField
 {
-	///Ğ¯´øĞÅÏ¢µÄÀàĞÍ
+	///æºå¸¦ä¿¡æ¯çš„ç±»å‹
 	TShfeFtdcReportIDType	InfoType;
-	///½Úµã1µÄID
+	///èŠ‚ç‚¹1çš„ID
 	TShfeFtdcNodeIDType	Node1_ID;
-	///½Úµã1µÄĞÅÏ¢
+	///èŠ‚ç‚¹1çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node1_Info;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·ĞÅÏ¢
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯ä¿¡æ¯
 	TShfeFtdcLinkInfoType	LinkInfo;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·×´Ì¬
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯çŠ¶æ€
 	TShfeFtdcLinkStateType	LinkState;
-	///½Úµã2µÄID
+	///èŠ‚ç‚¹2çš„ID
 	TShfeFtdcNodeIDType	Node2_ID;
-	///½Úµã2µÄĞÅÏ¢
+	///èŠ‚ç‚¹2çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node2_Info;
 };
 
-///ÏµÍ³ÄÚ²¿¼¶Áª¹ØÏµ
+///ç³»ç»Ÿå†…éƒ¨çº§è”å…³ç³»
 struct CShfeFtdcRspQrySysInternalTopologyField
 {
-	///Ğ¯´øĞÅÏ¢µÄÀàĞÍ
+	///æºå¸¦ä¿¡æ¯çš„ç±»å‹
 	TShfeFtdcReportIDType	InfoType;
-	///½Úµã1µÄID
+	///èŠ‚ç‚¹1çš„ID
 	TShfeFtdcNodeIDType	Node1_ID;
-	///½Úµã1µÄĞÅÏ¢
+	///èŠ‚ç‚¹1çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node1_Info;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·ĞÅÏ¢
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯ä¿¡æ¯
 	TShfeFtdcLinkInfoType	LinkInfo;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·×´Ì¬
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯çŠ¶æ€
 	TShfeFtdcLinkStateType	LinkState;
-	///½Úµã2µÄID
+	///èŠ‚ç‚¹2çš„ID
 	TShfeFtdcNodeIDType	Node2_ID;
-	///½Úµã2µÄĞÅÏ¢
+	///èŠ‚ç‚¹2çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node2_Info;
 };
 
-///ÏµÍ³ÄÚ²¿¼¶Áª¹ØÏµ
+///ç³»ç»Ÿå†…éƒ¨çº§è”å…³ç³»
 struct CShfeFtdcRtnSysInternalTopologyField
 {
-	///Ğ¯´øĞÅÏ¢µÄÀàĞÍ
+	///æºå¸¦ä¿¡æ¯çš„ç±»å‹
 	TShfeFtdcReportIDType	InfoType;
-	///½Úµã1µÄID
+	///èŠ‚ç‚¹1çš„ID
 	TShfeFtdcNodeIDType	Node1_ID;
-	///½Úµã1µÄĞÅÏ¢
+	///èŠ‚ç‚¹1çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node1_Info;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·ĞÅÏ¢
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯ä¿¡æ¯
 	TShfeFtdcLinkInfoType	LinkInfo;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·×´Ì¬
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯çŠ¶æ€
 	TShfeFtdcLinkStateType	LinkState;
-	///½Úµã2µÄID
+	///èŠ‚ç‚¹2çš„ID
 	TShfeFtdcNodeIDType	Node2_ID;
-	///½Úµã2µÄĞÅÏ¢
+	///èŠ‚ç‚¹2çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node2_Info;
 };
 
-///ÇëÇó»áÔ±Á´Â··ÑÓÃ±í
+///è¯·æ±‚ä¼šå‘˜é“¾è·¯è´¹ç”¨è¡¨
 struct CShfeFtdcReqQryMemberLinkCostField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///¸¶¿îÈÕÆÚ
+	///ä»˜æ¬¾æ—¥æœŸ
 	TShfeFtdcCfgNameType	Pay_Date;
-	///ÕËÆÚÆğÊ¼ÈÕÆÚ
+	///è´¦æœŸèµ·å§‹æ—¥æœŸ
 	TShfeFtdcCfgNameType	B_Pay_Date;
-	///ÕËÆÚÖÕÖ¹ÈÕÆÚ
+	///è´¦æœŸç»ˆæ­¢æ—¥æœŸ
 	TShfeFtdcCfgNameType	D_Pay_Date;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcVolumeType	Charge;
-	///·ÑÓÃÀàĞÍ
+	///è´¹ç”¨ç±»å‹
 	TShfeFtdcCfgNameType	Fee_Type;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	Pro;
 };
 
-///·µ»Ø»áÔ±Á´Â··ÑÓÃ±í
+///è¿”å›ä¼šå‘˜é“¾è·¯è´¹ç”¨è¡¨
 struct CShfeFtdcRspQryMemberLinkCostField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///¸¶¿îÈÕÆÚ
+	///ä»˜æ¬¾æ—¥æœŸ
 	TShfeFtdcCfgNameType	Pay_Date;
-	///ÕËÆÚÆğÊ¼ÈÕÆÚ
+	///è´¦æœŸèµ·å§‹æ—¥æœŸ
 	TShfeFtdcCfgNameType	B_Pay_Date;
-	///ÕËÆÚÖÕÖ¹ÈÕÆÚ
+	///è´¦æœŸç»ˆæ­¢æ—¥æœŸ
 	TShfeFtdcCfgNameType	D_Pay_Date;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcVolumeType	Charge;
-	///·ÑÓÃÀàĞÍ
+	///è´¹ç”¨ç±»å‹
 	TShfeFtdcCfgNameType	Fee_Type;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	Pro;
 };
 
-///¶©ÔÄ»áÔ±Á´Â··ÑÓÃ±í
+///è®¢é˜…ä¼šå‘˜é“¾è·¯è´¹ç”¨è¡¨
 struct CShfeFtdcRtnMemberLinkCostField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///¸¶¿îÈÕÆÚ
+	///ä»˜æ¬¾æ—¥æœŸ
 	TShfeFtdcCfgNameType	Pay_Date;
-	///ÕËÆÚÆğÊ¼ÈÕÆÚ
+	///è´¦æœŸèµ·å§‹æ—¥æœŸ
 	TShfeFtdcCfgNameType	B_Pay_Date;
-	///ÕËÆÚÖÕÖ¹ÈÕÆÚ
+	///è´¦æœŸç»ˆæ­¢æ—¥æœŸ
 	TShfeFtdcCfgNameType	D_Pay_Date;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcVolumeType	Charge;
-	///·ÑÓÃÀàĞÍ
+	///è´¹ç”¨ç±»å‹
 	TShfeFtdcCfgNameType	Fee_Type;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	Pro;
 };
 
-///ÇëÇó»áÔ±Á´Â·ÔÂ×â±í
+///è¯·æ±‚ä¼šå‘˜é“¾è·¯æœˆç§Ÿè¡¨
 struct CShfeFtdcReqQryNetPartylinkMonthlyRentField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÏßÂ·Ãû³Æ
+	///çº¿è·¯åç§°
 	TShfeFtdcParticipantNameType	LineName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
 };
 
-///·µ»Ø»áÔ±Á´Â·ÔÂ×â±í
+///è¿”å›ä¼šå‘˜é“¾è·¯æœˆç§Ÿè¡¨
 struct CShfeFtdcRspQryNetPartylinkMonthlyRentField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÏßÂ·Ãû³Æ
+	///çº¿è·¯åç§°
 	TShfeFtdcParticipantNameType	LineName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
 };
 
-///¶©ÔÄ»áÔ±Á´Â·ÔÂ×â±í
+///è®¢é˜…ä¼šå‘˜é“¾è·¯æœˆç§Ÿè¡¨
 struct CShfeFtdcRtnNetPartylinkMonthlyRentField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÏßÂ·Ãû³Æ
+	///çº¿è·¯åç§°
 	TShfeFtdcParticipantNameType	LineName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
 };
 
-///ÇëÇó·Ç»áÔ±Á´Â·ĞÅÏ¢
+///è¯·æ±‚éä¼šå‘˜é“¾è·¯ä¿¡æ¯
 struct CShfeFtdcReqQryNetNonPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///·µ»Ø·Ç»áÔ±Á´Â·ĞÅÏ¢
+///è¿”å›éä¼šå‘˜é“¾è·¯ä¿¡æ¯
 struct CShfeFtdcRspQryNetNonPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
-///¶©ÔÄ·Ç»áÔ±Á´Â·ĞÅÏ¢
+///è®¢é˜…éä¼šå‘˜é“¾è·¯ä¿¡æ¯
 struct CShfeFtdcRtnNetNonPartyLinkInfoField
 {
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	OperationType;
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
@@ -11739,9 +11739,9 @@ struct CShfeFtdcSysNetAreaField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -11752,9 +11752,9 @@ struct CShfeFtdcSysNetSubAreaField
 	TShfeFtdcVolumeType	ID;
 	///SysNetArea
 	TShfeFtdcVolumeType	SysNetAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -11765,9 +11765,9 @@ struct CShfeFtdcSysNetSubAreaIPField
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ipµØÖ·
+	///ipåœ°å€
 	TShfeFtdcIPAddressType	IP;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	Mask;
 };
 
@@ -11776,9 +11776,9 @@ struct CShfeFtdcSysNetDeviceTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
 };
 
@@ -11787,19 +11787,19 @@ struct CShfeFtdcSysNetOIDField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éú²úÉÌÃû
+	///ç”Ÿäº§å•†å
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceType;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
@@ -11808,19 +11808,19 @@ struct CShfeFtdcSysNetTimePolicyField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ê±¼ä²ßÂÔÖĞÎÄÃû
+	///æ—¶é—´ç­–ç•¥ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Ê±¼ä²ßÂÔÓ¢ÎÄÃû
+	///æ—¶é—´ç­–ç•¥è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///²ßÂÔÀàĞÍ
+	///ç­–ç•¥ç±»å‹
 	TShfeFtdcVolumeType	PolicyType;
-	///²ßÂÔÏîÅäÖÃ´®
+	///ç­–ç•¥é¡¹é…ç½®ä¸²
 	TShfeFtdcPolicyStringTypeType	PolicyString;
-	///½»Ò×ÈÕÏŞÖÆ
+	///äº¤æ˜“æ—¥é™åˆ¶
 	TShfeFtdcVolumeType	TradingDay;
-	///²ßÂÔÏîÃèÊö
+	///ç­–ç•¥é¡¹æè¿°
 	TShfeFtdcNetAttrTypeType	Description;
-	///²Ù×÷ÀàĞÍ
+	///æ“ä½œç±»å‹
 	TShfeFtdcVolumeType	Operation;
 };
 
@@ -11829,15 +11829,15 @@ struct CShfeFtdcSysNetGatherTaskField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±êÀàĞÍ
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ç±»å‹
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
-	///·µ»ØÀàĞÍ
+	///è¿”å›ç±»å‹
 	TShfeFtdcVolumeType	DataType;
-	///ÀàĞÍ±êÊ¶
+	///ç±»å‹æ ‡è¯†
 	TShfeFtdcVolumeType	TypeFlag;
 };
 
@@ -11846,9 +11846,9 @@ struct CShfeFtdcSysNetDeviceCategoryField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Àà±ğÖĞÎÄÃû
+	///ç±»åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Àà±ğÓ¢ÎÄÃû
+	///ç±»åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -11857,9 +11857,9 @@ struct CShfeFtdcSysNetManufactoryField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÖĞÎÄÃû
+	///å‚å•†ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///³§ÉÌÓ¢ÎÄÃû
+	///å‚å•†è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -11868,9 +11868,9 @@ struct CShfeFtdcSysNetCommunityField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPADDR;
-	///¹²Í¬ÌåÃû
+	///å…±åŒä½“å
 	TShfeFtdcTypeObjectIDType	COMMUNITY;
 };
 
@@ -11879,15 +11879,15 @@ struct CShfeFtdcSysNetGeneralOIDField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 	///OID
 	TShfeFtdcTypeObjectIDType	OID;
-	///µ¥Î»
+	///å•ä½
 	TShfeFtdcTypeObjectIDType	Unit;
-	///ÊÇ·ñ±êÁ¿±êÖ¾
+	///æ˜¯å¦æ ‡é‡æ ‡å¿—
 	TShfeFtdcVolumeType	isTheTable;
 };
 
@@ -11896,23 +11896,23 @@ struct CShfeFtdcSysNetDeviceLinkedField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	NetDeviceID;
-	///Éè±¸¶Ë¿ÚID
+	///è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	NetPortID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	NetObjectID;
-	///¼à¿Ø¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	NetPortType;
-	///Á¬½ÓÉè±¸ID
+	///è¿æ¥è®¾å¤‡ID
 	TShfeFtdcVolumeType	LinkNetDeviceID;
-	///Á¬½ÓÉè±¸¶Ë¿ÚID
+	///è¿æ¥è®¾å¤‡ç«¯å£ID
 	TShfeFtdcVolumeType	LinkNetPortID;
-	///Á¬½Ó¶ÔÏó
+	///è¿æ¥å¯¹è±¡
 	TShfeFtdcNetObjectIDType	LinkNetObjectID;
-	///Á¬½Ó¶ÔÏó¶Ë¿ÚÀàĞÍ
+	///è¿æ¥å¯¹è±¡ç«¯å£ç±»å‹
 	TShfeFtdcNetDevicePortTypeType	LinkNetPortType;
-	///Á´½ÓÀ´Ô´
+	///é“¾æ¥æ¥æº
 	TShfeFtdcVolumeType	LinkSource;
 };
 
@@ -11921,29 +11921,29 @@ struct CShfeFtdcSysNetDeviceField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///·ÖÀàID  
+	///åˆ†ç±»ID  
 	TShfeFtdcVolumeType	CATEGORY_ID;
-	///ÈËÎª»®·ÖµÄÖ°ÄÜÇøÓò  
+	///äººä¸ºåˆ’åˆ†çš„èŒèƒ½åŒºåŸŸ  
 	TShfeFtdcTypeObjectIDType	FuctionArea;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///IPÂë    
+	///IPç     
 	TShfeFtdcVolumeType	IPDECODE;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
 	///             
 	TShfeFtdcVolumeType	PORTNUMBER;
 	///          
 	TShfeFtdcTypeObjectIDType	CONFIGFILE;
-	///¹²Í¬ÌåÃû  
+	///å…±åŒä½“å  
 	TShfeFtdcTypeObjectIDType	RCOMMUNITY;
-	///snmp°æ±¾     
+	///snmpç‰ˆæœ¬     
 	TShfeFtdcVolumeType	SNMPVERSION;
 	///ramsize(B)   
 	TShfeFtdcVolumeType	RAMSIZE;
@@ -11951,37 +11951,37 @@ struct CShfeFtdcSysNetDeviceField
 	TShfeFtdcVolumeType	FLASHSIZE;
 	///nvramsize(B) 
 	TShfeFtdcVolumeType	NVRAMSIZE;
-	///ËùÊô»ú¹ñ
+	///æ‰€å±æœºæŸœ
 	TShfeFtdcVolumeType	CABINET_ID;
 	///
 	TShfeFtdcVolumeType	ROOM_ID;
-	///Èí¼ş°æ±¾
+	///è½¯ä»¶ç‰ˆæœ¬
 	TShfeFtdcVolumeType	IOSVERSION_ID;
-	///ÏµÍ³ÃèÊö
+	///ç³»ç»Ÿæè¿°
 	TShfeFtdcNetAttrTypeType	DESCRIPTION;
-	///µÇÂ¼ÓÃ»§Ãû
+	///ç™»å½•ç”¨æˆ·å
 	TShfeFtdcTypeObjectIDType	USERNAME;
-	///µÇÂ¼ÃÜÂë
+	///ç™»å½•å¯†ç 
 	TShfeFtdcNetAttrTypeType	PASSWD;
-	///enableÃÜÂë
+	///enableå¯†ç 
 	TShfeFtdcNetAttrTypeType	ENPASSWD;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///ÅäÖÃ±¸·İĞ­Òé
+	///é…ç½®å¤‡ä»½åè®®
 	TShfeFtdcVolumeType	CFGSAVETYPE;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	DEVICETYPE;
-	///ÊÇ·ñ¶ÌĞÅ¸æ¾¯
+	///æ˜¯å¦çŸ­ä¿¡å‘Šè­¦
 	TShfeFtdcVolumeType	SENDSMS;
-	///ÊÇ·ñ×Ô¶¯snmpÌ½²â
+	///æ˜¯å¦è‡ªåŠ¨snmpæ¢æµ‹
 	TShfeFtdcVolumeType	ISSNMP;
-	///²ÛÎ»Êı
+	///æ§½ä½æ•°
 	TShfeFtdcVolumeType	SLOTNUM;
-	///ÊÇ·ñ×Ô¶¯ping
+	///æ˜¯å¦è‡ªåŠ¨ping
 	TShfeFtdcVolumeType	ISPING;
-	///¶Ë¿ÚÊıÁ¿
+	///ç«¯å£æ•°é‡
 	TShfeFtdcVolumeType	IFNUM;
-	///Ñ²¼ì·ÖÇø
+	///å·¡æ£€åˆ†åŒº
 	TShfeFtdcVolumeType	APPLICATION_ID;
 };
 
@@ -11990,31 +11990,31 @@ struct CShfeFtdcSysNetInterfaceField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	TShfeFtdcVolumeType	IfType;
-	///¶Ë¿ÚÃû
+	///ç«¯å£å
 	TShfeFtdcTypeObjectIDType	EName;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IpAddress;
-	///ÑÚÂë
+	///æ©ç 
 	TShfeFtdcIPAddressType	IpMask;
-	///¶Ë¿Ú×´Ì¬
+	///ç«¯å£çŠ¶æ€
 	TShfeFtdcVolumeType	IfStatus;
-	///ÎïÀíµØÖ·
+	///ç‰©ç†åœ°å€
 	TShfeFtdcTypeObjectIDType	MAC;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///ËùÊôÉè±¸¶Ë¿ÚË÷Òı
+	///æ‰€å±è®¾å¤‡ç«¯å£ç´¢å¼•
 	TShfeFtdcTypeObjectNameType	DeviceIndex;
-	///ÊÇ·ñÂÖÑ¯
+	///æ˜¯å¦è½®è¯¢
 	TShfeFtdcVolumeType	isPolling;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcTypeObjectIDType	Description;
 };
 
@@ -12023,9 +12023,9 @@ struct CShfeFtdcSysNetMonitorTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///OIDÖĞÎÄÃû
+	///OIDä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///OIDÓ¢ÎÄÃû
+	///OIDè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -12034,11 +12034,11 @@ struct CShfeFtdcSysNetMonitorAttrScopeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ö¸±êÖĞÎÄÃû
+	///æŒ‡æ ‡ä¸­æ–‡å
 	TShfeFtdcNetAttrTypeType	CName;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	EName;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
@@ -12047,17 +12047,17 @@ struct CShfeFtdcSysNetMonitorAttrTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ÍøÂç¼à¿ØÖ¸±êID
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡ID
 	TShfeFtdcVolumeType	AttrType_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	MANUFACTORY;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
 };
 
@@ -12066,11 +12066,11 @@ struct CShfeFtdcSysNetMonitorObjectAttrField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¼à¿Ø¶ÔÏó
+	///ç›‘æ§å¯¹è±¡
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÍøÂç¼à¿ØÖ¸±ê
+	///ç½‘ç»œç›‘æ§æŒ‡æ ‡
 	TShfeFtdcNetAttrTypeType	AttrType;
-	///Ê±¼ä²ßÂÔID
+	///æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	PolicyTypeID;
 };
 
@@ -12081,9 +12081,9 @@ struct CShfeFtdcSysNetFuncAreaField
 	TShfeFtdcVolumeType	ID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÇøÓòÖĞÎÄÃû
+	///åŒºåŸŸä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÇøÓòÓ¢ÎÄÃû
+	///åŒºåŸŸè‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -12092,23 +12092,23 @@ struct CShfeFtdcSysNetMonitorCommandTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍID
+	///å‚å•†ç±»å‹ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Éè±¸Àà±ğID
+	///è®¾å¤‡ç±»åˆ«ID
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///Éè±¸ĞÍºÅID
+	///è®¾å¤‡å‹å·ID
 	TShfeFtdcVolumeType	DeviceModle_ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcTypeObjectIDType	Manufactory;
-	///Éè±¸Àà±ğ
+	///è®¾å¤‡ç±»åˆ«
 	TShfeFtdcTypeObjectIDType	MonitorType;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcTypeObjectIDType	DeviceModle;
-	///¶¯×÷×å
+	///åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///Ö¸ÁîÂë
+	///æŒ‡ä»¤ç 
 	TShfeFtdcNetAttrTypeType	Command;
 };
 
@@ -12117,13 +12117,13 @@ struct CShfeFtdcSysNetMonitorActionGroupField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åÖĞÎÄÃû
+	///åŠ¨ä½œæ—ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///¶¯×÷×åÓ¢ÎÄÃû
+	///åŠ¨ä½œæ—è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///¶¯×÷ÀàĞÍÂë
+	///åŠ¨ä½œç±»å‹ç 
 	TShfeFtdcVolumeType	ActionType;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
@@ -12132,13 +12132,13 @@ struct CShfeFtdcSysNetMonitorDeviceGroupField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éÖĞÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///Éè±¸¶ÔÏó×éÓ¢ÎÄÃû
+	///è®¾å¤‡å¯¹è±¡ç»„è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¹ıÂËÌõ¼ş
+	///è®¾å¤‡è¿‡æ»¤æ¡ä»¶
 	TShfeFtdcNetString512Type	Condition;
-	///×¢ÊÍ
+	///æ³¨é‡Š
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
@@ -12147,75 +12147,75 @@ struct CShfeFtdcSysNetMonitorTaskInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÈÎÎñÖĞÎÄÃû
+	///ä»»åŠ¡ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÈÎÎñÓ¢ÎÄÃû
+	///ä»»åŠ¡è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///¹ÜÀíÈËÔ±¶ÔÏó×éID
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	ManagerGroup_ID;
-	///ÈÎÎñÊ±¼ä²ßÂÔID
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥ID
 	TShfeFtdcVolumeType	TimePolicy_ID;
-	///ÈÎÎñÓÅÏÈ¼¶ID
+	///ä»»åŠ¡ä¼˜å…ˆçº§ID
 	TShfeFtdcVolumeType	TaskPriority_ID;
-	///½á¹ûÊä³ö²ßÂÔID
+	///ç»“æœè¾“å‡ºç­–ç•¥ID
 	TShfeFtdcVolumeType	OutputPolicy_ID;
-	///ÈÎÎñ¶¯×÷×åID
+	///ä»»åŠ¡åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///ÈÎÎñ±í´ïÊ½IDÁªºÏ´®
+	///ä»»åŠ¡è¡¨è¾¾å¼IDè”åˆä¸²
 	TShfeFtdcGeneralResultType	EventExprStr;
-	///Éè±¸¶ÔÏó×é
+	///è®¾å¤‡å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	DeviceGroup;
-	///¹ÜÀíÈËÔ±¶ÔÏó×é
+	///ç®¡ç†äººå‘˜å¯¹è±¡ç»„
 	TShfeFtdcTypeObjectIDType	ManagerGroup;
-	///ÈÎÎñÊ±¼ä²ßÂÔ
+	///ä»»åŠ¡æ—¶é—´ç­–ç•¥
 	TShfeFtdcTypeObjectIDType	TimePolicy;
-	///ÈÎÎñÓÅÏÈ¼¶
+	///ä»»åŠ¡ä¼˜å…ˆçº§
 	TShfeFtdcTypeObjectIDType	TaskPriority;
-	///½á¹ûÊä³ö²ßÂÔ
+	///ç»“æœè¾“å‡ºç­–ç•¥
 	TShfeFtdcTypeObjectIDType	OutputPolicy;
-	///ÈÎÎñ¶¯×÷×å
+	///ä»»åŠ¡åŠ¨ä½œæ—
 	TShfeFtdcTypeObjectIDType	ActionGroup;
-	///ÈÎÎñÓĞĞ§ĞÔ±êÊ¶
+	///ä»»åŠ¡æœ‰æ•ˆæ€§æ ‡è¯†
 	TShfeFtdcVolumeType	ValidFlag;
-	///ÈÎÎñ×´Ì¬±êÊ¶
+	///ä»»åŠ¡çŠ¶æ€æ ‡è¯†
 	TShfeFtdcVolumeType	TaskStatus;
-	///ÈÎÎñÃèÊö
+	///ä»»åŠ¡æè¿°
 	TShfeFtdcNetAttrTypeType	Comments;
 };
 
 ///
 struct CShfeFtdcSysNetDeviceChgField
 {
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
 	///SysNetSubAreaID
 	TShfeFtdcVolumeType	SysNetSubAreaID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	OldObjectID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	NewObjectID;
 };
 
 ///
 struct CShfeFtdcSysNetMonitorTaskResultField
 {
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///ÈÎÎñID
+	///ä»»åŠ¡ID
 	TShfeFtdcVolumeType	Task_ID;
-	///Ö´ĞĞ´ÎÊı
+	///æ‰§è¡Œæ¬¡æ•°
 	TShfeFtdcVolumeType	OperateTime;
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ö¸Áî´®
+	///æŒ‡ä»¤ä¸²
 	TShfeFtdcNetString256Type	InstructChain;
-	///½á¹û´®
+	///ç»“æœä¸²
 	TShfeFtdcNetString1KType	ResultChain;
-	///ÈÎÎñÖ´ĞĞ±êÊ¶
+	///ä»»åŠ¡æ‰§è¡Œæ ‡è¯†
 	TShfeFtdcVolumeType	Flag;
 };
 
@@ -12224,9 +12224,9 @@ struct CShfeFtdcSysNetMonitorTaskObjectSetField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Éè±¸¶ÔÏó×éID
+	///è®¾å¤‡å¯¹è±¡ç»„ID
 	TShfeFtdcVolumeType	DeviceGroup_ID;
-	///Éè±¸ID
+	///è®¾å¤‡ID
 	TShfeFtdcVolumeType	Device_ID;
 	///DataCenter
 	TShfeFtdcDataCenterFlagType	DataCenter;
@@ -12237,59 +12237,59 @@ struct CShfeFtdcSysNetPartyLinkInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
@@ -12298,11 +12298,11 @@ struct CShfeFtdcSysNetMonitorActionAttrField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¶¯×÷×åID
+	///åŠ¨ä½œæ—ID
 	TShfeFtdcVolumeType	ActionGroup_ID;
-	///¼à¿Ø¶ÔÏóID
+	///ç›‘æ§å¯¹è±¡ID
 	TShfeFtdcVolumeType	MonitorAttr_ID;
-	///Ö¸±êÓ¢ÎÄÃû
+	///æŒ‡æ ‡è‹±æ–‡å
 	TShfeFtdcNetAttrTypeType	MonitorAttrName;
 };
 
@@ -12311,21 +12311,21 @@ struct CShfeFtdcSysNetModuleField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///¼à¿Ø¶ÔÏóÀàĞÍ
+	///ç›‘æ§å¯¹è±¡ç±»å‹
 	TShfeFtdcVolumeType	MonitorType_ID;
-	///ËùÊôÉè±¸ID
+	///æ‰€å±è®¾å¤‡ID
 	TShfeFtdcVolumeType	DeviceID;
-	///ËùÊôÉè±¸ObjectID
+	///æ‰€å±è®¾å¤‡ObjectID
 	TShfeFtdcNetObjectIDType	DeviceObjectID;
-	///Ãû×Ö
+	///åå­—
 	TShfeFtdcTypeObjectIDType	Name;
-	///ÃèÊö
+	///æè¿°
 	TShfeFtdcNetObjectIDType	Description;
-	///Ä£¿éË÷Òı
+	///æ¨¡å—ç´¢å¼•
 	TShfeFtdcVolumeType	ModuleIndex;
-	///ÎïÀíË÷Òı
+	///ç‰©ç†ç´¢å¼•
 	TShfeFtdcVolumeType	EntPhyIndex;
 };
 
@@ -12334,29 +12334,29 @@ struct CShfeFtdcSysNetEventExprField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÖĞÎÄÊÂ¼şÃû
+	///ä¸­æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	CNAME;
-	///Ó¢ÎÄÊÂ¼şÃû
+	///è‹±æ–‡äº‹ä»¶å
 	TShfeFtdcNetObjectIDType	ENAME;
-	///ÊÂ¼ş¼¶±ğ
+	///äº‹ä»¶çº§åˆ«
 	TShfeFtdcCfgNameType	WarningLEVEL;
-	///ÊÂ¼şÀàĞÍ
+	///äº‹ä»¶ç±»å‹
 	TShfeFtdcVolumeType	EventTypeID;
-	///ÊÂ¼ş×ÓÀàĞÍ
+	///äº‹ä»¶å­ç±»å‹
 	TShfeFtdcVolumeType	SubEventTypeID;
-	///¸æ¾¯¼ä¸ôÊ±¼ä
+	///å‘Šè­¦é—´éš”æ—¶é—´
 	TShfeFtdcVolumeType	GIVEUPTIME;
-	///¿ØÖÆ¶¨ÒåÏî
+	///æ§åˆ¶å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	CONTROL;
-	///±í´ïÊ½¶¨ÒåÏî
+	///è¡¨è¾¾å¼å®šä¹‰é¡¹
 	TShfeFtdcGeneralResultType	EXPR;
-	///ÊÂ¼ş¼òÊö
+	///äº‹ä»¶ç®€è¿°
 	TShfeFtdcTypeObjectIDType	BRIEF;
-	///ÊÂ¼şÃèÊöÏî
+	///äº‹ä»¶æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
-	///ÏûÏ¢×éID
+	///æ¶ˆæ¯ç»„ID
 	TShfeFtdcVolumeType	MSGGROUP_ID;
-	///¹ÜÀíÔ±×éID
+	///ç®¡ç†å‘˜ç»„ID
 	TShfeFtdcVolumeType	ADMINGROUP_ID;
 };
 
@@ -12365,9 +12365,9 @@ struct CShfeFtdcSysNetEventTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼şÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼şÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -12376,9 +12376,9 @@ struct CShfeFtdcSysNetSubEventTypeField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş×ÓÀàĞÍÖĞÎÄÃû
+	///äº‹ä»¶å­ç±»å‹ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş×ÓÀàĞÍÓ¢ÎÄÃû
+	///äº‹ä»¶å­ç±»å‹è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
 };
 
@@ -12387,11 +12387,11 @@ struct CShfeFtdcSysNetEventLevelField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÊÂ¼ş¼¶±ğÖĞÎÄÃû
+	///äº‹ä»¶çº§åˆ«ä¸­æ–‡å
 	TShfeFtdcTypeObjectIDType	CName;
-	///ÊÂ¼ş¼¶±ğÓ¢ÎÄÃû
+	///äº‹ä»¶çº§åˆ«è‹±æ–‡å
 	TShfeFtdcTypeObjectIDType	EName;
-	///ÊÂ¼ş¼¶±ğÃèÊöÏî
+	///äº‹ä»¶çº§åˆ«æè¿°é¡¹
 	TShfeFtdcNetAttrTypeType	DISCRIPTION;
 };
 
@@ -12400,21 +12400,21 @@ struct CShfeFtdcSysNetMonitorDeviceTaskField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî
+	///æŒ‡ä»¤
 	TShfeFtdcNetString256Type	InstructChain;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Ö¸Áî²ÎÊı´®
+	///æŒ‡ä»¤å‚æ•°ä¸²
 	TShfeFtdcNetString256Type	InstructArgs;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
@@ -12423,17 +12423,17 @@ struct CShfeFtdcSysNetMonitorTaskInstAttrsField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetString128Type	DEVICETYPE;
-	///Ö¸±ê´®
+	///æŒ‡æ ‡ä¸²
 	TShfeFtdcNetString256Type	AttrsChain;
-	///Ö¸±ê¹æÔò´®
+	///æŒ‡æ ‡è§„åˆ™ä¸²
 	TShfeFtdcNetString512Type	DefRegularChain;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
 };
 
@@ -12442,17 +12442,17 @@ struct CShfeFtdcSysNetBaseLineField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///³§ÉÌÀàĞÍ
+	///å‚å•†ç±»å‹
 	TShfeFtdcVolumeType	MANUFACTORY_ID;
-	///»ùÏßÃû
+	///åŸºçº¿å
 	TShfeFtdcNetObjectIDType	Name;
-	///Éè±¸ĞÍºÅ
+	///è®¾å¤‡å‹å·
 	TShfeFtdcNetObjectIDType	SerialUsed;
-	///ÎÄ¼şÄÚÈİ
+	///æ–‡ä»¶å†…å®¹
 	TShfeFtdcbaseCommentType	data;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
@@ -12461,19 +12461,19 @@ struct CShfeFtdcSysNetBaseLineTaskField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÈÎÎñÃû
+	///åŸºçº¿ä»»åŠ¡å
 	TShfeFtdcNetObjectIDType	Name;
-	///»ùÏßIDÁĞ±í
+	///åŸºçº¿IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	BaseLineIDList;
-	///Éè±¸IDÁĞ±í
+	///è®¾å¤‡IDåˆ—è¡¨
 	TShfeFtdcGeneralResultType	DeviceIDList;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
@@ -12482,38 +12482,38 @@ struct CShfeFtdcSysNetBaseLineResultField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»ùÏßÃû³Æ
+	///åŸºçº¿åç§°
 	TShfeFtdcNetObjectIDType	BaseLineName;
-	///Éè±¸ObjID
+	///è®¾å¤‡ObjID
 	TShfeFtdcNetObjectIDType	DeviceObjID;
-	///Éè±¸IP
+	///è®¾å¤‡IP
 	TShfeFtdcIPAddressType	DeviceIP;
-	///»ùÏß½á¹û
+	///åŸºçº¿ç»“æœ
 	TShfeFtdcFileCommentType	Result;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	GenDate;
-	///Éú³ÉÊ±¼ä
+	///ç”Ÿæˆæ—¶é—´
 	TShfeFtdcTimeType	GenTime;
-	///Éú³ÉÕß
+	///ç”Ÿæˆè€…
 	TShfeFtdcTypeUserNameType	GenUser;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 };
 
 ///
 struct CShfeFtdcSysNetPartyLinkStatusInfoField
 {
-	///²É¼¯µÄÈÕÆÚ
+	///é‡‡é›†çš„æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///²É¼¯µÄÊ±¼ä
+	///é‡‡é›†çš„æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcCfgNameType	SEAT_NO;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///Á´Â·×´Ì¬
+	///é“¾è·¯çŠ¶æ€
 	TShfeFtdcTypeObjectIDType	status;
 };
 
@@ -12522,55 +12522,55 @@ struct CShfeFtdcSysNetMemberSDHLineInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcPartyIDType	MemberNo;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///¿Í»§¾­Àí
+	///å®¢æˆ·ç»ç†
 	TShfeFtdcNetString128Type	ClientManager;
-	///´ø¿í
+	///å¸¦å®½
 	TShfeFtdcNetString128Type	Bandwidth;
-	///½Ó¿ÚÀà
+	///æ¥å£ç±»
 	TShfeFtdcNetString128Type	InterfaceType;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
-	///A¶Ë½ÓÈëµØÖ·
+	///Aç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndALineAddress;
-	///A¶ËÁªÏµÈË
+	///Aç«¯è”ç³»äºº
 	TShfeFtdcNetString128Type	EndAContact;
-	///Z¶Ë½ÓÈëµØÖ·
+	///Zç«¯æ¥å…¥åœ°å€
 	TShfeFtdcNetString512Type	EndZLineAddress;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcIndividualNameType	ContactName;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÆğÊ¼Éè±¸¶Ë¿Ú
+	///èµ·å§‹è®¾å¤‡ç«¯å£
 	TShfeFtdcNetString256Type	StartPortID;
-	///ÆğÊ¼Éè±¸Ìø½Ó¶Ë
+	///èµ·å§‹è®¾å¤‡è·³æ¥ç«¯
 	TShfeFtdcNetString128Type	StartJump;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///Êı¾İÖĞĞÄ´úÂë
+	///æ•°æ®ä¸­å¿ƒä»£ç 
 	TShfeFtdcDataCenterIDType	DataCenterID;
 };
 
@@ -12579,21 +12579,21 @@ struct CShfeFtdcSysNetDDNLinkInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///¿Í»§Ãû³Æ
+	///å®¢æˆ·åç§°
 	TShfeFtdcPartyNameType	ClientName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÒµÎñµ¥Ôª
+	///ä¸šåŠ¡å•å…ƒ
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
 };
 
@@ -12602,37 +12602,37 @@ struct CShfeFtdcSysNetPseudMemberLinkInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ĞòÁĞºÅ
+	///åºåˆ—å·
 	TShfeFtdcVolumeType	SeqNo;
-	///ºÏÍ¬ºÅ
+	///åˆåŒå·
 	TShfeFtdcContractSeqNoType	MemContractNo;
-	///ÏßÂ·ÓÃÍ¾
+	///çº¿è·¯ç”¨é€”
 	TShfeFtdcNetString128Type	LineUsage;
-	///±¾µØµçÂ·±àÂë
+	///æœ¬åœ°ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	LocalCircuit;
-	///³¤Í¾µçÂ·±àÂë
+	///é•¿é€”ç”µè·¯ç¼–ç 
 	TShfeFtdcNetString128Type	RemoteCircuit;
-	///ÒµÎñ
+	///ä¸šåŠ¡
 	TShfeFtdcBusinessUnitType	BusinessUnit;
-	///ËÙÂÊ
+	///é€Ÿç‡
 	TShfeFtdcNetString128Type	Bandwidth;
-	///ÉêÇëÈË
+	///ç”³è¯·äºº
 	TShfeFtdcApplyPersonType	ApplyPerson;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///¼×¶ËµØÖ·
+	///ç”²ç«¯åœ°å€
 	TShfeFtdcAddressType	EndAAddress;
-	///¼×¶ËÁªÏµÈË
+	///ç”²ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndAContactName;
-	///ÒÒ¶ËµØÖ·
+	///ä¹™ç«¯åœ°å€
 	TShfeFtdcAddressType	EndZAddress;
-	///ÒÒ¶ËÁªÏµÈË
+	///ä¹™ç«¯è”ç³»äºº
 	TShfeFtdcIndividualNameType	EndZContactName;
-	///ÒÒ¶Ëµç»°ºÅÂë
+	///ä¹™ç«¯ç”µè¯å·ç 
 	TShfeFtdcTelephoneType	Telephone;
-	///ÏßÂ·ĞÅÏ¢
+	///çº¿è·¯ä¿¡æ¯
 	TShfeFtdcTypeObjectIDType	LineInfo;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
 };
 
@@ -12641,21 +12641,21 @@ struct CShfeFtdcSysNetMonitorDeviceTask2Field
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÍøÂç¼à¿Ø¶ÔÏóID
+	///ç½‘ç»œç›‘æ§å¯¹è±¡ID
 	TShfeFtdcNetObjectIDType	ObjectID;
-	///IPµØÖ·
+	///IPåœ°å€
 	TShfeFtdcIPAddressType	IPAddress;
-	///ÍøÂçÉè±¸²úÉÌID
+	///ç½‘ç»œè®¾å¤‡äº§å•†ID
 	TShfeFtdcVolumeType	Manufactory_ID;
-	///Ö¸Áî
+	///æŒ‡ä»¤
 	TShfeFtdcNetString256Type	InstructChain;
-	///Ö¸Áî±ğÃû
+	///æŒ‡ä»¤åˆ«å
 	TShfeFtdcNetString128Type	InstructAlias;
-	///Ö¸Áî²ÎÊı´®
+	///æŒ‡ä»¤å‚æ•°ä¸²
 	TShfeFtdcNetString256Type	InstructArgs;
-	///Ö¸±ê·§Öµ´®
+	///æŒ‡æ ‡é˜€å€¼ä¸²
 	TShfeFtdcNetString2KType	DefParamChain;
-	///½áÊø±êÖ¾
+	///ç»“æŸæ ‡å¿—
 	TShfeFtdcVolumeType	Flag;
 	///PrimID
 	TShfeFtdcVolumeType	SecondID;
@@ -12666,11 +12666,11 @@ struct CShfeFtdcSysNetOuterDeviceInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///IPµØÖ·  
+	///IPåœ°å€  
 	TShfeFtdcIPAddressType	IPADDR;
-	///Éè±¸Ãû³Æ 
+	///è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	NAME;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetAttrTypeType	memo;
 };
 
@@ -12679,19 +12679,19 @@ struct CShfeFtdcSysLocalPingResultInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
 };
 
@@ -12700,25 +12700,25 @@ struct CShfeFtdcSysRomotePingResultInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///Ô´IPµØÖ·  
+	///æºIPåœ°å€  
 	TShfeFtdcIPAddressType	SouIPADDR;
-	///Ô´Éè±¸Ãû³Æ 
+	///æºè®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	SouNAME;
-	///Ä¿µÄIPµØÖ·  
+	///ç›®çš„IPåœ°å€  
 	TShfeFtdcIPAddressType	TarIPADDR;
-	///Ä¿µÄÉè±¸Ãû³Æ 
+	///ç›®çš„è®¾å¤‡åç§° 
 	TShfeFtdcNetObjectIDType	TarNAME;
-	///Éú³ÉÈÕÆÚ
+	///ç”Ÿæˆæ—¥æœŸ
 	TShfeFtdcDateType	PDateSta;
-	///Ê±¼ä´Á
+	///æ—¶é—´æˆ³
 	TShfeFtdcTimeType	PTimeSta;
-	///Á¬Í¨ÂÊ
+	///è¿é€šç‡
 	TShfeFtdcVolumeType	ConnRate;
-	///×îĞ¡Ê±ÑÓ
+	///æœ€å°æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMin;
-	///×î´óÊ±ÑÓ
+	///æœ€å¤§æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyMax;
-	///Æ½¾ùÊ±ÑÓ
+	///å¹³å‡æ—¶å»¶
 	TShfeFtdcNetString128Type	TimeDlyAvg;
 };
 
@@ -12727,59 +12727,59 @@ struct CShfeFtdcSysNetDelPartyLinkInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
@@ -12790,34 +12790,34 @@ struct CShfeFtdcSysNetPartyLinkAddrChangeField
 	TShfeFtdcVolumeType	ID;
 	///ID
 	TShfeFtdcVolumeType	RelationID;
-	///±ä¸üÇ°µØÖ·
+	///å˜æ›´å‰åœ°å€
 	TShfeFtdcNetAttrTypeType	OLDADDRESS;
-	///±ä¸üºóµØÖ·
+	///å˜æ›´ååœ°å€
 	TShfeFtdcNetAttrTypeType	NEWADDRESS;
-	///²Ù×÷ÈË
+	///æ“ä½œäºº
 	TShfeFtdcCfgNameType	OPERATOR;
-	///ĞŞ¸ÄÈÕÆÚ
+	///ä¿®æ”¹æ—¥æœŸ
 	TShfeFtdcDateType	MonDate;
-	///ĞŞ¸ÄÊ±¼ä
+	///ä¿®æ”¹æ—¶é—´
 	TShfeFtdcTimeType	MonTime;
 };
 
 ///
 struct CShfeFtdcSysInternalTopologyField
 {
-	///Ğ¯´øĞÅÏ¢µÄÀàĞÍ
+	///æºå¸¦ä¿¡æ¯çš„ç±»å‹
 	TShfeFtdcReportIDType	InfoType;
-	///½Úµã1µÄID
+	///èŠ‚ç‚¹1çš„ID
 	TShfeFtdcNodeIDType	Node1_ID;
-	///½Úµã1µÄĞÅÏ¢
+	///èŠ‚ç‚¹1çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node1_Info;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·ĞÅÏ¢
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯ä¿¡æ¯
 	TShfeFtdcLinkInfoType	LinkInfo;
-	///Á½½ÚµãÖ®¼äµÄÁ´Â·×´Ì¬
+	///ä¸¤èŠ‚ç‚¹ä¹‹é—´çš„é“¾è·¯çŠ¶æ€
 	TShfeFtdcLinkStateType	LinkState;
-	///½Úµã2µÄID
+	///èŠ‚ç‚¹2çš„ID
 	TShfeFtdcNodeIDType	Node2_ID;
-	///½Úµã2µÄĞÅÏ¢
+	///èŠ‚ç‚¹2çš„ä¿¡æ¯
 	TShfeFtdcNodeInfoType	Node2_Info;
 };
 
@@ -12826,23 +12826,23 @@ struct CShfeFtdcSysMemberLinkCostField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcParticipantNameType	ParticipantName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///¸¶¿îÈÕÆÚ
+	///ä»˜æ¬¾æ—¥æœŸ
 	TShfeFtdcCfgNameType	Pay_Date;
-	///ÕËÆÚÆğÊ¼ÈÕÆÚ
+	///è´¦æœŸèµ·å§‹æ—¥æœŸ
 	TShfeFtdcCfgNameType	B_Pay_Date;
-	///ÕËÆÚÖÕÖ¹ÈÕÆÚ
+	///è´¦æœŸç»ˆæ­¢æ—¥æœŸ
 	TShfeFtdcCfgNameType	D_Pay_Date;
-	///½ğ¶î
+	///é‡‘é¢
 	TShfeFtdcVolumeType	Charge;
-	///·ÑÓÃÀàĞÍ
+	///è´¹ç”¨ç±»å‹
 	TShfeFtdcCfgNameType	Fee_Type;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	Pro;
 };
 
@@ -12851,15 +12851,15 @@ struct CShfeFtdcSysNetPartylinkMonthlyRentField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///ÏßÂ·Ãû³Æ
+	///çº¿è·¯åç§°
 	TShfeFtdcParticipantNameType	LineName;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	ServiceProvider;
-	///ÔÂ×â·ÑÓÃ
+	///æœˆç§Ÿè´¹ç”¨
 	TShfeFtdcLongVolumeType	MonthlyRental;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcNetString128Type	Remark;
 };
 
@@ -12868,59 +12868,59 @@ struct CShfeFtdcSysNetNonPartyLinkInfoField
 {
 	///ID
 	TShfeFtdcVolumeType	ID;
-	///»áÔ±ºÅ
+	///ä¼šå‘˜å·
 	TShfeFtdcCfgNameType	MEMBER_NO;
-	///»áÔ±Ãû³Æ
+	///ä¼šå‘˜åç§°
 	TShfeFtdcTypeObjectIDType	MEMBER_NAME;
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	TShfeFtdcTypeObjectIDType	REMOTE_ADDR;
-	///ÉÏÆÚËù½ÓÈëµã
+	///ä¸ŠæœŸæ‰€æ¥å…¥ç‚¹
 	TShfeFtdcTypeObjectIDType	LOCAL_ADDR;
-	///µØÖ·
+	///åœ°å€
 	TShfeFtdcNetAttrTypeType	ADDRESS;
-	///ÏßÂ·×´Ì¬
+	///çº¿è·¯çŠ¶æ€
 	TShfeFtdcCfgNameType	LINE_STATUS;
-	///ÁªÏµÈË
+	///è”ç³»äºº
 	TShfeFtdcCfgNameType	CONTACT;
-	///ÁªÏµµç»°
+	///è”ç³»ç”µè¯
 	TShfeFtdcTypeObjectIDType	TELEPHONE;
-	///ÊÖ»úºÅ
+	///æ‰‹æœºå·
 	TShfeFtdcTypeObjectIDType	MOBILEPHONE;
 	///EMAIL
 	TShfeFtdcTypeObjectIDType	EMAIL;
-	///´«Õæ
+	///ä¼ çœŸ
 	TShfeFtdcTypeObjectIDType	FAX;
-	///ËùÊôÊ¡·İ
+	///æ‰€å±çœä»½
 	TShfeFtdcCfgNameType	PROVINCE;
-	///ÏßÂ·±àºÅ
+	///çº¿è·¯ç¼–å·
 	TShfeFtdcTypeObjectIDType	DDN_NO;
-	///½ÓÈë·½Ê½
+	///æ¥å…¥æ–¹å¼
 	TShfeFtdcTypeObjectIDType	IN_MODE;
-	///ÈëÍøIP¹ãÓò
+	///å…¥ç½‘IPå¹¿åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_WAN;
-	///ÈëÍøIP¾ÖÓò
+	///å…¥ç½‘IPå±€åŸŸ
 	TShfeFtdcTypeObjectIDType	IP_LAN;
-	///Â·ÓÉÆ÷Íø¹ÜIP
+	///è·¯ç”±å™¨ç½‘ç®¡IP
 	TShfeFtdcTypeObjectIDType	IPADDR;
-	///Â·ÓÉÆ÷¶Ë¿ÚºÅ
+	///è·¯ç”±å™¨ç«¯å£å·
 	TShfeFtdcTypeObjectIDType	Interface;
-	///½Ó¿Ú¿ªÍ¨ÈÕÆÚ
+	///æ¥å£å¼€é€šæ—¥æœŸ
 	TShfeFtdcCfgNameType	INTERFACE_DATE;
-	///ËùÓÃÈí¼ş
+	///æ‰€ç”¨è½¯ä»¶
 	TShfeFtdcCfgNameType	SOFTWARE;
-	///¸¶·ÑÀàĞÍ
+	///ä»˜è´¹ç±»å‹
 	TShfeFtdcCfgNameType	FEE_TYPE;
-	///ÔËÓªÉÌ
+	///è¿è¥å•†
 	TShfeFtdcCfgNameType	SERVICEPROVIDER;
-	///ÊÇ·ñ×ÔÓª
+	///æ˜¯å¦è‡ªè¥
 	TShfeFtdcCfgNameType	IF_ZIYING;
-	///ÊÇ·ñÍĞ¹Ü
+	///æ˜¯å¦æ‰˜ç®¡
 	TShfeFtdcCfgNameType	IF_TUOGUAN;
-	///ÓĞÎŞËûËùÏßÂ·
+	///æœ‰æ— ä»–æ‰€çº¿è·¯
 	TShfeFtdcCfgNameType	HASOTHER;
-	///Ï¯Î»ºÅ
+	///å¸­ä½å·
 	TShfeFtdcGeneralResultType	SEAT_NO;
-	///±¸×¢
+	///å¤‡æ³¨
 	TShfeFtdcPolicyStringTypeType	PRO;
 };
 
