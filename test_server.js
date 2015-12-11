@@ -1,16 +1,16 @@
-// var fs = require('fs');
-// var options = {
-//   key: fs.readFileSync("sfit.key"),
-//   cert: fs.readFileSync("sfit.cert"),
-// };
+var fs = require('fs');
+var options = {
+  key: fs.readFileSync("sfit.key"),
+  cert: fs.readFileSync("sfit.cert"),
+};
 
-// var app = require('https').createServer(options,onRequest); // 创建代理服务器;
-// var io = require('socket.io')(app);
-// app.listen(443);
-
-var app = require('http').createServer(onRequest); // 创建代理服务器;
+var app = require('https').createServer(options,onRequest); // 创建代理服务器;
 var io  = require('socket.io')(app);
-app.listen(80);
+app.listen(8000);
+
+// var app = require('http').createServer(onRequest); // 创建代理服务器;
+// var io  = require('socket.io')(app);
+// app.listen(80);
 
 var server = require('./server.js');
 

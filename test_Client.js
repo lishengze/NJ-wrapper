@@ -56,7 +56,11 @@ rootSocket.on('ready to establish connect', function(username){
 	userSocketClient[username].on("RtnNetLocalPingResultInfoTopic CallbackData", function (callbackData) {
 		alert(callbackData.PTimeSta);
 	});
-			
+	
+	userSocketClient[username].on("RtnSysTimeSyncTopic CallbackData", function (callbackData) {
+		alert(callbackData.MonTime);
+	});
+						
 	userSocketClient[username].on("ReqNetMonitorAttrScope CallbackData", function (callbackData) {
 		alert(callbackData[0].ID);
 	});

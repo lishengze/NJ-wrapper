@@ -13,14 +13,14 @@ userApi.RegisterFront("tcp://172.1.128.111:18842");       // 内部测试环境;
 userApi.RegisterSpi(new Spi());
 userApi.Init();
 
-var loginReqNumbers      = 0;
-var memReqNumbers        = 0;
-var netMonitorReqNumbers = 1;
-var bSubRtnObjectAttrTopic = true;
+var loginReqNumbers          = 1;
+var memReqNumbers            = 0;
+var netMonitorReqNumbers     = 0;
+var bSubRtnObjectAttrTopic   = true;
 var bunSubRtnObjectAttrTopic = false;
+var pathName = "./";
+
 var fileData;
-var fileName = 'result-js.txt';
-var pathName = './';
 
 process.on('beforeExit', function (code) {
 	console.log('Nodejs, beforeExit: ' + code.toString());
@@ -33,40 +33,112 @@ process.on('exit', function (code) {
 
 
 /*************************************************************  请求登陆 ********************************************************/
-var outSizeLoginTopic = "outSizeLoginTopic";
-
-Spi.prototype.OnRspQrySysUserLoginTopic=function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
-{
-	console.log("\n" + "**************Test JS Api: START! ***********");
-	console.log('This process is pid                 ' + process.pid);
-	console.log("LoginTime in JS is:                 " + pRspQrySysUserLogin.LoginTime); 
-	console.log("UserID in JS is:                    " + pRspQrySysUserLogin.UserID);
-	console.log("Privilege in JS is:                 " + pRspQrySysUserLogin.Privilege);
-	console.log("TradingDay in JS is:                " + pRspQrySysUserLogin.TradingDay);
-	console.log("VersionFlag in JS is:               " + pRspQrySysUserLogin.VersionFlag);
-	console.log("datatype of pRspQrySysUserLogin is: " + typeof(pRspQrySysUserLogin));
-	
-	if(pRspInfo instanceof Object){
-      console.log("ErrorID in JS is: "+pRspInfo.ErrorID);
-      console.log("ErrorMsg in JS is: "+pRspInfo.ErrorMsg);
-	}
-	else{
-		console.log("datatype of pRspInfo is: "+typeof(pRspInfo));
-		console.log("pRspInfo is: "+pRspInfo);		
-	}
-	
-	console.log("nRequestID in JS is: "+nRequestID);
-	console.log("nIsLastNew in JS is: "+bIsLast);
-	console.log("**************Test JS Api: END! *************" + "\n");
-	console.log("******--------- " + outSizeLoginTopic + "-----------**********");
-}
-
-var nRequestID=1;
+var nRequestID       = 1;
 var loginField       = new structJs.CShfeFtdcReqQrySysUserLoginField();
 loginField.UserID    = "admin";
 loginField.Password  = "admin";
 loginField.VersionID = "2.0.0.0";
+var ReqQrySysUserLoginTopicCallbackData = [];
+var rspQrySysUserLoginTopicCalledTime   = 0;
 
+var SysUserLoginTopicfileName = "ReqQrySysUserLoginTopic-Test-CallbackData.txt";
+Spi.prototype.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
+{
+		console.log("\n" + "++++++++++++++++ JS OnRspQrySysUserLoginTopic: START! ++++++++++++++++++")
+		if (pRspQrySysUserLogin instanceof Object) {
+			console.log("LoginTime in JS is:                 " + pRspQrySysUserLogin.LoginTime); 
+			console.log("UserID in JS is:                    " + pRspQrySysUserLogin.UserID);
+			console.log("Privilege in JS is:                 " + pRspQrySysUserLogin.Privilege);
+			console.log("TradingDay in JS is:                " + pRspQrySysUserLogin.TradingDay);
+			console.log("VersionFlag in JS is:               " + pRspQrySysUserLogin.VersionFlag);	
+			console.log("rspQrySysUserLoginTopicCalledTime in JS is:     " + rspQrySysUserLoginTopicCalledTime++);	
+			
+			ReqQrySysUserLoginTopicCallbackData.push(pRspQrySysUserLogin);
+		}
+					
+		if (true === bIsLast) {
+			
+			fs.writeFile(pathName + SysUserLoginTopicfileName, ReqQrySysUserLoginTopicCallbackData, function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('Succeed in saving ' + pathName + SysUserLoginTopicfileName);
+				}	
+			});
+						
+			ReqQrySysUserLoginTopicCallbackData = [];		
+		}
+		
+		if(pRspInfo instanceof Object){
+		console.log("ErrorID in JS is: "+pRspInfo.ErrorID);
+		console.log("ErrorMsg in JS is: "+pRspInfo.ErrorMsg);
+		}
+		else{
+			console.log("datatype of pRspInfo is: "+typeof(pRspInfo));
+			console.log("pRspInfo is: "+pRspInfo);		
+		}
+		
+		console.log("nRequestID in JS is: "+nRequestID);
+		console.log("nIsLastNew in JS is: "+bIsLast);
+		console.log("************** OnRspQrySysUserLoginTopic: END! *************" + "\n");
+}
+
+var RtnNetLocalPingResultInfoTopicfileName = "RtnNetLocalPingResultInfoTopic-test-callbackData.txt";
+
+	Spi.prototype.OnRtnNetLocalPingResultInfoTopic = function(pRtnNetLocalPingResultInfo) {
+		console.log("\n" + "++++++++++++++++++++++ JS: OnRtnNetLocalPingResultInfoTopic: START! ++++++++++++++++")
+		
+		if(pRtnNetLocalPingResultInfo instanceof Object){
+			console.log("pRtnNetLocalPingResultInfo->OperationType: ", pRtnNetLocalPingResultInfo.OperationType);
+			console.log("pRtnNetLocalPingResultInfo->ID: ", pRtnNetLocalPingResultInfo.ID);
+			console.log("pRtnNetLocalPingResultInfo->SouIPADDR: ", pRtnNetLocalPingResultInfo.SouIPADDR);
+			console.log("pRtnNetLocalPingResultInfo->SouNAME: ", pRtnNetLocalPingResultInfo.SouNAME);
+			console.log("pRtnNetLocalPingResultInfo->TarIPADDR: ", pRtnNetLocalPingResultInfo.TarIPADDR);
+			console.log("pRtnNetLocalPingResultInfo->TarNAME: ", pRtnNetLocalPingResultInfo.TarNAME);
+			console.log("pRtnNetLocalPingResultInfo->PDateSta: ", pRtnNetLocalPingResultInfo.PDateSta);
+			console.log("pRtnNetLocalPingResultInfo->PTimeSta: ", pRtnNetLocalPingResultInfo.PTimeSta);
+			console.log("pRtnNetLocalPingResultInfo->ConnRate: ", pRtnNetLocalPingResultInfo.ConnRate);
+			
+			fs.appendFileSync(pathName + RtnNetLocalPingResultInfoTopicfileName, pRtnNetLocalPingResultInfo, function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+				// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
+				}	
+			});
+		}
+		else{
+			console.log("datatype of pRspInfo is: " + typeof(pRtnNetLocalPingResultInfo));
+			console.log("pRtnNetLocalPingResultInfo is: " + pRtnNetLocalPingResultInfo);		
+		}
+
+		console.log("++++++++++++++++++++++ JS:  OnRtnNetLocalPingResultInfoTopic: END! ++++++++++++++++++++++ " + "\n");				
+	}
+
+var RtnSysTimeSyncTopicfileName = "RtnSysTimeSyncTopic-test-callbackData.txt";	
+	Spi.prototype.OnRtnSysTimeSyncTopic = function(pRtnSysTimeSync) {
+		console.log("\n" + "++++++++++++++++++++++ JS: OnRtnSysTimeSyncTopic: START! ++++++++++++++++")
+		
+		if(pRtnSysTimeSync instanceof Object){
+			console.log("pRtnSysTimeSync->MonDate: ", pRtnSysTimeSync.MonDate);
+			console.log("pRtnSysTimeSync->MonTime: ", pRtnSysTimeSync.MonTime);  
+			
+			fs.appendFileSync(pathName + RtnSysTimeSyncTopicfileName, pRtnSysTimeSync, function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+				// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
+				}	
+			});
+						
+		}
+		else{
+			console.log("datatype of pRspInfo is: " + typeof(pRtnSysTimeSync));
+			console.log("pRtnNetLocalPingResultInfo is: " + pRtnSysTimeSync);		
+		}
+		console.log("++++++++++++++++++++++ JS:  OnRtnSysTimeSyncTopic: END! ++++++++++++++++++++++ " + "\n");				
+	}	
+	
 for (var i = 0; i < loginReqNumbers; ++i) {
 	console.log("ReqLogin result:" + userApi.ReqQrySysUserLoginTopic(loginField, nRequestID) + "\n");		
 }
@@ -85,12 +157,7 @@ Spi.prototype.OnRspQryNetMonitorAttrScopeTopic = function (pRspQryNetMonitorAttr
 	
 	OutputMessage("\n************ JS::RspNetMonitorAttrScopeTopic: START! ***********"," ", fileData);
 	
-	if (false === bIsLast) {			
-			// OutputMessage("OperationType in JS is:  " , pRspQryNetMonitorAttrScope.OperationType, fileData);
-			// OutputMessage("ID in JS is:             " , pRspQryNetMonitorAttrScope.ID, fileData);
-			// OutputMessage("CName in JS is:          " , pRspQryNetMonitorAttrScope.CName, fileData);
-			// OutputMessage("EName in JS is:          " , pRspQryNetMonitorAttrScope.EName, fileData);
-			// OutputMessage("Comments in JS is:       " , pRspQryNetMonitorAttrScope.Comments, fileData);		
+	if (false === bIsLast) {					
 			console.log("OperationType in JS is:  " + pRspQryNetMonitorAttrScope.OperationType.toString() + "\n" + 
 			            "ID in JS is:             " + pRspQryNetMonitorAttrScope.ID.toString() + "\n" + 
 						"CName in JS is:          " + pRspQryNetMonitorAttrScope.CName.toString() + "\n" + 
@@ -165,18 +232,10 @@ if (true === bunSubRtnObjectAttrTopic) {
 }
 /***************************************************** 订阅请求 ************************************************************/
 
-var OutputMessage = function (varName, varData,  fileData) {
-		
-	// fs.appendFile(pathName + fileName,  varName + varName + "\n", function (err) {
-	// 	if (err) {
-	// 		console.log(err);
-	// 	} else {            
-	// //		console.log('Succeed in saving ' + pathName + fileName);
-	// 	}		
-	// });
-	
+var OutputMessage = function (varName, varData,  fileData) {		
 	console.log(varName + varData.toString());
 }
+
 // /********************************************* 请求内存信息 *******************************************************/
 // var memoryReqCalledTime = 1;
 // Spi.prototype.OnRspQryTopMemInfoTopic = function (pRspQryTopMemInfo, pRspInfo, nRequestID, bIsLast) {
