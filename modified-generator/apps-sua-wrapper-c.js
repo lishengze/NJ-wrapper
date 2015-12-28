@@ -14,6 +14,7 @@ var fileData= hereDoc(function () {
 #include "sysuserspi.h"
 #include "tool-function.h"
 #include "CCrypto.h"
+#include <string.h>
 
 using namespace v8;
 
@@ -208,19 +209,23 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
      //TradingDay
      v8::Local<v8::Object> paramOneTradingDayObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingDay").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneTradingDayStr(Nan::To<v8::String>(paramOneTradingDayObj).ToLocalChecked());
-     strcpy_s(field.TradingDay, 9, *paramOneTradingDayStr);
+     // strcpy_s(field.TradingDay, 9, *paramOneTradingDayStr);
+     strncpy(field.TradingDay, *paramOneTradingDayStr,9);
      //UserID
      v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneUserIDStr(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-     strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     // strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     strncpy(field.UserID, *paramOneUserIDStr, 16);
      //ParticipantID
      v8::Local<v8::Object> paramOneParticipantIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ParticipantID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneParticipantIDStr(Nan::To<v8::String>(paramOneParticipantIDObj).ToLocalChecked());
-     strcpy_s(field.ParticipantID, 11, *paramOneUserIDStr);
+     // strcpy_s(field.ParticipantID, 11, *paramOneUserIDStr);
+     strncpy(field.ParticipantID, *paramOneUserIDStr, 11);
      //Password
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOnePasswordStr(Nan::To<v8::String>(paramOnePasswordObj).ToLocalChecked());
-     strcpy_s(field.Password, 41, *paramOnePasswordStr);
+     // strcpy_s(field.Password, 41, *paramOnePasswordStr);
+     strncpy(field.Password, *paramOnePasswordStr,41);
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
      int64_t nRequestID=paramTwo->Value();
@@ -243,7 +248,8 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      //UserID
      v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneUserIDStr(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-     strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     // strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     strncpy(field.UserID, *paramOneUserIDStr, 16);
      std::cout<<*paramOneUserIDStr<<std::endl;
      //Password
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -253,12 +259,14 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      DesEncrypt.SetPassword("monitor");
      char encryptedPassword[256] = {0};
      DesEncrypt.Encrypt(*paramOnePasswordStr, encryptedPassword);
-     strcpy_s(field.Password, 41, encryptedPassword);
+     // strcpy_s(field.Password, 41, encryptedPassword);
+     strncpy(field.Password, encryptedPassword, 41);
      std::cout<<encryptedPassword<<std::endl;
      //VersionID
      v8::Local<v8::Object> paramOneVersionIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("VersionID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneVersionIDStr(Nan::To<v8::String>(paramOneVersionIDObj).ToLocalChecked());
-     strcpy_s(field.VersionID, 17, *paramOneVersionIDStr);
+     // strcpy_s(field.VersionID, 17, *paramOneVersionIDStr);
+     strncpy(field.VersionID, *paramOneVersionIDStr, 17);
      std::cout<<*paramOneVersionIDStr<<std::endl;
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
@@ -334,7 +342,8 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
                             TypeLength = jsonContent.FTD.types[0].String[w].$.length + 1;
-                            fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                           // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
 
                         }
                     }
@@ -346,8 +355,8 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
                             TypeLength = jsonContent.FTD.types[0].VString[w].$.length + 1;
-                            fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
-
+                            // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
                         }
                     }
 
@@ -386,7 +395,9 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
                             TypeLength = jsonContent.FTD.types[0].Array[w].$.length + 1;
-                            fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
+
                         }
                     }
                     for (var w = 0; w < Floatlength; w++) {

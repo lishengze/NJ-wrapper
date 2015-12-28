@@ -1,4 +1,3 @@
-
 var addon = require("./build/Release/addon");
 var structJs = require("./SysUserApiStruct_JS.js");
 var fs = require('fs');
@@ -8,18 +7,19 @@ Spi.prototype.OnFrontConnected=function(){
 };
 
 var userApi = new addon.FtdcSysUserApi_Wrapper();
-//userApi.RegisterFront("tcp://172.1.128.165:18841");
-userApi.RegisterFront("tcp://172.1.128.111:18842");       // 内部测试环境;
+var realTimeSystemPath = "tcp://172.1.128.165:18841";
+var innerTestSystemPath = "tcp://172.1.128.111:18842";
+userApi.RegisterFront(realTimeSystemPath);      
 userApi.RegisterSpi(new Spi());
 userApi.Init();
 
-var loginReqNumbers          = 1;
+var loginReqNumbers          = 0;
 var memReqNumbers            = 0;
-var netMonitorReqNumbers     = 0;
-var bSubRtnObjectAttrTopic   = true;
+var netMonitorReqNumbers     = 1;
+var monitorObjectReqNumbers  = 0;
+var bSubRtnObjectAttrTopic   = false;
 var bunSubRtnObjectAttrTopic = false;
 var pathName = "./";
-
 var fileData;
 
 process.on('beforeExit', function (code) {
@@ -34,12 +34,22 @@ process.on('exit', function (code) {
 
 /*************************************************************  请求登陆 ********************************************************/
 var nRequestID       = 1;
-var loginField       = new structJs.CShfeFtdcReqQrySysUserLoginField();
-loginField.UserID    = "admin";
-loginField.Password  = "admin";
-loginField.VersionID = "2.0.0.0";
+
 var ReqQrySysUserLoginTopicCallbackData = [];
 var rspQrySysUserLoginTopicCalledTime   = 0;
+
+var loginField = [];
+
+loginField[0]           = new structJs.CShfeFtdcReqQrySysUserLoginField();
+loginField[0].UserID    = "admin";
+loginField[0].Password  = "admin";
+loginField[0].VersionID = "2.0.0.0";
+
+
+loginField[1]           = new structJs.CShfeFtdcReqQrySysUserLoginField();
+loginField[1].UserID    = "test3333";
+loginField[1].Password  = "123456";
+loginField[1].VersionID = "2.0.0.0";
 
 var SysUserLoginTopicfileName = "ReqQrySysUserLoginTopic-Test-CallbackData.txt";
 Spi.prototype.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
@@ -99,13 +109,13 @@ var RtnNetLocalPingResultInfoTopicfileName = "RtnNetLocalPingResultInfoTopic-tes
 			console.log("pRtnNetLocalPingResultInfo->PTimeSta: ", pRtnNetLocalPingResultInfo.PTimeSta);
 			console.log("pRtnNetLocalPingResultInfo->ConnRate: ", pRtnNetLocalPingResultInfo.ConnRate);
 			
-			fs.appendFileSync(pathName + RtnNetLocalPingResultInfoTopicfileName, pRtnNetLocalPingResultInfo, function(err) {
-				if (err) {
-					console.log(err);
-				} else {
-				// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
-				}	
-			});
+			// fs.appendFileSync(pathName + RtnNetLocalPingResultInfoTopicfileName, pRtnNetLocalPingResultInfo, function(err) {
+			// 	if (err) {
+			// 		console.log(err);
+			// 	} else {
+			// 	// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
+			// 	}	
+			// });
 		}
 		else{
 			console.log("datatype of pRspInfo is: " + typeof(pRtnNetLocalPingResultInfo));
@@ -123,13 +133,13 @@ var RtnSysTimeSyncTopicfileName = "RtnSysTimeSyncTopic-test-callbackData.txt";
 			console.log("pRtnSysTimeSync->MonDate: ", pRtnSysTimeSync.MonDate);
 			console.log("pRtnSysTimeSync->MonTime: ", pRtnSysTimeSync.MonTime);  
 			
-			fs.appendFileSync(pathName + RtnSysTimeSyncTopicfileName, pRtnSysTimeSync, function(err) {
-				if (err) {
-					console.log(err);
-				} else {
-				// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
-				}	
-			});
+			// fs.appendFileSync(pathName + RtnSysTimeSyncTopicfileName, pRtnSysTimeSync, function(err) {
+			// 	if (err) {
+			// 		console.log(err);
+			// 	} else {
+			// 	// 	console.log('Succeed in saving ' + pathName + RtnNetLocalPingResultInfoTopicfileName);
+			// 	}	
+			// });
 						
 		}
 		else{
@@ -140,7 +150,7 @@ var RtnSysTimeSyncTopicfileName = "RtnSysTimeSyncTopic-test-callbackData.txt";
 	}	
 	
 for (var i = 0; i < loginReqNumbers; ++i) {
-	console.log("ReqLogin result:" + userApi.ReqQrySysUserLoginTopic(loginField, nRequestID) + "\n");		
+	console.log("ReqLogin result:" + userApi.ReqQrySysUserLoginTopic(loginField[i], nRequestID) + "\n");		
 }
 
 
@@ -152,30 +162,48 @@ netMonitorAttrerScopeField.CName         = " ";
 netMonitorAttrerScopeField.EName         = " ";
 netMonitorAttrerScopeField.Comments      = " ";
 var netMonitorReqCalledTime              = 0;
+var rspQryNetMonitorAttrScopeTopicFileData = "";
 
 Spi.prototype.OnRspQryNetMonitorAttrScopeTopic = function (pRspQryNetMonitorAttrScope, pRspInfo, nRequestID, bIsLast) {
 	
 	OutputMessage("\n************ JS::RspNetMonitorAttrScopeTopic: START! ***********"," ", fileData);
 	
-	if (false === bIsLast) {					
-			console.log("OperationType in JS is:  " + pRspQryNetMonitorAttrScope.OperationType.toString() + "\n" + 
+	if (pRspQryNetMonitorAttrScope instanceof Object) {		
+		var tmpStr = "OperationType in JS is:     " + pRspQryNetMonitorAttrScope.OperationType.toString() + "\n" + 
 			            "ID in JS is:             " + pRspQryNetMonitorAttrScope.ID.toString() + "\n" + 
 						"CName in JS is:          " + pRspQryNetMonitorAttrScope.CName.toString() + "\n" + 
 						"EName in JS is:          " + pRspQryNetMonitorAttrScope.EName.toString() + "\n" + 
-						"Comments in JS is:       " + pRspQryNetMonitorAttrScope.Comments.toString() + "\n");					
+						"Comments in JS is:       " + pRspQryNetMonitorAttrScope.Comments.toString() + "\n";		
+						
+		console.log(tmpStr);
+					
+		rspQryNetMonitorAttrScopeTopicFileData += tmpStr;		
+											
 	} else {
 		OutputMessage("pRspQryNetMonitorAttrScope  is NULL;\n"," ", fileData);
+	}
+	
+	if (true === bIsLast) {
+		var pathName = "./";
+		var fileName = "OnRspQryNetMonitorAttrScopeTopic-Test-CallbackData.txt";
+		fs.writeFile(pathName + fileName, rspQryNetMonitorAttrScopeTopicFileData, function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('Succeed in saving ' + pathName + fileName);
+				}	
+		});
+		rspQryNetMonitorAttrScopeTopicFileData = "";
+					
 	}
 			
 	OutputMessage("bIsLast in JS is:        " , bIsLast, fileData);
 	OutputMessage("JS-netMonitorReqCalledTime: " ,  netMonitorReqCalledTime++, fileData);
-	OutputMessage("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n", " ",fileData);
-			
-//	console.log("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n");			
+	OutputMessage("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n", " ",fileData);		
 }
 
 for (var i = 0; i < netMonitorReqNumbers; ++i) {	
-		console.log("ReqMem "+i.toString() +" result:" + 
+		console.log("NetMonitorAttrScopeTopic:  "+i.toString() +" result:" + 
 	            userApi.ReqQryNetMonitorAttrScopeTopic (netMonitorAttrerScopeField, nRequestID) + "\n");
 }
 	
@@ -189,21 +217,72 @@ for (var i = 0; i < netMonitorReqNumbers; ++i) {
 // 	i++;	
 // } , intervalTime);
 
+/*************************************    ReqQryMonitorObjectTopic   **************************************/
+var monitorObjectField       = new structJs.CShfeFtdcReqQryMonitorObjectField;
+monitorObjectField.ObjectID  = " ";
+monitorObjectField.StartDate = " ";
+monitorObjectField.StartTime = " ";
+monitorObjectField.EndDate   = " ";
+monitorObjectField.EndTime   = " ";
+monitorObjectField.KeepAlive = 0;
+var monitorObjectCalledTime  = 0;
+var rspMonitorObjectFileData = "";
+
+Spi.prototype.OnRspQryMonitorObjectTopic = function (pRspQryMonitorObject, pRspInfo, nRequestID, bIsLast) {
+	
+//	OutputMessage("\n************ JS::OnRspQryMonitorObjectTopic: START! ***********"," ", fileData);
+	
+	if (pRspQryMonitorObject instanceof Object) {		
+		var tmpStr = "ObjectID in JS is:      " + pRspQryMonitorObject.ObjectID.toString() + "\n" + 
+			         "ObjectName in JS is:    " + pRspQryMonitorObject.ObjectName.toString() + "\n" + 
+					 "WarningActive in JS is: " + pRspQryMonitorObject.WarningActive.toString() + "\n";
+								
+		// console.log(tmpStr);
+					
+		rspMonitorObjectFileData += tmpStr;		
+											
+	} else {
+		OutputMessage("pRspQryMonitorObject is NULL;\n"," ", fileData);
+	}
+	
+	if (true === bIsLast) {
+		var pathName = "./";
+		var fileName = "OnRspQryMonitorObjectTopic-Test-CallbackData.txt";
+		fs.writeFile(pathName + fileName, rspMonitorObjectFileData, function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log('Succeed in saving ' + pathName + fileName);
+				}	
+		});
+		rspMonitorObjectFileData = "";
+					
+	}
+			
+	// OutputMessage("bIsLast in JS is:        " , bIsLast, fileData);
+	// OutputMessage("JS-monitorObjectCalledTime: " ,  monitorObjectCalledTime++, fileData);
+//	OutputMessage("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n", " ",fileData);		
+}
+
+for (var i = 0; i < monitorObjectReqNumbers; ++i) {	
+		console.log("MonitorObjectTopic:  "+i.toString() +" result:" + 
+	            userApi.ReqQryMonitorObjectTopic (monitorObjectField, nRequestID) + "\n");
+}
 
 /******************************************* 订阅请求 *****************************************************/
 /*
-//监控内容订阅请求
+//监控内�?��?�阅请求
 struct CShfeFtdcReqQrySubscriberField
 {
-	///订阅对象名
+	///订阅对象��?
 	TShfeFtdcTypeSubcriberObjectIDType	ObjectID;
-	///初次返回对象数, 默认为0;
+	///初�?�返回�?�象��?, 默�?�为0;
 	TShfeFtdcVolumeType	ObjectNum;
-	///持续订阅标记, 1 订阅， 2 取消订阅;
+	///持续订阅标�??, 1 订阅��? 2 取消订阅;
 	TShfeFtdcTypeKeepAliveType	KeepAlive;
-	///返回的初始日期 默认为空
+	///返回的初始日��? 默�?�为��?
 	TShfeFtdcDateType	MonDate;
-	///返回的初始时间 默认为空;
+	///返回的初始时��? 默�?�为��?;
 	TShfeFtdcTimeType	MonTime;
 };
 
@@ -214,7 +293,7 @@ SubRtnObjectAttrTopic(szObjID);
 
 */
 
-// RtnObjectAttrTopic: 对象状态指标查询应答;
+// RtnObjectAttrTopic: 对象状态指标查询应��?;
 var reqQrySubscriberField = new structJs.CShfeFtdcReqQrySubscriberField;
 reqQrySubscriberField.TShfeFtdcTypeSubcriberObjectIDType = "PuDian.Test.T-MN3750-B1_1B2_1-2M501.cpmCPUTotal1minRev";
 reqQrySubscriberField.ObjectNum = 3;
@@ -223,6 +302,20 @@ reqQrySubscriberField.MonTime   = "";
 
 if (true === bSubRtnObjectAttrTopic) {
 	reqQrySubscriberField.KeepAlive = 1;	
+	Spi.prototype.OnRtnObjectAttrTopic = function (pRtnObjectAttr) {
+		
+		console.log("\n +++++++++++++++++++ JS OnRtnObjectAttrTopic:START! +++++++++++++++++++++++++++++");
+		if (pRtnObjectAttr instanceof Object) {
+		    console.log("pRtnObjectAttr->ObjectID: ", pRtnObjectAttr.ObjectID);
+			console.log("pRtnObjectAttr->AttrType: ", pRtnObjectAttr.AttrType);
+			console.log("pRtnObjectAttr->MonDate: ", pRtnObjectAttr.MonDate);
+			console.log("pRtnObjectAttr->MonTime: ", pRtnObjectAttr.MonTime);
+			console.log("pRtnObjectAttr->ValueType: ", pRtnObjectAttr.ValueType);
+			console.log("pRtnObjectAttr->AttrValue: ", pRtnObjectAttr.AttrValue);			
+		}
+		console.log("+++++++++++++++++++ JS OnRtnObjectAttrTopic: END! +++++++++++++++++++++++++++++\n");			
+	} 
+	
 	console.log("SubRtnObjectAttrTopic result:" + userApi.ReqQrySubscriberTopic (reqQrySubscriberField, nRequestID) + "\n");
 }
 
@@ -230,101 +323,9 @@ if (true === bunSubRtnObjectAttrTopic) {
 	reqQrySubscriberField.KeepAlive = 0;	
 	console.log("unSubRtnObjectAttrTopic result:" + userApi.ReqQrySubscriberTopic (reqQrySubscriberField, nRequestID) + "\n");
 }
+
 /***************************************************** 订阅请求 ************************************************************/
 
 var OutputMessage = function (varName, varData,  fileData) {		
 	console.log(varName + varData.toString());
 }
-
-// /********************************************* 请求内存信息 *******************************************************/
-// var memoryReqCalledTime = 1;
-// Spi.prototype.OnRspQryTopMemInfoTopic = function (pRspQryTopMemInfo, pRspInfo, nRequestID, bIsLast) {
-	
-// 	console.log("\nhaha!");
-// 	var fileData = "HostName in JS is:      " + pRspQryTopMemInfo.HostName + "\n" + 
-// 			  "MonDate in JS is:       " + pRspQryTopMemInfo.MonDate + "\n" + 
-// 			  "MonTime in JS is:       " + pRspQryTopMemInfo.MonTime + "\n" + 
-// 			  "TOTALREAL in JS is:     " + pRspQryTopMemInfo.TOTALREAL + "\n" + 
-// 			  "ACTIVEREAL in JS is:    " + pRspQryTopMemInfo.ACTIVEREAL + "\n" + 
-// 			  "TOTALVIRTUAL in JS is:  " + pRspQryTopMemInfo.TOTALVIRTUAL + "\n" + 
-// 			  "ACTIVEVIRTUAL in JS is: " + pRspQryTopMemInfo.ACTIVEVIRTUAL + "\n" + 
-// 			  "FREE in JS is:          " + pRspQryTopMemInfo.FREE  + "\n";			 
-	
-// 	fileData+= memoryReqCalledTime.toString() +  "\n\n";
-//     fileData+="#endif";
-//     // fs.writeFileSync('testAsync.txt', fileData, function (err) {
-//     // 	if (err) throw err;
-// 	// });
-	
-// 	console.log("HostName in JS is:      " + pRspQryTopMemInfo.HostName.toString() + "\n" + 
-// 			    "MonDate in JS is:       " + pRspQryTopMemInfo.MonDate.toString() + "\n" + 
-// 			    "MonTime in JS is:       " + pRspQryTopMemInfo.MonTime.toString() + "\n" + 
-// 			    "TOTALREAL in JS is:     " + pRspQryTopMemInfo.TOTALREAL.toString() + "\n" + 
-// 			    "ACTIVEREAL in JS is:    " + pRspQryTopMemInfo.ACTIVEREAL.toString() + "\n" + 
-// 			    "TOTALVIRTUAL in JS is:  " + pRspQryTopMemInfo.TOTALVIRTUAL.toString() + "\n" + 
-// 			    "ACTIVEVIRTUAL in JS is: " + pRspQryTopMemInfo.ACTIVEVIRTUAL.toString() + "\n" + 
-// 			    "FREE in JS is:          " + pRspQryTopMemInfo.FREE.toString()  + "\n" + 
-// 				"memoryReqCalledTime :   " + memoryReqCalledTime.toString());
-				
-// 	memoryReqCalledTime++;
-// }
-
-// var memField       = new structJs.CShfeFtdcReqQryTopMemInfoField ();
-// memField.HostName  = "TRADE2.PuDian.os.tserver1_pd3";
-// memField.StartDate = " ";
-// memField.StartTime = " ";
-// memField.EndDate   = " ";
-// memField.EndTime   = " ";
-// memField.KeepAlive = 1;
-
-// for (var i = 0; i < memReqNumbers; ++i) {
-// 	console.log("ReqMem "+i.toString() +" result:" + 
-// 	            userApi.ReqQryTopMemInfoTopic (memField, nRequestID) + "\n");
-// }
-
-	
-
-/********************************************  请求 Subscriber 信息 **********************************************/
-// var subscriberReqCalledTime = 1;
-// Spi.prototype.OnRspQrySubscriberTopic = function (pRspQrySubscriber, pRspInfo, nRequestID, bIsLast) {
-	
-// 	console.log("\n********************JS OnRspQrySubscriberTopic: START! ****************");
-// 	var fileData = "ErrorID in JS is:        " + pRspQrySubscriber.ErrorID + "\n" + 
-// 			  "ErrorMsg in JS is:       " + pRspQrySubscriber.ErrorMsg + "\n" + 
-// 			  "ObjectID in JS is:       " + pRspQrySubscriber.ObjectID + "\n";		 
-	
-// 	fileData+= subscriberReqCalledTime.toString() +  "\n\n";
-//     fileData+="#endif";
-//     fs.writeFileSync('testAsync.txt', fileData, function (err) {
-//     	if (err) throw err;
-// 	});
-	
-// 	console.log("ErrorID in JS is:        " + pRspQrySubscriber.ErrorID.toString());
-// 	console.log("ErrorMsg in JS is:       " + pRspQrySubscriber.ErrorMsg.toString());
-// 	console.log("ObjectID in JS is:       " + pRspQrySubscriber.ObjectID.toString());
-// 	console.log("subscriberReqCalledTime: " + subscriberReqCalledTime.toString());
-	
-// 	subscriberReqCalledTime++;	
-// 	console.log("********************JS OnRspQrySubscriberTopic: END! ****************\n");
-// }
-
-// var subscriberFiled       = new structJs.CShfeFtdcReqQrySubscriberField ();
-// subscriberFiled.ObjectID  = "QHA.SYS01.os";
-// subscriberFiled.ObjectNum = 0;
-// subscriberFiled.KeepAlive = 1;
-// var subscriberReqNumbers  = 1;
-
-// for (var i = 1; i < subscriberReqNumbers; ++i) {
-// 	console.log("subReqMem " + i.toString() +" result:" + 
-// 	            userApi.ReqQrySubscriberTopic (subscriberFiled, nRequestID) + "\n");	
-// }
-
-
-// 
-// var timeInterval   = 1;
-// for (var i = 0; i < reqNumbers; ++i) {	
-// 	// setInterval (console.log("ReqMem result: " +  userApi.ReqQryTopMemInfoTopic(memField, nRequestID) + "\n"), 
-// 	// 			timeInterval);	
-// 	console.log("ReqMem result: " +  userApi.ReqQryTopMemInfoTopic(memField, nRequestID) + "\n");
-// }
-

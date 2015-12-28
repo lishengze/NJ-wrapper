@@ -36,7 +36,12 @@ io.on('connection', function(rootSocket) {
 			
 	rootSocket.on('ReqNetMonitorAttrScope', function(username) {
 		console.log('Client ReqNetMonitorAttrScope');		
-			server.ReqNetMonitorAttrScope(rootSocket);
+		server.ReqNetMonitorAttrScope(rootSocket);
+	});	
+	
+	rootSocket.on('ReqQryMonitorObjectTopic', function(username) {
+		console.log('Test-Server: ReqQryMonitorObjectTopic' + username.toString());
+		server.ReqQryMonitorObjectTopic(rootSocket);
 	});		
 	
 });

@@ -10,7 +10,6 @@
 #ifndef FTDCSYSDATATYPE_H
 #define FTDCSYSDATATYPE_H
 
-// typedef unsigned __int64	QWORD;
 typedef unsigned int	QWORD;
 
 enum TE_RESUME_TYPE

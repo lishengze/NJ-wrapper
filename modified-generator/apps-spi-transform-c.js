@@ -10,6 +10,7 @@ var fileData = hereDoc(function () {
 /*#include "spi-transform.h"
 #include "FtdcSysUserApiStruct.h"
 #include "tool-function.h"
+#include "charset-convert.h"
 using namespace v8;
 
 // 添加对 queue， mutex, async 全局变量的定义
@@ -235,12 +236,14 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
 		}
 		fileData += tabSpace[3] + "\n";
         fileData += tabSpace[3] + "if (NULL != " + pValueName + ") { \n";
-		        
+		fileData += tabSpace[4] + "string utf8string;\n";
+         
         // 绑定p"+fieldName+"JS对象的属性和键值\n";
         for(var j = 0; j < fieldLength; j++) {			
             var tmpFieldDefine = jsonContent.FTD.fields[0].fieldDefine[j];
             if ( tmpFieldDefine.$.name === fieldName) {
                 var itemlength = tmpFieldDefine.item.length;
+                
                 for(var k = 0; k < itemlength; k++) {
 
                     //获取每个field的item对象, itemType;
@@ -349,8 +352,9 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
                     }
                     
                     if(isString === true) {//String、Array、VString , string type
-                            fileData += tabSpace[4] + "v8::Local<v8::String> "+ itemValueName + " = Nan::New<v8::String> ("
-                                      + pValueName + "->"+itemName+").ToLocalChecked();\n";
+                    //     fileData += tabSpace[4] + "string& utf8string;\n";
+                        fileData += tabSpace[4] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", utf8string);\n";
+                        fileData += tabSpace[4] + "v8::Local<v8::String> "+ itemValueName + " = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();\n";
                     }
 
                     // 绑定JS value;
@@ -447,20 +451,3 @@ fs.writeFile(pathName + fileName, fileData, function (err) {
     }
 
 });
-
-        // fileData += tabSpace[2] + "// 检测传递有效信息的指针是否为空" + "\n";
-        // fileData += tabSpace[2] + "if (NULL == paramArray[0]) {" + "\n";
-        // fileData += tabSpace[3] + "for (int i = 1; i< " + varNumb.toString() +"; ++i) {" + "\n";
-        // fileData += tabSpace[4] + "if (NULL!=paramArray[i]) {" + "\n";
-        // fileData += tabSpace[5] + "delete[] paramArray[i];" + "\n";
-        // fileData += tabSpace[5] + "paramArray[i] = NULL;" + "\n";
-        // fileData += tabSpace[4] + "}" + "\n";
-        // fileData += tabSpace[3] + "}" + "\n";        
-        // fileData += tabSpace[3] + "if (NULL!= paramArray) {" + "\n"
-        // fileData += tabSpace[4] + "delete[] paramArray;" + "\n";
-        // fileData += tabSpace[4] + "paramArray = NULL;" + "\n";
-        // fileData += tabSpace[3] + "}" + "\n";
-        // fileData += tabSpace[3] + "OutputCallbackMessage (\"spi-transform::Delivered " + funcName + " paramArray[0] is NULL! \", g_RunningResult_File);" + "\n";
-        // fileData += tabSpace[3] + "OutputCallbackMessage (\"****** spi-transform:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
-        // fileData += tabSpace[3] + "return; " + "\n";
-        // fileData += tabSpace[2] + "}" + "\n\n";

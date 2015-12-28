@@ -4,16 +4,19 @@ var fs = require('fs');
 var Spi = function(){};
 
 var userApi = new addon.FtdcSysUserApi_Wrapper();
-userApi.RegisterFront("tcp://172.1.128.111:18842");       // 内部测试环境;
+var realTimeSystemPath = "tcp://172.1.128.165:18841";
+var innerTestSystemPath = "tcp://172.1.128.111:18842";
+userApi.RegisterFront(realTimeSystemPath);     
 userApi.RegisterSpi(new Spi());
 userApi.Init();
 
-var loginReqNumbers      = 0;
-var memReqNumbers        = 0;
-var netMonitorReqNumbers = 1;
+var loginReqNumbers          = 0;
+var memReqNumbers            = 0;
+var netMonitorReqNumbers     = 0;
+var monitorObjectReqNumbers  = 1;
 var bSubRtnObjectAttrTopic = true;
 var bunSubRtnObjectAttrTopic = false;
-var fileData;
+var fileData = "";
 var fileName = 'result-server.txt';
 var pathName = './';
 var nRequestID = 1;
@@ -58,20 +61,20 @@ exports.ReqQrySysUserLoginTopic = function (socket) {
 		}
 		
 		if (true === bIsLast) {
-
-			socket.emit("ReqQrySysUserLoginTopic CallbackData", ReqQrySysUserLoginTopicCallbackData);	
-			
-			var pathName = "./";
-			var fileName = "ReqQrySysUserLoginTopic-Server-CallbackData.txt";
-			fs.writeFile(pathName + fileName, ReqQrySysUserLoginTopicCallbackData, function(err) {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log('Succeed in saving ' + pathName + fileName);
-				}	
-			});
-						
-			ReqQrySysUserLoginTopicCallbackData = [];		
+			if (0!== ReqQrySysUserLoginTopicCallbackData.length) {
+				socket.emit("ReqQrySysUserLoginTopic CallbackData", ReqQrySysUserLoginTopicCallbackData);				
+				var pathName = "./";
+				var fileName = "ReqQrySysUserLoginTopic-Server-CallbackData.txt";
+				fs.writeFile(pathName + fileName, ReqQrySysUserLoginTopicCallbackData, function(err) {
+					if (err) {
+						console.log(err);
+					} else {
+						console.log('Succeed in saving ' + pathName + fileName);
+					}	
+				});
+							
+				ReqQrySysUserLoginTopicCallbackData = [];	
+			}	
 		}
 		
 		if(pRspInfo instanceof Object){
@@ -101,7 +104,7 @@ exports.ReqQrySysUserLoginTopic = function (socket) {
 			console.log("pRtnNetLocalPingResultInfo->PDateSta: ", pRtnNetLocalPingResultInfo.PDateSta);
 			console.log("pRtnNetLocalPingResultInfo->PTimeSta: ", pRtnNetLocalPingResultInfo.PTimeSta);
 			console.log("pRtnNetLocalPingResultInfo->ConnRate: ", pRtnNetLocalPingResultInfo.ConnRate);
-			
+						
 			socket.emit("RtnNetLocalPingResultInfoTopic CallbackData", pRtnNetLocalPingResultInfo);	
 		}
 		else{
@@ -142,107 +145,124 @@ exports.ReqNetMonitorAttrScope = function(socket) {
 	var netMonitorReqCalledTime              = 0;
 	var nRequestID                           = 1;
 	var ReqNetMonitorAttrScopeCallbackData   = [];
+	var rspQryNetMonitorAttrScopeTopicFileData = "";
 	
 	Spi.prototype.OnRspQryNetMonitorAttrScopeTopic = function (pRspQryNetMonitorAttrScope, pRspInfo, nRequestID, bIsLast) {
 		
-		OutputMessage("\n************ JS::RspNetMonitorAttrScopeTopic: START! ***********"," ", fileData);
-		
+		OutputMessage("\n************ JS::RspNetMonitorAttrScopeTopic: START! ***********"," ", fileData);		
 		if (pRspQryNetMonitorAttrScope instanceof Object) {
-		    console.log("OperationType in JS is:  " + pRspQryNetMonitorAttrScope.OperationType.toString() + "\n" + 
+			var tmpStr = "OperationType in JS is:     " + pRspQryNetMonitorAttrScope.OperationType.toString() + "\n" + 
 							"ID in JS is:             " + pRspQryNetMonitorAttrScope.ID.toString() + "\n" + 
 							"CName in JS is:          " + pRspQryNetMonitorAttrScope.CName.toString() + "\n" + 
 							"EName in JS is:          " + pRspQryNetMonitorAttrScope.EName.toString() + "\n" + 
-							"Comments in JS is:       " + pRspQryNetMonitorAttrScope.Comments.toString() + "\n");											
-			ReqNetMonitorAttrScopeCallbackData.push(pRspQryNetMonitorAttrScope);	
-			netMonitorReqCalledTime++;			
+							"Comments in JS is:       " + pRspQryNetMonitorAttrScope.Comments.toString() + "\n";		
+							
+			console.log(tmpStr);
+						
+			rspQryNetMonitorAttrScopeTopicFileData += tmpStr;																						
+			ReqNetMonitorAttrScopeCallbackData.push(pRspQryNetMonitorAttrScope);				
+			netMonitorReqCalledTime++;		
+		} else {
+			OutputMessage("pRspQryNetMonitorAttrScope  is NULL;\n"," ", fileData);
 		}
 		
 		if (true === bIsLast) {					
 		
-			socket.emit("ReqNetMonitorAttrScope CallbackData", ReqNetMonitorAttrScopeCallbackData);
+			socket.emit("ReqNetMonitorAttrScope CallbackData", ReqNetMonitorAttrScopeCallbackData);		
 			
-			console.log("***************** Test ReqNetMonitorAttrScopeCallbackData *************** \n" 
-			            + ReqNetMonitorAttrScopeCallbackData[netMonitorReqCalledTime-2].ID);
-						
-			netMonitorReqCalledTime = 0;		
-			var pathName = "./";
-			var fileName = "ReqNetMonitorAttrScope-Server-CallbackData.txt";	
-			fs.writeFile(pathName + fileName, ReqNetMonitorAttrScopeCallbackData, function(err) {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log('Succeed in saving ' + pathName + fileName);
-				}	
-			});
-			
-			ReqNetMonitorAttrScopeCallbackData = [];
-			OutputMessage("pRspQryNetMonitorAttrScope  is NULL;\n"," ", fileData);
+			if (0 !== ReqNetMonitorAttrScopeCallbackData.length) {
+				netMonitorReqCalledTime = 0;						
+				var pathName = "./";
+				var fileName = "ReqNetMonitorAttrScope-Server-CallbackData.txt";	
+				fs.writeFile(pathName + fileName, rspQryNetMonitorAttrScopeTopicFileData, 'EUC-CN', function(err) {
+					if (err) {
+						console.log(err);
+					} else {
+						console.log('Succeed in saving ' + pathName + fileName);
+					}	
+				});
+				
+				rspQryNetMonitorAttrScopeTopicFileData = "";
+				ReqNetMonitorAttrScopeCallbackData = [];					
+			} else {
+				console.log("emit the empty data!");	
+			}										
 		}
 				
 		OutputMessage("bIsLast in JS is:        " , bIsLast, fileData);
 		OutputMessage("JS-netMonitorReqCalledTime: " ,  netMonitorReqCalledTime, fileData);
 		OutputMessage("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n", " ",fileData);		
 	}	
+	
 	console.log("ReqNetMonitorAttrScope result:" +  userApi.ReqQryNetMonitorAttrScopeTopic (netMonitorAttrerScopeField, nRequestID) + "\n");
 }
 
-// var intervalTime = 5;
-// setInterval(function(){
-// 	var i = 0;
-// 	console.log("-------------ReqMem result: " 
-// 				+ userApi.ReqQryNetMonitorAttrScopeTopic (netMonitorAttrerScopeField, nRequestID) 
-// 				+ "----------------\n");	
-// 	console.log("+++++++++++++++++++++++++ I: " + i.toString() + " ++++++++++++++++++++++");
-// 	i++;	
-// } , intervalTime);
-/****************************************** RtnNetLocalPingResultInfoTopic:*******************************/
 
-/******************************************* 订阅请求 *****************************************************/
-/*
-//监控内容订阅请求
-struct CShfeFtdcReqQrySubscriberField
-{
-	///订阅对象名
-	TShfeFtdcTypeSubcriberObjectIDType	ObjectID;
-	///初次返回对象数, 默认为0;
-	TShfeFtdcVolumeType	ObjectNum;
-	///持续订阅标记, 1 订阅， 2 取消订阅;
-	TShfeFtdcTypeKeepAliveType	KeepAlive;
-	///返回的初始日期 默认为空
-	TShfeFtdcDateType	MonDate;
-	///返回的初始时间 默认为空;
-	TShfeFtdcTimeType	MonTime;
-};
-
-TShfeFtdcTypeSubcriberObjectIDType szObjID;
-CString strTest = _T("PuDian.Test.T-MN3750-B1_1B2_1-2M501.cpmCPUTotal1minRev");
-lstrcpyA(szObjID, CT2A(strTest));
-SubRtnObjectAttrTopic(szObjID);
-
-*/
-
-// RtnObjectAttrTopic: 对象状态指标查询应答;
-exports.SubRtnObjectAttrTopic = function () {
-	var reqQrySubscriberField = new structJs.CShfeFtdcReqQrySubscriberField;
-	reqQrySubscriberField.TShfeFtdcTypeSubcriberObjectIDType = "PuDian.Test.T-MN3750-B1_1B2_1-2M501.cpmCPUTotal1minRev";
-	reqQrySubscriberField.ObjectNum = 3;
-	reqQrySubscriberField.MonDate   = "";
-	reqQrySubscriberField.MonTime   = "";
+/*************************************    ReqQryMonitorObjectTopic   **************************************/
+exports.ReqQryMonitorObjectTopic = function(socket) {
+	console.log("Server: ReqNetMonitorAttrScope!!!!" );
+	var monitorObjectField       = new structJs.CShfeFtdcReqQryMonitorObjectField;
+	monitorObjectField.ObjectID  = " ";
+	monitorObjectField.StartDate = " ";
+	monitorObjectField.StartTime = " ";
+	monitorObjectField.EndDate   = " ";
+	monitorObjectField.EndTime   = " ";
+	monitorObjectField.KeepAlive = 0;
+	var monitorObjectCalledTime  = 0;
+	var rspMonitorObjectFileData = "";
+	var ReqQryMonitorObjectTopicCallbackData = [];
 	
-	if (true === bSubRtnObjectAttrTopic) {
-		reqQrySubscriberField.KeepAlive = 1;	
-		console.log("SubRtnObjectAttrTopic result:" + userApi.ReqQrySubscriberTopic (reqQrySubscriberField, nRequestID) + "\n");
+	Spi.prototype.OnRspQryMonitorObjectTopic = function (pRspQryMonitorObject, pRspInfo, nRequestID, bIsLast) {
+		
+	//	OutputMessage("\n************ JS::OnRspQryMonitorObjectTopic: START! ***********"," ", fileData);
+		
+		if (pRspQryMonitorObject instanceof Object) {		
+			var tmpStr = "ObjectID in JS is:      " + pRspQryMonitorObject.ObjectID.toString() + "\n" + 
+						"ObjectName in JS is:    " + pRspQryMonitorObject.ObjectName.toString() + "\n" + 
+						"WarningActive in JS is: " + pRspQryMonitorObject.WarningActive.toString() + "\n";
+									
+			// console.log(tmpStr);
+						
+			rspMonitorObjectFileData += tmpStr;		
+			ReqQryMonitorObjectTopicCallbackData.push(pRspQryMonitorObject)
+			monitorObjectCalledTime++;												
+		} else {
+			console.log("pRspQryMonitorObject is NULL;\n");
+		}
+		
+		if (true === bIsLast) {
+			
+			socket.emit('ReqQryMonitorObjectTopic CallbackData', ReqQryMonitorObjectTopicCallbackData);
+					
+			if (0 !== ReqQryMonitorObjectTopicCallbackData.length) {
+				var pathName = "./";
+				var fileName = "OnRspQryMonitorObjectTopic-Server-CallbackData.txt";
+				
+				fs.writeFile(pathName + fileName, rspMonitorObjectFileData, function(err) {
+						if (err) {
+							console.log(err);
+						} else {
+							console.log('Succeed in saving ' + pathName + fileName);
+						}	
+				});
+				
+				ReqQryMonitorObjectTopicCallbackData = [];
+				rspMonitorObjectFileData = "";	
+			} 				
+		}	
+		
+		// OutputMessage("bIsLast in JS is:        " , bIsLast, fileData);
+		// OutputMessage("JS-monitorObjectCalledTime: " ,  monitorObjectCalledTime++, fileData);
+		// OutputMessage("************ JS::RspNetMonitorAttrScopeTopic: END! *********** \n", " ",fileData);	
+
 	}
 	
-	if (true === bunSubRtnObjectAttrTopic) {
-		reqQrySubscriberField.KeepAlive = 0;	
-		console.log("unSubRtnObjectAttrTopic result:" + userApi.ReqQrySubscriberTopic (reqQrySubscriberField, nRequestID) + "\n");
-	}
+	userApi.ReqQryMonitorObjectTopic (monitorObjectField, 1);	
+
 }
-
-/***************************************************** 订阅请求 ************************************************************/
 
 var OutputMessage = function (varName, varData,  fileData) {			
 	console.log(varName + varData.toString());
 }
+
 

@@ -12,6 +12,25 @@ using std::string;
 using std::fstream;
 using std::ios;
 
+
+// #ifdef linux
+
+// #include "charset-convert-linux.h"
+
+// #endif
+
+// #ifdef __WINDOWS_
+
+// #include "charset-convert-windows.h"
+
+// #endif
+
+// #ifdef _WIN32
+
+// #include "charset-convert-windows.h"
+
+// #endif
+
 template <class valueType>
 void OutputCallbackMessage(valueType data) {
 	cout << data << endl;

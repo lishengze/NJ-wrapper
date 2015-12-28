@@ -1,18 +1,25 @@
-var fs = require('fs');
-var options = {
-  key: fs.readFileSync("sfit.key"),
-  cert: fs.readFileSync("sfit.cert"),
-};
+var server           = require('./server.js');
+var fs               = require('fs');
+var userSocketServer = {};
+var userNameArry     = [];
+var userCount        = 0;
+var isHttps          = true;
 
-var app = require('https').createServer(options,onRequest); // 创建代理服务器;
-var io  = require('socket.io')(app);
-app.listen(8000);
-
-// var app = require('http').createServer(onRequest); // 创建代理服务器;
-// var io  = require('socket.io')(app);
-// app.listen(80);
-
-var server = require('./server.js');
+if (true === isHttps) {
+	var options = {
+		key: fs.readFileSync("sfit.key"),
+		cert: fs.readFileSync("sfit.cert"),
+	};
+	var app  = require('https').createServer(options,onRequest); 
+	var io   = require('socket.io')(app)
+	var port = 8080;
+	app.listen(port);	
+} else {
+	var app  = require('http').createServer(onRequest); 
+	var io   = require('socket.io')(app);
+	var port = 80;
+	app.listen(port);
+}
 
 function onRequest(request, response){
 	try {
@@ -24,14 +31,10 @@ function onRequest(request, response){
 	}
 }
 
-var userSocketServer = {};
-var userNameArry     = [];
-var userCount        = 0;
-
 // 连接后台服务器.
 io.on('connection', function(rootSocket) {
 	
-	console.log('rootSocket connected!');	
+	console.log('\nrootSocket connected!\n');	
 	rootSocket.on('new user', function(userName) {				
 		for (var i = 0, length = userNameArry.length; i < length; ++i)
 		{
@@ -65,9 +68,16 @@ io.on('connection', function(rootSocket) {
 				server.ReqQrySysUserLoginTopic(curSocket);						
 			});	
 			
+			///指标统表
 			curSocket.on('ReqNetMonitorAttrScope', function(username) {
 				server.ReqNetMonitorAttrScope(curSocket);
-			});						
+			});			
+			
+			// treeView
+			curSocket.on('ReqQryMonitorObjectTopic', function(username) {
+				console.log('Test-Server: ReqQryMonitorObjectTopic' + username.toString());
+				server.ReqQryMonitorObjectTopic(curSocket);
+			});				
 			
 	   });
 	  

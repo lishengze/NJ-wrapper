@@ -1,42 +1,38 @@
-// // var io = require('socket.io-client');
-// var url = 'https://localhost:443';
-// var rootSocket = io.connect(url, {secure:true});
-// // var rootSocket = io.connect(url);
-// var loginMessage = "OnRspQrySysUserLoginTopic";
-// // var fs = require('fs');
-
-var url = 'http://localhost';
-var rootSocket = io.connect(url);
-		
-writeData('Connect default io namespace');
-		
 var userSocketClient = {};
 var userNameArry     = [];
 var userCount        = 0;
+var isHttps          = true;
 
-/*
-var io=require('socket.io-client');
-  var url = 'https://localhost:443';
-  rootSocket = io.connect(url,{secure:true});
+if (true === isHttps) {
+	var ipAddress  = 'https://192.168.10.11';
+//	var ipAddress  = 'https://localhost'
+	var port       = 8000;
+	var url        = ipAddress + ':' + port.toString();
+	var rootSocket = io.connect(url,{secure:true});	
+} else {
+	var url        = 'http://localhost';
+	var rootSocket = io.connect(url);
+}
 
-  rootSocket.emit('start data stream', 'start');
-  rootSocket.on('new data comes', function(data){
+rootSocket.emit('start data stream', 'start');
+rootSocket.on('new data comes', function(data){
      console.log('did receive data');
-    });
-*/
+});
 
-// 注册来自服务端的消息, 需要响应的事件只注册一次.	
+writeData('Connect default io namespace');
+
+// 注册来自服务端的消息.	
 rootSocket.on('ready to establish connect', function(username){
 				
 	writeData('establish connect ' + username);
 					
-	userSocketClient[username] = io.connect(url + '/' + username); // stoped;
+	userSocketClient[username] = io.connect(url + '/' + username); 
 							
 	userSocketClient[username].on('connect completed', function(username){	
 		userNameArry[userCount++] = username;		
 		writeData(username + ' connect completed');						
 		if (username === 'admin') {
-				loginServer(username);
+				ReqQrySysUserLoginTopic(username);
 		}																				
 	});	
 			
@@ -50,47 +46,47 @@ rootSocket.on('ready to establish connect', function(username){
 	});		
 	
 	userSocketClient[username].on("ReqQrySysUserLoginTopic CallbackData", function (callbackData) {
-		alert(callbackData[0].LoginTime);
+		if (0!==callbackData.length) {
+			alert(callbackData[0].LoginTime);
+		}
+		
 	});
 	
 	userSocketClient[username].on("RtnNetLocalPingResultInfoTopic CallbackData", function (callbackData) {
-		alert(callbackData.PTimeSta);
+		if (0!==callbackData.length) {
+			alert(callbackData.PTimeSta);
+		}
+		
 	});
 	
 	userSocketClient[username].on("RtnSysTimeSyncTopic CallbackData", function (callbackData) {
-		alert(callbackData.MonTime);
+		if (0!==callbackData.length) {
+			alert(callbackData.MonTime);
+		}
+		
 	});
 						
 	userSocketClient[username].on("ReqNetMonitorAttrScope CallbackData", function (callbackData) {
-		alert(callbackData[0].ID);
+		if (0!==callbackData.length) {
+			alert(callbackData[0].Comments);
+		}
+		
 	});
 	
-	
-										
+	userSocketClient[username].on('ReqQryMonitorObjectTopic CallbackData', function (callbackData) {
+		if (0!==callbackData.length) {
+			alert(callbackData[0].ObjectID.toString());
+		}
+		
+	});
+												
 });
 						
 function addUser(username) {		
 	writeData(url + '/' + username);		
-	rootSocket.emit('new user', username);		// 发多次;				
+	rootSocket.emit('new user', username);			
 }
-	
-function ReqQrySysUserLoginTopic(username){
-	var bIsUserNameConnected = false;
-	for (var i = 0; i<userCount; ++i) {
-		if (userNameArry[i] === username) {
-			bIsUserNameConnected = true;
-			break;
-		} 
-	}
-	
-	if (true === bIsUserNameConnected) {
-		userSocketClient[username].emit('ReqQrySysUserLoginTopic', username);	
-	} else {
-		alert(username + " doesn't connect to the server.");
-		return;
-	}								
-}
-				
+
 function disconnectServer (username) {
 	userSocketClient[username].disconnect();
 }
@@ -111,7 +107,24 @@ function testCommunicateUser(username){
 		return;
 	}			
 }
-				
+	
+function ReqQrySysUserLoginTopic(username){
+	var bIsUserNameConnected = false;
+	for (var i = 0; i<userCount; ++i) {
+		if (userNameArry[i] === username) {
+			bIsUserNameConnected = true;
+			break;
+		} 
+	}
+	
+	if (true === bIsUserNameConnected) {
+		userSocketClient[username].emit('ReqQrySysUserLoginTopic', username);	
+	} else {
+		alert(username + " doesn't connect to the server.");
+		return;
+	}								
+}
+								
 function ReqNetMonitorAttrScope(username){
 	var bIsUserNameConnected = false;
 	for (var i = 0; i<userCount; ++i) {
@@ -129,6 +142,46 @@ function ReqNetMonitorAttrScope(username){
 	}						
 }	
 
+function ReqQryMonitorObjectTopic(username) {
+	var bIsUserNameConnected = false;
+	for (var i = 0; i<userCount; ++i) {
+		if (userNameArry[i] === username) {
+			bIsUserNameConnected = true;
+			break;
+		} 
+	}
+	
+	if (true === bIsUserNameConnected) {
+		userSocketClient[username].emit('ReqQryMonitorObjectTopic', username);	
+	} else {
+		alert(username + " doesn't connect to the server.");
+		return;
+	}		
+}
+
+
 function writeData(Data){
 		console.log(Data);								
 }		
+
+function readTextFile(file)
+    {
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, false);
+        rawFile.onreadystatechange = function ()
+        {
+            if(rawFile.readyState === 4)
+            {
+                if(rawFile.status === 200 || rawFile.status == 0)
+                {
+                    var allText = rawFile.responseText;
+                    document.getElementById("inputValue").value=allText
+
+                }
+            }
+        }
+        rawFile.send(null);
+    }
+	
+readTextFile("test.txt")
+
