@@ -4,11 +4,11 @@ var fs = require('fs');
 var Spi = function(){};
 
 var userApi = new addon.FtdcSysUserApi_Wrapper();
-var realTimeSystemPath = "tcp://172.1.128.165:18841";
+var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
-userApi.RegisterFront(realTimeSystemPath);     
-userApi.RegisterSpi(new Spi());
-userApi.Init();
+// userApi.RegisterFront(innerTestSystemPath);     
+// userApi.RegisterSpi(new Spi());
+// userApi.Init();
 
 var loginReqNumbers          = 0;
 var memReqNumbers            = 0;
@@ -34,6 +34,18 @@ process.on('exit', function (code) {
 Spi.prototype.OnFrontConnected=function(){
 	console.log("FrontConnected!");
 };
+
+// 请求建立连接;
+exports.RegisterFront = function (socket) {
+	userApi.RegisterFront(innerTestSystemPath);     
+	userApi.RegisterSpi(new Spi());
+	userApi.Init();	
+	
+	Spi.prototype.OnFrontConnected = function() {
+		console.log('+++++++ JS OnFrontConnected! ++++++++\n');
+		socket.emit('FrontConnected!', 'FrontConnected!');
+	}
+}
 
 /*************************************************************  请求登陆 ********************************************************/
 
@@ -200,7 +212,7 @@ exports.ReqNetMonitorAttrScope = function(socket) {
 
 /*************************************    ReqQryMonitorObjectTopic   **************************************/
 exports.ReqQryMonitorObjectTopic = function(socket) {
-	console.log("Server: ReqNetMonitorAttrScope!!!!" );
+	console.log("Server: ReqQryMonitorObjectTopic!!!!" );
 	var monitorObjectField       = new structJs.CShfeFtdcReqQryMonitorObjectField;
 	monitorObjectField.ObjectID  = " ";
 	monitorObjectField.StartDate = " ";

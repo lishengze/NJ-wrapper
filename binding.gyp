@@ -8,7 +8,7 @@
         ".",
       ],
       "libraries": [
-          "-lC:\Users\li.shengze\github\Nodejs\socket.io-warpper\suaw-async-queue-d/sysuserapi.lib",
+          "-lC:\Users\li.shengze\github\Nodejs\socket.io-warpper\suaw-async-queue-e/sysuserapi.lib",
          # "-lsysuserapi.lib",
       ]
     }

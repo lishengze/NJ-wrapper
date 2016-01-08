@@ -15,8 +15,8 @@ userApi.Init();
 
 var loginReqNumbers          = 0;
 var memReqNumbers            = 0;
-var netMonitorReqNumbers     = 1;
-var monitorObjectReqNumbers  = 0;
+var netMonitorReqNumbers     = 0;
+var monitorObjectReqNumbers  = 1;
 var bSubRtnObjectAttrTopic   = false;
 var bunSubRtnObjectAttrTopic = false;
 var pathName = "./";

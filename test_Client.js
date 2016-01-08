@@ -1,11 +1,13 @@
 var userSocketClient = {};
 var userNameArry     = [];
 var userCount        = 0;
-var isHttps          = true;
+var isHttps          = false;
+var isFrontConnected = false;
 
 if (true === isHttps) {
-	var ipAddress  = 'https://192.168.10.11';
-//	var ipAddress  = 'https://localhost'
+//	var ipAddress  = 'https://192.168.10.11';
+	var ipAddress  = 'https://localhost'
+//	var ipAddress  = 'https://172.1.128.169';
 	var port       = 8000;
 	var url        = ipAddress + ':' + port.toString();
 	var rootSocket = io.connect(url,{secure:true});	
@@ -30,15 +32,23 @@ rootSocket.on('ready to establish connect', function(username){
 							
 	userSocketClient[username].on('connect completed', function(username){	
 		userNameArry[userCount++] = username;		
-		writeData(username + ' connect completed');						
-		if (username === 'admin') {
-				ReqQrySysUserLoginTopic(username);
-		}																				
+		writeData(username + ' connect completed');		
+		
+		userSocketClient[username].emit('Connect Front', 'Connect Front');		
+																										
 	});	
-			
+	
+	userSocketClient[username].on('FrontConnected', function(data) {
+		console.log('\nTest_Client: FrontConnected!\n');
+		alert('\nTest_Client: FrontConnected!\n');
+		isFrontConnected = true;
+	})
+	
 	userSocketClient[username].on('connect_server', function(data){
 		writeData(data);								
 	});
+	
+
 				
 		
 	userSocketClient[username].on('Get from Server', function(data){				
@@ -117,7 +127,7 @@ function ReqQrySysUserLoginTopic(username){
 		} 
 	}
 	
-	if (true === bIsUserNameConnected) {
+	if (true === bIsUserNameConnected && true === isFrontConnected) {
 		userSocketClient[username].emit('ReqQrySysUserLoginTopic', username);	
 	} else {
 		alert(username + " doesn't connect to the server.");
@@ -134,7 +144,7 @@ function ReqNetMonitorAttrScope(username){
 		} 
 	}
 	
-	if (true === bIsUserNameConnected) {
+	if (true === bIsUserNameConnected && true === isFrontConnected) {
 		userSocketClient[username].emit('ReqNetMonitorAttrScope', username);	
 	} else {
 		alert(username + " doesn't connect to the server.");
@@ -151,7 +161,7 @@ function ReqQryMonitorObjectTopic(username) {
 		} 
 	}
 	
-	if (true === bIsUserNameConnected) {
+	if (true === bIsUserNameConnected && true === isFrontConnected ) {
 		userSocketClient[username].emit('ReqQryMonitorObjectTopic', username);	
 	} else {
 		alert(username + " doesn't connect to the server.");
@@ -164,24 +174,27 @@ function writeData(Data){
 		console.log(Data);								
 }		
 
-function readTextFile(file)
-    {
-        var rawFile = new XMLHttpRequest();
-        rawFile.open("GET", file, false);
-        rawFile.onreadystatechange = function ()
-        {
-            if(rawFile.readyState === 4)
-            {
-                if(rawFile.status === 200 || rawFile.status == 0)
-                {
-                    var allText = rawFile.responseText;
-                    document.getElementById("inputValue").value=allText
+// function readTextFile(file)
+//     {
+//         var rawFile = new XMLHttpRequest();
+//         rawFile.open("GET", file, false);
+//         rawFile.onreadystatechange = function ()
+//         {
+//             if(rawFile.readyState === 4)
+//             {
+//                 if(rawFile.status === 200 || rawFile.status == 0)
+//                 {
+//                     var allText = rawFile.responseText;
+//                     document.getElementById("inputValue").value=allText
 
-                }
-            }
-        }
-        rawFile.send(null);
-    }
+//                 }
+//             }
+//         }
+//         rawFile.send(null);
+//     }
 	
-readTextFile("test.txt")
+// readTextFile("test.txt")
 
+		// if (username === 'admin') {
+		// 		ReqQrySysUserLoginTopic(username);
+		// }

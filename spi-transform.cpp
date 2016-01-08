@@ -1796,7 +1796,7 @@ void OnFrontDisconnected(uv_async_t *handle) {
             OutputCallbackMessage("Disconnect reason: ", nReason, g_RunningResult_File);
             v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
             Nan::Callback callback(function);
-            int nReason=(int)handle->data;
+            int nReason=*(int*)handle->data;
             v8::Local<v8::Integer> nReasonJS=Nan::New<v8::Integer>(nReason);
             v8::Local<v8::Value> param[1];
             param[0]=Local<v8::Value>(nReasonJS);

@@ -3,16 +3,16 @@ var fs               = require('fs');
 var userSocketServer = {};
 var userNameArry     = [];
 var userCount        = 0;
-var isHttps          = true;
+var isHttps          = false;
 
 if (true === isHttps) {
 	var options = {
-		key: fs.readFileSync("sfit.key"),
-		cert: fs.readFileSync("sfit.cert"),
+		key:  fs.readFileSync("9249652-www.sfit.shfe.com.cn.key"),
+		cert: fs.readFileSync("9249652-www.sfit.shfe.com.cn.cert"),
 	};
 	var app  = require('https').createServer(options,onRequest); 
 	var io   = require('socket.io')(app)
-	var port = 8080;
+	var port = 8000;
 	app.listen(port);	
 } else {
 	var app  = require('http').createServer(onRequest); 
@@ -54,13 +54,19 @@ io.on('connection', function(rootSocket) {
 		// 所有的通讯都在 connection 响应的事件里, 通过emit, on控制;		
 		userSocketServer[userName].on('connection', function(curSocket){
 			
+			curSocket.on('Connect Front', function(data) {
+				console.log('Connect Front!');
+				server.RegisterFront(curSocket);				
+			});
+			
+			
 			console.log(userName + ' connect completed.');			
 			curSocket.emit('connect completed', userName);
 				
 			curSocket.on('Get from Client', function(data){				
 				console.log('\nGet from Client: Hi server ' + data);																			
 				curSocket.emit('Get from Server', data);
-			});		
+			});								
 			
 			// 为每个后台请求建立专属连订阅事件;			
 			curSocket.on('ReqQrySysUserLoginTopic', function(userName){				

@@ -29,6 +29,8 @@ io.on('connection', function(rootSocket) {
 	
 	console.log('rootSocket connected!');	
 		
+	server.RegisterFront(rootSocket);
+	
 	rootSocket.on('ReqQrySysUserLoginTopic', function(userName){				
 		console.log('Client ReqQrySysUserLoginTopic');						
 		server.ReqQrySysUserLoginTopic(rootSocket);						
@@ -40,8 +42,9 @@ io.on('connection', function(rootSocket) {
 	});	
 	
 	rootSocket.on('ReqQryMonitorObjectTopic', function(username) {
-		console.log('Test-Server: ReqQryMonitorObjectTopic' + username.toString());
+		console.log('Test-Server: ReqQryMonitorObjectTopic');
 		server.ReqQryMonitorObjectTopic(rootSocket);
 	});		
 	
 });
+
