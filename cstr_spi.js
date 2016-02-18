@@ -34,7 +34,7 @@ var Spi = function(){
     
     this.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast) {
          var outputStr = "\n++++++++++++++++ JS OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
-         outputStr += 'UserID:                  ' + this.user.loginField[0].UserID + "\n";
+         outputStr += 'UserID:                     ' + this.user.loginField[0].UserID + "\n";
          // outputStr += '\n>>>>>>>>>>>>>>>>>>>>>> JS pid: ' + process.pid.toString() + ' <<<<<<<<<<<<<<<<<<<\n';
 		if (pRspQrySysUserLogin instanceof Object) {
             outputStr += "LoginTime :                 " + pRspQrySysUserLogin.LoginTime.toString() + "\n"

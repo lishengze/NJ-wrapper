@@ -71,31 +71,4 @@ void Utf8ToGb2312(const char *pcUtf8, std::string & strGB2312)
 	delete[] pcUnicode;
 }
 
-// std::string StringToUtf8(const std::string& strSource)
-// {
-// 	std::string strTmp = "";
-// 	Gb2312ToUtf8(strSource.c_str(), strTmp);
-// 	return strTmp;
-// }
-
-// std::string StringToGB2312(const std::string& strSource)
-// {
-// 	std::string strTmp = "";
-// 	Utf8ToGb2312(strSource.c_str(), strTmp);
-// 	return strTmp;
-// }
-
-// std::string StringToUtf8(const char * strSource)
-// {
-// 	return StringToUtf8(std::string(strSource));
-// }
-
-// std::string StringToGB2312(const char * strSource)
-// {
-// 	std::string strTmp = "";
-// 	Utf8ToGb2312(strSource, strTmp);
-// 	return strTmp;
-// }
-
-
 #endif

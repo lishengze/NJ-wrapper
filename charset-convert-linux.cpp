@@ -24,22 +24,20 @@ int _Gb2312ToUtf8(char* inbuf, int inlen, char* outbuf, int outlen) {
 	memset(outbuf, 0, outlen);
 	int flag = 0;
 	flag = iconv(Gb2312ToUtf8, (char**)&pin, (size_t*)&inlen, (char**)&pout, (size_t*)&outlen);
-	// cout << "flag:   " << flag << endl;
 	iconv_close(Gb2312ToUtf8);
 	return flag;
 }	
 
-int Gb2312ToUtf8(char* inputData, string& outputData) {
-	int inputLength = strlen(inputData);
-    const int outputLength = 4096 * 48;
-	char outputStr[outputLength];
+// int Gb2312ToUtf8(char* inputData, string& outputData) {
+// 	int inputLength = strlen(inputData);
+//     const int outputLength = 4096 * 100;
+// 	char outputStr[outputLength];
     
-	int flag = _Gb2312ToUtf8(inputData, inputLength, outputStr, outputLength);	
-	outputData = outputStr;
-	// outputData = inputData;
-	return flag;
-}
-// "-lsysuserapi"
+// 	int flag = _Gb2312ToUtf8(inputData, inputLength, outputStr, outputLength);	
+// 	outputData = outputStr;
+// 	return flag;
+// }
+
 // int Gb2312ToUtf8(char* inputData, string& outputData) {
 // 	int inputLength = strlen(inputData);
 //     const int outputLength = 4096 * 12;
@@ -60,23 +58,15 @@ int Gb2312ToUtf8(char* inputData, string& outputData) {
 // }
 
 
-// int Gb2312ToUtf8(const char* inputData, string& outputData) {
-// 	int inputLength = strlen(inputData);
+int Gb2312ToUtf8(char* inputData, string& outputData) {
+	int inputLength  = strlen(inputData);	 
+	int outputLength = (inputLength ) * 100;	
+	char* outputStr  = new char[outputLength];
 	
-// 	// cout << "inputLength:  "  << inputLength  << endl; 	
-// 	// int outputLength = (inputLength )*200;
-// 	// cout << "outputLength: "  << outputLength << endl;
-	 
-// 	int outputLength = 4096 * 10;
-	
-// 	char* outputStr = new char[outputLength];
-	
-// 	// cout << "outputStr address: " << (int)outputStr << endl;
-	
-// 	if (NULL == outputStr) {
-// 		printf("Gb2312ToUtf8 Failed in allocating memeory for outputStr!\n");
-// 		return -1;
-// 	}
+	if (NULL == outputStr) {
+		printf("Gb2312ToUtf8 Failed in allocating memeory for outputStr!\n");
+		return -1;
+	}
     
 // 	int flag = _Gb2312ToUtf8(inputData, inputLength, outputStr, outputLength);	
 // 	outputData = outputStr;

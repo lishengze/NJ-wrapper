@@ -11,9 +11,9 @@ for (var i = 0; i<userNumbers; ++i) {
     
     user[i] = {};
     user[i].userApi = new addon.FtdcSysUserApi_Wrapper();
-    user[i].loginReqNumbers                   = 0;
+    user[i].loginReqNumbers                   = 1;
     user[i].netMonitorReqNumbers              = 0;
-    user[i].monitorObjectReqNumbers           = 2;
+    user[i].monitorObjectReqNumbers           = 0;
     user[i].ReqQrySysUserRegisterTopicNumbers = 0;
     
     // NewUserIDJ_0-3569.    
