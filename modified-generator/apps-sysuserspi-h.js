@@ -10,25 +10,26 @@ var fileData = hereDoc(function () {
  #define _SYSUSERSPI_H_
 
  #include "FtdcSysUserApi.h"
- #include "spi-transform.h"
+ #include "tool-function.h"
+ #include "id-func.h"
  #include "nan.h"
 
  class SysUserSpi: public CShfeFtdcSysUserSpi
  {
     public:
-        virtual void OnFrontConnected();
-        virtual void OnFrontDisConnected(int nReason);
-        virtual void OnHeartBeatWarning(int nTimeLapse);
+        Nan::Persistent<v8::Object> m_spiobj;
+        FRONT_ID m_frontid;
         
-        //以下为自动生成
-*/});
+    public:
+        virtual ~SysUserSpi() {}
+        
+        virtual void OnFrontConnected();
+        
+        virtual void OnFrontDisConnected(int nReason);
+        
+        virtual void OnHeartBeatWarning(int nTimeLapse);
 
-//var jsonContent=require("./package.json");
-//var Packagelength=jsonContent.FTD.packages[0].package.length;
-//for(var i=0;i<Packagelength;i++){
-//    if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Req")
-//        fileData+="     static NAN_METHOD("+jsonContent.FTD.packages[0].package[i].$.name+");\n";
-//}
+*/});
 
 var jsonContent=require("./package.json");
 var Packagelength=jsonContent.FTD.packages[0].package.length;

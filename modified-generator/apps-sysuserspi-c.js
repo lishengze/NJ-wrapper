@@ -1,8 +1,7 @@
 /**
- * Created by li.xiankui on 2015/8/25.
+ * Created by li.shengze on 2015/1/31.
  */
-//生成SysUserSpi.cc文件。
-//结果比原文件多出一些。。
+
 var fs = require('fs');
 function hereDoc(f) {
     return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
@@ -14,39 +13,133 @@ var fileData = hereDoc(function () {
 #include <sstream>
 #include <memory.h>
 #include "sysuserspi.h"
-#include "spi-transform.h"
+#include "v8-transform-data.h"
 #include "tool-function.h"
+#include <fstream>
+#include <queue>
+#include <map>
+#include <vector>
+using std::queue;
+using std::map;
+using std::vector;
+using std::fstream;
 using std::cin;
 using std::cout;
 using std::endl;
  
 extern fstream g_RunningResult_File;
  
-void SysUserSpi::OnFrontConnected(){
-    OutputCallbackMessage("SysUserSpi::OnFrontConnected()", g_RunningResult_File);
-    uv_async_send(&g_FrontConnected_async);
-}
- 
-void SysUserSpi::OnFrontDisConnected(int nReason){
-   OutputCallbackMessage("SysUserSpi::OnFrontDisConnected()!", g_RunningResult_File);    
-   uv_mutex_lock(&g_FrontDisconnected_mutex);
-   g_FrontDisconnected_queue.push(nReason);
-   uv_mutex_unlock(&g_FrontDisconnected_mutex);
-    
-   uv_async_send(&g_FrontDisconnected_async);
-}
- 
-void SysUserSpi::OnHeartBeatWarning(int nTimeLapse){     
-   OutputCallbackMessage("SysUserSpi::OnHeartBeatWarning()!", g_RunningResult_File);
-    
-   uv_mutex_lock(&g_HeartBeatWarning_mutex);
-   g_HeartBeatWarning_queue.push(nTimeLapse);
-   uv_mutex_unlock(&g_HeartBeatWarning_mutex);
+void SysUserSpi::OnFrontConnected () {
+    OutputCallbackMessage("\n************SysUserSpi::OnFrontConnected() START! ************", g_RunningResult_File);
 
-   uv_async_send(&g_HeartBeatWarning_async);
+    void** paramArray = new void*[1];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    paramArray[0] = (void*)pSpiObj; 
+        
+    uv_mutex_lock(&g_FrontConnected_mutex);
+    g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
+    g_FrontConnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    uv_mutex_unlock(&g_FrontConnected_mutex);
+
+    uv_async_send(&g_FrontConnected_async);
+
+    OutputCallbackMessage("************SysUserSpi::OnFrontConnected() END! ************\n", g_RunningResult_File);
 }
+
+void SysUserSpi::OnFrontDisConnected (int nReason) {
+    OutputCallbackMessage("\n************SysUserSpi::OnFrontDisConnected() START! ************", g_RunningResult_File);
+
+    void** paramArray = new void*[2];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    int* pReason = new int;
+    if (NULL == pReason){
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pReason", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;           
+    }
+    *pReason = nReason;
+    
+    paramArray[0] = (void*)pSpiObj; 
+    paramArray[1] = (void*)pReason;
+    
+    uv_mutex_lock(&g_FrontDisconnected_mutex);
+    g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    g_FrontDisconnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    uv_mutex_unlock(&g_FrontDisconnected_mutex);
+    
+    uv_async_send(&g_FrontDisconnected_async);
+   
+    OutputCallbackMessage("************SysUserSpi::OnFrontDisConnected() END! ************\n", g_RunningResult_File);
+}
+    
  
- //以下自动生成
+void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) { 
+    OutputCallbackMessage("\n************SysUserSpi::OnHeartBeatWarning() START! ************", g_RunningResult_File);
+
+    void** paramArray = new void*[2];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    int* pTimeLapse = new int;
+    if (NULL == pTimeLapse){
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pReason", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;           
+    }
+    *pTimeLapse = nTimeLapse;
+
+    paramArray[0] = (void*)pSpiObj; 
+    paramArray[1] = (void*)pTimeLapse; 
+        
+    uv_mutex_lock(&g_HeartBeatWarning_mutex);
+    
+    g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    g_HeartBeatWarning_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    
+    uv_mutex_unlock(&g_HeartBeatWarning_mutex);
+
+    uv_async_send(&g_HeartBeatWarning_async);
+
+    OutputCallbackMessage("************SysUserSpi::OnHeartBeatWarning() END! ************\n", g_RunningResult_File);
+}
+
 */});
 
 var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
@@ -65,13 +158,6 @@ while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.na
 }
 AfterRtnNetNonPartyLinkInfoTopic++;
 
-for(var i = beforeRspQryTopCpuInfoTopic;i < AfterRtnNetNonPartyLinkInfoTopic;i++) {
-    var funcName = jsonContent.FTD.packages[0].package[i].$.name;
-    if (funcName.substring(0,3) ==="Rsp" || funcName.substring(0,3) ==="Rtn") {
-        fileData += 'int ' + 'g_' + funcName + '_spi_callbackNumb = 0;\n'
-    }
-}
-
 fileData += "\n";
 
 for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i++){
@@ -80,13 +166,14 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
     var funcType = funcName.substring(0,3);
 
     if(funcType === "Rsp" || funcType === "Rtn") {
-        var queueName = 'g_' + funcName + '_queue';
-        var mutexName = 'g_' + funcName + '_mutex';
-        var asyncName = 'g_' + funcName + '_async';
+        var queueName  = 'g_' + funcName + '_Data_map';
+        var vectorname = 'g_' + funcName + '_IOUser_vec';
+        var mutexName  = 'g_' + funcName + '_mutex';
+        var asyncName  = 'g_' + funcName + '_async';
         var valueTypeName = "CShfeFtdc" + fieldName + "Field";
         var pValueName = "p" + fieldName;
         var pNewValueName = "pNew" + fieldName;
-        var callbackNumbName = 'g_' + funcName + '_spi_callbackNumb';
+        // var callbackNumbName = 'g_' + funcName + '_spi_callbackNumb';
         
         if (funcType === "Rsp") {
             fileData += "void SysUserSpi::On" + funcName + "("+ valueTypeName + "* " + pValueName 
@@ -96,12 +183,23 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
         }        
 
         fileData += tabSpace[1] + "OutputCallbackMessage(\"\\n****** SysUserSpi:: "+ funcName + ": START! ******\", g_RunningResult_File);\n"
-        fileData += tabSpace[1] + "OutputCallbackMessage(\""+ callbackNumbName+": \", "+callbackNumbName+"++, g_RunningResult_File);\n\n"
+        //fileData += tabSpace[1] + "OutputCallbackMessage(\""+ callbackNumbName+": \", "+callbackNumbName+"++, g_RunningResult_File);\n\n"
         
+        fileData += hereDoc(function () {/*
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+ */});
+
         if (funcType === "Rsp") {  
-            fileData += tabSpace[1] + "void** paramArray = new void*[4];\n";              
+            fileData += tabSpace[1] + "void** paramArray = new void*[5];\n";              
         } else {
-            fileData += tabSpace[1] + "void** paramArray = new void*[1];\n";
+            fileData += tabSpace[1] + "void** paramArray = new void*[2];\n";
         }
 
         fileData += tabSpace[1] + "if (NULL == paramArray) {\n";
@@ -149,15 +247,16 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
 	   
 
 		fileData += "\n";	
-		fileData += tabSpace[1] + "paramArray[0] = (void*)" + pNewValueName + ";";
+        fileData += tabSpace[1] + "paramArray[0] = (void*)pSpiObj;\n";
+		fileData += tabSpace[1] + "paramArray[1] = (void*)" + pNewValueName + ";";
 		if ("Rsp" == funcType) {
 			fileData += hereDoc(function(){/*
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			*/});
 		}        		
-        // 输出回调信息;
+        
         fileData += "\n";
         fileData += tabSpace[1] + "if (NULL == "+ pValueName +") { \n";
 		fileData += tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi::"+ pValueName +" is NULL\" , g_RunningResult_File); \n"    
@@ -179,10 +278,16 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
             fileData += tabSpace[1] + "OutputCallbackMessage(\"pRspInfo:\", pRspInfo, g_RunningResult_File);\n"
                       + tabSpace[1] + "OutputCallbackMessage(\"nRequestID:\", nRequestID, g_RunningResult_File);\n"
                       + tabSpace[1] + "OutputCallbackMessage(\"bIsLast:\", bIsLast, g_RunningResult_File);\n";      
-        }                            
-		fileData += "\n";
+        }      
+        
+        /*
+            g_OnHeartBeatWarning_IOUser_vec.push_back(this-m_frontid);
+            g_OnHeartBeatWarning_Data_map[this-m_frontid].push((void**)(&paramArray[0]));
+        */
+        fileData += "\n";                  
         fileData += tabSpace[1] + "uv_mutex_lock (&" + mutexName + ");\n";
-        fileData += tabSpace[1] + queueName + ".push ((void**)&paramArray[0]);\n";
+        fileData += tabSpace[1] + vectorname + ".push_back(this->m_frontid);\n";
+        fileData += tabSpace[1] + queueName + "[this->m_frontid].push ((void**)&paramArray[0]);\n";
         fileData += tabSpace[1] + "uv_mutex_unlock (&" + mutexName + ");\n";
 		fileData += "\n";
         fileData += tabSpace[1] + "uv_async_send(&" + asyncName+");\n";

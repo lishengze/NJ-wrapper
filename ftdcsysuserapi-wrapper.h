@@ -9,15 +9,15 @@ class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap{
  public:
      static void InitExports(v8::Handle<v8::Object> exports);
 
- private:
+ public:
      explicit FtdcSysUserApi_Wrapper(const char *pszFlowPath);
      ~FtdcSysUserApi_Wrapper();
+  
+     static Nan::Persistent<v8::Function> constructor;
+     CShfeFtdcSysUserApi* m_userApi;
+     SysUserSpi* m_spi;
 
      static NAN_METHOD(New);
-     static Nan::Persistent<v8::Function> constructor;
-     CShfeFtdcSysUserApi* _userApi;
-     SysUserSpi* _spi;
-     //////这些为手工添加///////////////
      static NAN_METHOD(Release);
      static NAN_METHOD(Init);
      static NAN_METHOD(Join);
@@ -29,8 +29,6 @@ class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap{
      static NAN_METHOD(RegisterSpi);
      static NAN_METHOD(SubscribeMarketDataTopic);
      static NAN_METHOD(SubscribePartAccount);
-
-     /////以下为自动生成///////////////////
 
      static NAN_METHOD(ReqQryTopMemInfoTopic);
      static NAN_METHOD(ReqQryTopProcessInfoTopic);
@@ -148,8 +146,6 @@ class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap{
      static NAN_METHOD(ReqQryNetLocalPingResultInfoTopic);
      static NAN_METHOD(ReqQryNetRomotePingResultInfoTopic);
      static NAN_METHOD(ReqQryNetNonPartyLinkInfoTopic);
-     
-
 };
 
 #endif
