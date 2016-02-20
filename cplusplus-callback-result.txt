@@ -1,0 +1,6 @@
+
+++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++
+
+
+++++++++++++++ SysUserSpi::OnFrontConnected() END! +++++++++++++++
+
