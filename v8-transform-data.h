@@ -19,7 +19,6 @@ void InitV8Transformdata ();
  
 void DeInitV8Transformdata ();
 
-
 extern uv_mutex_t   g_FrontConnected_mutex;
 extern uv_async_t   g_FrontConnected_async;
 extern vector<FRONT_ID>   g_FrontConnected_IOUser_vec;

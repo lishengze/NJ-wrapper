@@ -31,10 +31,12 @@ var fileData = hereDoc(function () {
 #include <queue>
 #include <map>
 #include <vector>
+#include <string>
 using std::queue;
 using std::map;
 using std::vector;
 using std::fstream;
+using std::string;
 
 using namespace v8;
 
@@ -406,6 +408,9 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
 		fileData += tabSpace[4] + "\n";
         fileData += tabSpace[4] + "if (NULL != " + pValueName + ") { \n";
 		fileData += tabSpace[5] + "string utf8string;\n";
+        fileData += tabSpace[5] + "const int utf8dataLen = 4096 * 12;\n";
+        fileData += tabSpace[5] + "int gb2312dataLen;\n"
+        fileData += tabSpace[5] + "char utf8data[utf8dataLen];\n\n";
          
         for(var j = 0; j < fieldLength; j++) {			
             var tmpFieldDefine = jsonContent.FTD.fields[0].fieldDefine[j];
@@ -513,9 +518,14 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
                     }
                     
                     if(isString === true) {//String、Array、VString , string type
-                         fileData += tabSpace[5] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", utf8string);\n";
+                         fileData += tabSpace[5] + "gb2312dataLen = strlen("+ pValueName + "->"+itemName +");\n";
+                         fileData += tabSpace[5] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", gb2312dataLen, utf8data, utf8dataLen);\n";
                          fileData += tabSpace[5] + "v8::Local<v8::String> "+ itemValueName 
-                                                + " = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();\n";
+                                                 + " = Nan::New<v8::String> (utf8data).ToLocalChecked();\n";
+                                                
+                        //  fileData += tabSpace[5] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", utf8string);\n";
+                        //  fileData += tabSpace[5] + "v8::Local<v8::String> "+ itemValueName 
+                        //                         + " = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();\n";
                     }
 
                     // 绑定JS value;

@@ -18,6 +18,8 @@ int _Gb2312ToUtf8(char* inbuf, int inlen, char* outbuf, int outlen);
 
 int Gb2312ToUtf8(char* inputData, string& outputData) ;
 
+int Gb2312ToUtf8(char* inputData, int inputLength, char* outputData, int outputLength) ;
+
 int _Utf8ToGb2312(char* inbuf, int inlen, char* outbuf, int outlen);
 
 int Utf8ToGb2312(char* inputData, string& outputData);
