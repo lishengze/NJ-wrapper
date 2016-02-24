@@ -49,14 +49,14 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
     var fieldName=jsonContent.FTD.packages[0].package[i].field[0].$.name;
     if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rsp"){
         fileData += tabSpace[2] + "virtual void On"+jsonContent.FTD.packages[0].package[i].$.name+"(CShfeFtdc"+
-            fieldName+"Field *p"+fieldName+", CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);\n\n";
+                    fieldName+"Field *p"+fieldName+", CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);\n\n";
 
-        }
+    }
 
     if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rtn"){
         fileData += tabSpace[2] + "virtual void On"+jsonContent.FTD.packages[0].package[i].$.name+"(CShfeFtdc"+
-            fieldName+"Field *p"+fieldName+");\n\n";
-           }
+                    fieldName+"Field *p"+fieldName+");\n\n";
+    }
 }
 
 fileData += "}; \n\n";

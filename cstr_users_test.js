@@ -4,16 +4,16 @@ var spi      = require("./cstr_spi.js");
 
 var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
-var userNumbers = 30;
+var userNumbers = 1;
 var user = [];
 
 for (var i = 0; i<userNumbers; ++i) {
     
     user[i] = {};
     user[i].userApi = new addon.FtdcSysUserApi_Wrapper();
-    user[i].loginReqNumbers                   = 1;
+    user[i].loginReqNumbers                   = 0;
     user[i].netMonitorReqNumbers              = 0;
-    user[i].monitorObjectReqNumbers           = 1;
+    user[i].monitorObjectReqNumbers           = 10;
     user[i].ReqQrySysUserRegisterTopicNumbers = 0;
     
     // NewUserIDJ_0-3569.    

@@ -2269,7 +2269,7 @@ void OnRspQryMonitorObjectTopic (uv_async_t *handle)
 
                 };
 
-                if (NULL != pRspInfo){
+                if (NULL != pRspInfo) {
                     v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked();
                     v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID);
                     pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue));

@@ -9,7 +9,7 @@ var user = {};
 user.userApi = new addon.FtdcSysUserApi_Wrapper();
 user.loginReqNumbers                   = 0;
 user.netMonitorReqNumbers              = 0;
-user.monitorObjectReqNumbers           = 200;
+user.monitorObjectReqNumbers           = 1;
 user.ReqQrySysUserRegisterTopicNumbers = 0;
 
 /*

@@ -14,7 +14,7 @@ using std::string;
 
 iconv_t CodeConverter(const char*from_charset, const char* to_charset) ;
 			
-int _Gb2312ToUtf8(char* inbuf, int inlen, char* outbuf, int outlen);	
+int _Gb2312ToUtf8(char* inbuf, size_t inlen, char* outbuf, size_t outlen);	
 
 int Gb2312ToUtf8(char* inputData, string& outputData) ;
 

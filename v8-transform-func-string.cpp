@@ -8,15 +8,10 @@
 #include <map>
 #include <vector>
 #include <pthread.h>
-#include <iostream>
 using std::queue;
 using std::map;
 using std::vector;
 using std::fstream;
-using std::cin;
-using std::cout;
-using std::endl;
-using std::dec;	
 
 using namespace v8;
 
@@ -2092,30 +2087,22 @@ void OnRspQryClientLoginTopic (uv_async_t *handle)
     OutputCallbackMessage("****** v8-transform-func:: RspQryClientLoginTopic: END! ******\n", g_RunningResult_File);
 }
 
-int g_V8_OnRspQryMonitorObjectTopic = 1;
-int g_V8_OnRspQryMonitorObjectTopic_DataSum = 0;
 void OnRspQryMonitorObjectTopic (uv_async_t *handle)
 {
-    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonitorObjectTopic: START! ******\n", g_RunningResult_File);          
-    // cout << "ThreadID:                      " << pthread_self() << endl;
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonitorObjectTopic: START! ******", g_RunningResult_File);
+    
+    cout << "ThreadID:                      " << pthread_self() << endl;
     
     queue<void**>* pReceivedData;
     uv_mutex_lock (&g_RspQryMonitorObjectTopic_mutex);
 
-		cout << "g_V8_OnRspQryMonitorObjectTopic:    " << dec << g_V8_OnRspQryMonitorObjectTopic++ << endl;
-
     int ioUserNumb = g_RspQryMonitorObjectTopic_IOUser_vec.size();
-    cout << "g_V8_ioUserNumb:  " << dec << ioUserNumb << endl;
     pReceivedData = new queue<void**>[ioUserNumb];
     int i = 0;
     for(vector<FRONT_ID>::iterator it = g_RspQryMonitorObjectTopic_IOUser_vec.begin();
         it != g_RspQryMonitorObjectTopic_IOUser_vec.end(); it++ , i++) {
         int dataNumb = g_RspQryMonitorObjectTopic_Data_map[*it].size();
-        
-        cout << "FrontID:  " << dec << *it << " , it's datarnumb is: " << dec << dataNumb << endl;
-        
-        g_V8_OnRspQryMonitorObjectTopic_DataSum += dataNumb;
-        //OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
         while (!g_RspQryMonitorObjectTopic_Data_map[*it].empty()) {
             pReceivedData[i].push (g_RspQryMonitorObjectTopic_Data_map[*it].front());
             g_RspQryMonitorObjectTopic_Data_map[*it].pop();
@@ -2123,8 +2110,6 @@ void OnRspQryMonitorObjectTopic (uv_async_t *handle)
     }
     g_RspQryMonitorObjectTopic_IOUser_vec.clear();
 
-		cout << "g_V8_OnRspQryMonitorObjectTopic_DataSum:    " << dec << g_V8_OnRspQryMonitorObjectTopic_DataSum << endl;
-		
     uv_mutex_unlock (&g_RspQryMonitorObjectTopic_mutex);
 
     for (int i = 0; i < ioUserNumb; ++i) {

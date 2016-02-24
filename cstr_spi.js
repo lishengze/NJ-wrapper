@@ -8,10 +8,6 @@ var Spi = function(){
     
     this.user = {};    
     
-    this.HelloSpi = function() {
-        console.log("Hello Spi: " + this.user.Info);
-    }
-    
     this.OnFrontConnected = function() {	
 
             var outputStr = '\n++++++++++++ JS FrontConnected START! +++++++++++++\n';               
@@ -29,7 +25,7 @@ var Spi = function(){
             }	                                
                                                            
             outputStr += '++++++++++++ JS FrontConnected END! +++++++++++++\n';         
-            console.log(outputStr);       
+            // console.log(outputStr);       
     }        
     
     this.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast) {
@@ -67,10 +63,12 @@ var Spi = function(){
         
         outputStr += "bIsLast:                 " + bIsLast.toString() + "\n";
         outputStr += "rspMonitorObjCallNumb:   " + rspMonitorObjCallNumb + "\n";
+        outputStr += "UID:                     " + process.getuid() + "\n";
+        outputStr += "PID:                     " + process.pid + "\n";
         outputStr += "************ JS::OnRspQryMonitorObjectTopic: END! *********** \n";
         
-        if (rspMonitorObjCallNumb%100 === 0) {
-            console.log(outputStr);
+        if (rspMonitorObjCallNumb%1000 === 0) {        	
+        //   console.log(outputStr);
         }
         
         rspMonitorObjCallNumb++;
