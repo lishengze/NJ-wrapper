@@ -50,7 +50,16 @@ void SysUserSpi::OnFrontConnected () {
     paramArray[0] = (void*)pSpiObj; 
         
     uv_mutex_lock(&g_FrontConnected_mutex);
-    g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontConnected_IOUser_vec.begin();
+        it != g_FrontConnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontConnected_IOUser_vec.end()) {
+        g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
+    }  
     g_FrontConnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     uv_mutex_unlock(&g_FrontConnected_mutex);
 
@@ -89,7 +98,16 @@ void SysUserSpi::OnFrontDisConnected (int nReason) {
     paramArray[1] = (void*)pReason;
     
     uv_mutex_lock(&g_FrontDisconnected_mutex);
-    g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontDisconnected_IOUser_vec.begin();
+        it != g_FrontDisconnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontDisconnected_IOUser_vec.end()) {
+        g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    }      
     g_FrontDisconnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     uv_mutex_unlock(&g_FrontDisconnected_mutex);
     
@@ -129,8 +147,14 @@ void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) {
     paramArray[1] = (void*)pTimeLapse; 
         
     uv_mutex_lock(&g_HeartBeatWarning_mutex);
-    
-    g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_HeartBeatWarning_IOUser_vec.begin();
+        it != g_HeartBeatWarning_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;      
+    }            
+    if (it ==  g_HeartBeatWarning_IOUser_vec.end()) {
+        g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    }    
     g_HeartBeatWarning_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     
     uv_mutex_unlock(&g_HeartBeatWarning_mutex);
@@ -251,15 +275,15 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
 		fileData += tabSpace[1] + "paramArray[1] = (void*)" + pNewValueName + ";";
 		if ("Rsp" == funcType) {
 			fileData += hereDoc(function(){/*
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			*/});
 		}        		
         
         fileData += "\n";
         fileData += tabSpace[1] + "if (NULL == "+ pValueName +") { \n";
-		fileData += tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi::"+ pValueName +" is NULL\" , g_RunningResult_File); \n"    
+				fileData += tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi::"+ pValueName +" is NULL\" , g_RunningResult_File); \n"    
         fileData += tabSpace[1] + "} else {\n";              
         for(var j=0;j<lengthField;j++){
             if(jsonContent.FTD.fields[0].fieldDefine[j].$.name===fieldName) {
@@ -286,10 +310,17 @@ for(var i = beforeRspQryTopCpuInfoTopic; i < AfterRtnNetNonPartyLinkInfoTopic; i
         */
         fileData += "\n";                  
         fileData += tabSpace[1] + "uv_mutex_lock (&" + mutexName + ");\n";
-        fileData += tabSpace[1] + vectorname + ".push_back(this->m_frontid);\n";
+        fileData += tabSpace[1] + "vector<FRONT_ID>::iterator it ;\n";
+        fileData += tabSpace[1] + "for(it = " + vectorname + ".begin();\n";
+        fileData += tabSpace[2] + "it != " + vectorname + ".end(); it++ ) {\n";
+        fileData += tabSpace[2] + "if (*it == this->m_frontid) break;     \n";
+        fileData += tabSpace[1] + "}\n";
+        fileData += tabSpace[1] + "if (it == " + vectorname + ".end()) {\n";
+        fileData += tabSpace[2] +  vectorname + ".push_back(this->m_frontid);\n";
+        fileData += tabSpace[1] + "}\n";
         fileData += tabSpace[1] + queueName + "[this->m_frontid].push ((void**)&paramArray[0]);\n";
         fileData += tabSpace[1] + "uv_mutex_unlock (&" + mutexName + ");\n";
-		fileData += "\n";
+				fileData += "\n";
         fileData += tabSpace[1] + "uv_async_send(&" + asyncName+");\n";
         
         fileData += tabSpace[1] + "OutputCallbackMessage(\"****** SysUserSpi:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
