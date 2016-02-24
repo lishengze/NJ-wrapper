@@ -71,11 +71,13 @@ io.on('connection', function(rootSocket) {
             user[curUserIndex].Spi.user.socket = curSocket;
             user[curUserIndex].RequestID = 1;
             
+            curSocket.emit('new user connection completed', user[curUserIndex]);
+            
             curSocket.on(EVENTS.RegisterFront, function(data) {
 				OutputMessage('Connect Front!');
-                user[curUserIndex].userApi.RegisterFront(realTimeSystemPath);   
-                user[curUserIndex].userApi.RegisterSpi(user[i].Spi);
-                user[curUserIndex].userApi.Init();   				
+                data.user.userApi.RegisterFront(realTimeSystemPath);   
+                data.user.userApi.RegisterSpi(user[i].Spi);
+                data.user.userApi.Init();   				
 			});
         
 */});
@@ -118,16 +120,14 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         funcName!=="ReqQryAppMonitorCfgTopic"
         ) {
             fileData += tabSpace[3] + "curSocket.on(EVENTS." + funcName + ", function(data) {\n"
-                      + tabSpace[4] + "user[curUserIndex].userApi." + funcName + "(data, user[curUserIndex].RequestID++);\n"
+                      + tabSpace[4] + "data.user.userApi." + funcName + "(data, user[curUserIndex].RequestID++);\n"
                       + tabSpace[3] + "});\n\n";  
         }
         
 }
 
 fileData += hereDoc(function () {
-/*        rootSocket.emit('new user ready to establish connect', newUserName);	  
-	   console.log('\nnew user: ' + newUserName + ' arrived');		
-       									
+/*        rootSocket.emit('new user ready to establish connect', newUserName);	         									
 	}); // rootSocket.on('new user', function(newUserName) end!	
 }); // io.on('connection', function(rootSocket)) end!
 

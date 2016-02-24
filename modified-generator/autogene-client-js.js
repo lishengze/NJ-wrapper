@@ -6,18 +6,50 @@ function hereDoc(f) {
     return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
 }
 var fileData = hereDoc(function () {
-/*{
-	"New": "New",
-    "Release": "Release",
-    "Init": "Init",
-    "Join": "Join",
-	"ReqUserLogin": "ReqUserLogin",
-    "GetTradingDay": "GetTradingDay",
-    "RegisterFront": "RegisterFront",
-    "RegisterSpi": "RegisterSpi",
-    "SubscribeMarketDataTopic": "SubscribeMarketDataTopic",
-    "SubscribePartAccount": "SubscribePartAccount",
+/*// Created by li.shengze on 2016/2/24.
+// 客户端Api分为两部分， 请求与数据回调监听。
+// 客户的请求必须在登陆之后才能进行。
+// 客户在输入登陆信息后直接发出前置链接与用户登陆请求。
+// 前置链接后才能进行用户登陆。
+// 不同的链接失败给不同的错。
 
+var EVENTS           = require('./events.json');
+var isHttps          = false;
+if (true === isHttps) {
+//	var ipAddress  = 'https://192.168.10.11';
+	var ipAddress  = 'https://localhost'
+//	var ipAddress  = 'https://172.1.128.169';
+	var port       = 8000;
+	var url        = ipAddress + ':' + port.toString();
+	var rootSocket = io.connect(url,{secure:true});	
+} else {
+	var url        = 'http://localhost';
+	var rootSocket = io.connect(url);
+}
+
+var userSocket;
+var userServer;
+
+rootSocket.on('ready to establish connect', function(username){
+									
+	userSocket = io.connect(url + '/' +username); 
+    
+    userSocket.on('new user connection completed', function(user){	
+	   userServer = user;																							
+	});	
+							
+	userSocket.on(EVENTS.FrontConnected, function(callbackData){	
+																											
+	});	
+    
+    userSocket.on(EVENTS.FrontDisConnected, function(callbackData){	
+																											
+	});	
+    
+    userSocket.on(EVENTS.HeartBeatWarning, function(callbackData){	
+																											
+	});	
+    
 */});
 var jsonContent=require("./package.json");
 
@@ -31,6 +63,18 @@ while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.na
     AfterRtnNetNonPartyLinkInfoTopic++;
 }
 AfterRtnNetNonPartyLinkInfoTopic++;
+
+for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
+    var funcName = jsonContent.FTD.packages[0].package[i].$.name;
+    var funcType = funcName.substring(0,3);
+    if(funcType === "Rsp" || funcType === "Rtn"){
+        var eventMessageName = "EVENTS." + funcName;
+        fileData += tabSpace[1] + "userSocket.on(" + eventMessageName + ", function(callbackData){	\n\n";
+        fileData += tabSpace[1] + "});\n\n";
+    }
+}
+fileData+="});\n\n";
+
 for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
     var funcName  = jsonContent.FTD.packages[0].package[i].$.name;
     var funcType  = funcName.substring(0,3);
@@ -51,37 +95,26 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         funcName!=="ReqQryNetMemberSDHLineInfoTopic"&& funcName!=="ReqQryNetDDNLinkInfoTopic"&&
         funcName!=="ReqQryNetPseudMemberLinkInfoTopic"&& funcName!=="ReqQryOuterDeviceInfTopic"&&
         funcName!=="ReqQrySysInternalTopologyTopic"&& funcName!=="ReqQryMemberLinkCostTopic"&&
-        funcName!=="ReqQryNetPartylinkMonthlyRentTopic"&&fileData!="ReqQryClientLoginTopic"&&
+        funcName!=="ReqQryNetPartylinkMonthlyRentTopic"&&funcName!="ReqQryClientLoginTopic"&&
         funcName!=="ReqQryClientLoginTopic"&&funcName!=="ReqQryCPUUsageTopic"&&
         funcName!=="ReqQryMemoryUsageTopic"&&funcName!=="ReqQryDiskUsageTopic"&&
         funcName!=="ReqQryKeyFileInfoTopic"&&funcName!=="ReqQryHostMonitorCfgTopic"&&
         funcName!=="ReqQryAppMonitorCfgTopic"
         ) {
-            fileData += tabSpace[1] + "\""+ funcName+"\": " + "\"" + funcName + "\",\n";
-        }
-        
+            var eventMessageName = "EVENTS." + funcName;
+            fileData += "var " + funcName + " = function (reqData) {\n"
+                      + tabSpace[1] + "var data = {};\n"
+                      + tabSpace[1] + "data.reqData = reqData;\n"
+                      + tabSpace[1] + "data.user = userServer;\n"
+                      + tabSpace[1] + "userSocket.emit("+ eventMessageName +", data);\n"
+                      + "}\n\n";
+        }        
 }
 
 fileData += "\n";
-fileData += hereDoc(function () {
-/*     "FrontConnected": "FrontConnected CallbackData",
-    "FrontDisConnected": "FrontDisConnected CallbackData ",
-    "HeartBeatWarning": "HeartBeatWarning CallbackData",
-    
-*/});
-for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
-    var funcName = jsonContent.FTD.packages[0].package[i].$.name;
-    var funcType = funcName.substring(0,3);
-    if(funcType === "Rsp" || funcType === "Rtn"){
-        fileData += tabSpace[1] + "\""+ funcName+"\": " + "\"" + funcName + " CallbackData\",\n";
-    }
-}
-
-fileData +=  tabSpace[1] + "\"END\": \"END\"\n";
-fileData+="}\n\n";
 
 var pathName = '../new file/';
-var fileName = 'event.json';
+var fileName = 'client.js';
 fs.writeFile(pathName + fileName, fileData, function (err) {
     if (err) {
         console.log(err);
