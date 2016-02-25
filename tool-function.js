@@ -1,3 +1,5 @@
-exports.OutputMessage = function (data) {
-	console.log(data);	
+function OutputMessage (data) {
+    console.log(data);
 }
+
+exports.OutputMessage = OutputMessage;

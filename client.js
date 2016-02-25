@@ -4,14 +4,8 @@
 // 客户在输入登陆信息后直接发出前置链接与用户登陆请求。
 // 前置链接后才能进行用户登陆。
 // 不同的链接失败给不同的错。
-var structJs         = require("./SysUserApiStruct_JS.js");
-
 var EVENTS           = require('./events.json');
 var isHttps          = false;
-
-var tool_function    = require('./tool-function.js');
-var OutputMessage    = tool_function.OutputMessage;
-
 if (true === isHttps) {
 //	var ipAddress  = 'https://192.168.10.11';
 	var ipAddress  = 'https://localhost'
@@ -36,7 +30,7 @@ var addNewUser = function (userinfo) {
 
 var TestAddNewUser = function () {
     var userinfo = {};
-    userinfo           = new structJs.CShfeFtdcReqQrySysUserLoginField();
+    userinfo           = new CShfeFtdcReqQrySysUserLoginField();
     userinfo.UserID    = "admin";
     userinfo.Password  = "admin";
     userinfo.VersionID = "2.0.0.0";  
