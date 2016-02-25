@@ -48,12 +48,12 @@ var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
 
 io.on('connection', function(rootSocket) {	
-	OutputMessage('\nrootSocket connected!\n');	
-	rootSocket.on('new user', function(newUserName) {				
+
+	rootSocket.on(EVENTS.NewUserCome, function(userInfo) {				
 		for (var i = 0; i < userCount; ++i)
 		{
-			if (user[i].username === newUserName) {				
-				OutputMessage(newUserName + ' is already in.');
+			if (user[i].userInfo.UserID === userInfo.UserID) {				
+				OutputMessage(userInfo.UserID + ' is already in.');
 				return;
 			}			
 		}
@@ -61,23 +61,23 @@ io.on('connection', function(rootSocket) {
         var curUserIndex = userCount;
         userCount++
 		user[curUserIndex] = {};         
-        user[curUserIndex].username = newUserName;
-        user[curUserIndex].socket = io.of('/' + newUserName);
+        user[curUserIndex].userInfo = userInfo;
+        user[curUserIndex].socket = io.of('/' + userInfo.UserID);
         
         user[curUserIndex].socket.on ('connection', function (curSocket) {
                             
             user[curUserIndex].userApi = new addon.FtdcSysUserApi_Wrapper();        
             user[curUserIndex].Spi = new spi.Spi();
-            user[curUserIndex].Spi.user.socket = curSocket;
             user[curUserIndex].RequestID = 1;
+            user[curUserIndex].Spi.user = user[curUserIndex];
+                       
+            curSocket.emit(EVENTS.NewUserConnectComplete, user[curUserIndex]);
             
-            curSocket.emit('new user connection completed', user[curUserIndex]);
-            
-            curSocket.on(EVENTS.RegisterFront, function(data) {
+            curSocket.on(EVENTS.RegisterFront, function(user) {
 				OutputMessage('Connect Front!');
-                data.user.userApi.RegisterFront(realTimeSystemPath);   
-                data.user.userApi.RegisterSpi(user[i].Spi);
-                data.user.userApi.Init();   				
+                user.userApi.RegisterFront(realTimeSystemPath);   
+                user.userApi.RegisterSpi(user.Spi);
+                user.userApi.Init();   				
 			});
         
 */});
@@ -120,15 +120,18 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         funcName!=="ReqQryAppMonitorCfgTopic"
         ) {
             fileData += tabSpace[3] + "curSocket.on(EVENTS." + funcName + ", function(data) {\n"
-                      + tabSpace[4] + "data.user.userApi." + funcName + "(data, user[curUserIndex].RequestID++);\n"
+                      + tabSpace[4] + "var flag = data.user.userApi." + funcName + "(data.reqField, data.user.RequestID++);\n"
+                      + tabSpace[4] + "if ( -1 === flag) {\n"
+                      + tabSpace[5] + "curSocket.emit(EVENTS."+ funcName +"Failed, flag);\n"
+                      + tabSpace[4] + "}\n"
                       + tabSpace[3] + "});\n\n";  
         }
         
 }
 
 fileData += hereDoc(function () {
-/*        rootSocket.emit('new user ready to establish connect', newUserName);	         									
-	}); // rootSocket.on('new user', function(newUserName) end!	
+/*        rootSocket.emit(EVENTS.NewUserReady, userInfo);	         									
+	}); // rootSocket.on('new user', function(userInfo) end!	
 }); // io.on('connection', function(rootSocket)) end!
 
 */    

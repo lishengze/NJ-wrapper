@@ -7,6 +7,10 @@ function hereDoc(f) {
 }
 var fileData = hereDoc(function () {
 /*{
+    "NewUserCome":  "NewUserCome",
+    "NewUserReady": "NewUserReady",
+    "NewUserConnectComplete":"NewUserConnectComplete",
+    
 	"New": "New",
     "Release": "Release",
     "Init": "Init",
@@ -57,7 +61,8 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         funcName!=="ReqQryKeyFileInfoTopic"&&funcName!=="ReqQryHostMonitorCfgTopic"&&
         funcName!=="ReqQryAppMonitorCfgTopic"
         ) {
-            fileData += tabSpace[1] + "\""+ funcName+"\": " + "\"" + funcName + "\",\n";
+            fileData += tabSpace[1] + "\""+ funcName + "\": " + "\"" + funcName + "\",\n";
+            fileData += tabSpace[1] + "\""+ funcName + "Failed\": " + "\"" + funcName + "Failed\",\n";
         }
         
 }

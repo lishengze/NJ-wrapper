@@ -29,17 +29,38 @@ if (true === isHttps) {
 
 var userSocket;
 var userServer;
+var userInfo;
 
-rootSocket.on('ready to establish connect', function(username){
-									
-	userSocket = io.connect(url + '/' +username); 
+rootSocket.on('connect_error', function(errorObj){
     
-    userSocket.on('new user connection completed', function(user){	
-	   userServer = user;																							
+});
+
+rootSocket.on('disconnect', function(){
+    
+});
+
+rootSocket.on(EVENTS.NewUserReady, function(userInfo){
+									
+	userSocket = io.connect(url + '/' + userInfo.UserID); 
+    
+    userSocket.on('connect_error', function(errorObj){
+    
+    });
+    
+    userSocket.on('disconnect', function(){
+        
+    });    
+
+    userSocket.on(EVENTS.NewUserConnectComplete, function(user){	
+	   userServer = user;	
+       userSocket.emit(EVENTS.RegisterFront, user);																					
 	});	
 							
-	userSocket.on(EVENTS.FrontConnected, function(callbackData){	
-																											
+	userSocket.on(EVENTS.FrontConnected, function(callbackData){
+        var data = {};
+        data.reqField = userInfo;
+        data.user = userServer;
+	    userSocket.emit(EVENTS.ReqQrySysUserLoginTopic, data);																								
 	});	
     
     userSocket.on(EVENTS.FrontDisConnected, function(callbackData){	
@@ -73,7 +94,49 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
         fileData += tabSpace[1] + "});\n\n";
     }
 }
-fileData+="});\n\n";
+
+for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
+    var funcName  = jsonContent.FTD.packages[0].package[i].$.name;
+    var funcType  = funcName.substring(0,3);
+    
+    if (funcType === "Req" &&
+        funcName.substring(funcName.length - 5, funcName.length) == "Topic" &&
+        funcName!=="ReqQryNetMemberSDHLineInfoTopic"&&
+        funcName!=="ReqQryVMInfoTopic"&&
+        funcName!=="ReqQryTradeDayChangeTopic"&&
+        funcName!=="ReqQryPropertyInfoTopic"&&funcName!=="ReqQryMemPoolInfoTopic"&&
+        funcName!=="ReqQryFileContentInfoTopic"&&
+        funcName!=="ReqQryConnectionInfoTopic"&& funcName!=="ReqQryConnectorInfoTopic"&&
+        funcName!=="ReqQryNetFuncAreaTopic"&& funcName!=="ReqQryNetMonitorCommandTypeTopic"&&
+        funcName!=="ReqQryNetMonitorActionGroupTopic"&& funcName!=="ReqQryNetEventExprTopic"&&
+        funcName!=="ReqQryNetEventTypeTopic"&& funcName!=="ReqQryNetSubEventTypeTopic"&&
+        funcName!=="ReqQryNetEventLevelTopic"&& funcName!=="ReqSysServerExitTopic"&&
+        funcName!=="ReqQryNetMonitorTaskInstAttrsTopic"&& funcName!=="ReqQryNetBaseLineTaskTopic"&&
+        funcName!=="ReqQryNetMemberSDHLineInfoTopic"&& funcName!=="ReqQryNetDDNLinkInfoTopic"&&
+        funcName!=="ReqQryNetPseudMemberLinkInfoTopic"&& funcName!=="ReqQryOuterDeviceInfTopic"&&
+        funcName!=="ReqQrySysInternalTopologyTopic"&& funcName!=="ReqQryMemberLinkCostTopic"&&
+        funcName!=="ReqQryNetPartylinkMonthlyRentTopic"&&funcName!="ReqQryClientLoginTopic"&&
+        funcName!=="ReqQryClientLoginTopic"&&funcName!=="ReqQryCPUUsageTopic"&&
+        funcName!=="ReqQryMemoryUsageTopic"&&funcName!=="ReqQryDiskUsageTopic"&&
+        funcName!=="ReqQryKeyFileInfoTopic"&&funcName!=="ReqQryHostMonitorCfgTopic"&&
+        funcName!=="ReqQryAppMonitorCfgTopic"
+        ) {
+            var eventMessageName = "EVENTS." + funcName + "Failed";
+            fileData += tabSpace[1] + "userSocket.on(" + eventMessageName + ", function(flag){	\n\n";
+            fileData += tabSpace[1] + "});\n\n";
+        }        
+}
+
+fileData+="});\n";
+
+fileData += hereDoc(function () {
+/*
+var addNewUser = function (userinfo) {
+    userInfo = userinfo;
+    rootSocket.emit(EVENTS.NewUserCome, userinfo);
+}
+
+*/});
 
 for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
     var funcName  = jsonContent.FTD.packages[0].package[i].$.name;
