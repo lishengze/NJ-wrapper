@@ -4,6 +4,7 @@
 // 客户在输入登陆信息后直接发出前置链接与用户登陆请求。
 // 前置链接后才能进行用户登陆。
 // 不同的链接失败给不同的错。
+var structJs         = require("./SysUserApiStruct_JS.js");
 
 var EVENTS           = require('./events.json');
 var isHttps          = false;
@@ -27,6 +28,21 @@ if (true === isHttps) {
 var userSocket;
 var userServer;
 var userInfo;
+
+var addNewUser = function (userinfo) {
+    userInfo = userinfo;
+    rootSocket.emit(EVENTS.NewUserCome, userinfo);
+}
+
+var TestAddNewUser = function () {
+    var userinfo = {};
+    userinfo           = new structJs.CShfeFtdcReqQrySysUserLoginField();
+    userinfo.UserID    = "admin";
+    userinfo.Password  = "admin";
+    userinfo.VersionID = "2.0.0.0";  
+    
+    addNewUser(userinfo);  
+}
 
 rootSocket.on(EVENTS.NewUserReady, function(userInfo){
 							
@@ -1692,10 +1708,7 @@ rootSocket.on(EVENTS.NewUserReady, function(userInfo){
 
 });
 
-var addNewUser = function (userinfo) {
-    userInfo = userinfo;
-    rootSocket.emit(EVENTS.NewUserCome, userinfo);
-}
+
 
 var ReqQryTopMemInfoTopic = function (reqData) {
     var data = {};
