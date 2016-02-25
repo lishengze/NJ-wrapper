@@ -1,0 +1,119 @@
+commit fcf8320ffd6edc954782a43f90d199568327a37f
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Thu Feb 25 15:03:14 2016 +0800
+
+    "完善基础结构"
+
+commit b843800aea7d25f5dde37b8e48641bec112c1619
+Author: lsz <lishengz.cool@hotmail.com>
+Date:   Wed Feb 24 21:36:14 2016 +0800
+
+    完成代理服务器最基本的结构
+
+commit 6dda983d13c1bf80f4c1a49dd39deaa4c4373f1c
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Wed Feb 24 18:03:25 2016 +0800
+
+    增加autogene-communication-js.js
+
+commit 74747bc2c4eca3fbc23391a473b3bc5164cf566a
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Wed Feb 24 17:33:32 2016 +0800
+
+    增加代理服务器的编程
+
+commit 92d51a8a9da1180de57f42ec52d33988b9bbc6f2
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Wed Feb 24 10:51:25 2016 +0800
+
+    解决了拷贝时的内存访问问题
+
+commit c70a189b58400bcc406a32e9ecc445fd8e5c95c4
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Mon Feb 22 09:42:42 2016 +0800
+
+    尝试减少Gb2312toUtf8的调用次数来测试段错的原因
+
+commit 8ad27ebf997fe10abddfb76e31ef56a4559166e6
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Thu Feb 18 15:14:59 2016 +0800
+
+    最新改变
+
+commit 4b5890f88e17430b2925e4717f16dd4c68c63655
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Thu Feb 18 09:51:38 2016 +0800
+
+    完成基本功能, 字符集转换时的段错还未解决
+
+commit d1868359f6a6692626cdff5addb74f012f1f18d2
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Fri Jan 8 15:21:33 2016 +0800
+
+    changed files: test.js server.js test_sever.js test_server_root.js
+
+commit b0495b3c04d49e85fecea55d8d1ccf924de1dbe1
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Mon Dec 28 15:21:53 2015 +0800
+
+    a few changes
+
+commit 15bd60eae0b05e5e5966a66b25d6242d3c7c5ecb
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Fri Dec 11 10:44:01 2015 +0800
+
+    few changes
+
+commit f3a471313e959126e90a0eafec83cb483145cd6a
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Thu Dec 10 18:39:09 2015 +0800
+
+    latest file
+
+commit df71b2d321df438f1d894a5a810d14de3aaf6c50
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Wed Nov 25 15:26:46 2015 +0800
+
+    modify
+
+commit 68f32c333e78c157a584a8487fed7a80677da228
+Author: lishengze <lishengz.cool@hotmail.com>
+Date:   Wed Nov 25 13:26:29 2015 +0800
+
+    Sync SysUserApi and SpiCFunc
+
+commit 577c53e11bbac90901655c02ff7e16040ef91c5b
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Wed Sep 9 15:51:31 2015 +0800
+
+    添加文件之后编译成功
+
+commit feec9ab07ce266a0cb5680960c56c7b0c13c7ed1
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Wed Sep 9 15:47:14 2015 +0800
+
+    修改了UserApi_Wrapper的析构函数
+
+commit 56c2fd39b869c194e7055998d74e7d83c45087d3
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Mon Sep 7 13:34:21 2015 +0800
+
+    更新
+
+commit 5dbecd3afd2945d4aa72655abded98f85159ab1b
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Wed Sep 2 17:51:56 2015 +0800
+
+    测试用例
+
+commit 2fdb81a293b83636a74d3a817e4d4497637ea244
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Wed Sep 2 17:47:27 2015 +0800
+
+    添加封装实现
+
+commit 2608a35983e615b8d8da557f0b95cc5269c92b84
+Author: 李献魁 <li.xiankui@ZJ-OA-LI-XK.sfit.shfe.com.cn>
+Date:   Wed Sep 2 17:15:44 2015 +0800
+
+    初始提交

@@ -4,6 +4,8 @@ var Spi = function(){
     this.user = {};    
     
     this.OnFrontConnected = function () {
+    	  var outputStr = "\n***********  Communication FrontConnected! ***********\n";
+    	  console.log(outputStr);
         this.user.socket.emit(EVENTS.FrontConnected, {});        
     }
     
@@ -124,6 +126,7 @@ var Spi = function(){
             this.user.socket.emit(EVENTS.RspQryMonitorObjectTopic, this.RspQryMonitorObjectTopicCallbackData);
             this.RspQryMonitorObjectTopicCallbackData = [];
         }
+        
     }
 
     this.OnRtnMonitorObjectTopic = function (pRtnMonitorObject){ 
@@ -671,6 +674,7 @@ var Spi = function(){
     }
 
     this.RspQrySysUserLoginTopicCallbackData = [];
+    this.rspUserLoginCallNumb = 1;
     this.OnRspQrySysUserLoginTopic = function (pRspQrySysUserLogin, pRspInfo, nRequestID, bIsLast) {
         if (pRspQrySysUserLogin instanceof Object) { 
             this.RspQrySysUserLoginTopicCallbackData.push( pRspQrySysUserLogin);
@@ -679,6 +683,24 @@ var Spi = function(){
             this.user.socket.emit(EVENTS.RspQrySysUserLoginTopic, this.RspQrySysUserLoginTopicCallbackData);
             this.RspQrySysUserLoginTopicCallbackData = [];
         }
+        
+        var outputStr = "\n++++++++++++++++ Communication OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
+			 	if (pRspQrySysUserLogin instanceof Object) {
+		      outputStr += "LoginTime :                 " + pRspQrySysUserLogin.LoginTime.toString() + "\n"
+					           + "UserID :                    " + pRspQrySysUserLogin.UserID.toString() + "\n"
+					           + "Privilege :                 " + pRspQrySysUserLogin.Privilege.toString() + "\n"
+					           + "TradingDay :                " + pRspQrySysUserLogin.TradingDay.toString() + "\n"
+					           + "VersionFlag :               " + pRspQrySysUserLogin.VersionFlag.toString() + "\n";	
+					
+				} else {
+		            outputStr += "pRspQrySysUserLogin is NULL!\n";
+		    }        	
+		        
+		    outputStr += "bIsLastNew :                " + bIsLast + "\n";
+		    outputStr += "rspUserLoginCallNumb:       " + rspUserLoginCallNumb + "\n";
+		    outputStr += "++++++++++++++++ Communication OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";        
+		    rspUserLoginCallNumb++;
+		    console.log(outputStr);           
     }
 
     this.RspQrySysUserLogoutTopicCallbackData = [];

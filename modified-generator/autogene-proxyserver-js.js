@@ -130,8 +130,12 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
 }
 
 fileData += hereDoc(function () {
-/*        rootSocket.emit(EVENTS.NewUserReady, userInfo);	         									
-	}); // rootSocket.on('new user', function(userInfo) end!	
+/*               									
+	    }); // rootSocket.on('new user', function(userInfo) end!
+        
+        rootSocket.emit(EVENTS.NewUserReady, userInfo);
+        	
+    }); //rootSocket.on(EVENTS.NewUserCome);     	
 }); // io.on('connection', function(rootSocket)) end!
 
 */    

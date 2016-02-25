@@ -11,6 +11,22 @@ var Spi = function(){
     
     this.user = {};    
     
+    this.OnFrontConnected = function () {
+        this.user.socket.emit(EVENTS.FrontConnected, {});        
+    }
+    
+    this.OnFrontDisConnected = function (nReason) {
+        if (nReason instanceof Object) { 
+            this.user.socket.emit(EVENTS.FrontDisConnected, nReason);
+        }        
+    }
+    
+    this.OnHeartBeatWarning = function (nTimeLapse) {
+        if (nTimeLapse instanceof Object) { 
+            this.user.socket.emit(EVENTS.HeartBeatWarning, nTimeLapse);
+        }        
+    }         
+          
 */});
 var jsonContent=require("./package.json");
 

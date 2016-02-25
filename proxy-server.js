@@ -2,6 +2,10 @@ var fs               = require('fs');
 var spi              = require("./communication.js");
 var addon            = require("./build/Release/addon");
 var EVENTS           = require('./events.json');
+
+var tool_function    = require('./tool-function.js');
+var OutputMessage    = tool_function.OutputMessage;
+
 var user             = [];
 var userCount        = 0;
 var isHttps          = false;
@@ -32,16 +36,17 @@ function onRequest(request, response){
 	}
 }
 
-var OutputMessage = function (info) {
-    console.log(info);
-}
-
 var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
 
 io.on('connection', function(rootSocket) {	
+    
+    OutputMessage("Proxy-Server: RootServer Connected!");
 
-	rootSocket.on(EVENTS.NewUserCome, function(userInfo) {				
+	rootSocket.on(EVENTS.NewUserCome, function(userInfo) {
+        
+        OutputMessage("Proxy-Server: new user " + userInfo.UserID + " come");
+        				
 		for (var i = 0; i < userCount; ++i)
 		{
 			if (user[i].userInfo.UserID === userInfo.UserID) {				
@@ -58,15 +63,17 @@ io.on('connection', function(rootSocket) {
         
         user[curUserIndex].socket.on ('connection', function (curSocket) {
                             
+            OutputMessage("Proxy-Server: " + user[curUserIndex].userInfo.UserID + " connect completed!");
+                            
             user[curUserIndex].userApi = new addon.FtdcSysUserApi_Wrapper();        
             user[curUserIndex].Spi = new spi.Spi();
             user[curUserIndex].RequestID = 1;
-            user[curUserIndex].Spi.user = user[curUserIndex];
+            user[curUserIndex].Spi.user = user[curUserIndex];                                            
                        
             curSocket.emit(EVENTS.NewUserConnectComplete, user[curUserIndex]);
             
             curSocket.on(EVENTS.RegisterFront, function(user) {
-				OutputMessage('Connect Front!');
+				OutputMessage('\n------  Proxy-Server: Connect Front!-------\n');
                 user.userApi.RegisterFront(realTimeSystemPath);   
                 user.userApi.RegisterSpi(user.Spi);
                 user.userApi.Init();   				
@@ -311,10 +318,17 @@ io.on('connection', function(rootSocket) {
             });
 
             curSocket.on(EVENTS.ReqQrySysUserLoginTopic, function(data) {
+            	
                 var flag = data.user.userApi.ReqQrySysUserLoginTopic(data.reqField, data.user.RequestID++);
                 if ( -1 === flag) {
                     curSocket.emit(EVENTS.ReqQrySysUserLoginTopicFailed, flag);
                 }
+                
+                var outputStr = "\n---------  Proxy-Server: ReqQrySysUserLoginTopic START! --------";
+                outputStr += "ReqQrySysUserLoginTopic Flag : " + flag + "\n";
+                outputStr += "---------  Proxy-Server: ReqQrySysUserLoginTopic END! --------\n";
+                OutputMessage(outputStr);
+                  
             });
 
             curSocket.on(EVENTS.ReqQrySysUserLogoutTopic, function(data) {

@@ -86,7 +86,7 @@ fileData +=  tabSpace[1] + "\"END\": \"END\"\n";
 fileData+="}\n\n";
 
 var pathName = '../new file/';
-var fileName = 'event.json';
+var fileName = 'events.json';
 fs.writeFile(pathName + fileName, fileData, function (err) {
     if (err) {
         console.log(err);

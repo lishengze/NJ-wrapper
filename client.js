@@ -7,6 +7,10 @@
 
 var EVENTS           = require('./events.json');
 var isHttps          = false;
+
+var tool_function    = require('./tool-function.js');
+var OutputMessage    = tool_function.OutputMessage;
+
 if (true === isHttps) {
 //	var ipAddress  = 'https://192.168.10.11';
 	var ipAddress  = 'https://localhost'
@@ -25,15 +29,24 @@ var userServer;
 var userInfo;
 
 rootSocket.on(EVENTS.NewUserReady, function(userInfo){
-									
+							
+    OutputMessage("Client: new user " + userInfo.UserID + " ready!");     
+                           		
 	userSocket = io.connect(url + '/' + userInfo.UserID); 
     
     userSocket.on(EVENTS.NewUserConnectComplete, function(user){	
+        
+       OutputMessage("Client: " + user.userInfo.UserID + "  connect completed!");  
+       
 	   userServer = user;	
        userSocket.emit(EVENTS.RegisterFront, user);																					
 	});	
 							
 	userSocket.on(EVENTS.FrontConnected, function(callbackData){
+        
+        var outputStr = "\n+++++++++  Communication FrontConnected! ++++++++\n";
+    	OutputMessage(outputStr);
+        
         var data = {};
         data.reqField = userInfo;
         data.user = userServer;
@@ -353,7 +366,20 @@ rootSocket.on(EVENTS.NewUserReady, function(userInfo){
     });
 
     userSocket.on(EVENTS.RspQrySysUserLoginTopic, function(callbackData){	
-
+        var pRspQrySysUserLogin = callbackData;
+        var outputStr = "\n++++++++++++++++ Client OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
+		if (pRspQrySysUserLogin instanceof Object) {
+		      outputStr += "LoginTime :                 " + pRspQrySysUserLogin.LoginTime.toString() + "\n"
+					           + "UserID :                    " + pRspQrySysUserLogin.UserID.toString() + "\n"
+					           + "Privilege :                 " + pRspQrySysUserLogin.Privilege.toString() + "\n"
+					           + "TradingDay :                " + pRspQrySysUserLogin.TradingDay.toString() + "\n"
+					           + "VersionFlag :               " + pRspQrySysUserLogin.VersionFlag.toString() + "\n";	
+					
+		} else {
+		      outputStr += "pRspQrySysUserLogin is NULL!\n";
+		}        			        
+        outputStr += "++++++++++++++++ Client OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";        
+		console.log(outputStr);          
     });
 
     userSocket.on(EVENTS.RspQrySysUserLogoutTopic, function(callbackData){	
