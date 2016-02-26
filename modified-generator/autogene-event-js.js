@@ -6,7 +6,7 @@ function hereDoc(f) {
     return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
 }
 var fileData = hereDoc(function () {
-/*var EVENTS = function () {
+/*var events = function () {
     this.NewUserCome =   "NewUserCome",
     this.NewUserReady =  "NewUserReady",
     this.NewUserConnectComplete = "NewUserConnectComplete",
@@ -82,8 +82,9 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
     }
 }
 
-fileData +=  tabSpace[1] + "this.END = \"END\"\n";
-fileData+="};\n\n";
+fileData += tabSpace[1] + "this.END = \"END\"\n";
+fileData += "};\n\n";
+fileData += "exports.EVENTS = events;\n"
 
 var pathName = '../new file/';
 var fileName = 'events.js';

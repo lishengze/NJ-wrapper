@@ -61,7 +61,7 @@ for(var i=0;i<reqParamNumb;i++) {
  }
 
 var pathName = '../new file/';
-var fileName = 'SysUserApiStruct_JS.js';
+var fileName = 'SysUserApiStruct.js';
 fs.writeFile(pathName + fileName, fileData, function (err) {
     if (err) {
         console.log(err);

@@ -60,12 +60,13 @@ io.on('connection', function(rootSocket) {
 		user[curUserIndex] = {};         
         user[curUserIndex].userInfo = userInfo;
         user[curUserIndex].socket = io.of('/' + userInfo.UserID);
+        // 创建用户相关目录;
         
         user[curUserIndex].socket.on ('connection', function (curSocket) {
                             
             OutputMessage("Proxy-Server: " + user[curUserIndex].userInfo.UserID + " connect completed!");
                             
-            user[curUserIndex].userApi = new addon.FtdcSysUserApi_Wrapper();        
+            user[curUserIndex].userApi = new addon.FtdcSysUserApi_Wrapper("");        
             user[curUserIndex].Spi = new spi.Spi();
             user[curUserIndex].RequestID = 1;
             user[curUserIndex].Spi.user = user[curUserIndex];                                            
