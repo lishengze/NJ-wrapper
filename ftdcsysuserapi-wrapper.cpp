@@ -1,10 +1,11 @@
 #include <nan.h>
 #include "ftdcsysuserapi-wrapper.h"
 #include "FtdcSysUserApiStruct.h"
-#include "spi-transform.h"
 #include "sysuserspi.h"
 #include "tool-function.h"
+#include "id-func.h"
 #include "CCrypto.h"
+#include <string.h>
 
 using namespace v8;
 
@@ -14,314 +15,23 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
-    _userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
-    _spi = new SysUserSpi();
-    if (NULL == _spi) {
-       OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: _spi is NULL", g_RunningResult_File);
+    m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
+    m_spi = new SysUserSpi();
+    if (NULL == m_spi) {
+       OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);
        return;
     }
 }
 
 FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
-    _userApi->Release();
+    m_userApi->Release();
     
-    if (NULL != _spi) {
-        delete _spi;
-        _spi = NULL;
+    if (NULL != m_spi) {
+        delete m_spi;
+        m_spi = NULL;
     }
     
     g_RunningResult_File.close();
-    
-    uv_close((uv_handle_t*) &g_FrontConnected_async, NULL);
-    uv_close((uv_handle_t*) &g_FrontDisconnected_async, NULL);
-    uv_close((uv_handle_t*) &g_HeartBeatWarning_async, NULL);    
-    uv_close((uv_handle_t*) &g_RspQryTopCpuInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTopCpuInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTopMemInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTopMemInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTopProcessInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTopProcessInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFileSystemInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFileSystemInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetworkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetworkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientLoginTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMonitorObjectTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMonitorObjectTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryObjectRationalTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnObjectRationalTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySyslogInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSyslogInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySubscriberTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryOidRelationTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnOidRelationTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryUserInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnUserInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryOnlineUserInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnOnlineUserInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryWarningEventTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnWarningEventTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryCPUUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnCPUUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMemoryUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMemoryUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryDiskUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnDiskUsageTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryInvalidateOrderTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnInvalidateOrderTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryOrderStatusTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnOrderStatusTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryBargainOrderTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnBargainOrderTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryInstPropertyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnInstPropertyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMarginRateTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMarginRateTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPriceLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPriceLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPartPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPartPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnClientPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySpecialPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSpecialPosiLimitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTransactionChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTransactionChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnClientChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPartClientChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPartClientChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHedgeDetailChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnHedgeDetailChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryParticipantChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnParticipantChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMarginRateChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMarginRateChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryUserIpChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnUserIpChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnClientPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySpecPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSpecPosiLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHistoryObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnHistoryObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFrontInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFrontInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysUserLoginTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysUserLogoutTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysUserPasswordUpdateTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysUserRegisterTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysUserDeleteTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryParticipantInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnParticipantInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryUserInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnUserInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnClientInitTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeLogTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTradeLogTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeUserLoginInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTradeUserLoginInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPartTradeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradepeakTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnUpdateSysConfigTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSysUser_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPriceLimitChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHistoryCpuInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHistoryMemInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHistoryNetworkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMonitorOnlineUser_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFrontStat_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSysTimeSyncTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnDataCenterChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryHistoryTradePeakTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnHistoryTradePeakTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySyslogEventTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSyslogEventTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeDayChangeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryWebAppInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnWebAppInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryServletInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnServletInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFileInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFileInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySessionInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSessionInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryJDBCInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnJDBCInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryThreadInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnThreadInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryVMInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnVMInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPropertyInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPropertyInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMemPoolInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMemPoolInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFileContentInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFileContentInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryConnectionInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnConnectionInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryConnectorInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnConnectorInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryDBQueryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnDBQueryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryGeneralFieldTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnGeneralFieldTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryGetFileTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryWarningQueryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnWarningQueryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnHostConfig_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryGeneralOperateTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnGeneralOperateTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceLinkedTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDeviceLinkedTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeUserLoginStatTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeFrontOrderRttStatTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTradeFrontOrderRttStatTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryParticTradeOrderStatesTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnParticTradeOrderStatesTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryRouterInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnRouterInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryDiskIOTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnDiskIOTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryStatInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnStatInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryTradeOrderRttCutLineTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnTradeOrderRttCutLineTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryClientInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnClientInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryEventDescriptionTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnEventDescriptionTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFrontUniqueIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFrontUniqueIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPartyLinkAddrChangeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPartyLinkAddrChangeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDelPartyLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDelPartyLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryPerformanceTopTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnPerformanceTopTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryInstrumentStatusTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnInstrumentStatusTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryCurrTradingSegmentAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnCurrTradingSegmentAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetSubAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetSubAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetSubAreaIPTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetSubAreaIPTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDeviceTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceDetectTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetBuildingTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetBuildingTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetRoomTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetRoomTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetCabinetsTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetCabinetsTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetOIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetOIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetTimePolicyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetTimePolicyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetGatherTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetGatherTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDeviceChgTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDeviceTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDeviceCategoryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDeviceCategoryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetManufactoryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetManufactoryTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetCommunityTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetCommunityTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPortTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPortTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPartAccessSpotTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPartAccessSpotTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetInterfaceTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetInterfaceTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetGeneralOIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetGeneralOIDTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorAttrScopeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorAttrScopeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorAttrTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorAttrTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorObjectAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetFuncAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetFuncAreaTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorCommandTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorCommandTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorActionGroupTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorActionGroupTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorDeviceGroupTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorDeviceGroupTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTaskInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTaskInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTaskResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTaskResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTaskObjectSetTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTaskObjectSetTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPartyLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPartyLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorActionAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorActionAttrTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetModuleTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetModuleTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetEventExprTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetEventExprTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetEventTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetEventTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetSubEventTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetSubEventTypeTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetEventLevelTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetEventLevelTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTaskStatusResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTaskStatusResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetCfgFileTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetCfgFileTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorDeviceTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorDeviceTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMonitorTaskInstAttrsTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMonitorTaskInstAttrsTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryFileGeneralOperTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnFileGeneralOperTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetBaseLineTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetBaseLineTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetBaseLineTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetBaseLineTaskTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetBaseLineResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetBaseLineResultTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPartyLinkStatusInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPartyLinkStatusInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetMemberSDHLineInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetMemberSDHLineInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetDDNLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetDDNLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPseudMemberLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPseudMemberLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryOuterDeviceInfTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetOuterDeviceInfTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetLocalPingResultInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetLocalPingResultInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetRomotePingResultInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetRomotePingResultInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMonitorTopProcessInfo_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQrySysInternalTopologyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnSysInternalTopologyTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryMemberLinkCostTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnMemberLinkCostTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetPartylinkMonthlyRentTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetPartylinkMonthlyRentTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RspQryNetNonPartyLinkInfoTopic_async,NULL);
-    uv_close((uv_handle_t*) &g_RtnNetNonPartyLinkInfoTopic_async,NULL);
 }
 
  void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
@@ -464,7 +174,7 @@ FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
  exports->Set(Nan::New("FtdcSysUserApi_Wrapper").ToLocalChecked(), tpl->GetFunction());
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::New) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
     if (info.IsConstructCall()) {
         // Invoked as constructor: `new FtdcSysUserApi_Wrapper(...)`
         Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
@@ -481,54 +191,62 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::New) {
     }
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Release) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Release) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    obj->_userApi->Release();
+    obj->m_userApi->Release();
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Init) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Init) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    obj->_userApi->Init();
+    obj->m_userApi->Init();
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Join) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Join) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    int result=obj->_userApi->Join();
+    int result=obj->m_userApi->Join();
     info.GetReturnValue().Set(Nan::New<v8::Int32>(result));
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::GetTradingDay) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::GetTradingDay) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    const char* result=obj->_userApi->GetTradingDay();
+    const char* result=obj->m_userApi->GetTradingDay();
     info.GetReturnValue().Set(Nan::New<v8::String>(result).ToLocalChecked());
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterFront) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterFront) {
     Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
     String::Utf8Value utf8Str(fileData);
 
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
 
-    obj->_userApi->RegisterFront(*utf8Str);
+    obj->m_userApi->RegisterFront(*utf8Str);
 
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterSpi) {
+int g_idnumb = 0;
+NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterSpi) {
     std::cout<<"RegisterSpi Called!"<<std::endl;
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(info[0]->IsObject())
     {
-        //obj->_spi=new SysUserSpi(Nan::To<v8::Object>(info[0]).ToLocalChecked());
-        //obj->_userApi->RegisterSpi(obj->_spi);
-        SpiObj.Reset(Nan::To<v8::Object>(info[0]).ToLocalChecked());
-        obj->_userApi->RegisterSpi(obj->_spi);
+        //obj->m_spi=new SysUserSpi(Nan::To<v8::Object>(info[0]).ToLocalChecked());
+        //obj->m_userApi->RegisterSpi(obj->m_spi);
+        
+        obj->m_spi->m_spiobj.Reset(Nan::To<v8::Object>(info[0]).ToLocalChecked());
+        
+        obj->m_spi->m_frontid = GetFrontID();
+        
+        // obj->m_spi->m_frontid = ++g_idnumb;
+        
+        obj->m_userApi->RegisterSpi(obj->m_spi);
     }
     info.GetReturnValue().SetUndefined();
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqUserLogin) {
      std::cout<<"ReqUserLogin Called!"<<std::endl;
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -541,29 +259,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
      //TradingDay
      v8::Local<v8::Object> paramOneTradingDayObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingDay").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneTradingDayStr(Nan::To<v8::String>(paramOneTradingDayObj).ToLocalChecked());
-     strcpy_s(field.TradingDay, 9, *paramOneTradingDayStr);
+     // strcpy_s(field.TradingDay, 9, *paramOneTradingDayStr);
+     strncpy(field.TradingDay, *paramOneTradingDayStr,9);
      //UserID
      v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneUserIDStr(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-     strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     // strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     strncpy(field.UserID, *paramOneUserIDStr, 16);
      //ParticipantID
      v8::Local<v8::Object> paramOneParticipantIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ParticipantID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneParticipantIDStr(Nan::To<v8::String>(paramOneParticipantIDObj).ToLocalChecked());
-     strcpy_s(field.ParticipantID, 11, *paramOneUserIDStr);
+     // strcpy_s(field.ParticipantID, 11, *paramOneUserIDStr);
+     strncpy(field.ParticipantID, *paramOneUserIDStr, 11);
      //Password
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOnePasswordStr(Nan::To<v8::String>(paramOnePasswordObj).ToLocalChecked());
-     strcpy_s(field.Password, 41, *paramOnePasswordStr);
+     // strcpy_s(field.Password, 41, *paramOnePasswordStr);
+     strncpy(field.Password, *paramOnePasswordStr, 41);
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-     int64_t nRequestID=paramTwo->Value();
+     int nRequestID = (int)paramTwo->Value();
 
      //call natvie method
-     double returnValue= obj->_userApi->ReqUserLogin(&field, nRequestID);
+     double returnValue= obj->m_userApi->ReqUserLogin(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
-     }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
+}
+     
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      std::cout<<"ReqQrySysUserLoginTopic Called!"<<std::endl;
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -576,7 +299,8 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      //UserID
      v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneUserIDStr(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-     strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     // strcpy_s(field.UserID, 16, *paramOneUserIDStr);
+     strncpy(field.UserID, *paramOneUserIDStr, 16);
      std::cout<<*paramOneUserIDStr<<std::endl;
      //Password
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -586,23 +310,26 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      DesEncrypt.SetPassword("monitor");
      char encryptedPassword[256] = {0};
      DesEncrypt.Encrypt(*paramOnePasswordStr, encryptedPassword);
-     strcpy_s(field.Password, 41, encryptedPassword);
+     // strcpy_s(field.Password, 41, encryptedPassword);
+     strncpy(field.Password, encryptedPassword, 41);
      std::cout<<encryptedPassword<<std::endl;
      //VersionID
      v8::Local<v8::Object> paramOneVersionIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("VersionID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOneVersionIDStr(Nan::To<v8::String>(paramOneVersionIDObj).ToLocalChecked());
-     strcpy_s(field.VersionID, 17, *paramOneVersionIDStr);
+     // strcpy_s(field.VersionID, 17, *paramOneVersionIDStr);
+     strncpy(field.VersionID, *paramOneVersionIDStr, 17);
      std::cout<<*paramOneVersionIDStr<<std::endl;
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-     int64_t nRequestID=paramTwo->Value();
+     int nRequestID=(int)paramTwo->Value();
 
      //call natvie method
-     double returnValue= obj->_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
+     double returnValue= obj->m_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
  }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic) {
   std::cout<<"ReqQryTopMemInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -616,27 +343,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -645,14 +372,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopMemInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTopMemInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTopMemInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopProcessInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTopProcessInfoTopic) {
   std::cout<<"ReqQryTopProcessInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -666,27 +394,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopProcessInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -695,14 +423,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTopProcessInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTopProcessInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTopProcessInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileSystemInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFileSystemInfoTopic) {
   std::cout<<"ReqQryFileSystemInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -716,27 +445,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileSystemInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -745,14 +474,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileSystemInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryFileSystemInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryFileSystemInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetworkInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetworkInfoTopic) {
   std::cout<<"ReqQryNetworkInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -766,32 +496,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetworkInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //LANNAME
   v8::Local<v8::Object> paramOneLANNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LANNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLANNAMEfileData(Nan::To<v8::String>(paramOneLANNAMEObj).ToLocalChecked());
-  strcpy_s(field.LANNAME,101,*paramOneLANNAMEfileData);
+  strncpy(field.LANNAME, *paramOneLANNAMEfileData, 11);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -800,14 +530,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetworkInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetworkInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetworkInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMonitorObjectTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonitorObjectTopic) {
   std::cout<<"ReqQryMonitorObjectTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -821,27 +552,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMonitorObjectTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -850,14 +581,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMonitorObjectTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryMonitorObjectTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryMonitorObjectTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryObjectRationalTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryObjectRationalTopic) {
   std::cout<<"ReqQryObjectRationalTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -871,27 +603,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryObjectRationalTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -900,14 +632,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryObjectRationalTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryObjectRationalTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryObjectRationalTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySyslogInfoTopic) {
   std::cout<<"ReqQrySyslogInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -921,23 +654,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogInfoTopic){
  //FileName
   v8::Local<v8::Object> paramOneFileNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FileName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFileNamefileData(Nan::To<v8::String>(paramOneFileNameObj).ToLocalChecked());
-  strcpy_s(field.FileName,641,*paramOneFileNamefileData);
+  strncpy(field.FileName, *paramOneFileNamefileData, 65);
 
  //subFileName
   v8::Local<v8::Object> paramOnesubFileNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("subFileName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnesubFileNamefileData(Nan::To<v8::String>(paramOnesubFileNameObj).ToLocalChecked());
-  strcpy_s(field.subFileName,641,*paramOnesubFileNamefileData);
+  strncpy(field.subFileName, *paramOnesubFileNamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySyslogInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySyslogInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic) {
   std::cout<<"ReqQrySubscriberTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -951,7 +685,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,5121,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 513);
 
  //ObjectNum
   v8::Local<v8::Object> paramOneObjectNumObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectNum").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -966,23 +700,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySubscriberTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySubscriberTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySubscriberTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOidRelationTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryOidRelationTopic) {
   std::cout<<"ReqQryOidRelationTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -996,18 +731,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOidRelationTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryOidRelationTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryOidRelationTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryUserInfoTopic) {
   std::cout<<"ReqQryUserInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1021,38 +757,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserInfoTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryUserInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryUserInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOnlineUserInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryOnlineUserInfoTopic) {
   std::cout<<"ReqQryOnlineUserInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1066,38 +803,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOnlineUserInfoTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryOnlineUserInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryOnlineUserInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryWarningEventTopic) {
   std::cout<<"ReqQryWarningEventTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1111,27 +849,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //WarningLevel
   v8::Local<v8::Object> paramOneWarningLevelObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("WarningLevel").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneWarningLevelfileData(Nan::To<v8::String>(paramOneWarningLevelObj).ToLocalChecked());
-  strcpy_s(field.WarningLevel,101,*paramOneWarningLevelfileData);
+  strncpy(field.WarningLevel, *paramOneWarningLevelfileData, 11);
 
  //EventType
   v8::Local<v8::Object> paramOneEventTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -1141,23 +879,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,2561,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 257);
 
  //EventName
   v8::Local<v8::Object> paramOneEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventNamefileData(Nan::To<v8::String>(paramOneEventNameObj).ToLocalChecked());
-  strcpy_s(field.EventName,641,*paramOneEventNamefileData);
+  strncpy(field.EventName, *paramOneEventNamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryWarningEventTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryWarningEventTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryObjectAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryObjectAttrTopic) {
   std::cout<<"ReqQryObjectAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1171,43 +910,44 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryObjectAttrTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryObjectAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryObjectAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInvalidateOrderTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryInvalidateOrderTopic) {
   std::cout<<"ReqQryInvalidateOrderTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1221,33 +961,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInvalidateOrderTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryInvalidateOrderTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryInvalidateOrderTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOrderStatusTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryOrderStatusTopic) {
   std::cout<<"ReqQryOrderStatusTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1261,33 +1002,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryOrderStatusTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryOrderStatusTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryOrderStatusTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryBargainOrderTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryBargainOrderTopic) {
   std::cout<<"ReqQryBargainOrderTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1301,33 +1043,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryBargainOrderTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryBargainOrderTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryBargainOrderTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstPropertyTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryInstPropertyTopic) {
   std::cout<<"ReqQryInstPropertyTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1341,23 +1084,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstPropertyTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryInstPropertyTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryInstPropertyTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMarginRateTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMarginRateTopic) {
   std::cout<<"ReqQryMarginRateTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1371,23 +1115,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMarginRateTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryMarginRateTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryMarginRateTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPriceLimitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPriceLimitTopic) {
   std::cout<<"ReqQryPriceLimitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1401,23 +1146,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPriceLimitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPriceLimitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPriceLimitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartPosiLimitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPartPosiLimitTopic) {
   std::cout<<"ReqQryPartPosiLimitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1431,23 +1177,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartPosiLimitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPartPosiLimitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPartPosiLimitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitTopic) {
   std::cout<<"ReqQryClientPosiLimitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1461,23 +1208,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryClientPosiLimitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryClientPosiLimitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySpecialPosiLimitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySpecialPosiLimitTopic) {
   std::cout<<"ReqQrySpecialPosiLimitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1491,23 +1239,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySpecialPosiLimitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySpecialPosiLimitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySpecialPosiLimitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTransactionChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTransactionChgTopic) {
   std::cout<<"ReqQryTransactionChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1521,33 +1270,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTransactionChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTransactionChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTransactionChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryClientChgTopic) {
   std::cout<<"ReqQryClientChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1561,33 +1311,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryClientChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryClientChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartClientChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPartClientChgTopic) {
   std::cout<<"ReqQryPartClientChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1601,33 +1352,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartClientChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPartClientChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPartClientChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPosiLimitChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPosiLimitChgTopic) {
   std::cout<<"ReqQryPosiLimitChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1641,33 +1393,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPosiLimitChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPosiLimitChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPosiLimitChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHedgeDetailChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHedgeDetailChgTopic) {
   std::cout<<"ReqQryHedgeDetailChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1681,33 +1434,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHedgeDetailChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHedgeDetailChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHedgeDetailChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticipantChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryParticipantChgTopic) {
   std::cout<<"ReqQryParticipantChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1721,33 +1475,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticipantChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryParticipantChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryParticipantChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMarginRateChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMarginRateChgTopic) {
   std::cout<<"ReqQryMarginRateChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1761,33 +1516,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryMarginRateChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryMarginRateChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryMarginRateChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserIpChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryUserIpChgTopic) {
   std::cout<<"ReqQryUserIpChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1801,33 +1557,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserIpChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryUserIpChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryUserIpChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitChgTopic) {
   std::cout<<"ReqQryClientPosiLimitChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1841,33 +1598,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientPosiLimitChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryClientPosiLimitChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryClientPosiLimitChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySpecPosiLimitChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySpecPosiLimitChgTopic) {
   std::cout<<"ReqQrySpecPosiLimitChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1881,33 +1639,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySpecPosiLimitChgTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySpecPosiLimitChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySpecPosiLimitChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryObjectAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryObjectAttrTopic) {
   std::cout<<"ReqQryHistoryObjectAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1921,43 +1680,44 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryObjectAttrTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHistoryObjectAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHistoryObjectAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFrontInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFrontInfoTopic) {
   std::cout<<"ReqQryFrontInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -1971,33 +1731,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFrontInfoTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryFrontInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryFrontInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLogoutTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLogoutTopic) {
   std::cout<<"ReqQrySysUserLogoutTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2011,18 +1772,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLogoutTopic){
  //UserID
   v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserIDfileData(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-  strcpy_s(field.UserID,151,*paramOneUserIDfileData);
+  strncpy(field.UserID, *paramOneUserIDfileData, 16);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySysUserLogoutTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySysUserLogoutTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserPasswordUpdateTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserPasswordUpdateTopic) {
   std::cout<<"ReqQrySysUserPasswordUpdateTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2036,28 +1798,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserPasswordUpdateTopic){
  //UserID
   v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserIDfileData(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-  strcpy_s(field.UserID,151,*paramOneUserIDfileData);
+  strncpy(field.UserID, *paramOneUserIDfileData, 16);
 
  //OldPassword
   v8::Local<v8::Object> paramOneOldPasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OldPassword").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOldPasswordfileData(Nan::To<v8::String>(paramOneOldPasswordObj).ToLocalChecked());
-  strcpy_s(field.OldPassword,401,*paramOneOldPasswordfileData);
+  strncpy(field.OldPassword, *paramOneOldPasswordfileData, 41);
 
  //NewPassword
   v8::Local<v8::Object> paramOneNewPasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("NewPassword").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNewPasswordfileData(Nan::To<v8::String>(paramOneNewPasswordObj).ToLocalChecked());
-  strcpy_s(field.NewPassword,401,*paramOneNewPasswordfileData);
+  strncpy(field.NewPassword, *paramOneNewPasswordfileData, 41);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySysUserPasswordUpdateTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySysUserPasswordUpdateTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic) {
   std::cout<<"ReqQrySysUserRegisterTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2071,22 +1834,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
  //UserID
   v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserIDfileData(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-  strcpy_s(field.UserID,151,*paramOneUserIDfileData);
+  strncpy(field.UserID, *paramOneUserIDfileData, 16);
 
  //UserName
   v8::Local<v8::Object> paramOneUserNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserNamefileData(Nan::To<v8::String>(paramOneUserNameObj).ToLocalChecked());
-  strcpy_s(field.UserName,151,*paramOneUserNamefileData);
+  strncpy(field.UserName, *paramOneUserNamefileData, 16);
 
  //UserInfo
   v8::Local<v8::Object> paramOneUserInfoObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserInfo").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserInfofileData(Nan::To<v8::String>(paramOneUserInfoObj).ToLocalChecked());
-  strcpy_s(field.UserInfo,991,*paramOneUserInfofileData);
+  strncpy(field.UserInfo, *paramOneUserInfofileData, 100);
 
  //Password
   v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePasswordfileData(Nan::To<v8::String>(paramOnePasswordObj).ToLocalChecked());
-  strcpy_s(field.Password,401,*paramOnePasswordfileData);
+  strncpy(field.Password, *paramOnePasswordfileData, 41);
 
  //Privilege
   v8::Local<v8::Object> paramOnePrivilegeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Privilege").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2096,7 +1859,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
  //EMail
   v8::Local<v8::Object> paramOneEMailObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EMail").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEMailfileData(Nan::To<v8::String>(paramOneEMailObj).ToLocalChecked());
-  strcpy_s(field.EMail,501,*paramOneEMailfileData);
+  strncpy(field.EMail, *paramOneEMailfileData, 51);
 
  //EMailFlag
   v8::Local<v8::Object> paramOneEMailFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EMailFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2106,7 +1869,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
  //HomePhone
   v8::Local<v8::Object> paramOneHomePhoneObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HomePhone").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHomePhonefileData(Nan::To<v8::String>(paramOneHomePhoneObj).ToLocalChecked());
-  strcpy_s(field.HomePhone,301,*paramOneHomePhonefileData);
+  strncpy(field.HomePhone, *paramOneHomePhonefileData, 31);
 
  //HomePhoneFlag
   v8::Local<v8::Object> paramOneHomePhoneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HomePhoneFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2116,7 +1879,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
  //MobilePhone
   v8::Local<v8::Object> paramOneMobilePhoneObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MobilePhone").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMobilePhonefileData(Nan::To<v8::String>(paramOneMobilePhoneObj).ToLocalChecked());
-  strcpy_s(field.MobilePhone,301,*paramOneMobilePhonefileData);
+  strncpy(field.MobilePhone, *paramOneMobilePhonefileData, 31);
 
  //MobilePhoneFlag
   v8::Local<v8::Object> paramOneMobilePhoneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MobilePhoneFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2125,14 +1888,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserRegisterTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySysUserRegisterTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySysUserRegisterTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserDeleteTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserDeleteTopic) {
   std::cout<<"ReqQrySysUserDeleteTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2146,18 +1910,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserDeleteTopic){
  //UserID
   v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserIDfileData(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-  strcpy_s(field.UserID,151,*paramOneUserIDfileData);
+  strncpy(field.UserID, *paramOneUserIDfileData, 16);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySysUserDeleteTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySysUserDeleteTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeLogTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradeLogTopic) {
   std::cout<<"ReqQryTradeLogTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2171,57 +1936,57 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeLogTopic){
  //TradingDay
   v8::Local<v8::Object> paramOneTradingDayObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingDay").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTradingDayfileData(Nan::To<v8::String>(paramOneTradingDayObj).ToLocalChecked());
-  strcpy_s(field.TradingDay,81,*paramOneTradingDayfileData);
+  strncpy(field.TradingDay, *paramOneTradingDayfileData, 9);
 
  //IPAddress
   v8::Local<v8::Object> paramOneIPAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPAddressfileData(Nan::To<v8::String>(paramOneIPAddressObj).ToLocalChecked());
-  strcpy_s(field.IPAddress,151,*paramOneIPAddressfileData);
+  strncpy(field.IPAddress, *paramOneIPAddressfileData, 16);
 
  //FrontID
   v8::Local<v8::Object> paramOneFrontIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FrontID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFrontIDfileData(Nan::To<v8::String>(paramOneFrontIDObj).ToLocalChecked());
-  strcpy_s(field.FrontID,81,*paramOneFrontIDfileData);
+  strncpy(field.FrontID, *paramOneFrontIDfileData, 9);
 
  //StartParticipant
   v8::Local<v8::Object> paramOneStartParticipantObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartParticipant").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartParticipantfileData(Nan::To<v8::String>(paramOneStartParticipantObj).ToLocalChecked());
-  strcpy_s(field.StartParticipant,101,*paramOneStartParticipantfileData);
+  strncpy(field.StartParticipant, *paramOneStartParticipantfileData, 11);
 
  //EndParticipant
   v8::Local<v8::Object> paramOneEndParticipantObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndParticipant").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndParticipantfileData(Nan::To<v8::String>(paramOneEndParticipantObj).ToLocalChecked());
-  strcpy_s(field.EndParticipant,101,*paramOneEndParticipantfileData);
+  strncpy(field.EndParticipant, *paramOneEndParticipantfileData, 11);
 
  //StartUser
   v8::Local<v8::Object> paramOneStartUserObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartUser").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartUserfileData(Nan::To<v8::String>(paramOneStartUserObj).ToLocalChecked());
-  strcpy_s(field.StartUser,151,*paramOneStartUserfileData);
+  strncpy(field.StartUser, *paramOneStartUserfileData, 16);
 
  //EndUser
   v8::Local<v8::Object> paramOneEndUserObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndUser").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndUserfileData(Nan::To<v8::String>(paramOneEndUserObj).ToLocalChecked());
-  strcpy_s(field.EndUser,151,*paramOneEndUserfileData);
+  strncpy(field.EndUser, *paramOneEndUserfileData, 16);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //StartSessionID
   v8::Local<v8::Object> paramOneStartSessionIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartSessionID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartSessionIDfileData(Nan::To<v8::String>(paramOneStartSessionIDObj).ToLocalChecked());
-  strcpy_s(field.StartSessionID,81,*paramOneStartSessionIDfileData);
+  strncpy(field.StartSessionID, *paramOneStartSessionIDfileData, 9);
 
  //EndSessionID
   v8::Local<v8::Object> paramOneEndSessionIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndSessionID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndSessionIDfileData(Nan::To<v8::String>(paramOneEndSessionIDObj).ToLocalChecked());
-  strcpy_s(field.EndSessionID,81,*paramOneEndSessionIDfileData);
+  strncpy(field.EndSessionID, *paramOneEndSessionIDfileData, 9);
 
  //IPFlag
   v8::Local<v8::Object> paramOneIPFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2255,14 +2020,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeLogTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradeLogTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradeLogTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventUpdateTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryWarningEventUpdateTopic) {
   std::cout<<"ReqQryWarningEventUpdateTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2276,22 +2042,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventUpdateTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //OccurDate
   v8::Local<v8::Object> paramOneOccurDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OccurDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOccurDatefileData(Nan::To<v8::String>(paramOneOccurDateObj).ToLocalChecked());
-  strcpy_s(field.OccurDate,81,*paramOneOccurDatefileData);
+  strncpy(field.OccurDate, *paramOneOccurDatefileData, 9);
 
  //OccurTime
   v8::Local<v8::Object> paramOneOccurTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OccurTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOccurTimefileData(Nan::To<v8::String>(paramOneOccurTimeObj).ToLocalChecked());
-  strcpy_s(field.OccurTime,81,*paramOneOccurTimefileData);
+  strncpy(field.OccurTime, *paramOneOccurTimefileData, 9);
 
  //EvendID
   v8::Local<v8::Object> paramOneEvendIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EvendID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2301,17 +2067,17 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventUpdateTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,2561,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 257);
 
  //IPAddress
   v8::Local<v8::Object> paramOneIPAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPAddressfileData(Nan::To<v8::String>(paramOneIPAddressObj).ToLocalChecked());
-  strcpy_s(field.IPAddress,151,*paramOneIPAddressfileData);
+  strncpy(field.IPAddress, *paramOneIPAddressfileData, 16);
 
  //EventName
   v8::Local<v8::Object> paramOneEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventNamefileData(Nan::To<v8::String>(paramOneEventNameObj).ToLocalChecked());
-  strcpy_s(field.EventName,641,*paramOneEventNamefileData);
+  strncpy(field.EventName, *paramOneEventNamefileData, 65);
 
  //EventNum
   v8::Local<v8::Object> paramOneEventNumObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventNum").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2326,48 +2092,49 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningEventUpdateTopic){
  //EventDes
   v8::Local<v8::Object> paramOneEventDesObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDes").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDesfileData(Nan::To<v8::String>(paramOneEventDesObj).ToLocalChecked());
-  strcpy_s(field.EventDes,5121,*paramOneEventDesfileData);
+  strncpy(field.EventDes, *paramOneEventDesfileData, 513);
 
  //ProcessFlag
   v8::Local<v8::Object> paramOneProcessFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ProcessFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneProcessFlagfileData(Nan::To<v8::String>(paramOneProcessFlagObj).ToLocalChecked());
-  strcpy_s(field.ProcessFlag,11,*paramOneProcessFlagfileData);
+  strncpy(field.ProcessFlag, *paramOneProcessFlagfileData, 2);
 
  //WarningLevel
   v8::Local<v8::Object> paramOneWarningLevelObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("WarningLevel").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneWarningLevelfileData(Nan::To<v8::String>(paramOneWarningLevelObj).ToLocalChecked());
-  strcpy_s(field.WarningLevel,101,*paramOneWarningLevelfileData);
+  strncpy(field.WarningLevel, *paramOneWarningLevelfileData, 11);
 
  //ActiveDate
   v8::Local<v8::Object> paramOneActiveDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ActiveDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneActiveDatefileData(Nan::To<v8::String>(paramOneActiveDateObj).ToLocalChecked());
-  strcpy_s(field.ActiveDate,81,*paramOneActiveDatefileData);
+  strncpy(field.ActiveDate, *paramOneActiveDatefileData, 9);
 
  //ActiveTime
   v8::Local<v8::Object> paramOneActiveTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ActiveTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneActiveTimefileData(Nan::To<v8::String>(paramOneActiveTimeObj).ToLocalChecked());
-  strcpy_s(field.ActiveTime,81,*paramOneActiveTimefileData);
+  strncpy(field.ActiveTime, *paramOneActiveTimefileData, 9);
 
  //EventDealDes
   v8::Local<v8::Object> paramOneEventDealDesObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDealDes").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDealDesfileData(Nan::To<v8::String>(paramOneEventDealDesObj).ToLocalChecked());
-  strcpy_s(field.EventDealDes,641,*paramOneEventDealDesfileData);
+  strncpy(field.EventDealDes, *paramOneEventDealDesfileData, 65);
 
  //FullEventName
   v8::Local<v8::Object> paramOneFullEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FullEventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFullEventNamefileData(Nan::To<v8::String>(paramOneFullEventNameObj).ToLocalChecked());
-  strcpy_s(field.FullEventName,2561,*paramOneFullEventNamefileData);
+  strncpy(field.FullEventName, *paramOneFullEventNamefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryWarningEventUpdateTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryWarningEventUpdateTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginInfoTopic) {
   std::cout<<"ReqQryTradeUserLoginInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2381,33 +2148,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginInfoTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradeUserLoginInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradeUserLoginInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartTradeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPartTradeTopic) {
   std::cout<<"ReqQryPartTradeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2421,33 +2189,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPartTradeTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPartTradeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPartTradeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradepeakTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradepeakTopic) {
   std::cout<<"ReqQryTradepeakTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2461,22 +2230,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradepeakTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //TradepeakFlag
   v8::Local<v8::Object> paramOneTradepeakFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradepeakFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2485,14 +2254,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradepeakTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradepeakTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradepeakTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticipantInitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryParticipantInitTopic) {
   std::cout<<"ReqQryParticipantInitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2506,33 +2276,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticipantInitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryParticipantInitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryParticipantInitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserInitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryUserInitTopic) {
   std::cout<<"ReqQryUserInitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2546,33 +2317,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryUserInitTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryUserInitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryUserInitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryCpuInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryCpuInfoTopic) {
   std::cout<<"ReqQryHistoryCpuInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2586,32 +2358,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryCpuInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //CPU
   v8::Local<v8::Object> paramOneCPUObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CPU").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCPUfileData(Nan::To<v8::String>(paramOneCPUObj).ToLocalChecked());
-  strcpy_s(field.CPU,51,*paramOneCPUfileData);
+  strncpy(field.CPU, *paramOneCPUfileData, 6);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2620,14 +2392,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryCpuInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHistoryCpuInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHistoryCpuInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryMemInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryMemInfoTopic) {
   std::cout<<"ReqQryHistoryMemInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2641,27 +2414,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryMemInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2670,14 +2443,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryMemInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHistoryMemInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHistoryMemInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryNetworkInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryNetworkInfoTopic) {
   std::cout<<"ReqQryHistoryNetworkInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2691,32 +2465,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryNetworkInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //LANNAME
   v8::Local<v8::Object> paramOneLANNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LANNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLANNAMEfileData(Nan::To<v8::String>(paramOneLANNAMEObj).ToLocalChecked());
-  strcpy_s(field.LANNAME,101,*paramOneLANNAMEfileData);
+  strncpy(field.LANNAME, *paramOneLANNAMEfileData, 11);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2725,14 +2499,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryNetworkInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHistoryNetworkInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHistoryNetworkInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryTradePeakTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryTradePeakTopic) {
   std::cout<<"ReqQryHistoryTradePeakTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2746,33 +2521,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryHistoryTradePeakTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryHistoryTradePeakTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryHistoryTradePeakTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySyslogEventTopic) {
   std::cout<<"ReqQrySyslogEventTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2786,22 +2562,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventTopic){
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //EventType
   v8::Local<v8::Object> paramOneEventTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2811,33 +2587,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventTopic){
  //WarningLevel
   v8::Local<v8::Object> paramOneWarningLevelObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("WarningLevel").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneWarningLevelfileData(Nan::To<v8::String>(paramOneWarningLevelObj).ToLocalChecked());
-  strcpy_s(field.WarningLevel,101,*paramOneWarningLevelfileData);
+  strncpy(field.WarningLevel, *paramOneWarningLevelfileData, 11);
 
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,2561,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 257);
 
  //EventName
   v8::Local<v8::Object> paramOneEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventNamefileData(Nan::To<v8::String>(paramOneEventNameObj).ToLocalChecked());
-  strcpy_s(field.EventName,641,*paramOneEventNamefileData);
+  strncpy(field.EventName, *paramOneEventNamefileData, 65);
 
  //IPAddress
   v8::Local<v8::Object> paramOneIPAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPAddressfileData(Nan::To<v8::String>(paramOneIPAddressObj).ToLocalChecked());
-  strcpy_s(field.IPAddress,151,*paramOneIPAddressfileData);
+  strncpy(field.IPAddress, *paramOneIPAddressfileData, 16);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySyslogEventTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySyslogEventTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventSubcriberTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySyslogEventSubcriberTopic) {
   std::cout<<"ReqQrySyslogEventSubcriberTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2851,27 +2628,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventSubcriberTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,2561,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 257);
 
  //EventName
   v8::Local<v8::Object> paramOneEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventNamefileData(Nan::To<v8::String>(paramOneEventNameObj).ToLocalChecked());
-  strcpy_s(field.EventName,641,*paramOneEventNamefileData);
+  strncpy(field.EventName, *paramOneEventNamefileData, 65);
 
  //WarningLevel
   v8::Local<v8::Object> paramOneWarningLevelObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("WarningLevel").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneWarningLevelfileData(Nan::To<v8::String>(paramOneWarningLevelObj).ToLocalChecked());
-  strcpy_s(field.WarningLevel,101,*paramOneWarningLevelfileData);
+  strncpy(field.WarningLevel, *paramOneWarningLevelfileData, 11);
 
  //filter
   v8::Local<v8::Object> paramOnefilterObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("filter").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnefilterfileData(Nan::To<v8::String>(paramOnefilterObj).ToLocalChecked());
-  strcpy_s(field.filter,5121,*paramOnefilterfileData);
+  strncpy(field.filter, *paramOnefilterfileData, 513);
 
  //antifilter
   v8::Local<v8::Object> paramOneantifilterObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("antifilter").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneantifilterfileData(Nan::To<v8::String>(paramOneantifilterObj).ToLocalChecked());
-  strcpy_s(field.antifilter,5121,*paramOneantifilterfileData);
+  strncpy(field.antifilter, *paramOneantifilterfileData, 513);
 
  //ObjectNum
   v8::Local<v8::Object> paramOneObjectNumObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectNum").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -2886,28 +2663,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventSubcriberTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //ProcessFlag
   v8::Local<v8::Object> paramOneProcessFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ProcessFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneProcessFlagfileData(Nan::To<v8::String>(paramOneProcessFlagObj).ToLocalChecked());
-  strcpy_s(field.ProcessFlag,11,*paramOneProcessFlagfileData);
+  strncpy(field.ProcessFlag, *paramOneProcessFlagfileData, 2);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySyslogEventSubcriberTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySyslogEventSubcriberTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTomcatInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTomcatInfoTopic) {
   std::cout<<"ReqQryTomcatInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2921,28 +2699,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTomcatInfoTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //SubObjectID
   v8::Local<v8::Object> paramOneSubObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SubObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSubObjectIDfileData(Nan::To<v8::String>(paramOneSubObjectIDObj).ToLocalChecked());
-  strcpy_s(field.SubObjectID,641,*paramOneSubObjectIDfileData);
+  strncpy(field.SubObjectID, *paramOneSubObjectIDfileData, 65);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTomcatInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTomcatInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryDBQueryTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryDBQueryTopic) {
   std::cout<<"ReqQryDBQueryTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2956,43 +2735,44 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryDBQueryTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,641,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryDBQueryTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryDBQueryTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryGetFileTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryGetFileTopic) {
   std::cout<<"ReqQryGetFileTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3006,12 +2786,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryGetFileTopic){
  //FileName
   v8::Local<v8::Object> paramOneFileNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FileName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFileNamefileData(Nan::To<v8::String>(paramOneFileNameObj).ToLocalChecked());
-  strcpy_s(field.FileName,2561,*paramOneFileNamefileData);
+  strncpy(field.FileName, *paramOneFileNamefileData, 257);
 
  //Version
   v8::Local<v8::Object> paramOneVersionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Version").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneVersionfileData(Nan::To<v8::String>(paramOneVersionObj).ToLocalChecked());
-  strcpy_s(field.Version,161,*paramOneVersionfileData);
+  strncpy(field.Version, *paramOneVersionfileData, 17);
 
  //Offset
   v8::Local<v8::Object> paramOneOffsetObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Offset").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3020,14 +2800,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryGetFileTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryGetFileTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryGetFileTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventUpdateTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySyslogEventUpdateTopic) {
   std::cout<<"ReqQrySyslogEventUpdateTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3041,22 +2822,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventUpdateTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //OccurDate
   v8::Local<v8::Object> paramOneOccurDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OccurDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOccurDatefileData(Nan::To<v8::String>(paramOneOccurDateObj).ToLocalChecked());
-  strcpy_s(field.OccurDate,81,*paramOneOccurDatefileData);
+  strncpy(field.OccurDate, *paramOneOccurDatefileData, 9);
 
  //OccurTime
   v8::Local<v8::Object> paramOneOccurTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OccurTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOccurTimefileData(Nan::To<v8::String>(paramOneOccurTimeObj).ToLocalChecked());
-  strcpy_s(field.OccurTime,81,*paramOneOccurTimefileData);
+  strncpy(field.OccurTime, *paramOneOccurTimefileData, 9);
 
  //EvendID
   v8::Local<v8::Object> paramOneEvendIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EvendID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3066,17 +2847,17 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventUpdateTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,2561,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 257);
 
  //IPAddress
   v8::Local<v8::Object> paramOneIPAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPAddressfileData(Nan::To<v8::String>(paramOneIPAddressObj).ToLocalChecked());
-  strcpy_s(field.IPAddress,151,*paramOneIPAddressfileData);
+  strncpy(field.IPAddress, *paramOneIPAddressfileData, 16);
 
  //EventName
   v8::Local<v8::Object> paramOneEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventNamefileData(Nan::To<v8::String>(paramOneEventNameObj).ToLocalChecked());
-  strcpy_s(field.EventName,641,*paramOneEventNamefileData);
+  strncpy(field.EventName, *paramOneEventNamefileData, 65);
 
  //EventNum
   v8::Local<v8::Object> paramOneEventNumObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventNum").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3091,38 +2872,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySyslogEventUpdateTopic){
  //EventDes
   v8::Local<v8::Object> paramOneEventDesObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDes").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDesfileData(Nan::To<v8::String>(paramOneEventDesObj).ToLocalChecked());
-  strcpy_s(field.EventDes,5121,*paramOneEventDesfileData);
+  strncpy(field.EventDes, *paramOneEventDesfileData, 513);
 
  //ProcessFlag
   v8::Local<v8::Object> paramOneProcessFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ProcessFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneProcessFlagfileData(Nan::To<v8::String>(paramOneProcessFlagObj).ToLocalChecked());
-  strcpy_s(field.ProcessFlag,11,*paramOneProcessFlagfileData);
+  strncpy(field.ProcessFlag, *paramOneProcessFlagfileData, 2);
 
  //WarningLevel
   v8::Local<v8::Object> paramOneWarningLevelObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("WarningLevel").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneWarningLevelfileData(Nan::To<v8::String>(paramOneWarningLevelObj).ToLocalChecked());
-  strcpy_s(field.WarningLevel,101,*paramOneWarningLevelfileData);
+  strncpy(field.WarningLevel, *paramOneWarningLevelfileData, 11);
 
  //EventDealDes
   v8::Local<v8::Object> paramOneEventDealDesObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDealDes").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDealDesfileData(Nan::To<v8::String>(paramOneEventDealDesObj).ToLocalChecked());
-  strcpy_s(field.EventDealDes,641,*paramOneEventDealDesfileData);
+  strncpy(field.EventDealDes, *paramOneEventDealDesfileData, 65);
 
  //FullEventName
   v8::Local<v8::Object> paramOneFullEventNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FullEventName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFullEventNamefileData(Nan::To<v8::String>(paramOneFullEventNameObj).ToLocalChecked());
-  strcpy_s(field.FullEventName,2561,*paramOneFullEventNamefileData);
+  strncpy(field.FullEventName, *paramOneFullEventNamefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQrySyslogEventUpdateTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQrySyslogEventUpdateTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningQueryTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryWarningQueryTopic) {
   std::cout<<"ReqQryWarningQueryTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3140,14 +2922,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWarningQueryTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryWarningQueryTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryWarningQueryTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWebVisitTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryWebVisitTopic) {
   std::cout<<"ReqQryWebVisitTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3161,43 +2944,44 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryWebVisitTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
  //BeginDate
   v8::Local<v8::Object> paramOneBeginDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("BeginDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneBeginDatefileData(Nan::To<v8::String>(paramOneBeginDateObj).ToLocalChecked());
-  strcpy_s(field.BeginDate,81,*paramOneBeginDatefileData);
+  strncpy(field.BeginDate, *paramOneBeginDatefileData, 9);
 
  //BeginTime
   v8::Local<v8::Object> paramOneBeginTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("BeginTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneBeginTimefileData(Nan::To<v8::String>(paramOneBeginTimeObj).ToLocalChecked());
-  strcpy_s(field.BeginTime,81,*paramOneBeginTimefileData);
+  strncpy(field.BeginTime, *paramOneBeginTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryWebVisitTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryWebVisitTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryGeneralOperateTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryGeneralOperateTopic) {
   std::cout<<"ReqQryGeneralOperateTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3216,28 +3000,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryGeneralOperateTopic){
  //GeneralOperateTable
   v8::Local<v8::Object> paramOneGeneralOperateTableObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GeneralOperateTable").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGeneralOperateTablefileData(Nan::To<v8::String>(paramOneGeneralOperateTableObj).ToLocalChecked());
-  strcpy_s(field.GeneralOperateTable,1281,*paramOneGeneralOperateTablefileData);
+  strncpy(field.GeneralOperateTable, *paramOneGeneralOperateTablefileData, 129);
 
  //GeneralOperateOption
   v8::Local<v8::Object> paramOneGeneralOperateOptionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GeneralOperateOption").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGeneralOperateOptionfileData(Nan::To<v8::String>(paramOneGeneralOperateOptionObj).ToLocalChecked());
-  strcpy_s(field.GeneralOperateOption,8001,*paramOneGeneralOperateOptionfileData);
+  strncpy(field.GeneralOperateOption, *paramOneGeneralOperateOptionfileData, 801);
 
  //GeneralOperateSet
   v8::Local<v8::Object> paramOneGeneralOperateSetObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GeneralOperateSet").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGeneralOperateSetfileData(Nan::To<v8::String>(paramOneGeneralOperateSetObj).ToLocalChecked());
-  strcpy_s(field.GeneralOperateSet,30001,*paramOneGeneralOperateSetfileData);
+  strncpy(field.GeneralOperateSet, *paramOneGeneralOperateSetfileData, 3001);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryGeneralOperateTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryGeneralOperateTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceLinkedTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceLinkedTopic) {
   std::cout<<"ReqQryNetDeviceLinkedTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3261,7 +3046,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceLinkedTopic){
  //FuctionArea
   v8::Local<v8::Object> paramOneFuctionAreaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FuctionArea").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFuctionAreafileData(Nan::To<v8::String>(paramOneFuctionAreaObj).ToLocalChecked());
-  strcpy_s(field.FuctionArea,641,*paramOneFuctionAreafileData);
+  strncpy(field.FuctionArea, *paramOneFuctionAreafileData, 65);
 
  //IPDECODE
   v8::Local<v8::Object> paramOneIPDECODEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPDECODE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3271,18 +3056,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceLinkedTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceLinkedTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceLinkedTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginStatTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginStatTopic) {
   std::cout<<"ReqQryTradeUserLoginStatTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3296,18 +3082,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeUserLoginStatTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradeUserLoginStatTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradeUserLoginStatTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeFrontOrderRttStatTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradeFrontOrderRttStatTopic) {
   std::cout<<"ReqQryTradeFrontOrderRttStatTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3321,33 +3108,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeFrontOrderRttStatTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,641,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 65);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonStartTime
   v8::Local<v8::Object> paramOneMonStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonStartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonStartTimefileData(Nan::To<v8::String>(paramOneMonStartTimeObj).ToLocalChecked());
-  strcpy_s(field.MonStartTime,81,*paramOneMonStartTimefileData);
+  strncpy(field.MonStartTime, *paramOneMonStartTimefileData, 9);
 
  //MonEndTime
   v8::Local<v8::Object> paramOneMonEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonEndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonEndTimefileData(Nan::To<v8::String>(paramOneMonEndTimeObj).ToLocalChecked());
-  strcpy_s(field.MonEndTime,81,*paramOneMonEndTimefileData);
+  strncpy(field.MonEndTime, *paramOneMonEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradeFrontOrderRttStatTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradeFrontOrderRttStatTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticTradeOrderStatesTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryParticTradeOrderStatesTopic) {
   std::cout<<"ReqQryParticTradeOrderStatesTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3361,38 +3149,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryParticTradeOrderStatesTopic){
  //ParticipantID
   v8::Local<v8::Object> paramOneParticipantIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ParticipantID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneParticipantIDfileData(Nan::To<v8::String>(paramOneParticipantIDObj).ToLocalChecked());
-  strcpy_s(field.ParticipantID,101,*paramOneParticipantIDfileData);
+  strncpy(field.ParticipantID, *paramOneParticipantIDfileData, 11);
 
  //UserID
   v8::Local<v8::Object> paramOneUserIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserIDfileData(Nan::To<v8::String>(paramOneUserIDObj).ToLocalChecked());
-  strcpy_s(field.UserID,151,*paramOneUserIDfileData);
+  strncpy(field.UserID, *paramOneUserIDfileData, 16);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonStartTime
   v8::Local<v8::Object> paramOneMonStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonStartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonStartTimefileData(Nan::To<v8::String>(paramOneMonStartTimeObj).ToLocalChecked());
-  strcpy_s(field.MonStartTime,81,*paramOneMonStartTimefileData);
+  strncpy(field.MonStartTime, *paramOneMonStartTimefileData, 9);
 
  //MonEndTime
   v8::Local<v8::Object> paramOneMonEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonEndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonEndTimefileData(Nan::To<v8::String>(paramOneMonEndTimeObj).ToLocalChecked());
-  strcpy_s(field.MonEndTime,81,*paramOneMonEndTimefileData);
+  strncpy(field.MonEndTime, *paramOneMonEndTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryParticTradeOrderStatesTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryParticTradeOrderStatesTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryRouterInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryRouterInfoTopic) {
   std::cout<<"ReqQryRouterInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3406,27 +3195,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryRouterInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3435,14 +3224,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryRouterInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryRouterInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryRouterInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryDiskIOTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryDiskIOTopic) {
   std::cout<<"ReqQryDiskIOTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3456,27 +3246,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryDiskIOTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3485,14 +3275,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryDiskIOTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryDiskIOTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryDiskIOTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryStatInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryStatInfoTopic) {
   std::cout<<"ReqQryStatInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3506,27 +3297,27 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryStatInfoTopic){
  //HostName
   v8::Local<v8::Object> paramOneHostNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HostName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHostNamefileData(Nan::To<v8::String>(paramOneHostNameObj).ToLocalChecked());
-  strcpy_s(field.HostName,641,*paramOneHostNamefileData);
+  strncpy(field.HostName, *paramOneHostNamefileData, 65);
 
  //StartDate
   v8::Local<v8::Object> paramOneStartDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartDatefileData(Nan::To<v8::String>(paramOneStartDateObj).ToLocalChecked());
-  strcpy_s(field.StartDate,81,*paramOneStartDatefileData);
+  strncpy(field.StartDate, *paramOneStartDatefileData, 9);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //EndDate
   v8::Local<v8::Object> paramOneEndDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndDatefileData(Nan::To<v8::String>(paramOneEndDateObj).ToLocalChecked());
-  strcpy_s(field.EndDate,81,*paramOneEndDatefileData);
+  strncpy(field.EndDate, *paramOneEndDatefileData, 9);
 
  //EndTime
   v8::Local<v8::Object> paramOneEndTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEndTimefileData(Nan::To<v8::String>(paramOneEndTimeObj).ToLocalChecked());
-  strcpy_s(field.EndTime,81,*paramOneEndTimefileData);
+  strncpy(field.EndTime, *paramOneEndTimefileData, 9);
 
  //KeepAlive
   v8::Local<v8::Object> paramOneKeepAliveObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3535,14 +3326,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryStatInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryStatInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryStatInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeOrderRttCutLineTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryTradeOrderRttCutLineTopic) {
   std::cout<<"ReqQryTradeOrderRttCutLineTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3556,22 +3348,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeOrderRttCutLineTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //UserName
   v8::Local<v8::Object> paramOneUserNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserNamefileData(Nan::To<v8::String>(paramOneUserNameObj).ToLocalChecked());
-  strcpy_s(field.UserName,641,*paramOneUserNamefileData);
+  strncpy(field.UserName, *paramOneUserNamefileData, 65);
 
  //OrderRttCutLine
   v8::Local<v8::Object> paramOneOrderRttCutLineObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OrderRttCutLine").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOrderRttCutLinefileData(Nan::To<v8::String>(paramOneOrderRttCutLineObj).ToLocalChecked());
-  strcpy_s(field.OrderRttCutLine,1281,*paramOneOrderRttCutLinefileData);
+  strncpy(field.OrderRttCutLine, *paramOneOrderRttCutLinefileData, 129);
 
  //OrderRttWidth
   v8::Local<v8::Object> paramOneOrderRttWidthObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OrderRttWidth").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3580,14 +3372,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryTradeOrderRttCutLineTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryTradeOrderRttCutLineTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryTradeOrderRttCutLineTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryClientInfoTopic) {
   std::cout<<"ReqQryClientInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3601,23 +3394,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryClientInfoTopic){
  //ClientID
   v8::Local<v8::Object> paramOneClientIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ClientID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneClientIDfileData(Nan::To<v8::String>(paramOneClientIDObj).ToLocalChecked());
-  strcpy_s(field.ClientID,101,*paramOneClientIDfileData);
+  strncpy(field.ClientID, *paramOneClientIDfileData, 11);
 
  //ClientName
   v8::Local<v8::Object> paramOneClientNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ClientName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneClientNamefileData(Nan::To<v8::String>(paramOneClientNameObj).ToLocalChecked());
-  strcpy_s(field.ClientName,801,*paramOneClientNamefileData);
+  strncpy(field.ClientName, *paramOneClientNamefileData, 81);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryClientInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryClientInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryEventDescriptionTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryEventDescriptionTopic) {
   std::cout<<"ReqQryEventDescriptionTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3631,38 +3425,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryEventDescriptionTopic){
  //EventDesID
   v8::Local<v8::Object> paramOneEventDesIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDesID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDesIDfileData(Nan::To<v8::String>(paramOneEventDesIDObj).ToLocalChecked());
-  strcpy_s(field.EventDesID,121,*paramOneEventDesIDfileData);
+  strncpy(field.EventDesID, *paramOneEventDesIDfileData, 13);
 
  //UserName
   v8::Local<v8::Object> paramOneUserNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserNamefileData(Nan::To<v8::String>(paramOneUserNameObj).ToLocalChecked());
-  strcpy_s(field.UserName,641,*paramOneUserNamefileData);
+  strncpy(field.UserName, *paramOneUserNamefileData, 65);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //EventDes
   v8::Local<v8::Object> paramOneEventDesObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventDes").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventDesfileData(Nan::To<v8::String>(paramOneEventDesObj).ToLocalChecked());
-  strcpy_s(field.EventDes,4001,*paramOneEventDesfileData);
+  strncpy(field.EventDes, *paramOneEventDesfileData, 401);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryEventDescriptionTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryEventDescriptionTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFrontUniqueIDTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFrontUniqueIDTopic) {
   std::cout<<"ReqQryFrontUniqueIDTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3681,18 +3476,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFrontUniqueIDTopic){
  //FrontName
   v8::Local<v8::Object> paramOneFrontNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FrontName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFrontNamefileData(Nan::To<v8::String>(paramOneFrontNameObj).ToLocalChecked());
-  strcpy_s(field.FrontName,501,*paramOneFrontNamefileData);
+  strncpy(field.FrontName, *paramOneFrontNamefileData, 51);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryFrontUniqueIDTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryFrontUniqueIDTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkAddrChangeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkAddrChangeTopic) {
   std::cout<<"ReqQryNetPartyLinkAddrChangeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3721,38 +3517,39 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkAddrChangeTopic){
  //OLDADDRESS
   v8::Local<v8::Object> paramOneOLDADDRESSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OLDADDRESS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOLDADDRESSfileData(Nan::To<v8::String>(paramOneOLDADDRESSObj).ToLocalChecked());
-  strcpy_s(field.OLDADDRESS,2561,*paramOneOLDADDRESSfileData);
+  strncpy(field.OLDADDRESS, *paramOneOLDADDRESSfileData, 257);
 
  //NEWADDRESS
   v8::Local<v8::Object> paramOneNEWADDRESSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("NEWADDRESS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNEWADDRESSfileData(Nan::To<v8::String>(paramOneNEWADDRESSObj).ToLocalChecked());
-  strcpy_s(field.NEWADDRESS,2561,*paramOneNEWADDRESSfileData);
+  strncpy(field.NEWADDRESS, *paramOneNEWADDRESSfileData, 257);
 
  //OPERATOR
   v8::Local<v8::Object> paramOneOPERATORObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OPERATOR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOPERATORfileData(Nan::To<v8::String>(paramOneOPERATORObj).ToLocalChecked());
-  strcpy_s(field.OPERATOR,321,*paramOneOPERATORfileData);
+  strncpy(field.OPERATOR, *paramOneOPERATORfileData, 33);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetPartyLinkAddrChangeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetPartyLinkAddrChangeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDelPartyLinkInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDelPartyLinkInfoTopic) {
   std::cout<<"ReqQryNetDelPartyLinkInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3776,148 +3573,149 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDelPartyLinkInfoTopic){
  //MEMBER_NO
   v8::Local<v8::Object> paramOneMEMBER_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NOfileData(Nan::To<v8::String>(paramOneMEMBER_NOObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NO,321,*paramOneMEMBER_NOfileData);
+  strncpy(field.MEMBER_NO, *paramOneMEMBER_NOfileData, 33);
 
  //MEMBER_NAME
   v8::Local<v8::Object> paramOneMEMBER_NAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NAMEfileData(Nan::To<v8::String>(paramOneMEMBER_NAMEObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NAME,641,*paramOneMEMBER_NAMEfileData);
+  strncpy(field.MEMBER_NAME, *paramOneMEMBER_NAMEfileData, 65);
 
  //REMOTE_ADDR
   v8::Local<v8::Object> paramOneREMOTE_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("REMOTE_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneREMOTE_ADDRfileData(Nan::To<v8::String>(paramOneREMOTE_ADDRObj).ToLocalChecked());
-  strcpy_s(field.REMOTE_ADDR,641,*paramOneREMOTE_ADDRfileData);
+  strncpy(field.REMOTE_ADDR, *paramOneREMOTE_ADDRfileData, 65);
 
  //LOCAL_ADDR
   v8::Local<v8::Object> paramOneLOCAL_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LOCAL_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLOCAL_ADDRfileData(Nan::To<v8::String>(paramOneLOCAL_ADDRObj).ToLocalChecked());
-  strcpy_s(field.LOCAL_ADDR,641,*paramOneLOCAL_ADDRfileData);
+  strncpy(field.LOCAL_ADDR, *paramOneLOCAL_ADDRfileData, 65);
 
  //ADDRESS
   v8::Local<v8::Object> paramOneADDRESSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ADDRESS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneADDRESSfileData(Nan::To<v8::String>(paramOneADDRESSObj).ToLocalChecked());
-  strcpy_s(field.ADDRESS,2561,*paramOneADDRESSfileData);
+  strncpy(field.ADDRESS, *paramOneADDRESSfileData, 257);
 
  //LINE_STATUS
   v8::Local<v8::Object> paramOneLINE_STATUSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LINE_STATUS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLINE_STATUSfileData(Nan::To<v8::String>(paramOneLINE_STATUSObj).ToLocalChecked());
-  strcpy_s(field.LINE_STATUS,321,*paramOneLINE_STATUSfileData);
+  strncpy(field.LINE_STATUS, *paramOneLINE_STATUSfileData, 33);
 
  //CONTACT
   v8::Local<v8::Object> paramOneCONTACTObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CONTACT").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCONTACTfileData(Nan::To<v8::String>(paramOneCONTACTObj).ToLocalChecked());
-  strcpy_s(field.CONTACT,321,*paramOneCONTACTfileData);
+  strncpy(field.CONTACT, *paramOneCONTACTfileData, 33);
 
  //TELEPHONE
   v8::Local<v8::Object> paramOneTELEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TELEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTELEPHONEfileData(Nan::To<v8::String>(paramOneTELEPHONEObj).ToLocalChecked());
-  strcpy_s(field.TELEPHONE,641,*paramOneTELEPHONEfileData);
+  strncpy(field.TELEPHONE, *paramOneTELEPHONEfileData, 65);
 
  //MOBILEPHONE
   v8::Local<v8::Object> paramOneMOBILEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MOBILEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMOBILEPHONEfileData(Nan::To<v8::String>(paramOneMOBILEPHONEObj).ToLocalChecked());
-  strcpy_s(field.MOBILEPHONE,641,*paramOneMOBILEPHONEfileData);
+  strncpy(field.MOBILEPHONE, *paramOneMOBILEPHONEfileData, 65);
 
  //EMAIL
   v8::Local<v8::Object> paramOneEMAILObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EMAIL").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEMAILfileData(Nan::To<v8::String>(paramOneEMAILObj).ToLocalChecked());
-  strcpy_s(field.EMAIL,641,*paramOneEMAILfileData);
+  strncpy(field.EMAIL, *paramOneEMAILfileData, 65);
 
  //FAX
   v8::Local<v8::Object> paramOneFAXObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FAX").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFAXfileData(Nan::To<v8::String>(paramOneFAXObj).ToLocalChecked());
-  strcpy_s(field.FAX,641,*paramOneFAXfileData);
+  strncpy(field.FAX, *paramOneFAXfileData, 65);
 
  //PROVINCE
   v8::Local<v8::Object> paramOnePROVINCEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PROVINCE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROVINCEfileData(Nan::To<v8::String>(paramOnePROVINCEObj).ToLocalChecked());
-  strcpy_s(field.PROVINCE,321,*paramOnePROVINCEfileData);
+  strncpy(field.PROVINCE, *paramOnePROVINCEfileData, 33);
 
  //DDN_NO
   v8::Local<v8::Object> paramOneDDN_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DDN_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDDN_NOfileData(Nan::To<v8::String>(paramOneDDN_NOObj).ToLocalChecked());
-  strcpy_s(field.DDN_NO,641,*paramOneDDN_NOfileData);
+  strncpy(field.DDN_NO, *paramOneDDN_NOfileData, 65);
 
  //IN_MODE
   v8::Local<v8::Object> paramOneIN_MODEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IN_MODE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIN_MODEfileData(Nan::To<v8::String>(paramOneIN_MODEObj).ToLocalChecked());
-  strcpy_s(field.IN_MODE,641,*paramOneIN_MODEfileData);
+  strncpy(field.IN_MODE, *paramOneIN_MODEfileData, 65);
 
  //IP_WAN
   v8::Local<v8::Object> paramOneIP_WANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_WAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_WANfileData(Nan::To<v8::String>(paramOneIP_WANObj).ToLocalChecked());
-  strcpy_s(field.IP_WAN,641,*paramOneIP_WANfileData);
+  strncpy(field.IP_WAN, *paramOneIP_WANfileData, 65);
 
  //IP_LAN
   v8::Local<v8::Object> paramOneIP_LANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_LAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_LANfileData(Nan::To<v8::String>(paramOneIP_LANObj).ToLocalChecked());
-  strcpy_s(field.IP_LAN,641,*paramOneIP_LANfileData);
+  strncpy(field.IP_LAN, *paramOneIP_LANfileData, 65);
 
  //IPADDR
   v8::Local<v8::Object> paramOneIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPADDRfileData(Nan::To<v8::String>(paramOneIPADDRObj).ToLocalChecked());
-  strcpy_s(field.IPADDR,641,*paramOneIPADDRfileData);
+  strncpy(field.IPADDR, *paramOneIPADDRfileData, 65);
 
  //Interface
   v8::Local<v8::Object> paramOneInterfaceObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Interface").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInterfacefileData(Nan::To<v8::String>(paramOneInterfaceObj).ToLocalChecked());
-  strcpy_s(field.Interface,641,*paramOneInterfacefileData);
+  strncpy(field.Interface, *paramOneInterfacefileData, 65);
 
  //INTERFACE_DATE
   v8::Local<v8::Object> paramOneINTERFACE_DATEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("INTERFACE_DATE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneINTERFACE_DATEfileData(Nan::To<v8::String>(paramOneINTERFACE_DATEObj).ToLocalChecked());
-  strcpy_s(field.INTERFACE_DATE,321,*paramOneINTERFACE_DATEfileData);
+  strncpy(field.INTERFACE_DATE, *paramOneINTERFACE_DATEfileData, 33);
 
  //SOFTWARE
   v8::Local<v8::Object> paramOneSOFTWAREObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SOFTWARE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSOFTWAREfileData(Nan::To<v8::String>(paramOneSOFTWAREObj).ToLocalChecked());
-  strcpy_s(field.SOFTWARE,321,*paramOneSOFTWAREfileData);
+  strncpy(field.SOFTWARE, *paramOneSOFTWAREfileData, 33);
 
  //FEE_TYPE
   v8::Local<v8::Object> paramOneFEE_TYPEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FEE_TYPE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFEE_TYPEfileData(Nan::To<v8::String>(paramOneFEE_TYPEObj).ToLocalChecked());
-  strcpy_s(field.FEE_TYPE,321,*paramOneFEE_TYPEfileData);
+  strncpy(field.FEE_TYPE, *paramOneFEE_TYPEfileData, 33);
 
  //SERVICEPROVIDER
   v8::Local<v8::Object> paramOneSERVICEPROVIDERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SERVICEPROVIDER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSERVICEPROVIDERfileData(Nan::To<v8::String>(paramOneSERVICEPROVIDERObj).ToLocalChecked());
-  strcpy_s(field.SERVICEPROVIDER,321,*paramOneSERVICEPROVIDERfileData);
+  strncpy(field.SERVICEPROVIDER, *paramOneSERVICEPROVIDERfileData, 33);
 
  //IF_ZIYING
   v8::Local<v8::Object> paramOneIF_ZIYINGObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_ZIYING").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_ZIYINGfileData(Nan::To<v8::String>(paramOneIF_ZIYINGObj).ToLocalChecked());
-  strcpy_s(field.IF_ZIYING,321,*paramOneIF_ZIYINGfileData);
+  strncpy(field.IF_ZIYING, *paramOneIF_ZIYINGfileData, 33);
 
  //IF_TUOGUAN
   v8::Local<v8::Object> paramOneIF_TUOGUANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_TUOGUAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_TUOGUANfileData(Nan::To<v8::String>(paramOneIF_TUOGUANObj).ToLocalChecked());
-  strcpy_s(field.IF_TUOGUAN,321,*paramOneIF_TUOGUANfileData);
+  strncpy(field.IF_TUOGUAN, *paramOneIF_TUOGUANfileData, 33);
 
  //HASOTHER
   v8::Local<v8::Object> paramOneHASOTHERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HASOTHER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHASOTHERfileData(Nan::To<v8::String>(paramOneHASOTHERObj).ToLocalChecked());
-  strcpy_s(field.HASOTHER,321,*paramOneHASOTHERfileData);
+  strncpy(field.HASOTHER, *paramOneHASOTHERfileData, 33);
 
  //SEAT_NO
   v8::Local<v8::Object> paramOneSEAT_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SEAT_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSEAT_NOfileData(Nan::To<v8::String>(paramOneSEAT_NOObj).ToLocalChecked());
-  strcpy_s(field.SEAT_NO,10241,*paramOneSEAT_NOfileData);
+  strncpy(field.SEAT_NO, *paramOneSEAT_NOfileData, 1025);
 
  //PRO
   v8::Local<v8::Object> paramOnePROObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PRO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROfileData(Nan::To<v8::String>(paramOnePROObj).ToLocalChecked());
-  strcpy_s(field.PRO,5121,*paramOnePROfileData);
+  strncpy(field.PRO, *paramOnePROfileData, 513);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDelPartyLinkInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDelPartyLinkInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic) {
   std::cout<<"ReqQryPerformanceTopTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -3936,7 +3734,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic){
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,641,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 65);
 
  //NetArea
   v8::Local<v8::Object> paramOneNetAreaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("NetArea").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3946,12 +3744,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic){
  //NetSubArea
   v8::Local<v8::Object> paramOneNetSubAreaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("NetSubArea").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNetSubAreafileData(Nan::To<v8::String>(paramOneNetSubAreaObj).ToLocalChecked());
-  strcpy_s(field.NetSubArea,641,*paramOneNetSubAreafileData);
+  strncpy(field.NetSubArea, *paramOneNetSubAreafileData, 65);
 
  //KeyWord
   v8::Local<v8::Object> paramOneKeyWordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeyWord").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneKeyWordfileData(Nan::To<v8::String>(paramOneKeyWordObj).ToLocalChecked());
-  strcpy_s(field.KeyWord,1001,*paramOneKeyWordfileData);
+  strncpy(field.KeyWord, *paramOneKeyWordfileData, 101);
 
  //SortValue
   v8::Local<v8::Object> paramOneSortValueObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SortValue").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -3981,18 +3779,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic){
  //TopResult
   v8::Local<v8::Object> paramOneTopResultObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TopResult").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTopResultfileData(Nan::To<v8::String>(paramOneTopResultObj).ToLocalChecked());
-  strcpy_s(field.TopResult,2561,*paramOneTopResultfileData);
+  strncpy(field.TopResult, *paramOneTopResultfileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryPerformanceTopTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryPerformanceTopTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstrumentStatusTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryInstrumentStatusTopic) {
   std::cout<<"ReqQryInstrumentStatusTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4006,12 +3805,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstrumentStatusTopic){
  //SettlementGroupID
   v8::Local<v8::Object> paramOneSettlementGroupIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SettlementGroupID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSettlementGroupIDfileData(Nan::To<v8::String>(paramOneSettlementGroupIDObj).ToLocalChecked());
-  strcpy_s(field.SettlementGroupID,81,*paramOneSettlementGroupIDfileData);
+  strncpy(field.SettlementGroupID, *paramOneSettlementGroupIDfileData, 9);
 
  //InstrumentID
   v8::Local<v8::Object> paramOneInstrumentIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstrumentID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstrumentIDfileData(Nan::To<v8::String>(paramOneInstrumentIDObj).ToLocalChecked());
-  strcpy_s(field.InstrumentID,301,*paramOneInstrumentIDfileData);
+  strncpy(field.InstrumentID, *paramOneInstrumentIDfileData, 31);
 
  //InstrumentStatus
   v8::Local<v8::Object> paramOneInstrumentStatusObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstrumentStatus").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4026,7 +3825,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstrumentStatusTopic){
  //EnterTime
   v8::Local<v8::Object> paramOneEnterTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EnterTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEnterTimefileData(Nan::To<v8::String>(paramOneEnterTimeObj).ToLocalChecked());
-  strcpy_s(field.EnterTime,81,*paramOneEnterTimefileData);
+  strncpy(field.EnterTime, *paramOneEnterTimefileData, 9);
 
  //EnterReason
   v8::Local<v8::Object> paramOneEnterReasonObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EnterReason").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4036,18 +3835,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryInstrumentStatusTopic){
  //EnterDate
   v8::Local<v8::Object> paramOneEnterDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EnterDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEnterDatefileData(Nan::To<v8::String>(paramOneEnterDateObj).ToLocalChecked());
-  strcpy_s(field.EnterDate,81,*paramOneEnterDatefileData);
+  strncpy(field.EnterDate, *paramOneEnterDatefileData, 9);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryInstrumentStatusTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryInstrumentStatusTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic) {
   std::cout<<"ReqQryCurrTradingSegmentAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4061,7 +3861,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic){
  //SettlementGroupID
   v8::Local<v8::Object> paramOneSettlementGroupIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SettlementGroupID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSettlementGroupIDfileData(Nan::To<v8::String>(paramOneSettlementGroupIDObj).ToLocalChecked());
-  strcpy_s(field.SettlementGroupID,81,*paramOneSettlementGroupIDfileData);
+  strncpy(field.SettlementGroupID, *paramOneSettlementGroupIDfileData, 9);
 
  //TradingSegmentSN
   v8::Local<v8::Object> paramOneTradingSegmentSNObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingSegmentSN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4071,12 +3871,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic){
  //TradingSegmentName
   v8::Local<v8::Object> paramOneTradingSegmentNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingSegmentName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTradingSegmentNamefileData(Nan::To<v8::String>(paramOneTradingSegmentNameObj).ToLocalChecked());
-  strcpy_s(field.TradingSegmentName,201,*paramOneTradingSegmentNamefileData);
+  strncpy(field.TradingSegmentName, *paramOneTradingSegmentNamefileData, 21);
 
  //StartTime
   v8::Local<v8::Object> paramOneStartTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneStartTimefileData(Nan::To<v8::String>(paramOneStartTimeObj).ToLocalChecked());
-  strcpy_s(field.StartTime,81,*paramOneStartTimefileData);
+  strncpy(field.StartTime, *paramOneStartTimefileData, 9);
 
  //InstrumentStatus
   v8::Local<v8::Object> paramOneInstrumentStatusObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstrumentStatus").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4086,7 +3886,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic){
  //InstrumentID
   v8::Local<v8::Object> paramOneInstrumentIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstrumentID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstrumentIDfileData(Nan::To<v8::String>(paramOneInstrumentIDObj).ToLocalChecked());
-  strcpy_s(field.InstrumentID,301,*paramOneInstrumentIDfileData);
+  strncpy(field.InstrumentID, *paramOneInstrumentIDfileData, 31);
 
  //AdvanceDays
   v8::Local<v8::Object> paramOneAdvanceDaysObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AdvanceDays").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4095,14 +3895,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryCurrTradingSegmentAttrTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryCurrTradingSegmentAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryCurrTradingSegmentAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryRealTimeNetObjectAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryRealTimeNetObjectAttrTopic) {
   std::cout<<"ReqQryRealTimeNetObjectAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4116,23 +3917,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryRealTimeNetObjectAttrTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryRealTimeNetObjectAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryRealTimeNetObjectAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetAreaTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetAreaTopic) {
   std::cout<<"ReqQryNetAreaTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4150,14 +3952,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetAreaTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetAreaTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetAreaTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetSubAreaTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetSubAreaTopic) {
   std::cout<<"ReqQryNetSubAreaTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4180,14 +3983,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetSubAreaTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetSubAreaTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetSubAreaTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetSubAreaIPTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetSubAreaIPTopic) {
   std::cout<<"ReqQryNetSubAreaIPTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4215,14 +4019,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetSubAreaIPTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetSubAreaIPTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetSubAreaIPTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceDetectTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceDetectTopic) {
   std::cout<<"ReqQryNetDeviceDetectTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4246,23 +4051,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceDetectTopic){
  //IP
   v8::Local<v8::Object> paramOneIPObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPfileData(Nan::To<v8::String>(paramOneIPObj).ToLocalChecked());
-  strcpy_s(field.IP,151,*paramOneIPfileData);
+  strncpy(field.IP, *paramOneIPfileData, 16);
 
  //Mask
   v8::Local<v8::Object> paramOneMaskObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Mask").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMaskfileData(Nan::To<v8::String>(paramOneMaskObj).ToLocalChecked());
-  strcpy_s(field.Mask,151,*paramOneMaskfileData);
+  strncpy(field.Mask, *paramOneMaskfileData, 16);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceDetectTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceDetectTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceRequestTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceRequestTopic) {
   std::cout<<"ReqQryNetDeviceRequestTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4286,7 +4092,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceRequestTopic){
  //FuctionArea
   v8::Local<v8::Object> paramOneFuctionAreaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FuctionArea").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFuctionAreafileData(Nan::To<v8::String>(paramOneFuctionAreaObj).ToLocalChecked());
-  strcpy_s(field.FuctionArea,641,*paramOneFuctionAreafileData);
+  strncpy(field.FuctionArea, *paramOneFuctionAreafileData, 65);
 
  //IPDECODE
   v8::Local<v8::Object> paramOneIPDECODEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPDECODE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4295,14 +4101,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceRequestTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceRequestTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceRequestTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBuildingTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetBuildingTopic) {
   std::cout<<"ReqQryNetBuildingTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4320,14 +4127,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBuildingTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetBuildingTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetBuildingTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetRoomTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetRoomTopic) {
   std::cout<<"ReqQryNetRoomTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4350,14 +4158,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetRoomTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetRoomTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetRoomTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCabinetsTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetCabinetsTopic) {
   std::cout<<"ReqQryNetCabinetsTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4385,14 +4194,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCabinetsTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetCabinetsTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetCabinetsTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetOIDTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetOIDTopic) {
   std::cout<<"ReqQryNetOIDTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4416,32 +4226,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetOIDTopic){
  //Manufactory
   v8::Local<v8::Object> paramOneManufactoryObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Manufactory").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneManufactoryfileData(Nan::To<v8::String>(paramOneManufactoryObj).ToLocalChecked());
-  strcpy_s(field.Manufactory,641,*paramOneManufactoryfileData);
+  strncpy(field.Manufactory, *paramOneManufactoryfileData, 65);
 
  //DeviceType
   v8::Local<v8::Object> paramOneDeviceTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceTypefileData(Nan::To<v8::String>(paramOneDeviceTypeObj).ToLocalChecked());
-  strcpy_s(field.DeviceType,641,*paramOneDeviceTypefileData);
+  strncpy(field.DeviceType, *paramOneDeviceTypefileData, 65);
 
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //OID
   v8::Local<v8::Object> paramOneOIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOIDfileData(Nan::To<v8::String>(paramOneOIDObj).ToLocalChecked());
-  strcpy_s(field.OID,641,*paramOneOIDfileData);
+  strncpy(field.OID, *paramOneOIDfileData, 65);
 
  //Unit
   v8::Local<v8::Object> paramOneUnitObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Unit").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUnitfileData(Nan::To<v8::String>(paramOneUnitObj).ToLocalChecked());
-  strcpy_s(field.Unit,641,*paramOneUnitfileData);
+  strncpy(field.Unit, *paramOneUnitfileData, 65);
 
  //isTheTable
   v8::Local<v8::Object> paramOneisTheTableObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("isTheTable").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4450,14 +4260,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetOIDTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetOIDTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetOIDTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic) {
   std::cout<<"ReqQryNetTimePolicyTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4481,12 +4292,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //PolicyType
   v8::Local<v8::Object> paramOnePolicyTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PolicyType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4496,7 +4307,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic){
  //PolicyString
   v8::Local<v8::Object> paramOnePolicyStringObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PolicyString").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePolicyStringfileData(Nan::To<v8::String>(paramOnePolicyStringObj).ToLocalChecked());
-  strcpy_s(field.PolicyString,5121,*paramOnePolicyStringfileData);
+  strncpy(field.PolicyString, *paramOnePolicyStringfileData, 513);
 
  //TradingDay
   v8::Local<v8::Object> paramOneTradingDayObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TradingDay").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4506,7 +4317,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic){
  //Description
   v8::Local<v8::Object> paramOneDescriptionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Description").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDescriptionfileData(Nan::To<v8::String>(paramOneDescriptionObj).ToLocalChecked());
-  strcpy_s(field.Description,2561,*paramOneDescriptionfileData);
+  strncpy(field.Description, *paramOneDescriptionfileData, 257);
 
  //Operation
   v8::Local<v8::Object> paramOneOperationObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Operation").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4515,14 +4326,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetTimePolicyTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetTimePolicyTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetTimePolicyTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetGatherTaskTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetGatherTaskTopic) {
   std::cout<<"ReqQryNetGatherTaskTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4546,12 +4358,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetGatherTaskTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
  //PolicyTypeID
   v8::Local<v8::Object> paramOnePolicyTypeIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PolicyTypeID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4570,14 +4382,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetGatherTaskTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetGatherTaskTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetGatherTaskTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceChgTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceChgTopic) {
   std::cout<<"ReqQryNetDeviceChgTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4601,23 +4414,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceChgTopic){
  //OldObjectID
   v8::Local<v8::Object> paramOneOldObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OldObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOldObjectIDfileData(Nan::To<v8::String>(paramOneOldObjectIDObj).ToLocalChecked());
-  strcpy_s(field.OldObjectID,1281,*paramOneOldObjectIDfileData);
+  strncpy(field.OldObjectID, *paramOneOldObjectIDfileData, 129);
 
  //NewObjectID
   v8::Local<v8::Object> paramOneNewObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("NewObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNewObjectIDfileData(Nan::To<v8::String>(paramOneNewObjectIDObj).ToLocalChecked());
-  strcpy_s(field.NewObjectID,1281,*paramOneNewObjectIDfileData);
+  strncpy(field.NewObjectID, *paramOneNewObjectIDfileData, 129);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceChgTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceChgTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceTypeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceTypeTopic) {
   std::cout<<"ReqQryNetDeviceTypeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4641,23 +4455,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceTypeTopic){
  //Manufactory
   v8::Local<v8::Object> paramOneManufactoryObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Manufactory").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneManufactoryfileData(Nan::To<v8::String>(paramOneManufactoryObj).ToLocalChecked());
-  strcpy_s(field.Manufactory,641,*paramOneManufactoryfileData);
+  strncpy(field.Manufactory, *paramOneManufactoryfileData, 65);
 
  //DeviceType
   v8::Local<v8::Object> paramOneDeviceTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceTypefileData(Nan::To<v8::String>(paramOneDeviceTypeObj).ToLocalChecked());
-  strcpy_s(field.DeviceType,641,*paramOneDeviceTypefileData);
+  strncpy(field.DeviceType, *paramOneDeviceTypefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceTypeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceTypeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceCategoryTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetDeviceCategoryTopic) {
   std::cout<<"ReqQryNetDeviceCategoryTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4681,23 +4496,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetDeviceCategoryTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetDeviceCategoryTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetDeviceCategoryTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetManufactoryTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetManufactoryTopic) {
   std::cout<<"ReqQryNetManufactoryTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4721,23 +4537,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetManufactoryTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetManufactoryTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetManufactoryTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCommunityTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetCommunityTopic) {
   std::cout<<"ReqQryNetCommunityTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4761,23 +4578,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCommunityTopic){
  //IPADDR
   v8::Local<v8::Object> paramOneIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPADDRfileData(Nan::To<v8::String>(paramOneIPADDRObj).ToLocalChecked());
-  strcpy_s(field.IPADDR,151,*paramOneIPADDRfileData);
+  strncpy(field.IPADDR, *paramOneIPADDRfileData, 16);
 
  //COMMUNITY
   v8::Local<v8::Object> paramOneCOMMUNITYObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("COMMUNITY").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCOMMUNITYfileData(Nan::To<v8::String>(paramOneCOMMUNITYObj).ToLocalChecked());
-  strcpy_s(field.COMMUNITY,641,*paramOneCOMMUNITYfileData);
+  strncpy(field.COMMUNITY, *paramOneCOMMUNITYfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetCommunityTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetCommunityTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPortTypeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetPortTypeTopic) {
   std::cout<<"ReqQryNetPortTypeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4801,28 +4619,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPortTypeTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //Description
   v8::Local<v8::Object> paramOneDescriptionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Description").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDescriptionfileData(Nan::To<v8::String>(paramOneDescriptionObj).ToLocalChecked());
-  strcpy_s(field.Description,641,*paramOneDescriptionfileData);
+  strncpy(field.Description, *paramOneDescriptionfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetPortTypeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetPortTypeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartAccessSpotTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetPartAccessSpotTopic) {
   std::cout<<"ReqQryNetPartAccessSpotTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4846,23 +4665,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartAccessSpotTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetPartAccessSpotTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetPartAccessSpotTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic) {
   std::cout<<"ReqQryNetInterfaceTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4886,7 +4706,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //MonitorType_ID
   v8::Local<v8::Object> paramOneMonitorType_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonitorType_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4901,17 +4721,17 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //IpAddress
   v8::Local<v8::Object> paramOneIpAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IpAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIpAddressfileData(Nan::To<v8::String>(paramOneIpAddressObj).ToLocalChecked());
-  strcpy_s(field.IpAddress,151,*paramOneIpAddressfileData);
+  strncpy(field.IpAddress, *paramOneIpAddressfileData, 16);
 
  //IpMask
   v8::Local<v8::Object> paramOneIpMaskObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IpMask").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIpMaskfileData(Nan::To<v8::String>(paramOneIpMaskObj).ToLocalChecked());
-  strcpy_s(field.IpMask,151,*paramOneIpMaskfileData);
+  strncpy(field.IpMask, *paramOneIpMaskfileData, 16);
 
  //IfStatus
   v8::Local<v8::Object> paramOneIfStatusObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IfStatus").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4921,7 +4741,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
  //MAC
   v8::Local<v8::Object> paramOneMACObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MAC").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMACfileData(Nan::To<v8::String>(paramOneMACObj).ToLocalChecked());
-  strcpy_s(field.MAC,641,*paramOneMACfileData);
+  strncpy(field.MAC, *paramOneMACfileData, 65);
 
  //DeviceID
   v8::Local<v8::Object> paramOneDeviceIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4931,12 +4751,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
  //DeviceObjectID
   v8::Local<v8::Object> paramOneDeviceObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceObjectIDfileData(Nan::To<v8::String>(paramOneDeviceObjectIDObj).ToLocalChecked());
-  strcpy_s(field.DeviceObjectID,1281,*paramOneDeviceObjectIDfileData);
+  strncpy(field.DeviceObjectID, *paramOneDeviceObjectIDfileData, 129);
 
  //DeviceIndex
   v8::Local<v8::Object> paramOneDeviceIndexObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceIndex").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceIndexfileData(Nan::To<v8::String>(paramOneDeviceIndexObj).ToLocalChecked());
-  strcpy_s(field.DeviceIndex,161,*paramOneDeviceIndexfileData);
+  strncpy(field.DeviceIndex, *paramOneDeviceIndexfileData, 17);
 
  //isPolling
   v8::Local<v8::Object> paramOneisPollingObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("isPolling").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -4946,18 +4766,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetInterfaceTopic){
  //Description
   v8::Local<v8::Object> paramOneDescriptionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Description").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDescriptionfileData(Nan::To<v8::String>(paramOneDescriptionObj).ToLocalChecked());
-  strcpy_s(field.Description,641,*paramOneDescriptionfileData);
+  strncpy(field.Description, *paramOneDescriptionfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetInterfaceTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetInterfaceTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetGeneralOIDTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetGeneralOIDTopic) {
   std::cout<<"ReqQryNetGeneralOIDTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -4975,14 +4796,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetGeneralOIDTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetGeneralOIDTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetGeneralOIDTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTypeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorTypeTopic) {
   std::cout<<"ReqQryNetMonitorTypeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5006,23 +4828,24 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTypeTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorTypeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorTypeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic) {
   std::cout<<"ReqQryNetMonitorAttrScopeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5046,28 +4869,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrScopeTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,2561,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 257);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,2561,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 257);
 
  //Comments
   v8::Local<v8::Object> paramOneCommentsObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Comments").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCommentsfileData(Nan::To<v8::String>(paramOneCommentsObj).ToLocalChecked());
-  strcpy_s(field.Comments,2561,*paramOneCommentsfileData);
+  strncpy(field.Comments, *paramOneCommentsfileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorAttrScopeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorAttrScopeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrTypeTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrTypeTopic) {
   std::cout<<"ReqQryNetMonitorAttrTypeTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5106,28 +4930,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorAttrTypeTopic){
  //MANUFACTORY
   v8::Local<v8::Object> paramOneMANUFACTORYObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MANUFACTORY").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMANUFACTORYfileData(Nan::To<v8::String>(paramOneMANUFACTORYObj).ToLocalChecked());
-  strcpy_s(field.MANUFACTORY,641,*paramOneMANUFACTORYfileData);
+  strncpy(field.MANUFACTORY, *paramOneMANUFACTORYfileData, 65);
 
  //MonitorType
   v8::Local<v8::Object> paramOneMonitorTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonitorType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonitorTypefileData(Nan::To<v8::String>(paramOneMonitorTypeObj).ToLocalChecked());
-  strcpy_s(field.MonitorType,641,*paramOneMonitorTypefileData);
+  strncpy(field.MonitorType, *paramOneMonitorTypefileData, 65);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorAttrTypeTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorAttrTypeTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorObjectAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorObjectAttrTopic) {
   std::cout<<"ReqQryNetMonitorObjectAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5151,12 +4976,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorObjectAttrTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //AttrType
   v8::Local<v8::Object> paramOneAttrTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneAttrTypefileData(Nan::To<v8::String>(paramOneAttrTypeObj).ToLocalChecked());
-  strcpy_s(field.AttrType,2561,*paramOneAttrTypefileData);
+  strncpy(field.AttrType, *paramOneAttrTypefileData, 257);
 
  //PolicyTypeID
   v8::Local<v8::Object> paramOnePolicyTypeIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PolicyTypeID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5165,14 +4990,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorObjectAttrTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorObjectAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorObjectAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceGroupTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceGroupTopic) {
   std::cout<<"ReqQryNetMonitorDeviceGroupTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5196,33 +5022,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceGroupTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //Condition
   v8::Local<v8::Object> paramOneConditionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Condition").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneConditionfileData(Nan::To<v8::String>(paramOneConditionObj).ToLocalChecked());
-  strcpy_s(field.Condition,5121,*paramOneConditionfileData);
+  strncpy(field.Condition, *paramOneConditionfileData, 513);
 
  //Comments
   v8::Local<v8::Object> paramOneCommentsObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Comments").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCommentsfileData(Nan::To<v8::String>(paramOneCommentsObj).ToLocalChecked());
-  strcpy_s(field.Comments,2561,*paramOneCommentsfileData);
+  strncpy(field.Comments, *paramOneCommentsfileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorDeviceGroupTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorDeviceGroupTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskInfoTopic) {
   std::cout<<"ReqQryNetMonitorTaskInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5246,12 +5073,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskInfoTopic){
  //CName
   v8::Local<v8::Object> paramOneCNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCNamefileData(Nan::To<v8::String>(paramOneCNameObj).ToLocalChecked());
-  strcpy_s(field.CName,641,*paramOneCNamefileData);
+  strncpy(field.CName, *paramOneCNamefileData, 65);
 
  //EName
   v8::Local<v8::Object> paramOneENameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneENamefileData(Nan::To<v8::String>(paramOneENameObj).ToLocalChecked());
-  strcpy_s(field.EName,641,*paramOneENamefileData);
+  strncpy(field.EName, *paramOneENamefileData, 65);
 
  //DeviceGroup_ID
   v8::Local<v8::Object> paramOneDeviceGroup_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceGroup_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5286,37 +5113,37 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskInfoTopic){
  //EventExprStr
   v8::Local<v8::Object> paramOneEventExprStrObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EventExprStr").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEventExprStrfileData(Nan::To<v8::String>(paramOneEventExprStrObj).ToLocalChecked());
-  strcpy_s(field.EventExprStr,10241,*paramOneEventExprStrfileData);
+  strncpy(field.EventExprStr, *paramOneEventExprStrfileData, 1025);
 
  //DeviceGroup
   v8::Local<v8::Object> paramOneDeviceGroupObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceGroup").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceGroupfileData(Nan::To<v8::String>(paramOneDeviceGroupObj).ToLocalChecked());
-  strcpy_s(field.DeviceGroup,641,*paramOneDeviceGroupfileData);
+  strncpy(field.DeviceGroup, *paramOneDeviceGroupfileData, 65);
 
  //ManagerGroup
   v8::Local<v8::Object> paramOneManagerGroupObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ManagerGroup").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneManagerGroupfileData(Nan::To<v8::String>(paramOneManagerGroupObj).ToLocalChecked());
-  strcpy_s(field.ManagerGroup,641,*paramOneManagerGroupfileData);
+  strncpy(field.ManagerGroup, *paramOneManagerGroupfileData, 65);
 
  //TimePolicy
   v8::Local<v8::Object> paramOneTimePolicyObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TimePolicy").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTimePolicyfileData(Nan::To<v8::String>(paramOneTimePolicyObj).ToLocalChecked());
-  strcpy_s(field.TimePolicy,641,*paramOneTimePolicyfileData);
+  strncpy(field.TimePolicy, *paramOneTimePolicyfileData, 65);
 
  //TaskPriority
   v8::Local<v8::Object> paramOneTaskPriorityObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TaskPriority").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTaskPriorityfileData(Nan::To<v8::String>(paramOneTaskPriorityObj).ToLocalChecked());
-  strcpy_s(field.TaskPriority,641,*paramOneTaskPriorityfileData);
+  strncpy(field.TaskPriority, *paramOneTaskPriorityfileData, 65);
 
  //OutputPolicy
   v8::Local<v8::Object> paramOneOutputPolicyObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OutputPolicy").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneOutputPolicyfileData(Nan::To<v8::String>(paramOneOutputPolicyObj).ToLocalChecked());
-  strcpy_s(field.OutputPolicy,641,*paramOneOutputPolicyfileData);
+  strncpy(field.OutputPolicy, *paramOneOutputPolicyfileData, 65);
 
  //ActionGroup
   v8::Local<v8::Object> paramOneActionGroupObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ActionGroup").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneActionGroupfileData(Nan::To<v8::String>(paramOneActionGroupObj).ToLocalChecked());
-  strcpy_s(field.ActionGroup,641,*paramOneActionGroupfileData);
+  strncpy(field.ActionGroup, *paramOneActionGroupfileData, 65);
 
  //ValidFlag
   v8::Local<v8::Object> paramOneValidFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ValidFlag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5331,18 +5158,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskInfoTopic){
  //Comments
   v8::Local<v8::Object> paramOneCommentsObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Comments").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCommentsfileData(Nan::To<v8::String>(paramOneCommentsObj).ToLocalChecked());
-  strcpy_s(field.Comments,2561,*paramOneCommentsfileData);
+  strncpy(field.Comments, *paramOneCommentsfileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorTaskInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorTaskInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskResultTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskResultTopic) {
   std::cout<<"ReqQryNetMonitorTaskResultTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5361,7 +5189,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskResultTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //Task_ID
   v8::Local<v8::Object> paramOneTask_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Task_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5376,22 +5204,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskResultTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //InstructChain
   v8::Local<v8::Object> paramOneInstructChainObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstructChain").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstructChainfileData(Nan::To<v8::String>(paramOneInstructChainObj).ToLocalChecked());
-  strcpy_s(field.InstructChain,2561,*paramOneInstructChainfileData);
+  strncpy(field.InstructChain, *paramOneInstructChainfileData, 257);
 
  //ResultChain
   v8::Local<v8::Object> paramOneResultChainObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ResultChain").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneResultChainfileData(Nan::To<v8::String>(paramOneResultChainObj).ToLocalChecked());
-  strcpy_s(field.ResultChain,10241,*paramOneResultChainfileData);
+  strncpy(field.ResultChain, *paramOneResultChainfileData, 1025);
 
  //Flag
   v8::Local<v8::Object> paramOneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Flag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5400,14 +5228,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskResultTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorTaskResultTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorTaskResultTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskObjectSetTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskObjectSetTopic) {
   std::cout<<"ReqQryNetMonitorTaskObjectSetTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5445,14 +5274,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskObjectSetTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorTaskObjectSetTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorTaskObjectSetTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkInfoTopic) {
   std::cout<<"ReqQryNetPartyLinkInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5476,148 +5306,149 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkInfoTopic){
  //MEMBER_NO
   v8::Local<v8::Object> paramOneMEMBER_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NOfileData(Nan::To<v8::String>(paramOneMEMBER_NOObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NO,321,*paramOneMEMBER_NOfileData);
+  strncpy(field.MEMBER_NO, *paramOneMEMBER_NOfileData, 33);
 
  //MEMBER_NAME
   v8::Local<v8::Object> paramOneMEMBER_NAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NAMEfileData(Nan::To<v8::String>(paramOneMEMBER_NAMEObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NAME,641,*paramOneMEMBER_NAMEfileData);
+  strncpy(field.MEMBER_NAME, *paramOneMEMBER_NAMEfileData, 65);
 
  //REMOTE_ADDR
   v8::Local<v8::Object> paramOneREMOTE_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("REMOTE_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneREMOTE_ADDRfileData(Nan::To<v8::String>(paramOneREMOTE_ADDRObj).ToLocalChecked());
-  strcpy_s(field.REMOTE_ADDR,641,*paramOneREMOTE_ADDRfileData);
+  strncpy(field.REMOTE_ADDR, *paramOneREMOTE_ADDRfileData, 65);
 
  //LOCAL_ADDR
   v8::Local<v8::Object> paramOneLOCAL_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LOCAL_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLOCAL_ADDRfileData(Nan::To<v8::String>(paramOneLOCAL_ADDRObj).ToLocalChecked());
-  strcpy_s(field.LOCAL_ADDR,641,*paramOneLOCAL_ADDRfileData);
+  strncpy(field.LOCAL_ADDR, *paramOneLOCAL_ADDRfileData, 65);
 
  //ADDRESS
   v8::Local<v8::Object> paramOneADDRESSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ADDRESS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneADDRESSfileData(Nan::To<v8::String>(paramOneADDRESSObj).ToLocalChecked());
-  strcpy_s(field.ADDRESS,2561,*paramOneADDRESSfileData);
+  strncpy(field.ADDRESS, *paramOneADDRESSfileData, 257);
 
  //LINE_STATUS
   v8::Local<v8::Object> paramOneLINE_STATUSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LINE_STATUS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLINE_STATUSfileData(Nan::To<v8::String>(paramOneLINE_STATUSObj).ToLocalChecked());
-  strcpy_s(field.LINE_STATUS,321,*paramOneLINE_STATUSfileData);
+  strncpy(field.LINE_STATUS, *paramOneLINE_STATUSfileData, 33);
 
  //CONTACT
   v8::Local<v8::Object> paramOneCONTACTObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CONTACT").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCONTACTfileData(Nan::To<v8::String>(paramOneCONTACTObj).ToLocalChecked());
-  strcpy_s(field.CONTACT,321,*paramOneCONTACTfileData);
+  strncpy(field.CONTACT, *paramOneCONTACTfileData, 33);
 
  //TELEPHONE
   v8::Local<v8::Object> paramOneTELEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TELEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTELEPHONEfileData(Nan::To<v8::String>(paramOneTELEPHONEObj).ToLocalChecked());
-  strcpy_s(field.TELEPHONE,641,*paramOneTELEPHONEfileData);
+  strncpy(field.TELEPHONE, *paramOneTELEPHONEfileData, 65);
 
  //MOBILEPHONE
   v8::Local<v8::Object> paramOneMOBILEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MOBILEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMOBILEPHONEfileData(Nan::To<v8::String>(paramOneMOBILEPHONEObj).ToLocalChecked());
-  strcpy_s(field.MOBILEPHONE,641,*paramOneMOBILEPHONEfileData);
+  strncpy(field.MOBILEPHONE, *paramOneMOBILEPHONEfileData, 65);
 
  //EMAIL
   v8::Local<v8::Object> paramOneEMAILObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EMAIL").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEMAILfileData(Nan::To<v8::String>(paramOneEMAILObj).ToLocalChecked());
-  strcpy_s(field.EMAIL,641,*paramOneEMAILfileData);
+  strncpy(field.EMAIL, *paramOneEMAILfileData, 65);
 
  //FAX
   v8::Local<v8::Object> paramOneFAXObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FAX").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFAXfileData(Nan::To<v8::String>(paramOneFAXObj).ToLocalChecked());
-  strcpy_s(field.FAX,641,*paramOneFAXfileData);
+  strncpy(field.FAX, *paramOneFAXfileData, 65);
 
  //PROVINCE
   v8::Local<v8::Object> paramOnePROVINCEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PROVINCE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROVINCEfileData(Nan::To<v8::String>(paramOnePROVINCEObj).ToLocalChecked());
-  strcpy_s(field.PROVINCE,321,*paramOnePROVINCEfileData);
+  strncpy(field.PROVINCE, *paramOnePROVINCEfileData, 33);
 
  //DDN_NO
   v8::Local<v8::Object> paramOneDDN_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DDN_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDDN_NOfileData(Nan::To<v8::String>(paramOneDDN_NOObj).ToLocalChecked());
-  strcpy_s(field.DDN_NO,641,*paramOneDDN_NOfileData);
+  strncpy(field.DDN_NO, *paramOneDDN_NOfileData, 65);
 
  //IN_MODE
   v8::Local<v8::Object> paramOneIN_MODEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IN_MODE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIN_MODEfileData(Nan::To<v8::String>(paramOneIN_MODEObj).ToLocalChecked());
-  strcpy_s(field.IN_MODE,641,*paramOneIN_MODEfileData);
+  strncpy(field.IN_MODE, *paramOneIN_MODEfileData, 65);
 
  //IP_WAN
   v8::Local<v8::Object> paramOneIP_WANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_WAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_WANfileData(Nan::To<v8::String>(paramOneIP_WANObj).ToLocalChecked());
-  strcpy_s(field.IP_WAN,641,*paramOneIP_WANfileData);
+  strncpy(field.IP_WAN, *paramOneIP_WANfileData, 65);
 
  //IP_LAN
   v8::Local<v8::Object> paramOneIP_LANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_LAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_LANfileData(Nan::To<v8::String>(paramOneIP_LANObj).ToLocalChecked());
-  strcpy_s(field.IP_LAN,641,*paramOneIP_LANfileData);
+  strncpy(field.IP_LAN, *paramOneIP_LANfileData, 65);
 
  //IPADDR
   v8::Local<v8::Object> paramOneIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPADDRfileData(Nan::To<v8::String>(paramOneIPADDRObj).ToLocalChecked());
-  strcpy_s(field.IPADDR,641,*paramOneIPADDRfileData);
+  strncpy(field.IPADDR, *paramOneIPADDRfileData, 65);
 
  //Interface
   v8::Local<v8::Object> paramOneInterfaceObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Interface").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInterfacefileData(Nan::To<v8::String>(paramOneInterfaceObj).ToLocalChecked());
-  strcpy_s(field.Interface,641,*paramOneInterfacefileData);
+  strncpy(field.Interface, *paramOneInterfacefileData, 65);
 
  //INTERFACE_DATE
   v8::Local<v8::Object> paramOneINTERFACE_DATEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("INTERFACE_DATE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneINTERFACE_DATEfileData(Nan::To<v8::String>(paramOneINTERFACE_DATEObj).ToLocalChecked());
-  strcpy_s(field.INTERFACE_DATE,321,*paramOneINTERFACE_DATEfileData);
+  strncpy(field.INTERFACE_DATE, *paramOneINTERFACE_DATEfileData, 33);
 
  //SOFTWARE
   v8::Local<v8::Object> paramOneSOFTWAREObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SOFTWARE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSOFTWAREfileData(Nan::To<v8::String>(paramOneSOFTWAREObj).ToLocalChecked());
-  strcpy_s(field.SOFTWARE,321,*paramOneSOFTWAREfileData);
+  strncpy(field.SOFTWARE, *paramOneSOFTWAREfileData, 33);
 
  //FEE_TYPE
   v8::Local<v8::Object> paramOneFEE_TYPEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FEE_TYPE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFEE_TYPEfileData(Nan::To<v8::String>(paramOneFEE_TYPEObj).ToLocalChecked());
-  strcpy_s(field.FEE_TYPE,321,*paramOneFEE_TYPEfileData);
+  strncpy(field.FEE_TYPE, *paramOneFEE_TYPEfileData, 33);
 
  //SERVICEPROVIDER
   v8::Local<v8::Object> paramOneSERVICEPROVIDERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SERVICEPROVIDER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSERVICEPROVIDERfileData(Nan::To<v8::String>(paramOneSERVICEPROVIDERObj).ToLocalChecked());
-  strcpy_s(field.SERVICEPROVIDER,321,*paramOneSERVICEPROVIDERfileData);
+  strncpy(field.SERVICEPROVIDER, *paramOneSERVICEPROVIDERfileData, 33);
 
  //IF_ZIYING
   v8::Local<v8::Object> paramOneIF_ZIYINGObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_ZIYING").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_ZIYINGfileData(Nan::To<v8::String>(paramOneIF_ZIYINGObj).ToLocalChecked());
-  strcpy_s(field.IF_ZIYING,321,*paramOneIF_ZIYINGfileData);
+  strncpy(field.IF_ZIYING, *paramOneIF_ZIYINGfileData, 33);
 
  //IF_TUOGUAN
   v8::Local<v8::Object> paramOneIF_TUOGUANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_TUOGUAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_TUOGUANfileData(Nan::To<v8::String>(paramOneIF_TUOGUANObj).ToLocalChecked());
-  strcpy_s(field.IF_TUOGUAN,321,*paramOneIF_TUOGUANfileData);
+  strncpy(field.IF_TUOGUAN, *paramOneIF_TUOGUANfileData, 33);
 
  //HASOTHER
   v8::Local<v8::Object> paramOneHASOTHERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HASOTHER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHASOTHERfileData(Nan::To<v8::String>(paramOneHASOTHERObj).ToLocalChecked());
-  strcpy_s(field.HASOTHER,321,*paramOneHASOTHERfileData);
+  strncpy(field.HASOTHER, *paramOneHASOTHERfileData, 33);
 
  //SEAT_NO
   v8::Local<v8::Object> paramOneSEAT_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SEAT_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSEAT_NOfileData(Nan::To<v8::String>(paramOneSEAT_NOObj).ToLocalChecked());
-  strcpy_s(field.SEAT_NO,10241,*paramOneSEAT_NOfileData);
+  strncpy(field.SEAT_NO, *paramOneSEAT_NOfileData, 1025);
 
  //PRO
   v8::Local<v8::Object> paramOnePROObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PRO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROfileData(Nan::To<v8::String>(paramOnePROObj).ToLocalChecked());
-  strcpy_s(field.PRO,5121,*paramOnePROfileData);
+  strncpy(field.PRO, *paramOnePROfileData, 513);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetPartyLinkInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetPartyLinkInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorActionAttrTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorActionAttrTopic) {
   std::cout<<"ReqQryNetMonitorActionAttrTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5651,18 +5482,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorActionAttrTopic){
  //MonitorAttrName
   v8::Local<v8::Object> paramOneMonitorAttrNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonitorAttrName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonitorAttrNamefileData(Nan::To<v8::String>(paramOneMonitorAttrNameObj).ToLocalChecked());
-  strcpy_s(field.MonitorAttrName,2561,*paramOneMonitorAttrNamefileData);
+  strncpy(field.MonitorAttrName, *paramOneMonitorAttrNamefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorActionAttrTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorActionAttrTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetModuleTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetModuleTopic) {
   std::cout<<"ReqQryNetModuleTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5686,7 +5518,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetModuleTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //MonitorType_ID
   v8::Local<v8::Object> paramOneMonitorType_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonitorType_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5701,17 +5533,17 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetModuleTopic){
  //DeviceObjectID
   v8::Local<v8::Object> paramOneDeviceObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceObjectIDfileData(Nan::To<v8::String>(paramOneDeviceObjectIDObj).ToLocalChecked());
-  strcpy_s(field.DeviceObjectID,1281,*paramOneDeviceObjectIDfileData);
+  strncpy(field.DeviceObjectID, *paramOneDeviceObjectIDfileData, 129);
 
  //Name
   v8::Local<v8::Object> paramOneNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Name").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNamefileData(Nan::To<v8::String>(paramOneNameObj).ToLocalChecked());
-  strcpy_s(field.Name,641,*paramOneNamefileData);
+  strncpy(field.Name, *paramOneNamefileData, 65);
 
  //Description
   v8::Local<v8::Object> paramOneDescriptionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Description").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDescriptionfileData(Nan::To<v8::String>(paramOneDescriptionObj).ToLocalChecked());
-  strcpy_s(field.Description,1281,*paramOneDescriptionfileData);
+  strncpy(field.Description, *paramOneDescriptionfileData, 129);
 
  //ModuleIndex
   v8::Local<v8::Object> paramOneModuleIndexObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ModuleIndex").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5725,14 +5557,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetModuleTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetModuleTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetModuleTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskStatusResultTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskStatusResultTopic) {
   std::cout<<"ReqQryNetMonitorTaskStatusResultTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5751,7 +5584,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskStatusResultTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //Task_ID
   v8::Local<v8::Object> paramOneTask_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Task_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5766,12 +5599,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskStatusResultTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //Flag
   v8::Local<v8::Object> paramOneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Flag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5780,14 +5613,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorTaskStatusResultTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorTaskStatusResultTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorTaskStatusResultTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCfgFileTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetCfgFileTopic) {
   std::cout<<"ReqQryNetCfgFileTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5806,33 +5640,34 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetCfgFileTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //CfgFileName
   v8::Local<v8::Object> paramOneCfgFileNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CfgFileName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCfgFileNamefileData(Nan::To<v8::String>(paramOneCfgFileNameObj).ToLocalChecked());
-  strcpy_s(field.CfgFileName,2561,*paramOneCfgFileNamefileData);
+  strncpy(field.CfgFileName, *paramOneCfgFileNamefileData, 257);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetCfgFileTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetCfgFileTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceTaskTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceTaskTopic) {
   std::cout<<"ReqQryNetMonitorDeviceTaskTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5856,12 +5691,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceTaskTopic){
  //ObjectID
   v8::Local<v8::Object> paramOneObjectIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneObjectIDfileData(Nan::To<v8::String>(paramOneObjectIDObj).ToLocalChecked());
-  strcpy_s(field.ObjectID,1281,*paramOneObjectIDfileData);
+  strncpy(field.ObjectID, *paramOneObjectIDfileData, 129);
 
  //IPAddress
   v8::Local<v8::Object> paramOneIPAddressObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPAddress").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPAddressfileData(Nan::To<v8::String>(paramOneIPAddressObj).ToLocalChecked());
-  strcpy_s(field.IPAddress,151,*paramOneIPAddressfileData);
+  strncpy(field.IPAddress, *paramOneIPAddressfileData, 16);
 
  //Manufactory_ID
   v8::Local<v8::Object> paramOneManufactory_IDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Manufactory_ID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5871,22 +5706,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceTaskTopic){
  //InstructChain
   v8::Local<v8::Object> paramOneInstructChainObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstructChain").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstructChainfileData(Nan::To<v8::String>(paramOneInstructChainObj).ToLocalChecked());
-  strcpy_s(field.InstructChain,2561,*paramOneInstructChainfileData);
+  strncpy(field.InstructChain, *paramOneInstructChainfileData, 257);
 
  //InstructAlias
   v8::Local<v8::Object> paramOneInstructAliasObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstructAlias").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstructAliasfileData(Nan::To<v8::String>(paramOneInstructAliasObj).ToLocalChecked());
-  strcpy_s(field.InstructAlias,1281,*paramOneInstructAliasfileData);
+  strncpy(field.InstructAlias, *paramOneInstructAliasfileData, 129);
 
  //InstructArgs
   v8::Local<v8::Object> paramOneInstructArgsObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("InstructArgs").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInstructArgsfileData(Nan::To<v8::String>(paramOneInstructArgsObj).ToLocalChecked());
-  strcpy_s(field.InstructArgs,2561,*paramOneInstructArgsfileData);
+  strncpy(field.InstructArgs, *paramOneInstructArgsfileData, 257);
 
  //DefParamChain
   v8::Local<v8::Object> paramOneDefParamChainObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DefParamChain").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDefParamChainfileData(Nan::To<v8::String>(paramOneDefParamChainObj).ToLocalChecked());
-  strcpy_s(field.DefParamChain,20001,*paramOneDefParamChainfileData);
+  strncpy(field.DefParamChain, *paramOneDefParamChainfileData, 2001);
 
  //Flag
   v8::Local<v8::Object> paramOneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Flag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5895,14 +5730,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetMonitorDeviceTaskTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetMonitorDeviceTaskTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetMonitorDeviceTaskTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic) {
   std::cout<<"ReqQryFileGeneralOperTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -5921,12 +5757,12 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic){
  //FileName
   v8::Local<v8::Object> paramOneFileNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FileName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFileNamefileData(Nan::To<v8::String>(paramOneFileNameObj).ToLocalChecked());
-  strcpy_s(field.FileName,2561,*paramOneFileNamefileData);
+  strncpy(field.FileName, *paramOneFileNamefileData, 257);
 
  //Version
   v8::Local<v8::Object> paramOneVersionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Version").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneVersionfileData(Nan::To<v8::String>(paramOneVersionObj).ToLocalChecked());
-  strcpy_s(field.Version,161,*paramOneVersionfileData);
+  strncpy(field.Version, *paramOneVersionfileData, 17);
 
  //SubVersion
   v8::Local<v8::Object> paramOneSubVersionObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SubVersion").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5936,17 +5772,17 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic){
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //UserName
   v8::Local<v8::Object> paramOneUserNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("UserName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneUserNamefileData(Nan::To<v8::String>(paramOneUserNameObj).ToLocalChecked());
-  strcpy_s(field.UserName,201,*paramOneUserNamefileData);
+  strncpy(field.UserName, *paramOneUserNamefileData, 21);
 
  //OperType
   v8::Local<v8::Object> paramOneOperTypeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("OperType").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5961,7 +5797,7 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic){
  //Comments
   v8::Local<v8::Object> paramOneCommentsObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Comments").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCommentsfileData(Nan::To<v8::String>(paramOneCommentsObj).ToLocalChecked());
-  strcpy_s(field.Comments,2561,*paramOneCommentsfileData);
+  strncpy(field.Comments, *paramOneCommentsfileData, 257);
 
  //Offset
   v8::Local<v8::Object> paramOneOffsetObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Offset").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -5976,18 +5812,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryFileGeneralOperTopic){
  //FileContent
   v8::Local<v8::Object> paramOneFileContentObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FileContent").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFileContentfileData(Nan::To<v8::String>(paramOneFileContentObj).ToLocalChecked());
-  strcpy_s(field.FileContent,30001,*paramOneFileContentfileData);
+  strncpy(field.FileContent, *paramOneFileContentfileData, 3001);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryFileGeneralOperTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryFileGeneralOperTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetBaseLineTopic) {
   std::cout<<"ReqQryNetBaseLineTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6016,22 +5853,22 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineTopic){
  //Name
   v8::Local<v8::Object> paramOneNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Name").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneNamefileData(Nan::To<v8::String>(paramOneNameObj).ToLocalChecked());
-  strcpy_s(field.Name,1281,*paramOneNamefileData);
+  strncpy(field.Name, *paramOneNamefileData, 129);
 
  //SerialUsed
   v8::Local<v8::Object> paramOneSerialUsedObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SerialUsed").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSerialUsedfileData(Nan::To<v8::String>(paramOneSerialUsedObj).ToLocalChecked());
-  strcpy_s(field.SerialUsed,1281,*paramOneSerialUsedfileData);
+  strncpy(field.SerialUsed, *paramOneSerialUsedfileData, 129);
 
  //data
   v8::Local<v8::Object> paramOnedataObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("data").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnedatafileData(Nan::To<v8::String>(paramOnedataObj).ToLocalChecked());
-  strcpy_s(field.data,20001,*paramOnedatafileData);
+  strncpy(field.data, *paramOnedatafileData, 2001);
 
  //memo
   v8::Local<v8::Object> paramOnememoObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("memo").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnememofileData(Nan::To<v8::String>(paramOnememoObj).ToLocalChecked());
-  strcpy_s(field.memo,2561,*paramOnememofileData);
+  strncpy(field.memo, *paramOnememofileData, 257);
 
  //Flag
   v8::Local<v8::Object> paramOneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Flag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -6040,14 +5877,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetBaseLineTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetBaseLineTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineResultTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetBaseLineResultTopic) {
   std::cout<<"ReqQryNetBaseLineResultTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6071,37 +5909,37 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineResultTopic){
  //BaseLineName
   v8::Local<v8::Object> paramOneBaseLineNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("BaseLineName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneBaseLineNamefileData(Nan::To<v8::String>(paramOneBaseLineNameObj).ToLocalChecked());
-  strcpy_s(field.BaseLineName,1281,*paramOneBaseLineNamefileData);
+  strncpy(field.BaseLineName, *paramOneBaseLineNamefileData, 129);
 
  //DeviceObjID
   v8::Local<v8::Object> paramOneDeviceObjIDObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceObjID").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceObjIDfileData(Nan::To<v8::String>(paramOneDeviceObjIDObj).ToLocalChecked());
-  strcpy_s(field.DeviceObjID,1281,*paramOneDeviceObjIDfileData);
+  strncpy(field.DeviceObjID, *paramOneDeviceObjIDfileData, 129);
 
  //DeviceIP
   v8::Local<v8::Object> paramOneDeviceIPObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DeviceIP").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDeviceIPfileData(Nan::To<v8::String>(paramOneDeviceIPObj).ToLocalChecked());
-  strcpy_s(field.DeviceIP,151,*paramOneDeviceIPfileData);
+  strncpy(field.DeviceIP, *paramOneDeviceIPfileData, 16);
 
  //Result
   v8::Local<v8::Object> paramOneResultObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Result").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneResultfileData(Nan::To<v8::String>(paramOneResultObj).ToLocalChecked());
-  strcpy_s(field.Result,30001,*paramOneResultfileData);
+  strncpy(field.Result, *paramOneResultfileData, 3001);
 
  //GenDate
   v8::Local<v8::Object> paramOneGenDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GenDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGenDatefileData(Nan::To<v8::String>(paramOneGenDateObj).ToLocalChecked());
-  strcpy_s(field.GenDate,81,*paramOneGenDatefileData);
+  strncpy(field.GenDate, *paramOneGenDatefileData, 9);
 
  //GenTime
   v8::Local<v8::Object> paramOneGenTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GenTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGenTimefileData(Nan::To<v8::String>(paramOneGenTimeObj).ToLocalChecked());
-  strcpy_s(field.GenTime,81,*paramOneGenTimefileData);
+  strncpy(field.GenTime, *paramOneGenTimefileData, 9);
 
  //GenUser
   v8::Local<v8::Object> paramOneGenUserObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("GenUser").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneGenUserfileData(Nan::To<v8::String>(paramOneGenUserObj).ToLocalChecked());
-  strcpy_s(field.GenUser,201,*paramOneGenUserfileData);
+  strncpy(field.GenUser, *paramOneGenUserfileData, 21);
 
  //Flag
   v8::Local<v8::Object> paramOneFlagObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Flag").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -6110,14 +5948,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetBaseLineResultTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetBaseLineResultTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetBaseLineResultTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkStatusInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkStatusInfoTopic) {
   std::cout<<"ReqQryNetPartyLinkStatusInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6141,53 +5980,54 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetPartyLinkStatusInfoTopic){
  //KeyName
   v8::Local<v8::Object> paramOneKeyNameObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeyName").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneKeyNamefileData(Nan::To<v8::String>(paramOneKeyNameObj).ToLocalChecked());
-  strcpy_s(field.KeyName,2561,*paramOneKeyNamefileData);
+  strncpy(field.KeyName, *paramOneKeyNamefileData, 257);
 
  //KeyValue
   v8::Local<v8::Object> paramOneKeyValueObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("KeyValue").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneKeyValuefileData(Nan::To<v8::String>(paramOneKeyValueObj).ToLocalChecked());
-  strcpy_s(field.KeyValue,2561,*paramOneKeyValuefileData);
+  strncpy(field.KeyValue, *paramOneKeyValuefileData, 257);
 
  //MonDate
   v8::Local<v8::Object> paramOneMonDateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonDate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonDatefileData(Nan::To<v8::String>(paramOneMonDateObj).ToLocalChecked());
-  strcpy_s(field.MonDate,81,*paramOneMonDatefileData);
+  strncpy(field.MonDate, *paramOneMonDatefileData, 9);
 
  //MonTime
   v8::Local<v8::Object> paramOneMonTimeObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MonTime").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMonTimefileData(Nan::To<v8::String>(paramOneMonTimeObj).ToLocalChecked());
-  strcpy_s(field.MonTime,81,*paramOneMonTimefileData);
+  strncpy(field.MonTime, *paramOneMonTimefileData, 9);
 
  //SEAT_NO
   v8::Local<v8::Object> paramOneSEAT_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SEAT_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSEAT_NOfileData(Nan::To<v8::String>(paramOneSEAT_NOObj).ToLocalChecked());
-  strcpy_s(field.SEAT_NO,321,*paramOneSEAT_NOfileData);
+  strncpy(field.SEAT_NO, *paramOneSEAT_NOfileData, 33);
 
  //IPADDR
   v8::Local<v8::Object> paramOneIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPADDRfileData(Nan::To<v8::String>(paramOneIPADDRObj).ToLocalChecked());
-  strcpy_s(field.IPADDR,641,*paramOneIPADDRfileData);
+  strncpy(field.IPADDR, *paramOneIPADDRfileData, 65);
 
  //Interface
   v8::Local<v8::Object> paramOneInterfaceObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Interface").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInterfacefileData(Nan::To<v8::String>(paramOneInterfaceObj).ToLocalChecked());
-  strcpy_s(field.Interface,641,*paramOneInterfacefileData);
+  strncpy(field.Interface, *paramOneInterfacefileData, 65);
 
  //status
   v8::Local<v8::Object> paramOnestatusObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("status").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnestatusfileData(Nan::To<v8::String>(paramOnestatusObj).ToLocalChecked());
-  strcpy_s(field.status,641,*paramOnestatusfileData);
+  strncpy(field.status, *paramOnestatusfileData, 65);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetPartyLinkStatusInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetPartyLinkStatusInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetLocalPingResultInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetLocalPingResultInfoTopic) {
   std::cout<<"ReqQryNetLocalPingResultInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6211,32 +6051,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetLocalPingResultInfoTopic){
  //SouIPADDR
   v8::Local<v8::Object> paramOneSouIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SouIPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSouIPADDRfileData(Nan::To<v8::String>(paramOneSouIPADDRObj).ToLocalChecked());
-  strcpy_s(field.SouIPADDR,151,*paramOneSouIPADDRfileData);
+  strncpy(field.SouIPADDR, *paramOneSouIPADDRfileData, 16);
 
  //SouNAME
   v8::Local<v8::Object> paramOneSouNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SouNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSouNAMEfileData(Nan::To<v8::String>(paramOneSouNAMEObj).ToLocalChecked());
-  strcpy_s(field.SouNAME,1281,*paramOneSouNAMEfileData);
+  strncpy(field.SouNAME, *paramOneSouNAMEfileData, 129);
 
  //TarIPADDR
   v8::Local<v8::Object> paramOneTarIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TarIPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTarIPADDRfileData(Nan::To<v8::String>(paramOneTarIPADDRObj).ToLocalChecked());
-  strcpy_s(field.TarIPADDR,151,*paramOneTarIPADDRfileData);
+  strncpy(field.TarIPADDR, *paramOneTarIPADDRfileData, 16);
 
  //TarNAME
   v8::Local<v8::Object> paramOneTarNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TarNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTarNAMEfileData(Nan::To<v8::String>(paramOneTarNAMEObj).ToLocalChecked());
-  strcpy_s(field.TarNAME,1281,*paramOneTarNAMEfileData);
+  strncpy(field.TarNAME, *paramOneTarNAMEfileData, 129);
 
  //PDateSta
   v8::Local<v8::Object> paramOnePDateStaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PDateSta").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePDateStafileData(Nan::To<v8::String>(paramOnePDateStaObj).ToLocalChecked());
-  strcpy_s(field.PDateSta,81,*paramOnePDateStafileData);
+  strncpy(field.PDateSta, *paramOnePDateStafileData, 9);
 
  //PTimeSta
   v8::Local<v8::Object> paramOnePTimeStaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PTimeSta").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePTimeStafileData(Nan::To<v8::String>(paramOnePTimeStaObj).ToLocalChecked());
-  strcpy_s(field.PTimeSta,81,*paramOnePTimeStafileData);
+  strncpy(field.PTimeSta, *paramOnePTimeStafileData, 9);
 
  //ConnRate
   v8::Local<v8::Object> paramOneConnRateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ConnRate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -6245,14 +6085,15 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetLocalPingResultInfoTopic){
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetLocalPingResultInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetLocalPingResultInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetRomotePingResultInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetRomotePingResultInfoTopic) {
   std::cout<<"ReqQryNetRomotePingResultInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6276,32 +6117,32 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetRomotePingResultInfoTopic){
  //SouIPADDR
   v8::Local<v8::Object> paramOneSouIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SouIPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSouIPADDRfileData(Nan::To<v8::String>(paramOneSouIPADDRObj).ToLocalChecked());
-  strcpy_s(field.SouIPADDR,151,*paramOneSouIPADDRfileData);
+  strncpy(field.SouIPADDR, *paramOneSouIPADDRfileData, 16);
 
  //SouNAME
   v8::Local<v8::Object> paramOneSouNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SouNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSouNAMEfileData(Nan::To<v8::String>(paramOneSouNAMEObj).ToLocalChecked());
-  strcpy_s(field.SouNAME,1281,*paramOneSouNAMEfileData);
+  strncpy(field.SouNAME, *paramOneSouNAMEfileData, 129);
 
  //TarIPADDR
   v8::Local<v8::Object> paramOneTarIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TarIPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTarIPADDRfileData(Nan::To<v8::String>(paramOneTarIPADDRObj).ToLocalChecked());
-  strcpy_s(field.TarIPADDR,151,*paramOneTarIPADDRfileData);
+  strncpy(field.TarIPADDR, *paramOneTarIPADDRfileData, 16);
 
  //TarNAME
   v8::Local<v8::Object> paramOneTarNAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TarNAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTarNAMEfileData(Nan::To<v8::String>(paramOneTarNAMEObj).ToLocalChecked());
-  strcpy_s(field.TarNAME,1281,*paramOneTarNAMEfileData);
+  strncpy(field.TarNAME, *paramOneTarNAMEfileData, 129);
 
  //PDateSta
   v8::Local<v8::Object> paramOnePDateStaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PDateSta").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePDateStafileData(Nan::To<v8::String>(paramOnePDateStaObj).ToLocalChecked());
-  strcpy_s(field.PDateSta,81,*paramOnePDateStafileData);
+  strncpy(field.PDateSta, *paramOnePDateStafileData, 9);
 
  //PTimeSta
   v8::Local<v8::Object> paramOnePTimeStaObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PTimeSta").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePTimeStafileData(Nan::To<v8::String>(paramOnePTimeStaObj).ToLocalChecked());
-  strcpy_s(field.PTimeSta,81,*paramOnePTimeStafileData);
+  strncpy(field.PTimeSta, *paramOnePTimeStafileData, 9);
 
  //ConnRate
   v8::Local<v8::Object> paramOneConnRateObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ConnRate").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
@@ -6311,28 +6152,29 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetRomotePingResultInfoTopic){
  //TimeDlyMin
   v8::Local<v8::Object> paramOneTimeDlyMinObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TimeDlyMin").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTimeDlyMinfileData(Nan::To<v8::String>(paramOneTimeDlyMinObj).ToLocalChecked());
-  strcpy_s(field.TimeDlyMin,1281,*paramOneTimeDlyMinfileData);
+  strncpy(field.TimeDlyMin, *paramOneTimeDlyMinfileData, 129);
 
  //TimeDlyMax
   v8::Local<v8::Object> paramOneTimeDlyMaxObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TimeDlyMax").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTimeDlyMaxfileData(Nan::To<v8::String>(paramOneTimeDlyMaxObj).ToLocalChecked());
-  strcpy_s(field.TimeDlyMax,1281,*paramOneTimeDlyMaxfileData);
+  strncpy(field.TimeDlyMax, *paramOneTimeDlyMaxfileData, 129);
 
  //TimeDlyAvg
   v8::Local<v8::Object> paramOneTimeDlyAvgObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TimeDlyAvg").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTimeDlyAvgfileData(Nan::To<v8::String>(paramOneTimeDlyAvgObj).ToLocalChecked());
-  strcpy_s(field.TimeDlyAvg,1281,*paramOneTimeDlyAvgfileData);
+  strncpy(field.TimeDlyAvg, *paramOneTimeDlyAvgfileData, 129);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetRomotePingResultInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetRomotePingResultInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetNonPartyLinkInfoTopic){
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetNonPartyLinkInfoTopic) {
   std::cout<<"ReqQryNetNonPartyLinkInfoTopic Called!"<<std::endl;
   FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
   if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -6356,144 +6198,144 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQryNetNonPartyLinkInfoTopic){
  //MEMBER_NO
   v8::Local<v8::Object> paramOneMEMBER_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NOfileData(Nan::To<v8::String>(paramOneMEMBER_NOObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NO,321,*paramOneMEMBER_NOfileData);
+  strncpy(field.MEMBER_NO, *paramOneMEMBER_NOfileData, 33);
 
  //MEMBER_NAME
   v8::Local<v8::Object> paramOneMEMBER_NAMEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MEMBER_NAME").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMEMBER_NAMEfileData(Nan::To<v8::String>(paramOneMEMBER_NAMEObj).ToLocalChecked());
-  strcpy_s(field.MEMBER_NAME,641,*paramOneMEMBER_NAMEfileData);
+  strncpy(field.MEMBER_NAME, *paramOneMEMBER_NAMEfileData, 65);
 
  //REMOTE_ADDR
   v8::Local<v8::Object> paramOneREMOTE_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("REMOTE_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneREMOTE_ADDRfileData(Nan::To<v8::String>(paramOneREMOTE_ADDRObj).ToLocalChecked());
-  strcpy_s(field.REMOTE_ADDR,641,*paramOneREMOTE_ADDRfileData);
+  strncpy(field.REMOTE_ADDR, *paramOneREMOTE_ADDRfileData, 65);
 
  //LOCAL_ADDR
   v8::Local<v8::Object> paramOneLOCAL_ADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LOCAL_ADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLOCAL_ADDRfileData(Nan::To<v8::String>(paramOneLOCAL_ADDRObj).ToLocalChecked());
-  strcpy_s(field.LOCAL_ADDR,641,*paramOneLOCAL_ADDRfileData);
+  strncpy(field.LOCAL_ADDR, *paramOneLOCAL_ADDRfileData, 65);
 
  //ADDRESS
   v8::Local<v8::Object> paramOneADDRESSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("ADDRESS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneADDRESSfileData(Nan::To<v8::String>(paramOneADDRESSObj).ToLocalChecked());
-  strcpy_s(field.ADDRESS,2561,*paramOneADDRESSfileData);
+  strncpy(field.ADDRESS, *paramOneADDRESSfileData, 257);
 
  //LINE_STATUS
   v8::Local<v8::Object> paramOneLINE_STATUSObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("LINE_STATUS").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneLINE_STATUSfileData(Nan::To<v8::String>(paramOneLINE_STATUSObj).ToLocalChecked());
-  strcpy_s(field.LINE_STATUS,321,*paramOneLINE_STATUSfileData);
+  strncpy(field.LINE_STATUS, *paramOneLINE_STATUSfileData, 33);
 
  //CONTACT
   v8::Local<v8::Object> paramOneCONTACTObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("CONTACT").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneCONTACTfileData(Nan::To<v8::String>(paramOneCONTACTObj).ToLocalChecked());
-  strcpy_s(field.CONTACT,321,*paramOneCONTACTfileData);
+  strncpy(field.CONTACT, *paramOneCONTACTfileData, 33);
 
  //TELEPHONE
   v8::Local<v8::Object> paramOneTELEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("TELEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneTELEPHONEfileData(Nan::To<v8::String>(paramOneTELEPHONEObj).ToLocalChecked());
-  strcpy_s(field.TELEPHONE,641,*paramOneTELEPHONEfileData);
+  strncpy(field.TELEPHONE, *paramOneTELEPHONEfileData, 65);
 
  //MOBILEPHONE
   v8::Local<v8::Object> paramOneMOBILEPHONEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("MOBILEPHONE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneMOBILEPHONEfileData(Nan::To<v8::String>(paramOneMOBILEPHONEObj).ToLocalChecked());
-  strcpy_s(field.MOBILEPHONE,641,*paramOneMOBILEPHONEfileData);
+  strncpy(field.MOBILEPHONE, *paramOneMOBILEPHONEfileData, 65);
 
  //EMAIL
   v8::Local<v8::Object> paramOneEMAILObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("EMAIL").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneEMAILfileData(Nan::To<v8::String>(paramOneEMAILObj).ToLocalChecked());
-  strcpy_s(field.EMAIL,641,*paramOneEMAILfileData);
+  strncpy(field.EMAIL, *paramOneEMAILfileData, 65);
 
  //FAX
   v8::Local<v8::Object> paramOneFAXObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FAX").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFAXfileData(Nan::To<v8::String>(paramOneFAXObj).ToLocalChecked());
-  strcpy_s(field.FAX,641,*paramOneFAXfileData);
+  strncpy(field.FAX, *paramOneFAXfileData, 65);
 
  //PROVINCE
   v8::Local<v8::Object> paramOnePROVINCEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PROVINCE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROVINCEfileData(Nan::To<v8::String>(paramOnePROVINCEObj).ToLocalChecked());
-  strcpy_s(field.PROVINCE,321,*paramOnePROVINCEfileData);
+  strncpy(field.PROVINCE, *paramOnePROVINCEfileData, 33);
 
  //DDN_NO
   v8::Local<v8::Object> paramOneDDN_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("DDN_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneDDN_NOfileData(Nan::To<v8::String>(paramOneDDN_NOObj).ToLocalChecked());
-  strcpy_s(field.DDN_NO,641,*paramOneDDN_NOfileData);
+  strncpy(field.DDN_NO, *paramOneDDN_NOfileData, 65);
 
  //IN_MODE
   v8::Local<v8::Object> paramOneIN_MODEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IN_MODE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIN_MODEfileData(Nan::To<v8::String>(paramOneIN_MODEObj).ToLocalChecked());
-  strcpy_s(field.IN_MODE,641,*paramOneIN_MODEfileData);
+  strncpy(field.IN_MODE, *paramOneIN_MODEfileData, 65);
 
  //IP_WAN
   v8::Local<v8::Object> paramOneIP_WANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_WAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_WANfileData(Nan::To<v8::String>(paramOneIP_WANObj).ToLocalChecked());
-  strcpy_s(field.IP_WAN,641,*paramOneIP_WANfileData);
+  strncpy(field.IP_WAN, *paramOneIP_WANfileData, 65);
 
  //IP_LAN
   v8::Local<v8::Object> paramOneIP_LANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IP_LAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIP_LANfileData(Nan::To<v8::String>(paramOneIP_LANObj).ToLocalChecked());
-  strcpy_s(field.IP_LAN,641,*paramOneIP_LANfileData);
+  strncpy(field.IP_LAN, *paramOneIP_LANfileData, 65);
 
  //IPADDR
   v8::Local<v8::Object> paramOneIPADDRObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIPADDRfileData(Nan::To<v8::String>(paramOneIPADDRObj).ToLocalChecked());
-  strcpy_s(field.IPADDR,641,*paramOneIPADDRfileData);
+  strncpy(field.IPADDR, *paramOneIPADDRfileData, 65);
 
  //Interface
   v8::Local<v8::Object> paramOneInterfaceObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Interface").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneInterfacefileData(Nan::To<v8::String>(paramOneInterfaceObj).ToLocalChecked());
-  strcpy_s(field.Interface,641,*paramOneInterfacefileData);
+  strncpy(field.Interface, *paramOneInterfacefileData, 65);
 
  //INTERFACE_DATE
   v8::Local<v8::Object> paramOneINTERFACE_DATEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("INTERFACE_DATE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneINTERFACE_DATEfileData(Nan::To<v8::String>(paramOneINTERFACE_DATEObj).ToLocalChecked());
-  strcpy_s(field.INTERFACE_DATE,321,*paramOneINTERFACE_DATEfileData);
+  strncpy(field.INTERFACE_DATE, *paramOneINTERFACE_DATEfileData, 33);
 
  //SOFTWARE
   v8::Local<v8::Object> paramOneSOFTWAREObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SOFTWARE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSOFTWAREfileData(Nan::To<v8::String>(paramOneSOFTWAREObj).ToLocalChecked());
-  strcpy_s(field.SOFTWARE,321,*paramOneSOFTWAREfileData);
+  strncpy(field.SOFTWARE, *paramOneSOFTWAREfileData, 33);
 
  //FEE_TYPE
   v8::Local<v8::Object> paramOneFEE_TYPEObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("FEE_TYPE").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneFEE_TYPEfileData(Nan::To<v8::String>(paramOneFEE_TYPEObj).ToLocalChecked());
-  strcpy_s(field.FEE_TYPE,321,*paramOneFEE_TYPEfileData);
+  strncpy(field.FEE_TYPE, *paramOneFEE_TYPEfileData, 33);
 
  //SERVICEPROVIDER
   v8::Local<v8::Object> paramOneSERVICEPROVIDERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SERVICEPROVIDER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSERVICEPROVIDERfileData(Nan::To<v8::String>(paramOneSERVICEPROVIDERObj).ToLocalChecked());
-  strcpy_s(field.SERVICEPROVIDER,321,*paramOneSERVICEPROVIDERfileData);
+  strncpy(field.SERVICEPROVIDER, *paramOneSERVICEPROVIDERfileData, 33);
 
  //IF_ZIYING
   v8::Local<v8::Object> paramOneIF_ZIYINGObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_ZIYING").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_ZIYINGfileData(Nan::To<v8::String>(paramOneIF_ZIYINGObj).ToLocalChecked());
-  strcpy_s(field.IF_ZIYING,321,*paramOneIF_ZIYINGfileData);
+  strncpy(field.IF_ZIYING, *paramOneIF_ZIYINGfileData, 33);
 
  //IF_TUOGUAN
   v8::Local<v8::Object> paramOneIF_TUOGUANObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("IF_TUOGUAN").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneIF_TUOGUANfileData(Nan::To<v8::String>(paramOneIF_TUOGUANObj).ToLocalChecked());
-  strcpy_s(field.IF_TUOGUAN,321,*paramOneIF_TUOGUANfileData);
+  strncpy(field.IF_TUOGUAN, *paramOneIF_TUOGUANfileData, 33);
 
  //HASOTHER
   v8::Local<v8::Object> paramOneHASOTHERObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("HASOTHER").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneHASOTHERfileData(Nan::To<v8::String>(paramOneHASOTHERObj).ToLocalChecked());
-  strcpy_s(field.HASOTHER,321,*paramOneHASOTHERfileData);
+  strncpy(field.HASOTHER, *paramOneHASOTHERfileData, 33);
 
  //SEAT_NO
   v8::Local<v8::Object> paramOneSEAT_NOObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("SEAT_NO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOneSEAT_NOfileData(Nan::To<v8::String>(paramOneSEAT_NOObj).ToLocalChecked());
-  strcpy_s(field.SEAT_NO,10241,*paramOneSEAT_NOfileData);
+  strncpy(field.SEAT_NO, *paramOneSEAT_NOfileData, 1025);
 
  //PRO
   v8::Local<v8::Object> paramOnePROObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("PRO").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
   v8::String::Utf8Value paramOnePROfileData(Nan::To<v8::String>(paramOnePROObj).ToLocalChecked());
-  strcpy_s(field.PRO,5121,*paramOnePROfileData);
+  strncpy(field.PRO, *paramOnePROfileData, 513);
 
   //convert parameter two
   v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-  int64_t nRequestID=paramTwo->Value();
+  int nRequestID=(int)paramTwo->Value();
 
   //call native method
-  double returnValue= obj->_userApi->ReqQryNetNonPartyLinkInfoTopic(&field, nRequestID);
+  double returnValue= obj->m_userApi->ReqQryNetNonPartyLinkInfoTopic(&field, nRequestID);
 
   info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 }

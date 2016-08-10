@@ -4,332 +4,172 @@
 #include <sstream>
 #include <memory.h>
 #include "sysuserspi.h"
-#include "spi-transform.h"
+#include "v8-transform-data.h"
 #include "tool-function.h"
+#include <fstream>
+#include <queue>
+#include <map>
+#include <vector>
+using std::queue;
+using std::map;
+using std::vector;
+using std::fstream;
 using std::cin;
 using std::cout;
 using std::endl;
  
 extern fstream g_RunningResult_File;
  
-void SysUserSpi::OnFrontConnected(){
-    OutputCallbackMessage("SysUserSpi::OnFrontConnected()", g_RunningResult_File);
-    uv_async_send(&g_FrontConnected_async);
-}
- 
-void SysUserSpi::OnFrontDisConnected(int nReason){
-   OutputCallbackMessage("SysUserSpi::OnFrontDisConnected()!", g_RunningResult_File);    
-   uv_mutex_lock(&g_FrontDisconnected_mutex);
-   g_FrontDisconnected_queue.push(nReason);
-   uv_mutex_unlock(&g_FrontDisconnected_mutex);
-    
-   uv_async_send(&g_FrontDisconnected_async);
-}
- 
-void SysUserSpi::OnHeartBeatWarning(int nTimeLapse){     
-   OutputCallbackMessage("SysUserSpi::OnHeartBeatWarning()!", g_RunningResult_File);
-    
-   uv_mutex_lock(&g_HeartBeatWarning_mutex);
-   g_HeartBeatWarning_queue.push(nTimeLapse);
-   uv_mutex_unlock(&g_HeartBeatWarning_mutex);
+void SysUserSpi::OnFrontConnected () {
+    OutputCallbackMessage("\n************SysUserSpi::OnFrontConnected() START! ************", g_RunningResult_File);
 
-   uv_async_send(&g_HeartBeatWarning_async);
+    void** paramArray = new void*[1];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    paramArray[0] = (void*)pSpiObj; 
+        
+    uv_mutex_lock(&g_FrontConnected_mutex);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontConnected_IOUser_vec.begin();
+        it != g_FrontConnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontConnected_IOUser_vec.end()) {
+        g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
+    }  
+    g_FrontConnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    uv_mutex_unlock(&g_FrontConnected_mutex);
+
+    uv_async_send(&g_FrontConnected_async);
+
+    OutputCallbackMessage("************SysUserSpi::OnFrontConnected() END! ************\n", g_RunningResult_File);
 }
+
+void SysUserSpi::OnFrontDisConnected (int nReason) {
+    OutputCallbackMessage("\n************SysUserSpi::OnFrontDisConnected() START! ************", g_RunningResult_File);
+
+    void** paramArray = new void*[2];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    int* pReason = new int;
+    if (NULL == pReason){
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pReason", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;           
+    }
+    *pReason = nReason;
+    
+    paramArray[0] = (void*)pSpiObj; 
+    paramArray[1] = (void*)pReason;
+    
+    uv_mutex_lock(&g_FrontDisconnected_mutex);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontDisconnected_IOUser_vec.begin();
+        it != g_FrontDisconnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontDisconnected_IOUser_vec.end()) {
+        g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    }      
+    g_FrontDisconnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    uv_mutex_unlock(&g_FrontDisconnected_mutex);
+    
+    uv_async_send(&g_FrontDisconnected_async);
+   
+    OutputCallbackMessage("************SysUserSpi::OnFrontDisConnected() END! ************\n", g_RunningResult_File);
+}
+    
  
- //以下自动生成
-int g_RspQryTopCpuInfoTopic_spi_callbackNumb = 0;
-int g_RtnTopCpuInfoTopic_spi_callbackNumb = 0;
-int g_RspQryTopMemInfoTopic_spi_callbackNumb = 0;
-int g_RtnTopMemInfoTopic_spi_callbackNumb = 0;
-int g_RspQryTopProcessInfoTopic_spi_callbackNumb = 0;
-int g_RtnTopProcessInfoTopic_spi_callbackNumb = 0;
-int g_RspQryFileSystemInfoTopic_spi_callbackNumb = 0;
-int g_RtnFileSystemInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetworkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetworkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryClientLoginTopic_spi_callbackNumb = 0;
-int g_RspQryMonitorObjectTopic_spi_callbackNumb = 0;
-int g_RtnMonitorObjectTopic_spi_callbackNumb = 0;
-int g_RspQryObjectRationalTopic_spi_callbackNumb = 0;
-int g_RtnObjectRationalTopic_spi_callbackNumb = 0;
-int g_RspQrySyslogInfoTopic_spi_callbackNumb = 0;
-int g_RtnSyslogInfoTopic_spi_callbackNumb = 0;
-int g_RspQrySubscriberTopic_spi_callbackNumb = 0;
-int g_RspQryOidRelationTopic_spi_callbackNumb = 0;
-int g_RtnOidRelationTopic_spi_callbackNumb = 0;
-int g_RspQryUserInfoTopic_spi_callbackNumb = 0;
-int g_RtnUserInfoTopic_spi_callbackNumb = 0;
-int g_RspQryOnlineUserInfoTopic_spi_callbackNumb = 0;
-int g_RtnOnlineUserInfoTopic_spi_callbackNumb = 0;
-int g_RspQryWarningEventTopic_spi_callbackNumb = 0;
-int g_RtnWarningEventTopic_spi_callbackNumb = 0;
-int g_RspQryCPUUsageTopic_spi_callbackNumb = 0;
-int g_RtnCPUUsageTopic_spi_callbackNumb = 0;
-int g_RspQryMemoryUsageTopic_spi_callbackNumb = 0;
-int g_RtnMemoryUsageTopic_spi_callbackNumb = 0;
-int g_RspQryDiskUsageTopic_spi_callbackNumb = 0;
-int g_RtnDiskUsageTopic_spi_callbackNumb = 0;
-int g_RspQryObjectAttrTopic_spi_callbackNumb = 0;
-int g_RtnObjectAttrTopic_spi_callbackNumb = 0;
-int g_RspQryInvalidateOrderTopic_spi_callbackNumb = 0;
-int g_RtnInvalidateOrderTopic_spi_callbackNumb = 0;
-int g_RspQryOrderStatusTopic_spi_callbackNumb = 0;
-int g_RtnOrderStatusTopic_spi_callbackNumb = 0;
-int g_RspQryBargainOrderTopic_spi_callbackNumb = 0;
-int g_RtnBargainOrderTopic_spi_callbackNumb = 0;
-int g_RspQryInstPropertyTopic_spi_callbackNumb = 0;
-int g_RtnInstPropertyTopic_spi_callbackNumb = 0;
-int g_RspQryMarginRateTopic_spi_callbackNumb = 0;
-int g_RtnMarginRateTopic_spi_callbackNumb = 0;
-int g_RspQryPriceLimitTopic_spi_callbackNumb = 0;
-int g_RtnPriceLimitTopic_spi_callbackNumb = 0;
-int g_RspQryPartPosiLimitTopic_spi_callbackNumb = 0;
-int g_RtnPartPosiLimitTopic_spi_callbackNumb = 0;
-int g_RspQryClientPosiLimitTopic_spi_callbackNumb = 0;
-int g_RtnClientPosiLimitTopic_spi_callbackNumb = 0;
-int g_RspQrySpecialPosiLimitTopic_spi_callbackNumb = 0;
-int g_RtnSpecialPosiLimitTopic_spi_callbackNumb = 0;
-int g_RspQryTransactionChgTopic_spi_callbackNumb = 0;
-int g_RtnTransactionChgTopic_spi_callbackNumb = 0;
-int g_RspQryClientChgTopic_spi_callbackNumb = 0;
-int g_RtnClientChgTopic_spi_callbackNumb = 0;
-int g_RspQryPartClientChgTopic_spi_callbackNumb = 0;
-int g_RtnPartClientChgTopic_spi_callbackNumb = 0;
-int g_RspQryPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RtnPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RspQryHedgeDetailChgTopic_spi_callbackNumb = 0;
-int g_RtnHedgeDetailChgTopic_spi_callbackNumb = 0;
-int g_RspQryParticipantChgTopic_spi_callbackNumb = 0;
-int g_RtnParticipantChgTopic_spi_callbackNumb = 0;
-int g_RspQryMarginRateChgTopic_spi_callbackNumb = 0;
-int g_RtnMarginRateChgTopic_spi_callbackNumb = 0;
-int g_RspQryUserIpChgTopic_spi_callbackNumb = 0;
-int g_RtnUserIpChgTopic_spi_callbackNumb = 0;
-int g_RspQryClientPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RtnClientPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RspQrySpecPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RtnSpecPosiLimitChgTopic_spi_callbackNumb = 0;
-int g_RspQryHistoryObjectAttrTopic_spi_callbackNumb = 0;
-int g_RtnHistoryObjectAttrTopic_spi_callbackNumb = 0;
-int g_RspQryFrontInfoTopic_spi_callbackNumb = 0;
-int g_RtnFrontInfoTopic_spi_callbackNumb = 0;
-int g_RspQrySysUserLoginTopic_spi_callbackNumb = 0;
-int g_RspQrySysUserLogoutTopic_spi_callbackNumb = 0;
-int g_RspQrySysUserPasswordUpdateTopic_spi_callbackNumb = 0;
-int g_RspQrySysUserRegisterTopic_spi_callbackNumb = 0;
-int g_RspQrySysUserDeleteTopic_spi_callbackNumb = 0;
-int g_RspQryParticipantInitTopic_spi_callbackNumb = 0;
-int g_RtnParticipantInitTopic_spi_callbackNumb = 0;
-int g_RspQryUserInitTopic_spi_callbackNumb = 0;
-int g_RtnUserInitTopic_spi_callbackNumb = 0;
-int g_RspQryClientInitTopic_spi_callbackNumb = 0;
-int g_RtnClientInitTopic_spi_callbackNumb = 0;
-int g_RspQryTradeLogTopic_spi_callbackNumb = 0;
-int g_RtnTradeLogTopic_spi_callbackNumb = 0;
-int g_RspQryTradeUserLoginInfoTopic_spi_callbackNumb = 0;
-int g_RtnTradeUserLoginInfoTopic_spi_callbackNumb = 0;
-int g_RspQryPartTradeTopic_spi_callbackNumb = 0;
-int g_RspQryTradepeakTopic_spi_callbackNumb = 0;
-int g_RtnUpdateSysConfigTopic_spi_callbackNumb = 0;
-int g_RtnSysUser_spi_callbackNumb = 0;
-int g_RtnPriceLimitChgTopic_spi_callbackNumb = 0;
-int g_RspQryHistoryCpuInfoTopic_spi_callbackNumb = 0;
-int g_RspQryHistoryMemInfoTopic_spi_callbackNumb = 0;
-int g_RspQryHistoryNetworkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryMonitorOnlineUser_spi_callbackNumb = 0;
-int g_RspQryFrontStat_spi_callbackNumb = 0;
-int g_RtnSysTimeSyncTopic_spi_callbackNumb = 0;
-int g_RtnDataCenterChgTopic_spi_callbackNumb = 0;
-int g_RspQryHistoryTradePeakTopic_spi_callbackNumb = 0;
-int g_RtnHistoryTradePeakTopic_spi_callbackNumb = 0;
-int g_RspQrySyslogEventTopic_spi_callbackNumb = 0;
-int g_RtnSyslogEventTopic_spi_callbackNumb = 0;
-int g_RspQryTradeDayChangeTopic_spi_callbackNumb = 0;
-int g_RspQryWebAppInfoTopic_spi_callbackNumb = 0;
-int g_RtnWebAppInfoTopic_spi_callbackNumb = 0;
-int g_RspQryServletInfoTopic_spi_callbackNumb = 0;
-int g_RtnServletInfoTopic_spi_callbackNumb = 0;
-int g_RspQryFileInfoTopic_spi_callbackNumb = 0;
-int g_RtnFileInfoTopic_spi_callbackNumb = 0;
-int g_RspQrySessionInfoTopic_spi_callbackNumb = 0;
-int g_RtnSessionInfoTopic_spi_callbackNumb = 0;
-int g_RspQryJDBCInfoTopic_spi_callbackNumb = 0;
-int g_RtnJDBCInfoTopic_spi_callbackNumb = 0;
-int g_RspQryThreadInfoTopic_spi_callbackNumb = 0;
-int g_RtnThreadInfoTopic_spi_callbackNumb = 0;
-int g_RspQryVMInfoTopic_spi_callbackNumb = 0;
-int g_RtnVMInfoTopic_spi_callbackNumb = 0;
-int g_RspQryPropertyInfoTopic_spi_callbackNumb = 0;
-int g_RtnPropertyInfoTopic_spi_callbackNumb = 0;
-int g_RspQryMemPoolInfoTopic_spi_callbackNumb = 0;
-int g_RtnMemPoolInfoTopic_spi_callbackNumb = 0;
-int g_RspQryFileContentInfoTopic_spi_callbackNumb = 0;
-int g_RtnFileContentInfoTopic_spi_callbackNumb = 0;
-int g_RspQryConnectionInfoTopic_spi_callbackNumb = 0;
-int g_RtnConnectionInfoTopic_spi_callbackNumb = 0;
-int g_RspQryConnectorInfoTopic_spi_callbackNumb = 0;
-int g_RtnConnectorInfoTopic_spi_callbackNumb = 0;
-int g_RspQryDBQueryTopic_spi_callbackNumb = 0;
-int g_RtnDBQueryTopic_spi_callbackNumb = 0;
-int g_RspQryGeneralFieldTopic_spi_callbackNumb = 0;
-int g_RtnGeneralFieldTopic_spi_callbackNumb = 0;
-int g_RspQryGetFileTopic_spi_callbackNumb = 0;
-int g_RspQryWarningQueryTopic_spi_callbackNumb = 0;
-int g_RtnWarningQueryTopic_spi_callbackNumb = 0;
-int g_RtnHostConfig_spi_callbackNumb = 0;
-int g_RspQryGeneralOperateTopic_spi_callbackNumb = 0;
-int g_RtnGeneralOperateTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceLinkedTopic_spi_callbackNumb = 0;
-int g_RtnNetDeviceLinkedTopic_spi_callbackNumb = 0;
-int g_RspQryTradeUserLoginStatTopic_spi_callbackNumb = 0;
-int g_RspQryTradeFrontOrderRttStatTopic_spi_callbackNumb = 0;
-int g_RtnTradeFrontOrderRttStatTopic_spi_callbackNumb = 0;
-int g_RspQryParticTradeOrderStatesTopic_spi_callbackNumb = 0;
-int g_RtnParticTradeOrderStatesTopic_spi_callbackNumb = 0;
-int g_RspQryRouterInfoTopic_spi_callbackNumb = 0;
-int g_RtnRouterInfoTopic_spi_callbackNumb = 0;
-int g_RspQryDiskIOTopic_spi_callbackNumb = 0;
-int g_RtnDiskIOTopic_spi_callbackNumb = 0;
-int g_RspQryStatInfoTopic_spi_callbackNumb = 0;
-int g_RtnStatInfoTopic_spi_callbackNumb = 0;
-int g_RspQryTradeOrderRttCutLineTopic_spi_callbackNumb = 0;
-int g_RtnTradeOrderRttCutLineTopic_spi_callbackNumb = 0;
-int g_RspQryClientInfoTopic_spi_callbackNumb = 0;
-int g_RtnClientInfoTopic_spi_callbackNumb = 0;
-int g_RspQryEventDescriptionTopic_spi_callbackNumb = 0;
-int g_RtnEventDescriptionTopic_spi_callbackNumb = 0;
-int g_RspQryFrontUniqueIDTopic_spi_callbackNumb = 0;
-int g_RtnFrontUniqueIDTopic_spi_callbackNumb = 0;
-int g_RspQryNetPartyLinkAddrChangeTopic_spi_callbackNumb = 0;
-int g_RtnNetPartyLinkAddrChangeTopic_spi_callbackNumb = 0;
-int g_RspQryNetDelPartyLinkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetDelPartyLinkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryPerformanceTopTopic_spi_callbackNumb = 0;
-int g_RtnPerformanceTopTopic_spi_callbackNumb = 0;
-int g_RspQryInstrumentStatusTopic_spi_callbackNumb = 0;
-int g_RtnInstrumentStatusTopic_spi_callbackNumb = 0;
-int g_RspQryCurrTradingSegmentAttrTopic_spi_callbackNumb = 0;
-int g_RtnCurrTradingSegmentAttrTopic_spi_callbackNumb = 0;
-int g_RspQryNetAreaTopic_spi_callbackNumb = 0;
-int g_RtnNetAreaTopic_spi_callbackNumb = 0;
-int g_RspQryNetSubAreaTopic_spi_callbackNumb = 0;
-int g_RtnNetSubAreaTopic_spi_callbackNumb = 0;
-int g_RspQryNetSubAreaIPTopic_spi_callbackNumb = 0;
-int g_RtnNetSubAreaIPTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceTopic_spi_callbackNumb = 0;
-int g_RtnNetDeviceTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceDetectTopic_spi_callbackNumb = 0;
-int g_RspQryNetBuildingTopic_spi_callbackNumb = 0;
-int g_RtnNetBuildingTopic_spi_callbackNumb = 0;
-int g_RspQryNetRoomTopic_spi_callbackNumb = 0;
-int g_RtnNetRoomTopic_spi_callbackNumb = 0;
-int g_RspQryNetCabinetsTopic_spi_callbackNumb = 0;
-int g_RtnNetCabinetsTopic_spi_callbackNumb = 0;
-int g_RspQryNetOIDTopic_spi_callbackNumb = 0;
-int g_RtnNetOIDTopic_spi_callbackNumb = 0;
-int g_RspQryNetTimePolicyTopic_spi_callbackNumb = 0;
-int g_RtnNetTimePolicyTopic_spi_callbackNumb = 0;
-int g_RspQryNetGatherTaskTopic_spi_callbackNumb = 0;
-int g_RtnNetGatherTaskTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceChgTopic_spi_callbackNumb = 0;
-int g_RtnNetDeviceChgTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetDeviceTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetDeviceCategoryTopic_spi_callbackNumb = 0;
-int g_RtnNetDeviceCategoryTopic_spi_callbackNumb = 0;
-int g_RspQryNetManufactoryTopic_spi_callbackNumb = 0;
-int g_RtnNetManufactoryTopic_spi_callbackNumb = 0;
-int g_RspQryNetCommunityTopic_spi_callbackNumb = 0;
-int g_RtnNetCommunityTopic_spi_callbackNumb = 0;
-int g_RspQryNetPortTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetPortTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetPartAccessSpotTopic_spi_callbackNumb = 0;
-int g_RtnNetPartAccessSpotTopic_spi_callbackNumb = 0;
-int g_RspQryNetInterfaceTopic_spi_callbackNumb = 0;
-int g_RtnNetInterfaceTopic_spi_callbackNumb = 0;
-int g_RspQryNetGeneralOIDTopic_spi_callbackNumb = 0;
-int g_RtnNetGeneralOIDTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorAttrScopeTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorAttrScopeTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorAttrTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorAttrTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorObjectAttrTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorObjectAttrTopic_spi_callbackNumb = 0;
-int g_RspQryNetFuncAreaTopic_spi_callbackNumb = 0;
-int g_RtnNetFuncAreaTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorCommandTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorCommandTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorActionGroupTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorActionGroupTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorDeviceGroupTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorDeviceGroupTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTaskInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTaskInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTaskResultTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTaskResultTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTaskObjectSetTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTaskObjectSetTopic_spi_callbackNumb = 0;
-int g_RspQryNetPartyLinkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetPartyLinkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorActionAttrTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorActionAttrTopic_spi_callbackNumb = 0;
-int g_RspQryNetModuleTopic_spi_callbackNumb = 0;
-int g_RtnNetModuleTopic_spi_callbackNumb = 0;
-int g_RspQryNetEventExprTopic_spi_callbackNumb = 0;
-int g_RtnNetEventExprTopic_spi_callbackNumb = 0;
-int g_RspQryNetEventTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetEventTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetSubEventTypeTopic_spi_callbackNumb = 0;
-int g_RtnNetSubEventTypeTopic_spi_callbackNumb = 0;
-int g_RspQryNetEventLevelTopic_spi_callbackNumb = 0;
-int g_RtnNetEventLevelTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTaskStatusResultTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTaskStatusResultTopic_spi_callbackNumb = 0;
-int g_RspQryNetCfgFileTopic_spi_callbackNumb = 0;
-int g_RtnNetCfgFileTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorDeviceTaskTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorDeviceTaskTopic_spi_callbackNumb = 0;
-int g_RspQryNetMonitorTaskInstAttrsTopic_spi_callbackNumb = 0;
-int g_RtnNetMonitorTaskInstAttrsTopic_spi_callbackNumb = 0;
-int g_RspQryFileGeneralOperTopic_spi_callbackNumb = 0;
-int g_RtnFileGeneralOperTopic_spi_callbackNumb = 0;
-int g_RspQryNetBaseLineTopic_spi_callbackNumb = 0;
-int g_RtnNetBaseLineTopic_spi_callbackNumb = 0;
-int g_RspQryNetBaseLineTaskTopic_spi_callbackNumb = 0;
-int g_RtnNetBaseLineTaskTopic_spi_callbackNumb = 0;
-int g_RspQryNetBaseLineResultTopic_spi_callbackNumb = 0;
-int g_RtnNetBaseLineResultTopic_spi_callbackNumb = 0;
-int g_RspQryNetPartyLinkStatusInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetPartyLinkStatusInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetMemberSDHLineInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetMemberSDHLineInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetDDNLinkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetDDNLinkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetPseudMemberLinkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetPseudMemberLinkInfoTopic_spi_callbackNumb = 0;
-int g_RspQryOuterDeviceInfTopic_spi_callbackNumb = 0;
-int g_RtnNetOuterDeviceInfTopic_spi_callbackNumb = 0;
-int g_RspQryNetLocalPingResultInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetLocalPingResultInfoTopic_spi_callbackNumb = 0;
-int g_RspQryNetRomotePingResultInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetRomotePingResultInfoTopic_spi_callbackNumb = 0;
-int g_RtnMonitorTopProcessInfo_spi_callbackNumb = 0;
-int g_RspQrySysInternalTopologyTopic_spi_callbackNumb = 0;
-int g_RtnSysInternalTopologyTopic_spi_callbackNumb = 0;
-int g_RspQryMemberLinkCostTopic_spi_callbackNumb = 0;
-int g_RtnMemberLinkCostTopic_spi_callbackNumb = 0;
-int g_RspQryNetPartylinkMonthlyRentTopic_spi_callbackNumb = 0;
-int g_RtnNetPartylinkMonthlyRentTopic_spi_callbackNumb = 0;
-int g_RspQryNetNonPartyLinkInfoTopic_spi_callbackNumb = 0;
-int g_RtnNetNonPartyLinkInfoTopic_spi_callbackNumb = 0;
+void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) { 
+    OutputCallbackMessage("\n************SysUserSpi::OnHeartBeatWarning() START! ************", g_RunningResult_File);
+
+    void** paramArray = new void*[2];
+    if (NULL == paramArray) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;
+    }
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+    
+    int* pTimeLapse = new int;
+    if (NULL == pTimeLapse){
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pReason", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;           
+    }
+    *pTimeLapse = nTimeLapse;
+
+    paramArray[0] = (void*)pSpiObj; 
+    paramArray[1] = (void*)pTimeLapse; 
+        
+    uv_mutex_lock(&g_HeartBeatWarning_mutex);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_HeartBeatWarning_IOUser_vec.begin();
+        it != g_HeartBeatWarning_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_HeartBeatWarning_IOUser_vec.end()) {
+        g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    }    
+    g_HeartBeatWarning_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
+    
+    uv_mutex_unlock(&g_HeartBeatWarning_mutex);
+
+    uv_async_send(&g_HeartBeatWarning_async);
+
+    OutputCallbackMessage("************SysUserSpi::OnHeartBeatWarning() END! ************\n", g_RunningResult_File);
+}
+
 
 void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopCpuInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTopCpuInfoTopic_spi_callbackNumb: ", g_RspQryTopCpuInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
@@ -368,10 +208,11 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTopCpuInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTopCpuInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopCpuInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopCpuInfo is NULL" , g_RunningResult_File); 
@@ -395,7 +236,15 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopCpuInfoTopic_mutex);
-    g_RspQryTopCpuInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopCpuInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopCpuInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTopCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopCpuInfoTopic_mutex);
 
     uv_async_send(&g_RspQryTopCpuInfoTopic_async);
@@ -404,9 +253,16 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
 
 void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopCpuInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTopCpuInfoTopic_spi_callbackNumb: ", g_RtnTopCpuInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
@@ -423,7 +279,8 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInf
         memcpy (pNewRtnTopCpuInfo,pRtnTopCpuInfo, sizeof(CShfeFtdcRtnTopCpuInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnTopCpuInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTopCpuInfo;
     if (NULL == pRtnTopCpuInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnTopCpuInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -443,7 +300,15 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInf
     }
 
     uv_mutex_lock (&g_RtnTopCpuInfoTopic_mutex);
-    g_RtnTopCpuInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopCpuInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopCpuInfoTopic_IOUser_vec.end()) {
+        g_RtnTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTopCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopCpuInfoTopic_mutex);
 
     uv_async_send(&g_RtnTopCpuInfoTopic_async);
@@ -452,9 +317,16 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInf
 
 void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQryTopMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopMemInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTopMemInfoTopic_spi_callbackNumb: ", g_RspQryTopMemInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTopMemInfoTopic: END! ******\n", g_RunningResult_File);
@@ -493,10 +365,11 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTopMemInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTopMemInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopMemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopMemInfo is NULL" , g_RunningResult_File); 
@@ -515,7 +388,15 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopMemInfoTopic_mutex);
-    g_RspQryTopMemInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopMemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopMemInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTopMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopMemInfoTopic_mutex);
 
     uv_async_send(&g_RspQryTopMemInfoTopic_async);
@@ -524,9 +405,16 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
 
 void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopMemInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTopMemInfoTopic_spi_callbackNumb: ", g_RtnTopMemInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTopMemInfoTopic: END! ******\n", g_RunningResult_File);
@@ -543,7 +431,8 @@ void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInf
         memcpy (pNewRtnTopMemInfo,pRtnTopMemInfo, sizeof(CShfeFtdcRtnTopMemInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnTopMemInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTopMemInfo;
     if (NULL == pRtnTopMemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnTopMemInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -558,7 +447,15 @@ void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInf
     }
 
     uv_mutex_lock (&g_RtnTopMemInfoTopic_mutex);
-    g_RtnTopMemInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopMemInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopMemInfoTopic_IOUser_vec.end()) {
+        g_RtnTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTopMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopMemInfoTopic_mutex);
 
     uv_async_send(&g_RtnTopMemInfoTopic_async);
@@ -567,9 +464,16 @@ void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInf
 
 void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField* pRspQryTopProcessInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopProcessInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTopProcessInfoTopic_spi_callbackNumb: ", g_RspQryTopProcessInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
@@ -608,10 +512,11 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTopProcessInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTopProcessInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopProcessInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopProcessInfo is NULL" , g_RunningResult_File); 
@@ -638,7 +543,15 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopProcessInfoTopic_mutex);
-    g_RspQryTopProcessInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopProcessInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopProcessInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopProcessInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTopProcessInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopProcessInfoTopic_mutex);
 
     uv_async_send(&g_RspQryTopProcessInfoTopic_async);
@@ -647,9 +560,16 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
 
 void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnTopProcessInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopProcessInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTopProcessInfoTopic_spi_callbackNumb: ", g_RtnTopProcessInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
@@ -666,7 +586,8 @@ void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnT
         memcpy (pNewRtnTopProcessInfo,pRtnTopProcessInfo, sizeof(CShfeFtdcRtnTopProcessInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnTopProcessInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTopProcessInfo;
     if (NULL == pRtnTopProcessInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnTopProcessInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -689,7 +610,15 @@ void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnT
     }
 
     uv_mutex_lock (&g_RtnTopProcessInfoTopic_mutex);
-    g_RtnTopProcessInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopProcessInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopProcessInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopProcessInfoTopic_IOUser_vec.end()) {
+        g_RtnTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTopProcessInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopProcessInfoTopic_mutex);
 
     uv_async_send(&g_RtnTopProcessInfoTopic_async);
@@ -698,9 +627,16 @@ void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnT
 
 void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField* pRspQryFileSystemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileSystemInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFileSystemInfoTopic_spi_callbackNumb: ", g_RspQryFileSystemInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
@@ -739,10 +675,11 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFileSystemInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFileSystemInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileSystemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileSystemInfo is NULL" , g_RunningResult_File); 
@@ -766,7 +703,15 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileSystemInfoTopic_mutex);
-    g_RspQryFileSystemInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileSystemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileSystemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileSystemInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFileSystemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileSystemInfoTopic_mutex);
 
     uv_async_send(&g_RspQryFileSystemInfoTopic_async);
@@ -775,9 +720,16 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
 
 void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnFileSystemInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileSystemInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFileSystemInfoTopic_spi_callbackNumb: ", g_RtnFileSystemInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
@@ -794,7 +746,8 @@ void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnF
         memcpy (pNewRtnFileSystemInfo,pRtnFileSystemInfo, sizeof(CShfeFtdcRtnFileSystemInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnFileSystemInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFileSystemInfo;
     if (NULL == pRtnFileSystemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnFileSystemInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -814,7 +767,15 @@ void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnF
     }
 
     uv_mutex_lock (&g_RtnFileSystemInfoTopic_mutex);
-    g_RtnFileSystemInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileSystemInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileSystemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileSystemInfoTopic_IOUser_vec.end()) {
+        g_RtnFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFileSystemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileSystemInfoTopic_mutex);
 
     uv_async_send(&g_RtnFileSystemInfoTopic_async);
@@ -823,9 +784,16 @@ void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnF
 
 void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetworkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetworkInfoTopic_spi_callbackNumb: ", g_RspQryNetworkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -864,10 +832,11 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetworkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetworkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetworkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetworkInfo is NULL" , g_RunningResult_File); 
@@ -892,7 +861,15 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetworkInfoTopic_mutex);
-    g_RspQryNetworkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetworkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetworkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetworkInfoTopic_async);
@@ -901,9 +878,16 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
 
 void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetworkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetworkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetworkInfoTopic_spi_callbackNumb: ", g_RtnNetworkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetworkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -920,7 +904,8 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetwork
         memcpy (pNewRtnNetworkInfo,pRtnNetworkInfo, sizeof(CShfeFtdcRtnNetworkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetworkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetworkInfo;
     if (NULL == pRtnNetworkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetworkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -941,7 +926,15 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetwork
     }
 
     uv_mutex_lock (&g_RtnNetworkInfoTopic_mutex);
-    g_RtnNetworkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetworkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetworkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetworkInfoTopic_async);
@@ -950,9 +943,16 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetwork
 
 void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQryClientLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientLoginTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientLoginTopic_spi_callbackNumb: ", g_RspQryClientLoginTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientLoginTopic: END! ******\n", g_RunningResult_File);
@@ -991,10 +991,11 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientLogin;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientLogin;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientLogin) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientLogin is NULL" , g_RunningResult_File); 
@@ -1007,18 +1008,33 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientLoginTopic_mutex);
-    g_RspQryClientLoginTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientLoginTopic_IOUser_vec.begin();
+        it != g_RspQryClientLoginTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientLoginTopic_IOUser_vec.end()) {
+        g_RspQryClientLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientLoginTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientLoginTopic_mutex);
 
     uv_async_send(&g_RspQryClientLoginTopic_async);
     OutputCallbackMessage("****** SysUserSpi:: RspQryClientLoginTopic: END! ******\n", g_RunningResult_File);
 }
 
-void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+void SysUserSpi::Onrspqrymonitorobjecttopic(CShfeFtdcRspQryMonitorObjectField* pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorObjectTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMonitorObjectTopic_spi_callbackNumb: ", g_RspQryMonitorObjectTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorObjectTopic: END! ******\n", g_RunningResult_File);
@@ -1057,10 +1073,11 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMonitorObject;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMonitorObject;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMonitorObject) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMonitorObject is NULL" , g_RunningResult_File); 
@@ -1074,7 +1091,15 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMonitorObjectTopic_mutex);
-    g_RspQryMonitorObjectTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMonitorObjectTopic_IOUser_vec.begin();
+        it != g_RspQryMonitorObjectTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMonitorObjectTopic_IOUser_vec.end()) {
+        g_RspQryMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMonitorObjectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMonitorObjectTopic_mutex);
 
     uv_async_send(&g_RspQryMonitorObjectTopic_async);
@@ -1083,9 +1108,16 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
 
 void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMonitorObject){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMonitorObjectTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMonitorObjectTopic_spi_callbackNumb: ", g_RtnMonitorObjectTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMonitorObjectTopic: END! ******\n", g_RunningResult_File);
@@ -1102,7 +1134,8 @@ void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMon
         memcpy (pNewRtnMonitorObject,pRtnMonitorObject, sizeof(CShfeFtdcRtnMonitorObjectField));
     }
 
-    paramArray[0] = (void*)pNewRtnMonitorObject;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMonitorObject;
     if (NULL == pRtnMonitorObject) { 
         OutputCallbackMessage("SysUserSpi::pRtnMonitorObject is NULL" , g_RunningResult_File); 
     } else {
@@ -1112,7 +1145,15 @@ void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMon
     }
 
     uv_mutex_lock (&g_RtnMonitorObjectTopic_mutex);
-    g_RtnMonitorObjectTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMonitorObjectTopic_IOUser_vec.begin();
+        it != g_RtnMonitorObjectTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMonitorObjectTopic_IOUser_vec.end()) {
+        g_RtnMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMonitorObjectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMonitorObjectTopic_mutex);
 
     uv_async_send(&g_RtnMonitorObjectTopic_async);
@@ -1121,9 +1162,16 @@ void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMon
 
 void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField* pRspQryObjectRational, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryObjectRationalTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryObjectRationalTopic_spi_callbackNumb: ", g_RspQryObjectRationalTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryObjectRationalTopic: END! ******\n", g_RunningResult_File);
@@ -1162,10 +1210,11 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryObjectRational;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryObjectRational;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryObjectRational) { 
         OutputCallbackMessage("SysUserSpi::pRspQryObjectRational is NULL" , g_RunningResult_File); 
@@ -1178,7 +1227,15 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryObjectRationalTopic_mutex);
-    g_RspQryObjectRationalTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryObjectRationalTopic_IOUser_vec.begin();
+        it != g_RspQryObjectRationalTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryObjectRationalTopic_IOUser_vec.end()) {
+        g_RspQryObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryObjectRationalTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryObjectRationalTopic_mutex);
 
     uv_async_send(&g_RspQryObjectRationalTopic_async);
@@ -1187,9 +1244,16 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
 
 void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnObjectRational){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnObjectRationalTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnObjectRationalTopic_spi_callbackNumb: ", g_RtnObjectRationalTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnObjectRationalTopic: END! ******\n", g_RunningResult_File);
@@ -1206,7 +1270,8 @@ void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnO
         memcpy (pNewRtnObjectRational,pRtnObjectRational, sizeof(CShfeFtdcRtnObjectRationalField));
     }
 
-    paramArray[0] = (void*)pNewRtnObjectRational;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnObjectRational;
     if (NULL == pRtnObjectRational) { 
         OutputCallbackMessage("SysUserSpi::pRtnObjectRational is NULL" , g_RunningResult_File); 
     } else {
@@ -1215,7 +1280,15 @@ void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnO
     }
 
     uv_mutex_lock (&g_RtnObjectRationalTopic_mutex);
-    g_RtnObjectRationalTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnObjectRationalTopic_IOUser_vec.begin();
+        it != g_RtnObjectRationalTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnObjectRationalTopic_IOUser_vec.end()) {
+        g_RtnObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnObjectRationalTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnObjectRationalTopic_mutex);
 
     uv_async_send(&g_RtnObjectRationalTopic_async);
@@ -1224,9 +1297,16 @@ void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnO
 
 void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQrySyslogInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySyslogInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySyslogInfoTopic_spi_callbackNumb: ", g_RspQrySyslogInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1265,10 +1345,11 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySyslogInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySyslogInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySyslogInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySyslogInfo is NULL" , g_RunningResult_File); 
@@ -1285,7 +1366,15 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySyslogInfoTopic_mutex);
-    g_RspQrySyslogInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySyslogInfoTopic_IOUser_vec.begin();
+        it != g_RspQrySyslogInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySyslogInfoTopic_IOUser_vec.end()) {
+        g_RspQrySyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySyslogInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySyslogInfoTopic_mutex);
 
     uv_async_send(&g_RspQrySyslogInfoTopic_async);
@@ -1294,9 +1383,16 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
 
 void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSyslogInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSyslogInfoTopic_spi_callbackNumb: ", g_RtnSyslogInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSyslogInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1313,7 +1409,8 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInf
         memcpy (pNewRtnSyslogInfo,pRtnSyslogInfo, sizeof(CShfeFtdcRtnSyslogInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnSyslogInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSyslogInfo;
     if (NULL == pRtnSyslogInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnSyslogInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1326,7 +1423,15 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInf
     }
 
     uv_mutex_lock (&g_RtnSyslogInfoTopic_mutex);
-    g_RtnSyslogInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSyslogInfoTopic_IOUser_vec.begin();
+        it != g_RtnSyslogInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSyslogInfoTopic_IOUser_vec.end()) {
+        g_RtnSyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSyslogInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSyslogInfoTopic_mutex);
 
     uv_async_send(&g_RtnSyslogInfoTopic_async);
@@ -1335,9 +1440,16 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInf
 
 void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQrySubscriber, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySubscriberTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySubscriberTopic_spi_callbackNumb: ", g_RspQrySubscriberTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySubscriberTopic: END! ******\n", g_RunningResult_File);
@@ -1376,10 +1488,11 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySubscriber;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySubscriber;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySubscriber) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySubscriber is NULL" , g_RunningResult_File); 
@@ -1393,7 +1506,15 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySubscriberTopic_mutex);
-    g_RspQrySubscriberTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySubscriberTopic_IOUser_vec.begin();
+        it != g_RspQrySubscriberTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySubscriberTopic_IOUser_vec.end()) {
+        g_RspQrySubscriberTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySubscriberTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySubscriberTopic_mutex);
 
     uv_async_send(&g_RspQrySubscriberTopic_async);
@@ -1402,9 +1523,16 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
 
 void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQryOidRelation, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOidRelationTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryOidRelationTopic_spi_callbackNumb: ", g_RspQryOidRelationTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryOidRelationTopic: END! ******\n", g_RunningResult_File);
@@ -1443,10 +1571,11 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryOidRelation;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryOidRelation;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOidRelation) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOidRelation is NULL" , g_RunningResult_File); 
@@ -1459,7 +1588,15 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOidRelationTopic_mutex);
-    g_RspQryOidRelationTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOidRelationTopic_IOUser_vec.begin();
+        it != g_RspQryOidRelationTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOidRelationTopic_IOUser_vec.end()) {
+        g_RspQryOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryOidRelationTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOidRelationTopic_mutex);
 
     uv_async_send(&g_RspQryOidRelationTopic_async);
@@ -1468,9 +1605,16 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
 
 void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRelation){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOidRelationTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnOidRelationTopic_spi_callbackNumb: ", g_RtnOidRelationTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnOidRelationTopic: END! ******\n", g_RunningResult_File);
@@ -1487,7 +1631,8 @@ void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRela
         memcpy (pNewRtnOidRelation,pRtnOidRelation, sizeof(CShfeFtdcRtnOidRelationField));
     }
 
-    paramArray[0] = (void*)pNewRtnOidRelation;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnOidRelation;
     if (NULL == pRtnOidRelation) { 
         OutputCallbackMessage("SysUserSpi::pRtnOidRelation is NULL" , g_RunningResult_File); 
     } else {
@@ -1496,7 +1641,15 @@ void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRela
     }
 
     uv_mutex_lock (&g_RtnOidRelationTopic_mutex);
-    g_RtnOidRelationTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOidRelationTopic_IOUser_vec.begin();
+        it != g_RtnOidRelationTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOidRelationTopic_IOUser_vec.end()) {
+        g_RtnOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnOidRelationTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOidRelationTopic_mutex);
 
     uv_async_send(&g_RtnOidRelationTopic_async);
@@ -1505,9 +1658,16 @@ void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRela
 
 void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryUserInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryUserInfoTopic_spi_callbackNumb: ", g_RspQryUserInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryUserInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1546,10 +1706,11 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryUserInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryUserInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryUserInfo is NULL" , g_RunningResult_File); 
@@ -1569,7 +1730,15 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserInfoTopic_mutex);
-    g_RspQryUserInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserInfoTopic_IOUser_vec.begin();
+        it != g_RspQryUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserInfoTopic_IOUser_vec.end()) {
+        g_RspQryUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserInfoTopic_mutex);
 
     uv_async_send(&g_RspQryUserInfoTopic_async);
@@ -1578,9 +1747,16 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
 
 void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUserInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnUserInfoTopic_spi_callbackNumb: ", g_RtnUserInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnUserInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1597,7 +1773,8 @@ void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){
         memcpy (pNewRtnUserInfo,pRtnUserInfo, sizeof(CShfeFtdcRtnUserInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnUserInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnUserInfo;
     if (NULL == pRtnUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnUserInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1613,7 +1790,15 @@ void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){
     }
 
     uv_mutex_lock (&g_RtnUserInfoTopic_mutex);
-    g_RtnUserInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserInfoTopic_IOUser_vec.begin();
+        it != g_RtnUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserInfoTopic_IOUser_vec.end()) {
+        g_RtnUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserInfoTopic_mutex);
 
     uv_async_send(&g_RtnUserInfoTopic_async);
@@ -1622,9 +1807,16 @@ void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){
 
 void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField* pRspQryOnlineUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOnlineUserInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryOnlineUserInfoTopic_spi_callbackNumb: ", g_RspQryOnlineUserInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1663,10 +1855,11 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryOnlineUserInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryOnlineUserInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOnlineUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOnlineUserInfo is NULL" , g_RunningResult_File); 
@@ -1686,7 +1879,15 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOnlineUserInfoTopic_mutex);
-    g_RspQryOnlineUserInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOnlineUserInfoTopic_IOUser_vec.begin();
+        it != g_RspQryOnlineUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOnlineUserInfoTopic_IOUser_vec.end()) {
+        g_RspQryOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryOnlineUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOnlineUserInfoTopic_mutex);
 
     uv_async_send(&g_RspQryOnlineUserInfoTopic_async);
@@ -1695,9 +1896,16 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
 
 void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnOnlineUserInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOnlineUserInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnOnlineUserInfoTopic_spi_callbackNumb: ", g_RtnOnlineUserInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
@@ -1714,7 +1922,8 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnO
         memcpy (pNewRtnOnlineUserInfo,pRtnOnlineUserInfo, sizeof(CShfeFtdcRtnOnlineUserInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnOnlineUserInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnOnlineUserInfo;
     if (NULL == pRtnOnlineUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnOnlineUserInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1730,7 +1939,15 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnO
     }
 
     uv_mutex_lock (&g_RtnOnlineUserInfoTopic_mutex);
-    g_RtnOnlineUserInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOnlineUserInfoTopic_IOUser_vec.begin();
+        it != g_RtnOnlineUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOnlineUserInfoTopic_IOUser_vec.end()) {
+        g_RtnOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnOnlineUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOnlineUserInfoTopic_mutex);
 
     uv_async_send(&g_RtnOnlineUserInfoTopic_async);
@@ -1739,9 +1956,16 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnO
 
 void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRspQryWarningEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWarningEventTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryWarningEventTopic_spi_callbackNumb: ", g_RspQryWarningEventTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryWarningEventTopic: END! ******\n", g_RunningResult_File);
@@ -1780,10 +2004,11 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryWarningEvent;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryWarningEvent;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWarningEvent) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWarningEvent is NULL" , g_RunningResult_File); 
@@ -1809,7 +2034,15 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWarningEventTopic_mutex);
-    g_RspQryWarningEventTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWarningEventTopic_IOUser_vec.begin();
+        it != g_RspQryWarningEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWarningEventTopic_IOUser_vec.end()) {
+        g_RspQryWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryWarningEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWarningEventTopic_mutex);
 
     uv_async_send(&g_RspQryWarningEventTopic_async);
@@ -1818,9 +2051,16 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
 
 void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarningEvent){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWarningEventTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnWarningEventTopic_spi_callbackNumb: ", g_RtnWarningEventTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnWarningEventTopic: END! ******\n", g_RunningResult_File);
@@ -1837,7 +2077,8 @@ void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarni
         memcpy (pNewRtnWarningEvent,pRtnWarningEvent, sizeof(CShfeFtdcRtnWarningEventField));
     }
 
-    paramArray[0] = (void*)pNewRtnWarningEvent;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnWarningEvent;
     if (NULL == pRtnWarningEvent) { 
         OutputCallbackMessage("SysUserSpi::pRtnWarningEvent is NULL" , g_RunningResult_File); 
     } else {
@@ -1860,7 +2101,15 @@ void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarni
     }
 
     uv_mutex_lock (&g_RtnWarningEventTopic_mutex);
-    g_RtnWarningEventTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWarningEventTopic_IOUser_vec.begin();
+        it != g_RtnWarningEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWarningEventTopic_IOUser_vec.end()) {
+        g_RtnWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnWarningEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWarningEventTopic_mutex);
 
     uv_async_send(&g_RtnWarningEventTopic_async);
@@ -1869,9 +2118,16 @@ void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarni
 
 void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUUsage, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryCPUUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryCPUUsageTopic_spi_callbackNumb: ", g_RspQryCPUUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryCPUUsageTopic: END! ******\n", g_RunningResult_File);
@@ -1910,10 +2166,11 @@ void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUU
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryCPUUsage;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryCPUUsage;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryCPUUsage) { 
         OutputCallbackMessage("SysUserSpi::pRspQryCPUUsage is NULL" , g_RunningResult_File); 
@@ -1928,7 +2185,15 @@ void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUU
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryCPUUsageTopic_mutex);
-    g_RspQryCPUUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryCPUUsageTopic_IOUser_vec.begin();
+        it != g_RspQryCPUUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryCPUUsageTopic_IOUser_vec.end()) {
+        g_RspQryCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryCPUUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryCPUUsageTopic_mutex);
 
     uv_async_send(&g_RspQryCPUUsageTopic_async);
@@ -1937,9 +2202,16 @@ void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUU
 
 void SysUserSpi::OnRtnCPUUsageTopic(CShfeFtdcRtnCPUUsageField* pRtnCPUUsage){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnCPUUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnCPUUsageTopic_spi_callbackNumb: ", g_RtnCPUUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnCPUUsageTopic: END! ******\n", g_RunningResult_File);
@@ -1956,7 +2228,8 @@ void SysUserSpi::OnRtnCPUUsageTopic(CShfeFtdcRtnCPUUsageField* pRtnCPUUsage){
         memcpy (pNewRtnCPUUsage,pRtnCPUUsage, sizeof(CShfeFtdcRtnCPUUsageField));
     }
 
-    paramArray[0] = (void*)pNewRtnCPUUsage;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnCPUUsage;
     if (NULL == pRtnCPUUsage) { 
         OutputCallbackMessage("SysUserSpi::pRtnCPUUsage is NULL" , g_RunningResult_File); 
     } else {
@@ -1967,7 +2240,15 @@ void SysUserSpi::OnRtnCPUUsageTopic(CShfeFtdcRtnCPUUsageField* pRtnCPUUsage){
     }
 
     uv_mutex_lock (&g_RtnCPUUsageTopic_mutex);
-    g_RtnCPUUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnCPUUsageTopic_IOUser_vec.begin();
+        it != g_RtnCPUUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnCPUUsageTopic_IOUser_vec.end()) {
+        g_RtnCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnCPUUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnCPUUsageTopic_mutex);
 
     uv_async_send(&g_RtnCPUUsageTopic_async);
@@ -1976,9 +2257,16 @@ void SysUserSpi::OnRtnCPUUsageTopic(CShfeFtdcRtnCPUUsageField* pRtnCPUUsage){
 
 void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQryMemoryUsage, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMemoryUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMemoryUsageTopic_spi_callbackNumb: ", g_RspQryMemoryUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMemoryUsageTopic: END! ******\n", g_RunningResult_File);
@@ -2017,10 +2305,11 @@ void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMemoryUsage;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMemoryUsage;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemoryUsage) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMemoryUsage is NULL" , g_RunningResult_File); 
@@ -2035,7 +2324,15 @@ void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemoryUsageTopic_mutex);
-    g_RspQryMemoryUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemoryUsageTopic_IOUser_vec.begin();
+        it != g_RspQryMemoryUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemoryUsageTopic_IOUser_vec.end()) {
+        g_RspQryMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMemoryUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemoryUsageTopic_mutex);
 
     uv_async_send(&g_RspQryMemoryUsageTopic_async);
@@ -2044,9 +2341,16 @@ void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQ
 
 void SysUserSpi::OnRtnMemoryUsageTopic(CShfeFtdcRtnMemoryUsageField* pRtnMemoryUsage){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMemoryUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMemoryUsageTopic_spi_callbackNumb: ", g_RtnMemoryUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMemoryUsageTopic: END! ******\n", g_RunningResult_File);
@@ -2063,7 +2367,8 @@ void SysUserSpi::OnRtnMemoryUsageTopic(CShfeFtdcRtnMemoryUsageField* pRtnMemoryU
         memcpy (pNewRtnMemoryUsage,pRtnMemoryUsage, sizeof(CShfeFtdcRtnMemoryUsageField));
     }
 
-    paramArray[0] = (void*)pNewRtnMemoryUsage;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMemoryUsage;
     if (NULL == pRtnMemoryUsage) { 
         OutputCallbackMessage("SysUserSpi::pRtnMemoryUsage is NULL" , g_RunningResult_File); 
     } else {
@@ -2074,7 +2379,15 @@ void SysUserSpi::OnRtnMemoryUsageTopic(CShfeFtdcRtnMemoryUsageField* pRtnMemoryU
     }
 
     uv_mutex_lock (&g_RtnMemoryUsageTopic_mutex);
-    g_RtnMemoryUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemoryUsageTopic_IOUser_vec.begin();
+        it != g_RtnMemoryUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemoryUsageTopic_IOUser_vec.end()) {
+        g_RtnMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMemoryUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemoryUsageTopic_mutex);
 
     uv_async_send(&g_RtnMemoryUsageTopic_async);
@@ -2083,9 +2396,16 @@ void SysUserSpi::OnRtnMemoryUsageTopic(CShfeFtdcRtnMemoryUsageField* pRtnMemoryU
 
 void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDiskUsage, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryDiskUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryDiskUsageTopic_spi_callbackNumb: ", g_RspQryDiskUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryDiskUsageTopic: END! ******\n", g_RunningResult_File);
@@ -2124,10 +2444,11 @@ void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryDiskUsage;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryDiskUsage;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDiskUsage) { 
         OutputCallbackMessage("SysUserSpi::pRspQryDiskUsage is NULL" , g_RunningResult_File); 
@@ -2142,7 +2463,15 @@ void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDiskUsageTopic_mutex);
-    g_RspQryDiskUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDiskUsageTopic_IOUser_vec.begin();
+        it != g_RspQryDiskUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDiskUsageTopic_IOUser_vec.end()) {
+        g_RspQryDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryDiskUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDiskUsageTopic_mutex);
 
     uv_async_send(&g_RspQryDiskUsageTopic_async);
@@ -2151,9 +2480,16 @@ void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDi
 
 void SysUserSpi::OnRtnDiskUsageTopic(CShfeFtdcRtnDiskUsageField* pRtnDiskUsage){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDiskUsageTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnDiskUsageTopic_spi_callbackNumb: ", g_RtnDiskUsageTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnDiskUsageTopic: END! ******\n", g_RunningResult_File);
@@ -2170,7 +2506,8 @@ void SysUserSpi::OnRtnDiskUsageTopic(CShfeFtdcRtnDiskUsageField* pRtnDiskUsage){
         memcpy (pNewRtnDiskUsage,pRtnDiskUsage, sizeof(CShfeFtdcRtnDiskUsageField));
     }
 
-    paramArray[0] = (void*)pNewRtnDiskUsage;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnDiskUsage;
     if (NULL == pRtnDiskUsage) { 
         OutputCallbackMessage("SysUserSpi::pRtnDiskUsage is NULL" , g_RunningResult_File); 
     } else {
@@ -2181,7 +2518,15 @@ void SysUserSpi::OnRtnDiskUsageTopic(CShfeFtdcRtnDiskUsageField* pRtnDiskUsage){
     }
 
     uv_mutex_lock (&g_RtnDiskUsageTopic_mutex);
-    g_RtnDiskUsageTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDiskUsageTopic_IOUser_vec.begin();
+        it != g_RtnDiskUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDiskUsageTopic_IOUser_vec.end()) {
+        g_RtnDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnDiskUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDiskUsageTopic_mutex);
 
     uv_async_send(&g_RtnDiskUsageTopic_async);
@@ -2190,9 +2535,16 @@ void SysUserSpi::OnRtnDiskUsageTopic(CShfeFtdcRtnDiskUsageField* pRtnDiskUsage){
 
 void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryObjectAttrTopic_spi_callbackNumb: ", g_RspQryObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -2231,10 +2583,11 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryObjectAttr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryObjectAttr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryObjectAttr is NULL" , g_RunningResult_File); 
@@ -2251,7 +2604,15 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryObjectAttrTopic_mutex);
-    g_RspQryObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryObjectAttrTopic_mutex);
 
     uv_async_send(&g_RspQryObjectAttrTopic_async);
@@ -2260,9 +2621,16 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
 
 void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnObjectAttrTopic_spi_callbackNumb: ", g_RtnObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -2279,7 +2647,8 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAtt
         memcpy (pNewRtnObjectAttr,pRtnObjectAttr, sizeof(CShfeFtdcRtnObjectAttrField));
     }
 
-    paramArray[0] = (void*)pNewRtnObjectAttr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnObjectAttr;
     if (NULL == pRtnObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRtnObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -2292,7 +2661,15 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAtt
     }
 
     uv_mutex_lock (&g_RtnObjectAttrTopic_mutex);
-    g_RtnObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnObjectAttrTopic_mutex);
 
     uv_async_send(&g_RtnObjectAttrTopic_async);
@@ -2301,9 +2678,16 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAtt
 
 void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderField* pRspQryInvalidateOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInvalidateOrderTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryInvalidateOrderTopic_spi_callbackNumb: ", g_RspQryInvalidateOrderTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
@@ -2342,10 +2726,11 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryInvalidateOrder;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryInvalidateOrder;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInvalidateOrder) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInvalidateOrder is NULL" , g_RunningResult_File); 
@@ -2373,7 +2758,15 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInvalidateOrderTopic_mutex);
-    g_RspQryInvalidateOrderTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInvalidateOrderTopic_IOUser_vec.begin();
+        it != g_RspQryInvalidateOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInvalidateOrderTopic_IOUser_vec.end()) {
+        g_RspQryInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryInvalidateOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInvalidateOrderTopic_mutex);
 
     uv_async_send(&g_RspQryInvalidateOrderTopic_async);
@@ -2382,9 +2775,16 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
 
 void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRtnInvalidateOrder){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInvalidateOrderTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnInvalidateOrderTopic_spi_callbackNumb: ", g_RtnInvalidateOrderTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
@@ -2401,7 +2801,8 @@ void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRt
         memcpy (pNewRtnInvalidateOrder,pRtnInvalidateOrder, sizeof(CShfeFtdcRtnInvalidateOrderField));
     }
 
-    paramArray[0] = (void*)pNewRtnInvalidateOrder;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnInvalidateOrder;
     if (NULL == pRtnInvalidateOrder) { 
         OutputCallbackMessage("SysUserSpi::pRtnInvalidateOrder is NULL" , g_RunningResult_File); 
     } else {
@@ -2425,7 +2826,15 @@ void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRt
     }
 
     uv_mutex_lock (&g_RtnInvalidateOrderTopic_mutex);
-    g_RtnInvalidateOrderTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInvalidateOrderTopic_IOUser_vec.begin();
+        it != g_RtnInvalidateOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInvalidateOrderTopic_IOUser_vec.end()) {
+        g_RtnInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnInvalidateOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInvalidateOrderTopic_mutex);
 
     uv_async_send(&g_RtnInvalidateOrderTopic_async);
@@ -2434,9 +2843,16 @@ void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRt
 
 void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQryOrderStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOrderStatusTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryOrderStatusTopic_spi_callbackNumb: ", g_RspQryOrderStatusTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryOrderStatusTopic: END! ******\n", g_RunningResult_File);
@@ -2475,10 +2891,11 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryOrderStatus;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryOrderStatus;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOrderStatus) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOrderStatus is NULL" , g_RunningResult_File); 
@@ -2508,7 +2925,15 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOrderStatusTopic_mutex);
-    g_RspQryOrderStatusTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOrderStatusTopic_IOUser_vec.begin();
+        it != g_RspQryOrderStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOrderStatusTopic_IOUser_vec.end()) {
+        g_RspQryOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryOrderStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOrderStatusTopic_mutex);
 
     uv_async_send(&g_RspQryOrderStatusTopic_async);
@@ -2517,9 +2942,16 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
 
 void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderStatus){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOrderStatusTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnOrderStatusTopic_spi_callbackNumb: ", g_RtnOrderStatusTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnOrderStatusTopic: END! ******\n", g_RunningResult_File);
@@ -2536,7 +2968,8 @@ void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderSt
         memcpy (pNewRtnOrderStatus,pRtnOrderStatus, sizeof(CShfeFtdcRtnOrderStatusField));
     }
 
-    paramArray[0] = (void*)pNewRtnOrderStatus;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnOrderStatus;
     if (NULL == pRtnOrderStatus) { 
         OutputCallbackMessage("SysUserSpi::pRtnOrderStatus is NULL" , g_RunningResult_File); 
     } else {
@@ -2562,7 +2995,15 @@ void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderSt
     }
 
     uv_mutex_lock (&g_RtnOrderStatusTopic_mutex);
-    g_RtnOrderStatusTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOrderStatusTopic_IOUser_vec.begin();
+        it != g_RtnOrderStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOrderStatusTopic_IOUser_vec.end()) {
+        g_RtnOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnOrderStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOrderStatusTopic_mutex);
 
     uv_async_send(&g_RtnOrderStatusTopic_async);
@@ -2571,9 +3012,16 @@ void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderSt
 
 void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRspQryBargainOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryBargainOrderTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryBargainOrderTopic_spi_callbackNumb: ", g_RspQryBargainOrderTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryBargainOrderTopic: END! ******\n", g_RunningResult_File);
@@ -2612,10 +3060,11 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryBargainOrder;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryBargainOrder;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryBargainOrder) { 
         OutputCallbackMessage("SysUserSpi::pRspQryBargainOrder is NULL" , g_RunningResult_File); 
@@ -2636,7 +3085,15 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryBargainOrderTopic_mutex);
-    g_RspQryBargainOrderTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryBargainOrderTopic_IOUser_vec.begin();
+        it != g_RspQryBargainOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryBargainOrderTopic_IOUser_vec.end()) {
+        g_RspQryBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryBargainOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryBargainOrderTopic_mutex);
 
     uv_async_send(&g_RspQryBargainOrderTopic_async);
@@ -2645,9 +3102,16 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
 
 void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBargainOrder){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnBargainOrderTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnBargainOrderTopic_spi_callbackNumb: ", g_RtnBargainOrderTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnBargainOrderTopic: END! ******\n", g_RunningResult_File);
@@ -2664,7 +3128,8 @@ void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBarga
         memcpy (pNewRtnBargainOrder,pRtnBargainOrder, sizeof(CShfeFtdcRtnBargainOrderField));
     }
 
-    paramArray[0] = (void*)pNewRtnBargainOrder;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnBargainOrder;
     if (NULL == pRtnBargainOrder) { 
         OutputCallbackMessage("SysUserSpi::pRtnBargainOrder is NULL" , g_RunningResult_File); 
     } else {
@@ -2681,7 +3146,15 @@ void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBarga
     }
 
     uv_mutex_lock (&g_RtnBargainOrderTopic_mutex);
-    g_RtnBargainOrderTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnBargainOrderTopic_IOUser_vec.begin();
+        it != g_RtnBargainOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnBargainOrderTopic_IOUser_vec.end()) {
+        g_RtnBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnBargainOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnBargainOrderTopic_mutex);
 
     uv_async_send(&g_RtnBargainOrderTopic_async);
@@ -2690,9 +3163,16 @@ void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBarga
 
 void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRspQryInstProperty, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInstPropertyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryInstPropertyTopic_spi_callbackNumb: ", g_RspQryInstPropertyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryInstPropertyTopic: END! ******\n", g_RunningResult_File);
@@ -2731,10 +3211,11 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryInstProperty;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryInstProperty;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInstProperty) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInstProperty is NULL" , g_RunningResult_File); 
@@ -2766,7 +3247,15 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInstPropertyTopic_mutex);
-    g_RspQryInstPropertyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInstPropertyTopic_IOUser_vec.begin();
+        it != g_RspQryInstPropertyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInstPropertyTopic_IOUser_vec.end()) {
+        g_RspQryInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryInstPropertyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInstPropertyTopic_mutex);
 
     uv_async_send(&g_RspQryInstPropertyTopic_async);
@@ -2775,9 +3264,16 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
 
 void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstProperty){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInstPropertyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnInstPropertyTopic_spi_callbackNumb: ", g_RtnInstPropertyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnInstPropertyTopic: END! ******\n", g_RunningResult_File);
@@ -2794,7 +3290,8 @@ void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstP
         memcpy (pNewRtnInstProperty,pRtnInstProperty, sizeof(CShfeFtdcRtnInstPropertyField));
     }
 
-    paramArray[0] = (void*)pNewRtnInstProperty;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnInstProperty;
     if (NULL == pRtnInstProperty) { 
         OutputCallbackMessage("SysUserSpi::pRtnInstProperty is NULL" , g_RunningResult_File); 
     } else {
@@ -2822,7 +3319,15 @@ void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstP
     }
 
     uv_mutex_lock (&g_RtnInstPropertyTopic_mutex);
-    g_RtnInstPropertyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInstPropertyTopic_IOUser_vec.begin();
+        it != g_RtnInstPropertyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInstPropertyTopic_IOUser_vec.end()) {
+        g_RtnInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnInstPropertyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInstPropertyTopic_mutex);
 
     uv_async_send(&g_RtnInstPropertyTopic_async);
@@ -2831,9 +3336,16 @@ void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstP
 
 void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQryMarginRate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMarginRateTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMarginRateTopic_spi_callbackNumb: ", g_RspQryMarginRateTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateTopic: END! ******\n", g_RunningResult_File);
@@ -2872,10 +3384,11 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMarginRate;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMarginRate;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMarginRate) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMarginRate is NULL" , g_RunningResult_File); 
@@ -2895,7 +3408,15 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMarginRateTopic_mutex);
-    g_RspQryMarginRateTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMarginRateTopic_IOUser_vec.begin();
+        it != g_RspQryMarginRateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMarginRateTopic_IOUser_vec.end()) {
+        g_RspQryMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMarginRateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMarginRateTopic_mutex);
 
     uv_async_send(&g_RspQryMarginRateTopic_async);
@@ -2904,9 +3425,16 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
 
 void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRate){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMarginRateTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMarginRateTopic_spi_callbackNumb: ", g_RtnMarginRateTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateTopic: END! ******\n", g_RunningResult_File);
@@ -2923,7 +3451,8 @@ void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRat
         memcpy (pNewRtnMarginRate,pRtnMarginRate, sizeof(CShfeFtdcRtnMarginRateField));
     }
 
-    paramArray[0] = (void*)pNewRtnMarginRate;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMarginRate;
     if (NULL == pRtnMarginRate) { 
         OutputCallbackMessage("SysUserSpi::pRtnMarginRate is NULL" , g_RunningResult_File); 
     } else {
@@ -2939,7 +3468,15 @@ void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRat
     }
 
     uv_mutex_lock (&g_RtnMarginRateTopic_mutex);
-    g_RtnMarginRateTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMarginRateTopic_IOUser_vec.begin();
+        it != g_RtnMarginRateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMarginRateTopic_IOUser_vec.end()) {
+        g_RtnMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMarginRateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMarginRateTopic_mutex);
 
     uv_async_send(&g_RtnMarginRateTopic_async);
@@ -2948,9 +3485,16 @@ void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRat
 
 void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQryPriceLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPriceLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPriceLimitTopic_spi_callbackNumb: ", g_RspQryPriceLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPriceLimitTopic: END! ******\n", g_RunningResult_File);
@@ -2989,10 +3533,11 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPriceLimit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPriceLimit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPriceLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPriceLimit is NULL" , g_RunningResult_File); 
@@ -3010,7 +3555,15 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPriceLimitTopic_mutex);
-    g_RspQryPriceLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPriceLimitTopic_IOUser_vec.begin();
+        it != g_RspQryPriceLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPriceLimitTopic_IOUser_vec.end()) {
+        g_RspQryPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPriceLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPriceLimitTopic_mutex);
 
     uv_async_send(&g_RspQryPriceLimitTopic_async);
@@ -3019,9 +3572,16 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
 
 void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPriceLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPriceLimitTopic_spi_callbackNumb: ", g_RtnPriceLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPriceLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3038,7 +3598,8 @@ void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimi
         memcpy (pNewRtnPriceLimit,pRtnPriceLimit, sizeof(CShfeFtdcRtnPriceLimitField));
     }
 
-    paramArray[0] = (void*)pNewRtnPriceLimit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPriceLimit;
     if (NULL == pRtnPriceLimit) { 
         OutputCallbackMessage("SysUserSpi::pRtnPriceLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3052,7 +3613,15 @@ void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimi
     }
 
     uv_mutex_lock (&g_RtnPriceLimitTopic_mutex);
-    g_RtnPriceLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPriceLimitTopic_IOUser_vec.begin();
+        it != g_RtnPriceLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPriceLimitTopic_IOUser_vec.end()) {
+        g_RtnPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPriceLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPriceLimitTopic_mutex);
 
     uv_async_send(&g_RtnPriceLimitTopic_async);
@@ -3061,9 +3630,16 @@ void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimi
 
 void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* pRspQryPartPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPartPosiLimitTopic_spi_callbackNumb: ", g_RspQryPartPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3102,10 +3678,11 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPartPosiLimit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPartPosiLimit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartPosiLimit is NULL" , g_RunningResult_File); 
@@ -3127,7 +3704,15 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartPosiLimitTopic_mutex);
-    g_RspQryPartPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQryPartPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQryPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPartPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartPosiLimitTopic_mutex);
 
     uv_async_send(&g_RspQryPartPosiLimitTopic_async);
@@ -3136,9 +3721,16 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
 
 void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPartPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPartPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPartPosiLimitTopic_spi_callbackNumb: ", g_RtnPartPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3155,7 +3747,8 @@ void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPar
         memcpy (pNewRtnPartPosiLimit,pRtnPartPosiLimit, sizeof(CShfeFtdcRtnPartPosiLimitField));
     }
 
-    paramArray[0] = (void*)pNewRtnPartPosiLimit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPartPosiLimit;
     if (NULL == pRtnPartPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRtnPartPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3173,7 +3766,15 @@ void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPar
     }
 
     uv_mutex_lock (&g_RtnPartPosiLimitTopic_mutex);
-    g_RtnPartPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPartPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnPartPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPartPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPartPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPartPosiLimitTopic_mutex);
 
     uv_async_send(&g_RtnPartPosiLimitTopic_async);
@@ -3182,9 +3783,16 @@ void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPar
 
 void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitField* pRspQryClientPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientPosiLimitTopic_spi_callbackNumb: ", g_RspQryClientPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3223,10 +3831,11 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientPosiLimit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientPosiLimit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientPosiLimit is NULL" , g_RunningResult_File); 
@@ -3248,7 +3857,15 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientPosiLimitTopic_mutex);
-    g_RspQryClientPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQryClientPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQryClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientPosiLimitTopic_mutex);
 
     uv_async_send(&g_RspQryClientPosiLimitTopic_async);
@@ -3257,9 +3874,16 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
 
 void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRtnClientPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnClientPosiLimitTopic_spi_callbackNumb: ", g_RtnClientPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3276,7 +3900,8 @@ void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRt
         memcpy (pNewRtnClientPosiLimit,pRtnClientPosiLimit, sizeof(CShfeFtdcRtnClientPosiLimitField));
     }
 
-    paramArray[0] = (void*)pNewRtnClientPosiLimit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnClientPosiLimit;
     if (NULL == pRtnClientPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRtnClientPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3294,7 +3919,15 @@ void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRt
     }
 
     uv_mutex_lock (&g_RtnClientPosiLimitTopic_mutex);
-    g_RtnClientPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnClientPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnClientPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientPosiLimitTopic_mutex);
 
     uv_async_send(&g_RtnClientPosiLimitTopic_async);
@@ -3303,9 +3936,16 @@ void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRt
 
 void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitField* pRspQrySpecialPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySpecialPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySpecialPosiLimitTopic_spi_callbackNumb: ", g_RspQrySpecialPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3344,10 +3984,11 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySpecialPosiLimit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySpecialPosiLimit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySpecialPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySpecialPosiLimit is NULL" , g_RunningResult_File); 
@@ -3369,7 +4010,15 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySpecialPosiLimitTopic_mutex);
-    g_RspQrySpecialPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySpecialPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQrySpecialPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySpecialPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQrySpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySpecialPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySpecialPosiLimitTopic_mutex);
 
     uv_async_send(&g_RspQrySpecialPosiLimitTopic_async);
@@ -3378,9 +4027,16 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
 
 void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* pRtnSpecialPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSpecialPosiLimitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSpecialPosiLimitTopic_spi_callbackNumb: ", g_RtnSpecialPosiLimitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
@@ -3397,7 +4053,8 @@ void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* p
         memcpy (pNewRtnSpecialPosiLimit,pRtnSpecialPosiLimit, sizeof(CShfeFtdcRtnSpecialPosiLimitField));
     }
 
-    paramArray[0] = (void*)pNewRtnSpecialPosiLimit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSpecialPosiLimit;
     if (NULL == pRtnSpecialPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRtnSpecialPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3415,7 +4072,15 @@ void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* p
     }
 
     uv_mutex_lock (&g_RtnSpecialPosiLimitTopic_mutex);
-    g_RtnSpecialPosiLimitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSpecialPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnSpecialPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSpecialPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnSpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSpecialPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSpecialPosiLimitTopic_mutex);
 
     uv_async_send(&g_RtnSpecialPosiLimitTopic_async);
@@ -3424,9 +4089,16 @@ void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* p
 
 void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField* pRspQryTransactionChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTransactionChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTransactionChgTopic_spi_callbackNumb: ", g_RspQryTransactionChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTransactionChgTopic: END! ******\n", g_RunningResult_File);
@@ -3465,10 +4137,11 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTransactionChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTransactionChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTransactionChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTransactionChg is NULL" , g_RunningResult_File); 
@@ -3485,7 +4158,15 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTransactionChgTopic_mutex);
-    g_RspQryTransactionChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTransactionChgTopic_IOUser_vec.begin();
+        it != g_RspQryTransactionChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTransactionChgTopic_IOUser_vec.end()) {
+        g_RspQryTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTransactionChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTransactionChgTopic_mutex);
 
     uv_async_send(&g_RspQryTransactionChgTopic_async);
@@ -3494,9 +4175,16 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
 
 void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnTransactionChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTransactionChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTransactionChgTopic_spi_callbackNumb: ", g_RtnTransactionChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTransactionChgTopic: END! ******\n", g_RunningResult_File);
@@ -3513,7 +4201,8 @@ void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnT
         memcpy (pNewRtnTransactionChg,pRtnTransactionChg, sizeof(CShfeFtdcRtnTransactionChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnTransactionChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTransactionChg;
     if (NULL == pRtnTransactionChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnTransactionChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3526,7 +4215,15 @@ void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnT
     }
 
     uv_mutex_lock (&g_RtnTransactionChgTopic_mutex);
-    g_RtnTransactionChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTransactionChgTopic_IOUser_vec.begin();
+        it != g_RtnTransactionChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTransactionChgTopic_IOUser_vec.end()) {
+        g_RtnTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTransactionChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTransactionChgTopic_mutex);
 
     uv_async_send(&g_RtnTransactionChgTopic_async);
@@ -3535,9 +4232,16 @@ void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnT
 
 void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientChgTopic_spi_callbackNumb: ", g_RspQryClientChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientChgTopic: END! ******\n", g_RunningResult_File);
@@ -3576,10 +4280,11 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientChg is NULL" , g_RunningResult_File); 
@@ -3599,7 +4304,15 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientChgTopic_mutex);
-    g_RspQryClientChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientChgTopic_IOUser_vec.begin();
+        it != g_RspQryClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientChgTopic_IOUser_vec.end()) {
+        g_RspQryClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientChgTopic_mutex);
 
     uv_async_send(&g_RspQryClientChgTopic_async);
@@ -3608,9 +4321,16 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
 
 void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnClientChgTopic_spi_callbackNumb: ", g_RtnClientChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnClientChgTopic: END! ******\n", g_RunningResult_File);
@@ -3627,7 +4347,8 @@ void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){
         memcpy (pNewRtnClientChg,pRtnClientChg, sizeof(CShfeFtdcRtnClientChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnClientChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnClientChg;
     if (NULL == pRtnClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnClientChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3643,7 +4364,15 @@ void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){
     }
 
     uv_mutex_lock (&g_RtnClientChgTopic_mutex);
-    g_RtnClientChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientChgTopic_IOUser_vec.begin();
+        it != g_RtnClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientChgTopic_IOUser_vec.end()) {
+        g_RtnClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientChgTopic_mutex);
 
     uv_async_send(&g_RtnClientChgTopic_async);
@@ -3652,9 +4381,16 @@ void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){
 
 void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* pRspQryPartClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartClientChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPartClientChgTopic_spi_callbackNumb: ", g_RspQryPartClientChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPartClientChgTopic: END! ******\n", g_RunningResult_File);
@@ -3693,10 +4429,11 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPartClientChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPartClientChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartClientChg is NULL" , g_RunningResult_File); 
@@ -3712,7 +4449,15 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartClientChgTopic_mutex);
-    g_RspQryPartClientChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartClientChgTopic_IOUser_vec.begin();
+        it != g_RspQryPartClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartClientChgTopic_IOUser_vec.end()) {
+        g_RspQryPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPartClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartClientChgTopic_mutex);
 
     uv_async_send(&g_RspQryPartClientChgTopic_async);
@@ -3721,9 +4466,16 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
 
 void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPartClientChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPartClientChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPartClientChgTopic_spi_callbackNumb: ", g_RtnPartClientChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPartClientChgTopic: END! ******\n", g_RunningResult_File);
@@ -3740,7 +4492,8 @@ void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPar
         memcpy (pNewRtnPartClientChg,pRtnPartClientChg, sizeof(CShfeFtdcRtnPartClientChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnPartClientChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPartClientChg;
     if (NULL == pRtnPartClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnPartClientChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3752,7 +4505,15 @@ void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPar
     }
 
     uv_mutex_lock (&g_RtnPartClientChgTopic_mutex);
-    g_RtnPartClientChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPartClientChgTopic_IOUser_vec.begin();
+        it != g_RtnPartClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPartClientChgTopic_IOUser_vec.end()) {
+        g_RtnPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPartClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPartClientChgTopic_mutex);
 
     uv_async_send(&g_RtnPartClientChgTopic_async);
@@ -3761,9 +4522,16 @@ void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPar
 
 void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRspQryPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPosiLimitChgTopic_spi_callbackNumb: ", g_RspQryPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -3802,10 +4570,11 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPosiLimitChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPosiLimitChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPosiLimitChg is NULL" , g_RunningResult_File); 
@@ -3826,7 +4595,15 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPosiLimitChgTopic_mutex);
-    g_RspQryPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQryPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQryPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RspQryPosiLimitChgTopic_async);
@@ -3835,9 +4612,16 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
 
 void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPosiLimitChgTopic_spi_callbackNumb: ", g_RtnPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -3854,7 +4638,8 @@ void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiL
         memcpy (pNewRtnPosiLimitChg,pRtnPosiLimitChg, sizeof(CShfeFtdcRtnPosiLimitChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnPosiLimitChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPosiLimitChg;
     if (NULL == pRtnPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3871,7 +4656,15 @@ void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiL
     }
 
     uv_mutex_lock (&g_RtnPosiLimitChgTopic_mutex);
-    g_RtnPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RtnPosiLimitChgTopic_async);
@@ -3880,9 +4673,16 @@ void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiL
 
 void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField* pRspQryHedgeDetailChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHedgeDetailChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHedgeDetailChgTopic_spi_callbackNumb: ", g_RspQryHedgeDetailChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
@@ -3921,10 +4721,11 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHedgeDetailChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHedgeDetailChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHedgeDetailChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHedgeDetailChg is NULL" , g_RunningResult_File); 
@@ -3946,7 +4747,15 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHedgeDetailChgTopic_mutex);
-    g_RspQryHedgeDetailChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHedgeDetailChgTopic_IOUser_vec.begin();
+        it != g_RspQryHedgeDetailChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHedgeDetailChgTopic_IOUser_vec.end()) {
+        g_RspQryHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHedgeDetailChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHedgeDetailChgTopic_mutex);
 
     uv_async_send(&g_RspQryHedgeDetailChgTopic_async);
@@ -3955,9 +4764,16 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
 
 void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnHedgeDetailChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHedgeDetailChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnHedgeDetailChgTopic_spi_callbackNumb: ", g_RtnHedgeDetailChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
@@ -3974,7 +4790,8 @@ void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnH
         memcpy (pNewRtnHedgeDetailChg,pRtnHedgeDetailChg, sizeof(CShfeFtdcRtnHedgeDetailChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnHedgeDetailChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnHedgeDetailChg;
     if (NULL == pRtnHedgeDetailChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnHedgeDetailChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3992,7 +4809,15 @@ void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnH
     }
 
     uv_mutex_lock (&g_RtnHedgeDetailChgTopic_mutex);
-    g_RtnHedgeDetailChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHedgeDetailChgTopic_IOUser_vec.begin();
+        it != g_RtnHedgeDetailChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHedgeDetailChgTopic_IOUser_vec.end()) {
+        g_RtnHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnHedgeDetailChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHedgeDetailChgTopic_mutex);
 
     uv_async_send(&g_RtnHedgeDetailChgTopic_async);
@@ -4001,9 +4826,16 @@ void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnH
 
 void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField* pRspQryParticipantChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryParticipantChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryParticipantChgTopic_spi_callbackNumb: ", g_RspQryParticipantChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryParticipantChgTopic: END! ******\n", g_RunningResult_File);
@@ -4042,10 +4874,11 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryParticipantChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryParticipantChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticipantChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryParticipantChg is NULL" , g_RunningResult_File); 
@@ -4064,7 +4897,15 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticipantChgTopic_mutex);
-    g_RspQryParticipantChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticipantChgTopic_IOUser_vec.begin();
+        it != g_RspQryParticipantChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticipantChgTopic_IOUser_vec.end()) {
+        g_RspQryParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryParticipantChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticipantChgTopic_mutex);
 
     uv_async_send(&g_RspQryParticipantChgTopic_async);
@@ -4073,9 +4914,16 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
 
 void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnParticipantChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnParticipantChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnParticipantChgTopic_spi_callbackNumb: ", g_RtnParticipantChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnParticipantChgTopic: END! ******\n", g_RunningResult_File);
@@ -4092,7 +4940,8 @@ void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnP
         memcpy (pNewRtnParticipantChg,pRtnParticipantChg, sizeof(CShfeFtdcRtnParticipantChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnParticipantChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnParticipantChg;
     if (NULL == pRtnParticipantChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnParticipantChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4107,7 +4956,15 @@ void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnP
     }
 
     uv_mutex_lock (&g_RtnParticipantChgTopic_mutex);
-    g_RtnParticipantChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticipantChgTopic_IOUser_vec.begin();
+        it != g_RtnParticipantChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticipantChgTopic_IOUser_vec.end()) {
+        g_RtnParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnParticipantChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticipantChgTopic_mutex);
 
     uv_async_send(&g_RtnParticipantChgTopic_async);
@@ -4116,9 +4973,16 @@ void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnP
 
 void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* pRspQryMarginRateChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMarginRateChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMarginRateChgTopic_spi_callbackNumb: ", g_RspQryMarginRateChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateChgTopic: END! ******\n", g_RunningResult_File);
@@ -4157,10 +5021,11 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMarginRateChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMarginRateChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMarginRateChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMarginRateChg is NULL" , g_RunningResult_File); 
@@ -4181,7 +5046,15 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMarginRateChgTopic_mutex);
-    g_RspQryMarginRateChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMarginRateChgTopic_IOUser_vec.begin();
+        it != g_RspQryMarginRateChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMarginRateChgTopic_IOUser_vec.end()) {
+        g_RspQryMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMarginRateChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMarginRateChgTopic_mutex);
 
     uv_async_send(&g_RspQryMarginRateChgTopic_async);
@@ -4190,9 +5063,16 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
 
 void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMarginRateChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMarginRateChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMarginRateChgTopic_spi_callbackNumb: ", g_RtnMarginRateChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateChgTopic: END! ******\n", g_RunningResult_File);
@@ -4209,7 +5089,8 @@ void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMar
         memcpy (pNewRtnMarginRateChg,pRtnMarginRateChg, sizeof(CShfeFtdcRtnMarginRateChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnMarginRateChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMarginRateChg;
     if (NULL == pRtnMarginRateChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnMarginRateChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4226,7 +5107,15 @@ void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMar
     }
 
     uv_mutex_lock (&g_RtnMarginRateChgTopic_mutex);
-    g_RtnMarginRateChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMarginRateChgTopic_IOUser_vec.begin();
+        it != g_RtnMarginRateChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMarginRateChgTopic_IOUser_vec.end()) {
+        g_RtnMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMarginRateChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMarginRateChgTopic_mutex);
 
     uv_async_send(&g_RtnMarginRateChgTopic_async);
@@ -4235,9 +5124,16 @@ void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMar
 
 void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUserIpChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryUserIpChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryUserIpChgTopic_spi_callbackNumb: ", g_RspQryUserIpChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryUserIpChgTopic: END! ******\n", g_RunningResult_File);
@@ -4276,10 +5172,11 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryUserIpChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryUserIpChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserIpChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryUserIpChg is NULL" , g_RunningResult_File); 
@@ -4296,7 +5193,15 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserIpChgTopic_mutex);
-    g_RspQryUserIpChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserIpChgTopic_IOUser_vec.begin();
+        it != g_RspQryUserIpChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserIpChgTopic_IOUser_vec.end()) {
+        g_RspQryUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryUserIpChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserIpChgTopic_mutex);
 
     uv_async_send(&g_RspQryUserIpChgTopic_async);
@@ -4305,9 +5210,16 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
 
 void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUserIpChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnUserIpChgTopic_spi_callbackNumb: ", g_RtnUserIpChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnUserIpChgTopic: END! ******\n", g_RunningResult_File);
@@ -4324,7 +5236,8 @@ void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){
         memcpy (pNewRtnUserIpChg,pRtnUserIpChg, sizeof(CShfeFtdcRtnUserIpChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnUserIpChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnUserIpChg;
     if (NULL == pRtnUserIpChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnUserIpChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4337,7 +5250,15 @@ void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){
     }
 
     uv_mutex_lock (&g_RtnUserIpChgTopic_mutex);
-    g_RtnUserIpChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserIpChgTopic_IOUser_vec.begin();
+        it != g_RtnUserIpChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserIpChgTopic_IOUser_vec.end()) {
+        g_RtnUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnUserIpChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserIpChgTopic_mutex);
 
     uv_async_send(&g_RtnUserIpChgTopic_async);
@@ -4346,9 +5267,16 @@ void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){
 
 void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitChgField* pRspQryClientPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientPosiLimitChgTopic_spi_callbackNumb: ", g_RspQryClientPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -4387,10 +5315,11 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientPosiLimitChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientPosiLimitChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientPosiLimitChg is NULL" , g_RunningResult_File); 
@@ -4411,7 +5340,15 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientPosiLimitChgTopic_mutex);
-    g_RspQryClientPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQryClientPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQryClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RspQryClientPosiLimitChgTopic_async);
@@ -4420,9 +5357,16 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
 
 void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgField* pRtnClientPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnClientPosiLimitChgTopic_spi_callbackNumb: ", g_RtnClientPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -4439,7 +5383,8 @@ void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgFiel
         memcpy (pNewRtnClientPosiLimitChg,pRtnClientPosiLimitChg, sizeof(CShfeFtdcRtnClientPosiLimitChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnClientPosiLimitChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnClientPosiLimitChg;
     if (NULL == pRtnClientPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnClientPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4456,7 +5401,15 @@ void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgFiel
     }
 
     uv_mutex_lock (&g_RtnClientPosiLimitChgTopic_mutex);
-    g_RtnClientPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnClientPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnClientPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RtnClientPosiLimitChgTopic_async);
@@ -4465,9 +5418,16 @@ void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgFiel
 
 void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgField* pRspQrySpecPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySpecPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySpecPosiLimitChgTopic_spi_callbackNumb: ", g_RspQrySpecPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -4506,10 +5466,11 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySpecPosiLimitChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySpecPosiLimitChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySpecPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySpecPosiLimitChg is NULL" , g_RunningResult_File); 
@@ -4530,7 +5491,15 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySpecPosiLimitChgTopic_mutex);
-    g_RspQrySpecPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySpecPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQrySpecPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySpecPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQrySpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySpecPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySpecPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RspQrySpecPosiLimitChgTopic_async);
@@ -4539,9 +5508,16 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
 
 void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* pRtnSpecPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSpecPosiLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSpecPosiLimitChgTopic_spi_callbackNumb: ", g_RtnSpecPosiLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -4558,7 +5534,8 @@ void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* p
         memcpy (pNewRtnSpecPosiLimitChg,pRtnSpecPosiLimitChg, sizeof(CShfeFtdcRtnSpecPosiLimitChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnSpecPosiLimitChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSpecPosiLimitChg;
     if (NULL == pRtnSpecPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnSpecPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4575,7 +5552,15 @@ void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* p
     }
 
     uv_mutex_lock (&g_RtnSpecPosiLimitChgTopic_mutex);
-    g_RtnSpecPosiLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSpecPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnSpecPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSpecPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnSpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSpecPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSpecPosiLimitChgTopic_mutex);
 
     uv_async_send(&g_RtnSpecPosiLimitChgTopic_async);
@@ -4584,9 +5569,16 @@ void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* p
 
 void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttrField* pRspQryHistoryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHistoryObjectAttrTopic_spi_callbackNumb: ", g_RspQryHistoryObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -4625,10 +5617,11 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHistoryObjectAttr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHistoryObjectAttr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryObjectAttr is NULL" , g_RunningResult_File); 
@@ -4651,7 +5644,15 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryObjectAttrTopic_mutex);
-    g_RspQryHistoryObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHistoryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryObjectAttrTopic_mutex);
 
     uv_async_send(&g_RspQryHistoryObjectAttrTopic_async);
@@ -4660,9 +5661,16 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
 
 void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField* pRtnHistoryObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHistoryObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnHistoryObjectAttrTopic_spi_callbackNumb: ", g_RtnHistoryObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -4679,7 +5687,8 @@ void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField*
         memcpy (pNewRtnHistoryObjectAttr,pRtnHistoryObjectAttr, sizeof(CShfeFtdcRtnHistoryObjectAttrField));
     }
 
-    paramArray[0] = (void*)pNewRtnHistoryObjectAttr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnHistoryObjectAttr;
     if (NULL == pRtnHistoryObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRtnHistoryObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -4698,7 +5707,15 @@ void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField*
     }
 
     uv_mutex_lock (&g_RtnHistoryObjectAttrTopic_mutex);
-    g_RtnHistoryObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHistoryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnHistoryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHistoryObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnHistoryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHistoryObjectAttrTopic_mutex);
 
     uv_async_send(&g_RtnHistoryObjectAttrTopic_async);
@@ -4707,9 +5724,16 @@ void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField*
 
 void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFrontInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFrontInfoTopic_spi_callbackNumb: ", g_RspQryFrontInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFrontInfoTopic: END! ******\n", g_RunningResult_File);
@@ -4748,10 +5772,11 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFrontInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFrontInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontInfo is NULL" , g_RunningResult_File); 
@@ -4768,7 +5793,15 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontInfoTopic_mutex);
-    g_RspQryFrontInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFrontInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontInfoTopic_IOUser_vec.end()) {
+        g_RspQryFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFrontInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontInfoTopic_mutex);
 
     uv_async_send(&g_RspQryFrontInfoTopic_async);
@@ -4777,9 +5810,16 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
 
 void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFrontInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFrontInfoTopic_spi_callbackNumb: ", g_RtnFrontInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFrontInfoTopic: END! ******\n", g_RunningResult_File);
@@ -4796,7 +5836,8 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){
         memcpy (pNewRtnFrontInfo,pRtnFrontInfo, sizeof(CShfeFtdcRtnFrontInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnFrontInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFrontInfo;
     if (NULL == pRtnFrontInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnFrontInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -4809,7 +5850,15 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){
     }
 
     uv_mutex_lock (&g_RtnFrontInfoTopic_mutex);
-    g_RtnFrontInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFrontInfoTopic_IOUser_vec.begin();
+        it != g_RtnFrontInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFrontInfoTopic_IOUser_vec.end()) {
+        g_RtnFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFrontInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFrontInfoTopic_mutex);
 
     uv_async_send(&g_RtnFrontInfoTopic_async);
@@ -4818,9 +5867,16 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){
 
 void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRspQrySysUserLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserLoginTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysUserLoginTopic_spi_callbackNumb: ", g_RspQrySysUserLoginTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLoginTopic: END! ******\n", g_RunningResult_File);
@@ -4859,10 +5915,11 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysUserLogin;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysUserLogin;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserLogin) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserLogin is NULL" , g_RunningResult_File); 
@@ -4878,7 +5935,15 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserLoginTopic_mutex);
-    g_RspQrySysUserLoginTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserLoginTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserLoginTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserLoginTopic_IOUser_vec.end()) {
+        g_RspQrySysUserLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysUserLoginTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserLoginTopic_mutex);
 
     uv_async_send(&g_RspQrySysUserLoginTopic_async);
@@ -4887,9 +5952,16 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
 
 void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* pRspQrySysUserLogout, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserLogoutTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysUserLogoutTopic_spi_callbackNumb: ", g_RspQrySysUserLogoutTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLogoutTopic: END! ******\n", g_RunningResult_File);
@@ -4928,10 +6000,11 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysUserLogout;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysUserLogout;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserLogout) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserLogout is NULL" , g_RunningResult_File); 
@@ -4943,7 +6016,15 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserLogoutTopic_mutex);
-    g_RspQrySysUserLogoutTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserLogoutTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserLogoutTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserLogoutTopic_IOUser_vec.end()) {
+        g_RspQrySysUserLogoutTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysUserLogoutTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserLogoutTopic_mutex);
 
     uv_async_send(&g_RspQrySysUserLogoutTopic_async);
@@ -4952,9 +6033,16 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
 
 void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswordUpdateField* pRspQrySysUserPasswordUpdate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserPasswordUpdateTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysUserPasswordUpdateTopic_spi_callbackNumb: ", g_RspQrySysUserPasswordUpdateTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserPasswordUpdateTopic: END! ******\n", g_RunningResult_File);
@@ -4993,10 +6081,11 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysUserPasswordUpdate;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysUserPasswordUpdate;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserPasswordUpdate) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserPasswordUpdate is NULL" , g_RunningResult_File); 
@@ -5009,7 +6098,15 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserPasswordUpdateTopic_mutex);
-    g_RspQrySysUserPasswordUpdateTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.end()) {
+        g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysUserPasswordUpdateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserPasswordUpdateTopic_mutex);
 
     uv_async_send(&g_RspQrySysUserPasswordUpdateTopic_async);
@@ -5018,9 +6115,16 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
 
 void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterField* pRspQrySysUserRegister, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserRegisterTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysUserRegisterTopic_spi_callbackNumb: ", g_RspQrySysUserRegisterTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserRegisterTopic: END! ******\n", g_RunningResult_File);
@@ -5059,10 +6163,11 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysUserRegister;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysUserRegister;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserRegister) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserRegister is NULL" , g_RunningResult_File); 
@@ -5075,7 +6180,15 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserRegisterTopic_mutex);
-    g_RspQrySysUserRegisterTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserRegisterTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserRegisterTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserRegisterTopic_IOUser_vec.end()) {
+        g_RspQrySysUserRegisterTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysUserRegisterTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserRegisterTopic_mutex);
 
     uv_async_send(&g_RspQrySysUserRegisterTopic_async);
@@ -5084,9 +6197,16 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
 
 void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* pRspQrySysUserDelete, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserDeleteTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysUserDeleteTopic_spi_callbackNumb: ", g_RspQrySysUserDeleteTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserDeleteTopic: END! ******\n", g_RunningResult_File);
@@ -5125,10 +6245,11 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysUserDelete;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysUserDelete;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserDelete) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserDelete is NULL" , g_RunningResult_File); 
@@ -5140,7 +6261,15 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserDeleteTopic_mutex);
-    g_RspQrySysUserDeleteTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserDeleteTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserDeleteTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserDeleteTopic_IOUser_vec.end()) {
+        g_RspQrySysUserDeleteTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysUserDeleteTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserDeleteTopic_mutex);
 
     uv_async_send(&g_RspQrySysUserDeleteTopic_async);
@@ -5149,9 +6278,16 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
 
 void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitField* pRspQryParticipantInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryParticipantInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryParticipantInitTopic_spi_callbackNumb: ", g_RspQryParticipantInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryParticipantInitTopic: END! ******\n", g_RunningResult_File);
@@ -5190,10 +6326,11 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryParticipantInit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryParticipantInit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticipantInit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryParticipantInit is NULL" , g_RunningResult_File); 
@@ -5210,7 +6347,15 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticipantInitTopic_mutex);
-    g_RspQryParticipantInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticipantInitTopic_IOUser_vec.begin();
+        it != g_RspQryParticipantInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticipantInitTopic_IOUser_vec.end()) {
+        g_RspQryParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryParticipantInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticipantInitTopic_mutex);
 
     uv_async_send(&g_RspQryParticipantInitTopic_async);
@@ -5219,9 +6364,16 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
 
 void SysUserSpi::OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField* pRtnParticipantInit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnParticipantInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnParticipantInitTopic_spi_callbackNumb: ", g_RtnParticipantInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnParticipantInitTopic: END! ******\n", g_RunningResult_File);
@@ -5238,7 +6390,8 @@ void SysUserSpi::OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField* pRt
         memcpy (pNewRtnParticipantInit,pRtnParticipantInit, sizeof(CShfeFtdcRtnParticipantInitField));
     }
 
-    paramArray[0] = (void*)pNewRtnParticipantInit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnParticipantInit;
     if (NULL == pRtnParticipantInit) { 
         OutputCallbackMessage("SysUserSpi::pRtnParticipantInit is NULL" , g_RunningResult_File); 
     } else {
@@ -5251,7 +6404,15 @@ void SysUserSpi::OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField* pRt
     }
 
     uv_mutex_lock (&g_RtnParticipantInitTopic_mutex);
-    g_RtnParticipantInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticipantInitTopic_IOUser_vec.begin();
+        it != g_RtnParticipantInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticipantInitTopic_IOUser_vec.end()) {
+        g_RtnParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnParticipantInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticipantInitTopic_mutex);
 
     uv_async_send(&g_RtnParticipantInitTopic_async);
@@ -5260,9 +6421,16 @@ void SysUserSpi::OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField* pRt
 
 void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUserInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryUserInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryUserInitTopic_spi_callbackNumb: ", g_RspQryUserInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryUserInitTopic: END! ******\n", g_RunningResult_File);
@@ -5301,10 +6469,11 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryUserInit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryUserInit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserInit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryUserInit is NULL" , g_RunningResult_File); 
@@ -5321,7 +6490,15 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserInitTopic_mutex);
-    g_RspQryUserInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserInitTopic_IOUser_vec.begin();
+        it != g_RspQryUserInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserInitTopic_IOUser_vec.end()) {
+        g_RspQryUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryUserInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserInitTopic_mutex);
 
     uv_async_send(&g_RspQryUserInitTopic_async);
@@ -5330,9 +6507,16 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
 
 void SysUserSpi::OnRtnUserInitTopic(CShfeFtdcRtnUserInitField* pRtnUserInit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUserInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnUserInitTopic_spi_callbackNumb: ", g_RtnUserInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnUserInitTopic: END! ******\n", g_RunningResult_File);
@@ -5349,7 +6533,8 @@ void SysUserSpi::OnRtnUserInitTopic(CShfeFtdcRtnUserInitField* pRtnUserInit){
         memcpy (pNewRtnUserInit,pRtnUserInit, sizeof(CShfeFtdcRtnUserInitField));
     }
 
-    paramArray[0] = (void*)pNewRtnUserInit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnUserInit;
     if (NULL == pRtnUserInit) { 
         OutputCallbackMessage("SysUserSpi::pRtnUserInit is NULL" , g_RunningResult_File); 
     } else {
@@ -5362,7 +6547,15 @@ void SysUserSpi::OnRtnUserInitTopic(CShfeFtdcRtnUserInitField* pRtnUserInit){
     }
 
     uv_mutex_lock (&g_RtnUserInitTopic_mutex);
-    g_RtnUserInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserInitTopic_IOUser_vec.begin();
+        it != g_RtnUserInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserInitTopic_IOUser_vec.end()) {
+        g_RtnUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnUserInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserInitTopic_mutex);
 
     uv_async_send(&g_RtnUserInitTopic_async);
@@ -5371,9 +6564,16 @@ void SysUserSpi::OnRtnUserInitTopic(CShfeFtdcRtnUserInitField* pRtnUserInit){
 
 void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQryClientInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientInitTopic_spi_callbackNumb: ", g_RspQryClientInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientInitTopic: END! ******\n", g_RunningResult_File);
@@ -5412,10 +6612,11 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientInit;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientInit;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientInit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientInit is NULL" , g_RunningResult_File); 
@@ -5434,7 +6635,15 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientInitTopic_mutex);
-    g_RspQryClientInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientInitTopic_IOUser_vec.begin();
+        it != g_RspQryClientInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientInitTopic_IOUser_vec.end()) {
+        g_RspQryClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientInitTopic_mutex);
 
     uv_async_send(&g_RspQryClientInitTopic_async);
@@ -5443,9 +6652,16 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
 
 void SysUserSpi::OnRtnClientInitTopic(CShfeFtdcRtnClientInitField* pRtnClientInit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientInitTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnClientInitTopic_spi_callbackNumb: ", g_RtnClientInitTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnClientInitTopic: END! ******\n", g_RunningResult_File);
@@ -5462,7 +6678,8 @@ void SysUserSpi::OnRtnClientInitTopic(CShfeFtdcRtnClientInitField* pRtnClientIni
         memcpy (pNewRtnClientInit,pRtnClientInit, sizeof(CShfeFtdcRtnClientInitField));
     }
 
-    paramArray[0] = (void*)pNewRtnClientInit;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnClientInit;
     if (NULL == pRtnClientInit) { 
         OutputCallbackMessage("SysUserSpi::pRtnClientInit is NULL" , g_RunningResult_File); 
     } else {
@@ -5477,7 +6694,15 @@ void SysUserSpi::OnRtnClientInitTopic(CShfeFtdcRtnClientInitField* pRtnClientIni
     }
 
     uv_mutex_lock (&g_RtnClientInitTopic_mutex);
-    g_RtnClientInitTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientInitTopic_IOUser_vec.begin();
+        it != g_RtnClientInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientInitTopic_IOUser_vec.end()) {
+        g_RtnClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnClientInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientInitTopic_mutex);
 
     uv_async_send(&g_RtnClientInitTopic_async);
@@ -5486,9 +6711,16 @@ void SysUserSpi::OnRtnClientInitTopic(CShfeFtdcRtnClientInitField* pRtnClientIni
 
 void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTradeLog, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeLogTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeLogTopic_spi_callbackNumb: ", g_RspQryTradeLogTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeLogTopic: END! ******\n", g_RunningResult_File);
@@ -5527,10 +6759,11 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeLog;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeLog;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeLog) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeLog is NULL" , g_RunningResult_File); 
@@ -5543,7 +6776,15 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeLogTopic_mutex);
-    g_RspQryTradeLogTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeLogTopic_IOUser_vec.begin();
+        it != g_RspQryTradeLogTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeLogTopic_IOUser_vec.end()) {
+        g_RspQryTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeLogTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeLogTopic_mutex);
 
     uv_async_send(&g_RspQryTradeLogTopic_async);
@@ -5552,9 +6793,16 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
 
 void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeLogTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTradeLogTopic_spi_callbackNumb: ", g_RtnTradeLogTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTradeLogTopic: END! ******\n", g_RunningResult_File);
@@ -5571,7 +6819,8 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){
         memcpy (pNewRtnTradeLog,pRtnTradeLog, sizeof(CShfeFtdcRtnTradeLogField));
     }
 
-    paramArray[0] = (void*)pNewRtnTradeLog;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTradeLog;
     if (NULL == pRtnTradeLog) { 
         OutputCallbackMessage("SysUserSpi::pRtnTradeLog is NULL" , g_RunningResult_File); 
     } else {
@@ -5580,7 +6829,15 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){
     }
 
     uv_mutex_lock (&g_RtnTradeLogTopic_mutex);
-    g_RtnTradeLogTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeLogTopic_IOUser_vec.begin();
+        it != g_RtnTradeLogTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeLogTopic_IOUser_vec.end()) {
+        g_RtnTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTradeLogTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeLogTopic_mutex);
 
     uv_async_send(&g_RtnTradeLogTopic_async);
@@ -5589,9 +6846,16 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){
 
 void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginInfoField* pRspQryTradeUserLoginInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeUserLoginInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeUserLoginInfoTopic_spi_callbackNumb: ", g_RspQryTradeUserLoginInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
@@ -5630,10 +6894,11 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeUserLoginInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeUserLoginInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeUserLoginInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeUserLoginInfo is NULL" , g_RunningResult_File); 
@@ -5656,7 +6921,15 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeUserLoginInfoTopic_mutex);
-    g_RspQryTradeUserLoginInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeUserLoginInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTradeUserLoginInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeUserLoginInfoTopic_IOUser_vec.end()) {
+        g_RspQryTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeUserLoginInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeUserLoginInfoTopic_mutex);
 
     uv_async_send(&g_RspQryTradeUserLoginInfoTopic_async);
@@ -5665,9 +6938,16 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
 
 void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoField* pRtnTradeUserLoginInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeUserLoginInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTradeUserLoginInfoTopic_spi_callbackNumb: ", g_RtnTradeUserLoginInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
@@ -5684,7 +6964,8 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
         memcpy (pNewRtnTradeUserLoginInfo,pRtnTradeUserLoginInfo, sizeof(CShfeFtdcRtnTradeUserLoginInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnTradeUserLoginInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTradeUserLoginInfo;
     if (NULL == pRtnTradeUserLoginInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnTradeUserLoginInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -5703,7 +6984,15 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
     }
 
     uv_mutex_lock (&g_RtnTradeUserLoginInfoTopic_mutex);
-    g_RtnTradeUserLoginInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeUserLoginInfoTopic_IOUser_vec.begin();
+        it != g_RtnTradeUserLoginInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeUserLoginInfoTopic_IOUser_vec.end()) {
+        g_RtnTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTradeUserLoginInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeUserLoginInfoTopic_mutex);
 
     uv_async_send(&g_RtnTradeUserLoginInfoTopic_async);
@@ -5712,9 +7001,16 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
 
 void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPartTrade, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartTradeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPartTradeTopic_spi_callbackNumb: ", g_RspQryPartTradeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPartTradeTopic: END! ******\n", g_RunningResult_File);
@@ -5753,10 +7049,11 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPartTrade;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPartTrade;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartTrade) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartTrade is NULL" , g_RunningResult_File); 
@@ -5778,7 +7075,15 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartTradeTopic_mutex);
-    g_RspQryPartTradeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartTradeTopic_IOUser_vec.begin();
+        it != g_RspQryPartTradeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartTradeTopic_IOUser_vec.end()) {
+        g_RspQryPartTradeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPartTradeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartTradeTopic_mutex);
 
     uv_async_send(&g_RspQryPartTradeTopic_async);
@@ -5787,9 +7092,16 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
 
 void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTradepeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradepeakTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradepeakTopic_spi_callbackNumb: ", g_RspQryTradepeakTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradepeakTopic: END! ******\n", g_RunningResult_File);
@@ -5828,10 +7140,11 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradepeak;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradepeak;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradepeak) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradepeak is NULL" , g_RunningResult_File); 
@@ -5850,7 +7163,15 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradepeakTopic_mutex);
-    g_RspQryTradepeakTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradepeakTopic_IOUser_vec.begin();
+        it != g_RspQryTradepeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradepeakTopic_IOUser_vec.end()) {
+        g_RspQryTradepeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradepeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradepeakTopic_mutex);
 
     uv_async_send(&g_RspQryTradepeakTopic_async);
@@ -5859,9 +7180,16 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
 
 void SysUserSpi::OnRtnUpdateSysConfigTopic(CShfeFtdcRtnUpdateSysConfigField* pRtnUpdateSysConfig){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUpdateSysConfigTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnUpdateSysConfigTopic_spi_callbackNumb: ", g_RtnUpdateSysConfigTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnUpdateSysConfigTopic: END! ******\n", g_RunningResult_File);
@@ -5878,7 +7206,8 @@ void SysUserSpi::OnRtnUpdateSysConfigTopic(CShfeFtdcRtnUpdateSysConfigField* pRt
         memcpy (pNewRtnUpdateSysConfig,pRtnUpdateSysConfig, sizeof(CShfeFtdcRtnUpdateSysConfigField));
     }
 
-    paramArray[0] = (void*)pNewRtnUpdateSysConfig;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnUpdateSysConfig;
     if (NULL == pRtnUpdateSysConfig) { 
         OutputCallbackMessage("SysUserSpi::pRtnUpdateSysConfig is NULL" , g_RunningResult_File); 
     } else {
@@ -5889,7 +7218,15 @@ void SysUserSpi::OnRtnUpdateSysConfigTopic(CShfeFtdcRtnUpdateSysConfigField* pRt
     }
 
     uv_mutex_lock (&g_RtnUpdateSysConfigTopic_mutex);
-    g_RtnUpdateSysConfigTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUpdateSysConfigTopic_IOUser_vec.begin();
+        it != g_RtnUpdateSysConfigTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUpdateSysConfigTopic_IOUser_vec.end()) {
+        g_RtnUpdateSysConfigTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnUpdateSysConfigTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUpdateSysConfigTopic_mutex);
 
     uv_async_send(&g_RtnUpdateSysConfigTopic_async);
@@ -5898,9 +7235,16 @@ void SysUserSpi::OnRtnUpdateSysConfigTopic(CShfeFtdcRtnUpdateSysConfigField* pRt
 
 void SysUserSpi::OnRtnSysUser(CShfeFtdcRtnSysUserField* pRtnSysUser){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSysUser: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSysUser_spi_callbackNumb: ", g_RtnSysUser_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSysUser: END! ******\n", g_RunningResult_File);
@@ -5917,7 +7261,8 @@ void SysUserSpi::OnRtnSysUser(CShfeFtdcRtnSysUserField* pRtnSysUser){
         memcpy (pNewRtnSysUser,pRtnSysUser, sizeof(CShfeFtdcRtnSysUserField));
     }
 
-    paramArray[0] = (void*)pNewRtnSysUser;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSysUser;
     if (NULL == pRtnSysUser) { 
         OutputCallbackMessage("SysUserSpi::pRtnSysUser is NULL" , g_RunningResult_File); 
     } else {
@@ -5935,7 +7280,15 @@ void SysUserSpi::OnRtnSysUser(CShfeFtdcRtnSysUserField* pRtnSysUser){
     }
 
     uv_mutex_lock (&g_RtnSysUser_mutex);
-    g_RtnSysUser_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysUser_IOUser_vec.begin();
+        it != g_RtnSysUser_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysUser_IOUser_vec.end()) {
+        g_RtnSysUser_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSysUser_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysUser_mutex);
 
     uv_async_send(&g_RtnSysUser_async);
@@ -5944,9 +7297,16 @@ void SysUserSpi::OnRtnSysUser(CShfeFtdcRtnSysUserField* pRtnSysUser){
 
 void SysUserSpi::OnRtnPriceLimitChgTopic(CShfeFtdcRtnPriceLimitChgField* pRtnPriceLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPriceLimitChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPriceLimitChgTopic_spi_callbackNumb: ", g_RtnPriceLimitChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPriceLimitChgTopic: END! ******\n", g_RunningResult_File);
@@ -5963,7 +7323,8 @@ void SysUserSpi::OnRtnPriceLimitChgTopic(CShfeFtdcRtnPriceLimitChgField* pRtnPri
         memcpy (pNewRtnPriceLimitChg,pRtnPriceLimitChg, sizeof(CShfeFtdcRtnPriceLimitChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnPriceLimitChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPriceLimitChg;
     if (NULL == pRtnPriceLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnPriceLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -5978,7 +7339,15 @@ void SysUserSpi::OnRtnPriceLimitChgTopic(CShfeFtdcRtnPriceLimitChgField* pRtnPri
     }
 
     uv_mutex_lock (&g_RtnPriceLimitChgTopic_mutex);
-    g_RtnPriceLimitChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPriceLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnPriceLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPriceLimitChgTopic_IOUser_vec.end()) {
+        g_RtnPriceLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPriceLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPriceLimitChgTopic_mutex);
 
     uv_async_send(&g_RtnPriceLimitChgTopic_async);
@@ -5987,9 +7356,16 @@ void SysUserSpi::OnRtnPriceLimitChgTopic(CShfeFtdcRtnPriceLimitChgField* pRtnPri
 
 void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField* pRspQryHistoryCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryCpuInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHistoryCpuInfoTopic_spi_callbackNumb: ", g_RspQryHistoryCpuInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryCpuInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6028,10 +7404,11 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHistoryCpuInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHistoryCpuInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryCpuInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryCpuInfo is NULL" , g_RunningResult_File); 
@@ -6055,7 +7432,15 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryCpuInfoTopic_mutex);
-    g_RspQryHistoryCpuInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryCpuInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryCpuInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHistoryCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryCpuInfoTopic_mutex);
 
     uv_async_send(&g_RspQryHistoryCpuInfoTopic_async);
@@ -6064,9 +7449,16 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
 
 void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField* pRspQryHistoryMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryMemInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHistoryMemInfoTopic_spi_callbackNumb: ", g_RspQryHistoryMemInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryMemInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6105,10 +7497,11 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHistoryMemInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHistoryMemInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryMemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryMemInfo is NULL" , g_RunningResult_File); 
@@ -6127,7 +7520,15 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryMemInfoTopic_mutex);
-    g_RspQryHistoryMemInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryMemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryMemInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHistoryMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryMemInfoTopic_mutex);
 
     uv_async_send(&g_RspQryHistoryMemInfoTopic_async);
@@ -6136,9 +7537,16 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
 
 void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkInfoField* pRspQryHistoryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryNetworkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHistoryNetworkInfoTopic_spi_callbackNumb: ", g_RspQryHistoryNetworkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6177,10 +7585,11 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHistoryNetworkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHistoryNetworkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryNetworkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryNetworkInfo is NULL" , g_RunningResult_File); 
@@ -6205,7 +7614,15 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryNetworkInfoTopic_mutex);
-    g_RspQryHistoryNetworkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryNetworkInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHistoryNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryNetworkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryHistoryNetworkInfoTopic_async);
@@ -6214,9 +7631,16 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
 
 void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField* pRspQryMonitorOnlineUser, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorOnlineUser: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMonitorOnlineUser_spi_callbackNumb: ", g_RspQryMonitorOnlineUser_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorOnlineUser: END! ******\n", g_RunningResult_File);
@@ -6255,10 +7679,11 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMonitorOnlineUser;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMonitorOnlineUser;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMonitorOnlineUser) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMonitorOnlineUser is NULL" , g_RunningResult_File); 
@@ -6271,7 +7696,15 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMonitorOnlineUser_mutex);
-    g_RspQryMonitorOnlineUser_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMonitorOnlineUser_IOUser_vec.begin();
+        it != g_RspQryMonitorOnlineUser_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMonitorOnlineUser_IOUser_vec.end()) {
+        g_RspQryMonitorOnlineUser_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMonitorOnlineUser_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMonitorOnlineUser_mutex);
 
     uv_async_send(&g_RspQryMonitorOnlineUser_async);
@@ -6280,9 +7713,16 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
 
 void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontStat: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFrontStat_spi_callbackNumb: ", g_RspQryFrontStat_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFrontStat: END! ******\n", g_RunningResult_File);
@@ -6321,10 +7761,11 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFrontStat;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFrontStat;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontStat is NULL" , g_RunningResult_File); 
@@ -6342,7 +7783,15 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontStat_mutex);
-    g_RspQryFrontStat_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontStat_IOUser_vec.begin();
+        it != g_RspQryFrontStat_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontStat_IOUser_vec.end()) {
+        g_RspQryFrontStat_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFrontStat_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontStat_mutex);
 
     uv_async_send(&g_RspQryFrontStat_async);
@@ -6351,9 +7800,16 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
 
 void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTimeSync){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSysTimeSyncTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSysTimeSyncTopic_spi_callbackNumb: ", g_RtnSysTimeSyncTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSysTimeSyncTopic: END! ******\n", g_RunningResult_File);
@@ -6370,7 +7826,8 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTime
         memcpy (pNewRtnSysTimeSync,pRtnSysTimeSync, sizeof(CShfeFtdcRtnSysTimeSyncField));
     }
 
-    paramArray[0] = (void*)pNewRtnSysTimeSync;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSysTimeSync;
     if (NULL == pRtnSysTimeSync) { 
         OutputCallbackMessage("SysUserSpi::pRtnSysTimeSync is NULL" , g_RunningResult_File); 
     } else {
@@ -6379,7 +7836,15 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTime
     }
 
     uv_mutex_lock (&g_RtnSysTimeSyncTopic_mutex);
-    g_RtnSysTimeSyncTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysTimeSyncTopic_IOUser_vec.begin();
+        it != g_RtnSysTimeSyncTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysTimeSyncTopic_IOUser_vec.end()) {
+        g_RtnSysTimeSyncTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSysTimeSyncTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysTimeSyncTopic_mutex);
 
     uv_async_send(&g_RtnSysTimeSyncTopic_async);
@@ -6388,9 +7853,16 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTime
 
 void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDataCenterChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDataCenterChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnDataCenterChgTopic_spi_callbackNumb: ", g_RtnDataCenterChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnDataCenterChgTopic: END! ******\n", g_RunningResult_File);
@@ -6407,7 +7879,8 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDat
         memcpy (pNewRtnDataCenterChg,pRtnDataCenterChg, sizeof(CShfeFtdcRtnDataCenterChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnDataCenterChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnDataCenterChg;
     if (NULL == pRtnDataCenterChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnDataCenterChg is NULL" , g_RunningResult_File); 
     } else {
@@ -6415,7 +7888,15 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDat
     }
 
     uv_mutex_lock (&g_RtnDataCenterChgTopic_mutex);
-    g_RtnDataCenterChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDataCenterChgTopic_IOUser_vec.begin();
+        it != g_RtnDataCenterChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDataCenterChgTopic_IOUser_vec.end()) {
+        g_RtnDataCenterChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnDataCenterChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDataCenterChgTopic_mutex);
 
     uv_async_send(&g_RtnDataCenterChgTopic_async);
@@ -6424,9 +7905,16 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDat
 
 void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakField* pRspQryHistoryTradePeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryTradePeakTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryHistoryTradePeakTopic_spi_callbackNumb: ", g_RspQryHistoryTradePeakTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
@@ -6465,10 +7953,11 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryHistoryTradePeak;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryHistoryTradePeak;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryTradePeak) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryTradePeak is NULL" , g_RunningResult_File); 
@@ -6494,7 +7983,15 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryTradePeakTopic_mutex);
-    g_RspQryHistoryTradePeakTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryTradePeakTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryTradePeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryTradePeakTopic_IOUser_vec.end()) {
+        g_RspQryHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryHistoryTradePeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryTradePeakTopic_mutex);
 
     uv_async_send(&g_RspQryHistoryTradePeakTopic_async);
@@ -6503,9 +8000,16 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
 
 void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* pRtnHistoryTradePeak){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHistoryTradePeakTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnHistoryTradePeakTopic_spi_callbackNumb: ", g_RtnHistoryTradePeakTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
@@ -6522,7 +8026,8 @@ void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* p
         memcpy (pNewRtnHistoryTradePeak,pRtnHistoryTradePeak, sizeof(CShfeFtdcRtnHistoryTradePeakField));
     }
 
-    paramArray[0] = (void*)pNewRtnHistoryTradePeak;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnHistoryTradePeak;
     if (NULL == pRtnHistoryTradePeak) { 
         OutputCallbackMessage("SysUserSpi::pRtnHistoryTradePeak is NULL" , g_RunningResult_File); 
     } else {
@@ -6544,7 +8049,15 @@ void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* p
     }
 
     uv_mutex_lock (&g_RtnHistoryTradePeakTopic_mutex);
-    g_RtnHistoryTradePeakTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHistoryTradePeakTopic_IOUser_vec.begin();
+        it != g_RtnHistoryTradePeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHistoryTradePeakTopic_IOUser_vec.end()) {
+        g_RtnHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnHistoryTradePeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHistoryTradePeakTopic_mutex);
 
     uv_async_send(&g_RtnHistoryTradePeakTopic_async);
@@ -6553,9 +8066,16 @@ void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* p
 
 void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQrySyslogEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySyslogEventTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySyslogEventTopic_spi_callbackNumb: ", g_RspQrySyslogEventTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogEventTopic: END! ******\n", g_RunningResult_File);
@@ -6594,10 +8114,11 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySyslogEvent;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySyslogEvent;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySyslogEvent) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySyslogEvent is NULL" , g_RunningResult_File); 
@@ -6624,7 +8145,15 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySyslogEventTopic_mutex);
-    g_RspQrySyslogEventTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySyslogEventTopic_IOUser_vec.begin();
+        it != g_RspQrySyslogEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySyslogEventTopic_IOUser_vec.end()) {
+        g_RspQrySyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySyslogEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySyslogEventTopic_mutex);
 
     uv_async_send(&g_RspQrySyslogEventTopic_async);
@@ -6633,9 +8162,16 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
 
 void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogEvent){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSyslogEventTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSyslogEventTopic_spi_callbackNumb: ", g_RtnSyslogEventTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSyslogEventTopic: END! ******\n", g_RunningResult_File);
@@ -6652,7 +8188,8 @@ void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogE
         memcpy (pNewRtnSyslogEvent,pRtnSyslogEvent, sizeof(CShfeFtdcRtnSyslogEventField));
     }
 
-    paramArray[0] = (void*)pNewRtnSyslogEvent;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSyslogEvent;
     if (NULL == pRtnSyslogEvent) { 
         OutputCallbackMessage("SysUserSpi::pRtnSyslogEvent is NULL" , g_RunningResult_File); 
     } else {
@@ -6674,7 +8211,15 @@ void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogE
     }
 
     uv_mutex_lock (&g_RtnSyslogEventTopic_mutex);
-    g_RtnSyslogEventTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSyslogEventTopic_IOUser_vec.begin();
+        it != g_RtnSyslogEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSyslogEventTopic_IOUser_vec.end()) {
+        g_RtnSyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSyslogEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSyslogEventTopic_mutex);
 
     uv_async_send(&g_RtnSyslogEventTopic_async);
@@ -6683,9 +8228,16 @@ void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogE
 
 void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField* pRspQryTradeDayChange, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeDayChangeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeDayChangeTopic_spi_callbackNumb: ", g_RspQryTradeDayChangeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeDayChangeTopic: END! ******\n", g_RunningResult_File);
@@ -6724,10 +8276,11 @@ void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeDayChange;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeDayChange;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeDayChange) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeDayChange is NULL" , g_RunningResult_File); 
@@ -6741,7 +8294,15 @@ void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeDayChangeTopic_mutex);
-    g_RspQryTradeDayChangeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeDayChangeTopic_IOUser_vec.begin();
+        it != g_RspQryTradeDayChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeDayChangeTopic_IOUser_vec.end()) {
+        g_RspQryTradeDayChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeDayChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeDayChangeTopic_mutex);
 
     uv_async_send(&g_RspQryTradeDayChangeTopic_async);
@@ -6750,9 +8311,16 @@ void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField*
 
 void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQryWebAppInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWebAppInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryWebAppInfoTopic_spi_callbackNumb: ", g_RspQryWebAppInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryWebAppInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6791,10 +8359,11 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryWebAppInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryWebAppInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWebAppInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWebAppInfo is NULL" , g_RunningResult_File); 
@@ -6820,7 +8389,15 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWebAppInfoTopic_mutex);
-    g_RspQryWebAppInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWebAppInfoTopic_IOUser_vec.begin();
+        it != g_RspQryWebAppInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWebAppInfoTopic_IOUser_vec.end()) {
+        g_RspQryWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryWebAppInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWebAppInfoTopic_mutex);
 
     uv_async_send(&g_RspQryWebAppInfoTopic_async);
@@ -6829,9 +8406,16 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
 
 void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWebAppInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnWebAppInfoTopic_spi_callbackNumb: ", g_RtnWebAppInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnWebAppInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6848,7 +8432,8 @@ void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInf
         memcpy (pNewRtnWebAppInfo,pRtnWebAppInfo, sizeof(CShfeFtdcRtnWebAppInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnWebAppInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnWebAppInfo;
     if (NULL == pRtnWebAppInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnWebAppInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6870,7 +8455,15 @@ void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInf
     }
 
     uv_mutex_lock (&g_RtnWebAppInfoTopic_mutex);
-    g_RtnWebAppInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWebAppInfoTopic_IOUser_vec.begin();
+        it != g_RtnWebAppInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWebAppInfoTopic_IOUser_vec.end()) {
+        g_RtnWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnWebAppInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWebAppInfoTopic_mutex);
 
     uv_async_send(&g_RtnWebAppInfoTopic_async);
@@ -6879,9 +8472,16 @@ void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInf
 
 void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQryServletInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryServletInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryServletInfoTopic_spi_callbackNumb: ", g_RspQryServletInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryServletInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6920,10 +8520,11 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryServletInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryServletInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryServletInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryServletInfo is NULL" , g_RunningResult_File); 
@@ -6944,7 +8545,15 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryServletInfoTopic_mutex);
-    g_RspQryServletInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryServletInfoTopic_IOUser_vec.begin();
+        it != g_RspQryServletInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryServletInfoTopic_IOUser_vec.end()) {
+        g_RspQryServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryServletInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryServletInfoTopic_mutex);
 
     uv_async_send(&g_RspQryServletInfoTopic_async);
@@ -6953,9 +8562,16 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
 
 void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServletInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnServletInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnServletInfoTopic_spi_callbackNumb: ", g_RtnServletInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnServletInfoTopic: END! ******\n", g_RunningResult_File);
@@ -6972,7 +8588,8 @@ void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServlet
         memcpy (pNewRtnServletInfo,pRtnServletInfo, sizeof(CShfeFtdcRtnServletInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnServletInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnServletInfo;
     if (NULL == pRtnServletInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnServletInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6989,7 +8606,15 @@ void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServlet
     }
 
     uv_mutex_lock (&g_RtnServletInfoTopic_mutex);
-    g_RtnServletInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnServletInfoTopic_IOUser_vec.begin();
+        it != g_RtnServletInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnServletInfoTopic_IOUser_vec.end()) {
+        g_RtnServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnServletInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnServletInfoTopic_mutex);
 
     uv_async_send(&g_RtnServletInfoTopic_async);
@@ -6998,9 +8623,16 @@ void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServlet
 
 void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFileInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFileInfoTopic_spi_callbackNumb: ", g_RspQryFileInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFileInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7039,10 +8671,11 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFileInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFileInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileInfo is NULL" , g_RunningResult_File); 
@@ -7060,7 +8693,15 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileInfoTopic_mutex);
-    g_RspQryFileInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFileInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileInfoTopic_mutex);
 
     uv_async_send(&g_RspQryFileInfoTopic_async);
@@ -7069,9 +8710,16 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
 
 void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFileInfoTopic_spi_callbackNumb: ", g_RtnFileInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFileInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7088,7 +8736,8 @@ void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){
         memcpy (pNewRtnFileInfo,pRtnFileInfo, sizeof(CShfeFtdcRtnFileInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnFileInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFileInfo;
     if (NULL == pRtnFileInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnFileInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7102,7 +8751,15 @@ void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){
     }
 
     uv_mutex_lock (&g_RtnFileInfoTopic_mutex);
-    g_RtnFileInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileInfoTopic_IOUser_vec.end()) {
+        g_RtnFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFileInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileInfoTopic_mutex);
 
     uv_async_send(&g_RtnFileInfoTopic_async);
@@ -7111,9 +8768,16 @@ void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){
 
 void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQrySessionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySessionInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySessionInfoTopic_spi_callbackNumb: ", g_RspQrySessionInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySessionInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7152,10 +8816,11 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySessionInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySessionInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySessionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySessionInfo is NULL" , g_RunningResult_File); 
@@ -7175,7 +8840,15 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySessionInfoTopic_mutex);
-    g_RspQrySessionInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySessionInfoTopic_IOUser_vec.begin();
+        it != g_RspQrySessionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySessionInfoTopic_IOUser_vec.end()) {
+        g_RspQrySessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySessionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySessionInfoTopic_mutex);
 
     uv_async_send(&g_RspQrySessionInfoTopic_async);
@@ -7184,9 +8857,16 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
 
 void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSessionInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSessionInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSessionInfoTopic_spi_callbackNumb: ", g_RtnSessionInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSessionInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7203,7 +8883,8 @@ void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSession
         memcpy (pNewRtnSessionInfo,pRtnSessionInfo, sizeof(CShfeFtdcRtnSessionInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnSessionInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSessionInfo;
     if (NULL == pRtnSessionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnSessionInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7219,7 +8900,15 @@ void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSession
     }
 
     uv_mutex_lock (&g_RtnSessionInfoTopic_mutex);
-    g_RtnSessionInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSessionInfoTopic_IOUser_vec.begin();
+        it != g_RtnSessionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSessionInfoTopic_IOUser_vec.end()) {
+        g_RtnSessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSessionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSessionInfoTopic_mutex);
 
     uv_async_send(&g_RtnSessionInfoTopic_async);
@@ -7228,9 +8917,16 @@ void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSession
 
 void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBCInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryJDBCInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryJDBCInfoTopic_spi_callbackNumb: ", g_RspQryJDBCInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryJDBCInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7269,10 +8965,11 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryJDBCInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryJDBCInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryJDBCInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryJDBCInfo is NULL" , g_RunningResult_File); 
@@ -7296,7 +8993,15 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryJDBCInfoTopic_mutex);
-    g_RspQryJDBCInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryJDBCInfoTopic_IOUser_vec.begin();
+        it != g_RspQryJDBCInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryJDBCInfoTopic_IOUser_vec.end()) {
+        g_RspQryJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryJDBCInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryJDBCInfoTopic_mutex);
 
     uv_async_send(&g_RspQryJDBCInfoTopic_async);
@@ -7305,9 +9010,16 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
 
 void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnJDBCInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnJDBCInfoTopic_spi_callbackNumb: ", g_RtnJDBCInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnJDBCInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7324,7 +9036,8 @@ void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){
         memcpy (pNewRtnJDBCInfo,pRtnJDBCInfo, sizeof(CShfeFtdcRtnJDBCInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnJDBCInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnJDBCInfo;
     if (NULL == pRtnJDBCInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnJDBCInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7344,7 +9057,15 @@ void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){
     }
 
     uv_mutex_lock (&g_RtnJDBCInfoTopic_mutex);
-    g_RtnJDBCInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnJDBCInfoTopic_IOUser_vec.begin();
+        it != g_RtnJDBCInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnJDBCInfoTopic_IOUser_vec.end()) {
+        g_RtnJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnJDBCInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnJDBCInfoTopic_mutex);
 
     uv_async_send(&g_RtnJDBCInfoTopic_async);
@@ -7353,9 +9074,16 @@ void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){
 
 void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQryThreadInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryThreadInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryThreadInfoTopic_spi_callbackNumb: ", g_RspQryThreadInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryThreadInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7394,10 +9122,11 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryThreadInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryThreadInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryThreadInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryThreadInfo is NULL" , g_RunningResult_File); 
@@ -7420,7 +9149,15 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryThreadInfoTopic_mutex);
-    g_RspQryThreadInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryThreadInfoTopic_IOUser_vec.begin();
+        it != g_RspQryThreadInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryThreadInfoTopic_IOUser_vec.end()) {
+        g_RspQryThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryThreadInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryThreadInfoTopic_mutex);
 
     uv_async_send(&g_RspQryThreadInfoTopic_async);
@@ -7429,9 +9166,16 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
 
 void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnThreadInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnThreadInfoTopic_spi_callbackNumb: ", g_RtnThreadInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnThreadInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7448,7 +9192,8 @@ void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInf
         memcpy (pNewRtnThreadInfo,pRtnThreadInfo, sizeof(CShfeFtdcRtnThreadInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnThreadInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnThreadInfo;
     if (NULL == pRtnThreadInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnThreadInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7467,7 +9212,15 @@ void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInf
     }
 
     uv_mutex_lock (&g_RtnThreadInfoTopic_mutex);
-    g_RtnThreadInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnThreadInfoTopic_IOUser_vec.begin();
+        it != g_RtnThreadInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnThreadInfoTopic_IOUser_vec.end()) {
+        g_RtnThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnThreadInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnThreadInfoTopic_mutex);
 
     uv_async_send(&g_RtnThreadInfoTopic_async);
@@ -7476,9 +9229,16 @@ void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInf
 
 void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryVMInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryVMInfoTopic_spi_callbackNumb: ", g_RspQryVMInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryVMInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7517,10 +9277,11 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryVMInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryVMInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryVMInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryVMInfo is NULL" , g_RunningResult_File); 
@@ -7543,7 +9304,15 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryVMInfoTopic_mutex);
-    g_RspQryVMInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryVMInfoTopic_IOUser_vec.begin();
+        it != g_RspQryVMInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryVMInfoTopic_IOUser_vec.end()) {
+        g_RspQryVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryVMInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryVMInfoTopic_mutex);
 
     uv_async_send(&g_RspQryVMInfoTopic_async);
@@ -7552,9 +9321,16 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
 
 void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnVMInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnVMInfoTopic_spi_callbackNumb: ", g_RtnVMInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnVMInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7571,7 +9347,8 @@ void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){
         memcpy (pNewRtnVMInfo,pRtnVMInfo, sizeof(CShfeFtdcRtnVMInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnVMInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnVMInfo;
     if (NULL == pRtnVMInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnVMInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7590,7 +9367,15 @@ void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){
     }
 
     uv_mutex_lock (&g_RtnVMInfoTopic_mutex);
-    g_RtnVMInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnVMInfoTopic_IOUser_vec.begin();
+        it != g_RtnVMInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnVMInfoTopic_IOUser_vec.end()) {
+        g_RtnVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnVMInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnVMInfoTopic_mutex);
 
     uv_async_send(&g_RtnVMInfoTopic_async);
@@ -7599,9 +9384,16 @@ void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){
 
 void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRspQryPropertyInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPropertyInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPropertyInfoTopic_spi_callbackNumb: ", g_RspQryPropertyInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPropertyInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7640,10 +9432,11 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPropertyInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPropertyInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPropertyInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPropertyInfo is NULL" , g_RunningResult_File); 
@@ -7660,7 +9453,15 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPropertyInfoTopic_mutex);
-    g_RspQryPropertyInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPropertyInfoTopic_IOUser_vec.begin();
+        it != g_RspQryPropertyInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPropertyInfoTopic_IOUser_vec.end()) {
+        g_RspQryPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPropertyInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPropertyInfoTopic_mutex);
 
     uv_async_send(&g_RspQryPropertyInfoTopic_async);
@@ -7669,9 +9470,16 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
 
 void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPropertyInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPropertyInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPropertyInfoTopic_spi_callbackNumb: ", g_RtnPropertyInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPropertyInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7688,7 +9496,8 @@ void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPrope
         memcpy (pNewRtnPropertyInfo,pRtnPropertyInfo, sizeof(CShfeFtdcRtnPropertyInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnPropertyInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPropertyInfo;
     if (NULL == pRtnPropertyInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnPropertyInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7701,7 +9510,15 @@ void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPrope
     }
 
     uv_mutex_lock (&g_RtnPropertyInfoTopic_mutex);
-    g_RtnPropertyInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPropertyInfoTopic_IOUser_vec.begin();
+        it != g_RtnPropertyInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPropertyInfoTopic_IOUser_vec.end()) {
+        g_RtnPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPropertyInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPropertyInfoTopic_mutex);
 
     uv_async_send(&g_RtnPropertyInfoTopic_async);
@@ -7710,9 +9527,16 @@ void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPrope
 
 void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQryMemPoolInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMemPoolInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMemPoolInfoTopic_spi_callbackNumb: ", g_RspQryMemPoolInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7751,10 +9575,11 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMemPoolInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMemPoolInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemPoolInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMemPoolInfo is NULL" , g_RunningResult_File); 
@@ -7775,7 +9600,15 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemPoolInfoTopic_mutex);
-    g_RspQryMemPoolInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemPoolInfoTopic_IOUser_vec.begin();
+        it != g_RspQryMemPoolInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemPoolInfoTopic_IOUser_vec.end()) {
+        g_RspQryMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMemPoolInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemPoolInfoTopic_mutex);
 
     uv_async_send(&g_RspQryMemPoolInfoTopic_async);
@@ -7784,9 +9617,16 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
 
 void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPoolInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMemPoolInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMemPoolInfoTopic_spi_callbackNumb: ", g_RtnMemPoolInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7803,7 +9643,8 @@ void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPool
         memcpy (pNewRtnMemPoolInfo,pRtnMemPoolInfo, sizeof(CShfeFtdcRtnMemPoolInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnMemPoolInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMemPoolInfo;
     if (NULL == pRtnMemPoolInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnMemPoolInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7820,7 +9661,15 @@ void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPool
     }
 
     uv_mutex_lock (&g_RtnMemPoolInfoTopic_mutex);
-    g_RtnMemPoolInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemPoolInfoTopic_IOUser_vec.begin();
+        it != g_RtnMemPoolInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemPoolInfoTopic_IOUser_vec.end()) {
+        g_RtnMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMemPoolInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemPoolInfoTopic_mutex);
 
     uv_async_send(&g_RtnMemPoolInfoTopic_async);
@@ -7829,9 +9678,16 @@ void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPool
 
 void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoField* pRspQryFileContentInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileContentInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFileContentInfoTopic_spi_callbackNumb: ", g_RspQryFileContentInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFileContentInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7870,10 +9726,11 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFileContentInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFileContentInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileContentInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileContentInfo is NULL" , g_RunningResult_File); 
@@ -7889,7 +9746,15 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileContentInfoTopic_mutex);
-    g_RspQryFileContentInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileContentInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileContentInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileContentInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFileContentInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileContentInfoTopic_mutex);
 
     uv_async_send(&g_RspQryFileContentInfoTopic_async);
@@ -7898,9 +9763,16 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
 
 void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRtnFileContentInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileContentInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFileContentInfoTopic_spi_callbackNumb: ", g_RtnFileContentInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFileContentInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7917,7 +9789,8 @@ void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRt
         memcpy (pNewRtnFileContentInfo,pRtnFileContentInfo, sizeof(CShfeFtdcRtnFileContentInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnFileContentInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFileContentInfo;
     if (NULL == pRtnFileContentInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnFileContentInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7929,7 +9802,15 @@ void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRt
     }
 
     uv_mutex_lock (&g_RtnFileContentInfoTopic_mutex);
-    g_RtnFileContentInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileContentInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileContentInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileContentInfoTopic_IOUser_vec.end()) {
+        g_RtnFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFileContentInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileContentInfoTopic_mutex);
 
     uv_async_send(&g_RtnFileContentInfoTopic_async);
@@ -7938,9 +9819,16 @@ void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRt
 
 void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField* pRspQryConnectionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryConnectionInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryConnectionInfoTopic_spi_callbackNumb: ", g_RspQryConnectionInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryConnectionInfoTopic: END! ******\n", g_RunningResult_File);
@@ -7979,10 +9867,11 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryConnectionInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryConnectionInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryConnectionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryConnectionInfo is NULL" , g_RunningResult_File); 
@@ -8005,7 +9894,15 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryConnectionInfoTopic_mutex);
-    g_RspQryConnectionInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryConnectionInfoTopic_IOUser_vec.begin();
+        it != g_RspQryConnectionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryConnectionInfoTopic_IOUser_vec.end()) {
+        g_RspQryConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryConnectionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryConnectionInfoTopic_mutex);
 
     uv_async_send(&g_RspQryConnectionInfoTopic_async);
@@ -8014,9 +9911,16 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
 
 void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnConnectionInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnConnectionInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnConnectionInfoTopic_spi_callbackNumb: ", g_RtnConnectionInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnConnectionInfoTopic: END! ******\n", g_RunningResult_File);
@@ -8033,7 +9937,8 @@ void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnC
         memcpy (pNewRtnConnectionInfo,pRtnConnectionInfo, sizeof(CShfeFtdcRtnConnectionInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnConnectionInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnConnectionInfo;
     if (NULL == pRtnConnectionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnConnectionInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8052,7 +9957,15 @@ void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnC
     }
 
     uv_mutex_lock (&g_RtnConnectionInfoTopic_mutex);
-    g_RtnConnectionInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnConnectionInfoTopic_IOUser_vec.begin();
+        it != g_RtnConnectionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnConnectionInfoTopic_IOUser_vec.end()) {
+        g_RtnConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnConnectionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnConnectionInfoTopic_mutex);
 
     uv_async_send(&g_RtnConnectionInfoTopic_async);
@@ -8061,9 +9974,16 @@ void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnC
 
 void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* pRspQryConnectorInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryConnectorInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryConnectorInfoTopic_spi_callbackNumb: ", g_RspQryConnectorInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryConnectorInfoTopic: END! ******\n", g_RunningResult_File);
@@ -8102,10 +10022,11 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryConnectorInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryConnectorInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryConnectorInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryConnectorInfo is NULL" , g_RunningResult_File); 
@@ -8131,7 +10052,15 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryConnectorInfoTopic_mutex);
-    g_RspQryConnectorInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryConnectorInfoTopic_IOUser_vec.begin();
+        it != g_RspQryConnectorInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryConnectorInfoTopic_IOUser_vec.end()) {
+        g_RspQryConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryConnectorInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryConnectorInfoTopic_mutex);
 
     uv_async_send(&g_RspQryConnectorInfoTopic_async);
@@ -8140,9 +10069,16 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
 
 void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnConnectorInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnConnectorInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnConnectorInfoTopic_spi_callbackNumb: ", g_RtnConnectorInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnConnectorInfoTopic: END! ******\n", g_RunningResult_File);
@@ -8159,7 +10095,8 @@ void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnCon
         memcpy (pNewRtnConnectorInfo,pRtnConnectorInfo, sizeof(CShfeFtdcRtnConnectorInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnConnectorInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnConnectorInfo;
     if (NULL == pRtnConnectorInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnConnectorInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8181,7 +10118,15 @@ void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnCon
     }
 
     uv_mutex_lock (&g_RtnConnectorInfoTopic_mutex);
-    g_RtnConnectorInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnConnectorInfoTopic_IOUser_vec.begin();
+        it != g_RtnConnectorInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnConnectorInfoTopic_IOUser_vec.end()) {
+        g_RtnConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnConnectorInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnConnectorInfoTopic_mutex);
 
     uv_async_send(&g_RtnConnectorInfoTopic_async);
@@ -8190,9 +10135,16 @@ void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnCon
 
 void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryDBQueryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryDBQueryTopic_spi_callbackNumb: ", g_RspQryDBQueryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryDBQueryTopic: END! ******\n", g_RunningResult_File);
@@ -8231,10 +10183,11 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryDBQuery;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryDBQuery;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDBQuery) { 
         OutputCallbackMessage("SysUserSpi::pRspQryDBQuery is NULL" , g_RunningResult_File); 
@@ -8250,7 +10203,15 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDBQueryTopic_mutex);
-    g_RspQryDBQueryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDBQueryTopic_IOUser_vec.begin();
+        it != g_RspQryDBQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDBQueryTopic_IOUser_vec.end()) {
+        g_RspQryDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryDBQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDBQueryTopic_mutex);
 
     uv_async_send(&g_RspQryDBQueryTopic_async);
@@ -8259,9 +10220,16 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
 
 void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDBQueryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnDBQueryTopic_spi_callbackNumb: ", g_RtnDBQueryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnDBQueryTopic: END! ******\n", g_RunningResult_File);
@@ -8278,7 +10246,8 @@ void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){
         memcpy (pNewRtnDBQuery,pRtnDBQuery, sizeof(CShfeFtdcRtnDBQueryField));
     }
 
-    paramArray[0] = (void*)pNewRtnDBQuery;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnDBQuery;
     if (NULL == pRtnDBQuery) { 
         OutputCallbackMessage("SysUserSpi::pRtnDBQuery is NULL" , g_RunningResult_File); 
     } else {
@@ -8290,7 +10259,15 @@ void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){
     }
 
     uv_mutex_lock (&g_RtnDBQueryTopic_mutex);
-    g_RtnDBQueryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDBQueryTopic_IOUser_vec.begin();
+        it != g_RtnDBQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDBQueryTopic_IOUser_vec.end()) {
+        g_RtnDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnDBQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDBQueryTopic_mutex);
 
     uv_async_send(&g_RtnDBQueryTopic_async);
@@ -8299,9 +10276,16 @@ void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){
 
 void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGeneralField, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGeneralFieldTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryGeneralFieldTopic_spi_callbackNumb: ", g_RspQryGeneralFieldTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralFieldTopic: END! ******\n", g_RunningResult_File);
@@ -8340,10 +10324,11 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
         return;
     }  	
 
-    paramArray[0] = (void*)pNewSysGeneralField;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewSysGeneralField;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pSysGeneralField) { 
         OutputCallbackMessage("SysUserSpi::pSysGeneralField is NULL" , g_RunningResult_File); 
@@ -8360,7 +10345,15 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGeneralFieldTopic_mutex);
-    g_RspQryGeneralFieldTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGeneralFieldTopic_IOUser_vec.begin();
+        it != g_RspQryGeneralFieldTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGeneralFieldTopic_IOUser_vec.end()) {
+        g_RspQryGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryGeneralFieldTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGeneralFieldTopic_mutex);
 
     uv_async_send(&g_RspQryGeneralFieldTopic_async);
@@ -8369,9 +10362,16 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
 
 void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGeneralField){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnGeneralFieldTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnGeneralFieldTopic_spi_callbackNumb: ", g_RtnGeneralFieldTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnGeneralFieldTopic: END! ******\n", g_RunningResult_File);
@@ -8388,7 +10388,8 @@ void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGener
         memcpy (pNewSysGeneralField,pSysGeneralField, sizeof(CShfeFtdcSysGeneralFieldField));
     }
 
-    paramArray[0] = (void*)pNewSysGeneralField;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewSysGeneralField;
     if (NULL == pSysGeneralField) { 
         OutputCallbackMessage("SysUserSpi::pSysGeneralField is NULL" , g_RunningResult_File); 
     } else {
@@ -8401,7 +10402,15 @@ void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGener
     }
 
     uv_mutex_lock (&g_RtnGeneralFieldTopic_mutex);
-    g_RtnGeneralFieldTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnGeneralFieldTopic_IOUser_vec.begin();
+        it != g_RtnGeneralFieldTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnGeneralFieldTopic_IOUser_vec.end()) {
+        g_RtnGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnGeneralFieldTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnGeneralFieldTopic_mutex);
 
     uv_async_send(&g_RtnGeneralFieldTopic_async);
@@ -8410,9 +10419,16 @@ void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGener
 
 void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGetFileTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryGetFileTopic_spi_callbackNumb: ", g_RspQryGetFileTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryGetFileTopic: END! ******\n", g_RunningResult_File);
@@ -8451,10 +10467,11 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryGetFile;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryGetFile;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryGetFile) { 
         OutputCallbackMessage("SysUserSpi::pRspQryGetFile is NULL" , g_RunningResult_File); 
@@ -8470,7 +10487,15 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGetFileTopic_mutex);
-    g_RspQryGetFileTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGetFileTopic_IOUser_vec.begin();
+        it != g_RspQryGetFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGetFileTopic_IOUser_vec.end()) {
+        g_RspQryGetFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryGetFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGetFileTopic_mutex);
 
     uv_async_send(&g_RspQryGetFileTopic_async);
@@ -8479,9 +10504,16 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
 
 void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRspQryWarningQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWarningQueryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryWarningQueryTopic_spi_callbackNumb: ", g_RspQryWarningQueryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryWarningQueryTopic: END! ******\n", g_RunningResult_File);
@@ -8520,10 +10552,11 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryWarningQuery;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryWarningQuery;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWarningQuery) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWarningQuery is NULL" , g_RunningResult_File); 
@@ -8538,7 +10571,15 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWarningQueryTopic_mutex);
-    g_RspQryWarningQueryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWarningQueryTopic_IOUser_vec.begin();
+        it != g_RspQryWarningQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWarningQueryTopic_IOUser_vec.end()) {
+        g_RspQryWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryWarningQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWarningQueryTopic_mutex);
 
     uv_async_send(&g_RspQryWarningQueryTopic_async);
@@ -8547,9 +10588,16 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
 
 void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarningQuery){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWarningQueryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnWarningQueryTopic_spi_callbackNumb: ", g_RtnWarningQueryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnWarningQueryTopic: END! ******\n", g_RunningResult_File);
@@ -8566,7 +10614,8 @@ void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarni
         memcpy (pNewRtnWarningQuery,pRtnWarningQuery, sizeof(CShfeFtdcRtnWarningQueryField));
     }
 
-    paramArray[0] = (void*)pNewRtnWarningQuery;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnWarningQuery;
     if (NULL == pRtnWarningQuery) { 
         OutputCallbackMessage("SysUserSpi::pRtnWarningQuery is NULL" , g_RunningResult_File); 
     } else {
@@ -8577,7 +10626,15 @@ void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarni
     }
 
     uv_mutex_lock (&g_RtnWarningQueryTopic_mutex);
-    g_RtnWarningQueryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWarningQueryTopic_IOUser_vec.begin();
+        it != g_RtnWarningQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWarningQueryTopic_IOUser_vec.end()) {
+        g_RtnWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnWarningQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWarningQueryTopic_mutex);
 
     uv_async_send(&g_RtnWarningQueryTopic_async);
@@ -8586,9 +10643,16 @@ void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarni
 
 void SysUserSpi::OnRtnHostConfig(CShfeFtdcRtnHostConfigField* pRtnHostConfig){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHostConfig: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnHostConfig_spi_callbackNumb: ", g_RtnHostConfig_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnHostConfig: END! ******\n", g_RunningResult_File);
@@ -8605,7 +10669,8 @@ void SysUserSpi::OnRtnHostConfig(CShfeFtdcRtnHostConfigField* pRtnHostConfig){
         memcpy (pNewRtnHostConfig,pRtnHostConfig, sizeof(CShfeFtdcRtnHostConfigField));
     }
 
-    paramArray[0] = (void*)pNewRtnHostConfig;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnHostConfig;
     if (NULL == pRtnHostConfig) { 
         OutputCallbackMessage("SysUserSpi::pRtnHostConfig is NULL" , g_RunningResult_File); 
     } else {
@@ -8618,7 +10683,15 @@ void SysUserSpi::OnRtnHostConfig(CShfeFtdcRtnHostConfigField* pRtnHostConfig){
     }
 
     uv_mutex_lock (&g_RtnHostConfig_mutex);
-    g_RtnHostConfig_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHostConfig_IOUser_vec.begin();
+        it != g_RtnHostConfig_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHostConfig_IOUser_vec.end()) {
+        g_RtnHostConfig_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnHostConfig_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHostConfig_mutex);
 
     uv_async_send(&g_RtnHostConfig_async);
@@ -8627,9 +10700,16 @@ void SysUserSpi::OnRtnHostConfig(CShfeFtdcRtnHostConfigField* pRtnHostConfig){
 
 void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField* pRspQryGeneralOperate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGeneralOperateTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryGeneralOperateTopic_spi_callbackNumb: ", g_RspQryGeneralOperateTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralOperateTopic: END! ******\n", g_RunningResult_File);
@@ -8668,10 +10748,11 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryGeneralOperate;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryGeneralOperate;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryGeneralOperate) { 
         OutputCallbackMessage("SysUserSpi::pRspQryGeneralOperate is NULL" , g_RunningResult_File); 
@@ -8686,7 +10767,15 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGeneralOperateTopic_mutex);
-    g_RspQryGeneralOperateTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGeneralOperateTopic_IOUser_vec.begin();
+        it != g_RspQryGeneralOperateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGeneralOperateTopic_IOUser_vec.end()) {
+        g_RspQryGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryGeneralOperateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGeneralOperateTopic_mutex);
 
     uv_async_send(&g_RspQryGeneralOperateTopic_async);
@@ -8695,9 +10784,16 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
 
 void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnGeneralOperate){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnGeneralOperateTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnGeneralOperateTopic_spi_callbackNumb: ", g_RtnGeneralOperateTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnGeneralOperateTopic: END! ******\n", g_RunningResult_File);
@@ -8714,7 +10810,8 @@ void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnG
         memcpy (pNewRtnGeneralOperate,pRtnGeneralOperate, sizeof(CShfeFtdcRtnGeneralOperateField));
     }
 
-    paramArray[0] = (void*)pNewRtnGeneralOperate;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnGeneralOperate;
     if (NULL == pRtnGeneralOperate) { 
         OutputCallbackMessage("SysUserSpi::pRtnGeneralOperate is NULL" , g_RunningResult_File); 
     } else {
@@ -8725,7 +10822,15 @@ void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnG
     }
 
     uv_mutex_lock (&g_RtnGeneralOperateTopic_mutex);
-    g_RtnGeneralOperateTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnGeneralOperateTopic_IOUser_vec.begin();
+        it != g_RtnGeneralOperateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnGeneralOperateTopic_IOUser_vec.end()) {
+        g_RtnGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnGeneralOperateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnGeneralOperateTopic_mutex);
 
     uv_async_send(&g_RtnGeneralOperateTopic_async);
@@ -8734,9 +10839,16 @@ void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnG
 
 void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedField* pRspQryNetDeviceLinked, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceLinkedTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceLinkedTopic_spi_callbackNumb: ", g_RspQryNetDeviceLinkedTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
@@ -8775,10 +10887,11 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDeviceLinked;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDeviceLinked;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceLinked) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceLinked is NULL" , g_RunningResult_File); 
@@ -8800,7 +10913,15 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceLinkedTopic_mutex);
-    g_RspQryNetDeviceLinkedTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceLinkedTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceLinkedTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceLinkedTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceLinkedTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceLinkedTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceLinkedTopic_async);
@@ -8809,9 +10930,16 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
 
 void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRtnNetDeviceLinked){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceLinkedTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDeviceLinkedTopic_spi_callbackNumb: ", g_RtnNetDeviceLinkedTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
@@ -8828,7 +10956,8 @@ void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRt
         memcpy (pNewRtnNetDeviceLinked,pRtnNetDeviceLinked, sizeof(CShfeFtdcRtnNetDeviceLinkedField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDeviceLinked;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDeviceLinked;
     if (NULL == pRtnNetDeviceLinked) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDeviceLinked is NULL" , g_RunningResult_File); 
     } else {
@@ -8846,7 +10975,15 @@ void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetDeviceLinkedTopic_mutex);
-    g_RtnNetDeviceLinkedTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceLinkedTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceLinkedTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceLinkedTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDeviceLinkedTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceLinkedTopic_mutex);
 
     uv_async_send(&g_RtnNetDeviceLinkedTopic_async);
@@ -8855,9 +10992,16 @@ void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRt
 
 void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginStatField* pRspQryTradeUserLoginStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeUserLoginStatTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeUserLoginStatTopic_spi_callbackNumb: ", g_RspQryTradeUserLoginStatTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginStatTopic: END! ******\n", g_RunningResult_File);
@@ -8896,10 +11040,11 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeUserLoginStat;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeUserLoginStat;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeUserLoginStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeUserLoginStat is NULL" , g_RunningResult_File); 
@@ -8917,7 +11062,15 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeUserLoginStatTopic_mutex);
-    g_RspQryTradeUserLoginStatTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeUserLoginStatTopic_IOUser_vec.begin();
+        it != g_RspQryTradeUserLoginStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeUserLoginStatTopic_IOUser_vec.end()) {
+        g_RspQryTradeUserLoginStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeUserLoginStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeUserLoginStatTopic_mutex);
 
     uv_async_send(&g_RspQryTradeUserLoginStatTopic_async);
@@ -8926,9 +11079,16 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
 
 void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOrderRttStatField* pRspQryTradeFrontOrderRttStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeFrontOrderRttStatTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeFrontOrderRttStatTopic_spi_callbackNumb: ", g_RspQryTradeFrontOrderRttStatTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
@@ -8967,10 +11127,11 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeFrontOrderRttStat;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeFrontOrderRttStat;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeFrontOrderRttStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeFrontOrderRttStat is NULL" , g_RunningResult_File); 
@@ -8990,7 +11151,15 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeFrontOrderRttStatTopic_mutex);
-    g_RspQryTradeFrontOrderRttStatTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.begin();
+        it != g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.end()) {
+        g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeFrontOrderRttStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeFrontOrderRttStatTopic_mutex);
 
     uv_async_send(&g_RspQryTradeFrontOrderRttStatTopic_async);
@@ -8999,9 +11168,16 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
 
 void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRttStatField* pRtnTradeFrontOrderRttStat){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeFrontOrderRttStatTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTradeFrontOrderRttStatTopic_spi_callbackNumb: ", g_RtnTradeFrontOrderRttStatTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
@@ -9018,7 +11194,8 @@ void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRtt
         memcpy (pNewRtnTradeFrontOrderRttStat,pRtnTradeFrontOrderRttStat, sizeof(CShfeFtdcRtnTradeFrontOrderRttStatField));
     }
 
-    paramArray[0] = (void*)pNewRtnTradeFrontOrderRttStat;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTradeFrontOrderRttStat;
     if (NULL == pRtnTradeFrontOrderRttStat) { 
         OutputCallbackMessage("SysUserSpi::pRtnTradeFrontOrderRttStat is NULL" , g_RunningResult_File); 
     } else {
@@ -9034,7 +11211,15 @@ void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRtt
     }
 
     uv_mutex_lock (&g_RtnTradeFrontOrderRttStatTopic_mutex);
-    g_RtnTradeFrontOrderRttStatTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.begin();
+        it != g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.end()) {
+        g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTradeFrontOrderRttStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeFrontOrderRttStatTopic_mutex);
 
     uv_async_send(&g_RtnTradeFrontOrderRttStatTopic_async);
@@ -9043,9 +11228,16 @@ void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRtt
 
 void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeOrderStatesField* pRspQryParticTradeOrderStates, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryParticTradeOrderStatesTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryParticTradeOrderStatesTopic_spi_callbackNumb: ", g_RspQryParticTradeOrderStatesTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
@@ -9084,10 +11276,11 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryParticTradeOrderStates;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryParticTradeOrderStates;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticTradeOrderStates) { 
         OutputCallbackMessage("SysUserSpi::pRspQryParticTradeOrderStates is NULL" , g_RunningResult_File); 
@@ -9114,7 +11307,15 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticTradeOrderStatesTopic_mutex);
-    g_RspQryParticTradeOrderStatesTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticTradeOrderStatesTopic_IOUser_vec.begin();
+        it != g_RspQryParticTradeOrderStatesTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticTradeOrderStatesTopic_IOUser_vec.end()) {
+        g_RspQryParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryParticTradeOrderStatesTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticTradeOrderStatesTopic_mutex);
 
     uv_async_send(&g_RspQryParticTradeOrderStatesTopic_async);
@@ -9123,9 +11324,16 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
 
 void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderStatesField* pRtnParticTradeOrderStates){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnParticTradeOrderStatesTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnParticTradeOrderStatesTopic_spi_callbackNumb: ", g_RtnParticTradeOrderStatesTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
@@ -9142,7 +11350,8 @@ void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderSt
         memcpy (pNewRtnParticTradeOrderStates,pRtnParticTradeOrderStates, sizeof(CShfeFtdcRtnParticTradeOrderStatesField));
     }
 
-    paramArray[0] = (void*)pNewRtnParticTradeOrderStates;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnParticTradeOrderStates;
     if (NULL == pRtnParticTradeOrderStates) { 
         OutputCallbackMessage("SysUserSpi::pRtnParticTradeOrderStates is NULL" , g_RunningResult_File); 
     } else {
@@ -9165,7 +11374,15 @@ void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderSt
     }
 
     uv_mutex_lock (&g_RtnParticTradeOrderStatesTopic_mutex);
-    g_RtnParticTradeOrderStatesTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticTradeOrderStatesTopic_IOUser_vec.begin();
+        it != g_RtnParticTradeOrderStatesTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticTradeOrderStatesTopic_IOUser_vec.end()) {
+        g_RtnParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnParticTradeOrderStatesTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticTradeOrderStatesTopic_mutex);
 
     uv_async_send(&g_RtnParticTradeOrderStatesTopic_async);
@@ -9174,9 +11391,16 @@ void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderSt
 
 void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQryRouterInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryRouterInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryRouterInfoTopic_spi_callbackNumb: ", g_RspQryRouterInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryRouterInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9215,10 +11439,11 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryRouterInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryRouterInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryRouterInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryRouterInfo is NULL" , g_RunningResult_File); 
@@ -9243,7 +11468,15 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryRouterInfoTopic_mutex);
-    g_RspQryRouterInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryRouterInfoTopic_IOUser_vec.begin();
+        it != g_RspQryRouterInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryRouterInfoTopic_IOUser_vec.end()) {
+        g_RspQryRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryRouterInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryRouterInfoTopic_mutex);
 
     uv_async_send(&g_RspQryRouterInfoTopic_async);
@@ -9252,9 +11485,16 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
 
 void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnRouterInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnRouterInfoTopic_spi_callbackNumb: ", g_RtnRouterInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnRouterInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9271,7 +11511,8 @@ void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInf
         memcpy (pNewRtnRouterInfo,pRtnRouterInfo, sizeof(CShfeFtdcRtnRouterInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnRouterInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnRouterInfo;
     if (NULL == pRtnRouterInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnRouterInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -9292,7 +11533,15 @@ void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInf
     }
 
     uv_mutex_lock (&g_RtnRouterInfoTopic_mutex);
-    g_RtnRouterInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnRouterInfoTopic_IOUser_vec.begin();
+        it != g_RtnRouterInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnRouterInfoTopic_IOUser_vec.end()) {
+        g_RtnRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnRouterInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnRouterInfoTopic_mutex);
 
     uv_async_send(&g_RtnRouterInfoTopic_async);
@@ -9301,9 +11550,16 @@ void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInf
 
 void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryDiskIOTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryDiskIOTopic_spi_callbackNumb: ", g_RspQryDiskIOTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryDiskIOTopic: END! ******\n", g_RunningResult_File);
@@ -9342,10 +11598,11 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryDiskIO;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryDiskIO;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDiskIO) { 
         OutputCallbackMessage("SysUserSpi::pRspQryDiskIO is NULL" , g_RunningResult_File); 
@@ -9370,7 +11627,15 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDiskIOTopic_mutex);
-    g_RspQryDiskIOTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDiskIOTopic_IOUser_vec.begin();
+        it != g_RspQryDiskIOTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDiskIOTopic_IOUser_vec.end()) {
+        g_RspQryDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryDiskIOTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDiskIOTopic_mutex);
 
     uv_async_send(&g_RspQryDiskIOTopic_async);
@@ -9379,9 +11644,16 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
 
 void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDiskIOTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnDiskIOTopic_spi_callbackNumb: ", g_RtnDiskIOTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnDiskIOTopic: END! ******\n", g_RunningResult_File);
@@ -9398,7 +11670,8 @@ void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){
         memcpy (pNewRtnDiskIO,pRtnDiskIO, sizeof(CShfeFtdcRtnDiskIOField));
     }
 
-    paramArray[0] = (void*)pNewRtnDiskIO;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnDiskIO;
     if (NULL == pRtnDiskIO) { 
         OutputCallbackMessage("SysUserSpi::pRtnDiskIO is NULL" , g_RunningResult_File); 
     } else {
@@ -9419,7 +11692,15 @@ void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){
     }
 
     uv_mutex_lock (&g_RtnDiskIOTopic_mutex);
-    g_RtnDiskIOTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDiskIOTopic_IOUser_vec.begin();
+        it != g_RtnDiskIOTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDiskIOTopic_IOUser_vec.end()) {
+        g_RtnDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnDiskIOTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDiskIOTopic_mutex);
 
     uv_async_send(&g_RtnDiskIOTopic_async);
@@ -9428,9 +11709,16 @@ void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){
 
 void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStatInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryStatInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryStatInfoTopic_spi_callbackNumb: ", g_RspQryStatInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryStatInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9469,10 +11757,11 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryStatInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryStatInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryStatInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryStatInfo is NULL" , g_RunningResult_File); 
@@ -9499,7 +11788,15 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryStatInfoTopic_mutex);
-    g_RspQryStatInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryStatInfoTopic_IOUser_vec.begin();
+        it != g_RspQryStatInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryStatInfoTopic_IOUser_vec.end()) {
+        g_RspQryStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryStatInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryStatInfoTopic_mutex);
 
     uv_async_send(&g_RspQryStatInfoTopic_async);
@@ -9508,9 +11805,16 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
 
 void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnStatInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnStatInfoTopic_spi_callbackNumb: ", g_RtnStatInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnStatInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9527,7 +11831,8 @@ void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){
         memcpy (pNewRtnStatInfo,pRtnStatInfo, sizeof(CShfeFtdcRtnStatInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnStatInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnStatInfo;
     if (NULL == pRtnStatInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnStatInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -9550,7 +11855,15 @@ void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){
     }
 
     uv_mutex_lock (&g_RtnStatInfoTopic_mutex);
-    g_RtnStatInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnStatInfoTopic_IOUser_vec.begin();
+        it != g_RtnStatInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnStatInfoTopic_IOUser_vec.end()) {
+        g_RtnStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnStatInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnStatInfoTopic_mutex);
 
     uv_async_send(&g_RtnStatInfoTopic_async);
@@ -9559,9 +11872,16 @@ void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){
 
 void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttCutLineField* pRspQryTradeOrderRttCutLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeOrderRttCutLineTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryTradeOrderRttCutLineTopic_spi_callbackNumb: ", g_RspQryTradeOrderRttCutLineTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
@@ -9600,10 +11920,11 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryTradeOrderRttCutLine;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryTradeOrderRttCutLine;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeOrderRttCutLine) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeOrderRttCutLine is NULL" , g_RunningResult_File); 
@@ -9619,7 +11940,15 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeOrderRttCutLineTopic_mutex);
-    g_RspQryTradeOrderRttCutLineTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.begin();
+        it != g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.end()) {
+        g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryTradeOrderRttCutLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeOrderRttCutLineTopic_mutex);
 
     uv_async_send(&g_RspQryTradeOrderRttCutLineTopic_async);
@@ -9628,9 +11957,16 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
 
 void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLineField* pRtnTradeOrderRttCutLine){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeOrderRttCutLineTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnTradeOrderRttCutLineTopic_spi_callbackNumb: ", g_RtnTradeOrderRttCutLineTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
@@ -9647,7 +11983,8 @@ void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLine
         memcpy (pNewRtnTradeOrderRttCutLine,pRtnTradeOrderRttCutLine, sizeof(CShfeFtdcRtnTradeOrderRttCutLineField));
     }
 
-    paramArray[0] = (void*)pNewRtnTradeOrderRttCutLine;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnTradeOrderRttCutLine;
     if (NULL == pRtnTradeOrderRttCutLine) { 
         OutputCallbackMessage("SysUserSpi::pRtnTradeOrderRttCutLine is NULL" , g_RunningResult_File); 
     } else {
@@ -9656,7 +11993,15 @@ void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLine
     }
 
     uv_mutex_lock (&g_RtnTradeOrderRttCutLineTopic_mutex);
-    g_RtnTradeOrderRttCutLineTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeOrderRttCutLineTopic_IOUser_vec.begin();
+        it != g_RtnTradeOrderRttCutLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeOrderRttCutLineTopic_IOUser_vec.end()) {
+        g_RtnTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnTradeOrderRttCutLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeOrderRttCutLineTopic_mutex);
 
     uv_async_send(&g_RtnTradeOrderRttCutLineTopic_async);
@@ -9665,9 +12010,16 @@ void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLine
 
 void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQryClientInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryClientInfoTopic_spi_callbackNumb: ", g_RspQryClientInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryClientInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9706,10 +12058,11 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryClientInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryClientInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientInfo is NULL" , g_RunningResult_File); 
@@ -9728,7 +12081,15 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientInfoTopic_mutex);
-    g_RspQryClientInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientInfoTopic_IOUser_vec.begin();
+        it != g_RspQryClientInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientInfoTopic_IOUser_vec.end()) {
+        g_RspQryClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryClientInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientInfoTopic_mutex);
 
     uv_async_send(&g_RspQryClientInfoTopic_async);
@@ -9737,9 +12098,16 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
 
 void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnClientInfoTopic_spi_callbackNumb: ", g_RtnClientInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnClientInfoTopic: END! ******\n", g_RunningResult_File);
@@ -9756,7 +12124,8 @@ void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInf
         memcpy (pNewRtnClientInfo,pRtnClientInfo, sizeof(CShfeFtdcRtnClientInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnClientInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnClientInfo;
     if (NULL == pRtnClientInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnClientInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -9771,7 +12140,15 @@ void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInf
     }
 
     uv_mutex_lock (&g_RtnClientInfoTopic_mutex);
-    g_RtnClientInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientInfoTopic_IOUser_vec.begin();
+        it != g_RtnClientInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientInfoTopic_IOUser_vec.end()) {
+        g_RtnClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnClientInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientInfoTopic_mutex);
 
     uv_async_send(&g_RtnClientInfoTopic_async);
@@ -9780,9 +12157,16 @@ void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInf
 
 void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionField* pRspQryEventDescription, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryEventDescriptionTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryEventDescriptionTopic_spi_callbackNumb: ", g_RspQryEventDescriptionTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryEventDescriptionTopic: END! ******\n", g_RunningResult_File);
@@ -9821,10 +12205,11 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryEventDescription;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryEventDescription;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryEventDescription) { 
         OutputCallbackMessage("SysUserSpi::pRspQryEventDescription is NULL" , g_RunningResult_File); 
@@ -9840,7 +12225,15 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryEventDescriptionTopic_mutex);
-    g_RspQryEventDescriptionTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryEventDescriptionTopic_IOUser_vec.begin();
+        it != g_RspQryEventDescriptionTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryEventDescriptionTopic_IOUser_vec.end()) {
+        g_RspQryEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryEventDescriptionTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryEventDescriptionTopic_mutex);
 
     uv_async_send(&g_RspQryEventDescriptionTopic_async);
@@ -9849,9 +12242,16 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
 
 void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* pRtnEventDescription){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnEventDescriptionTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnEventDescriptionTopic_spi_callbackNumb: ", g_RtnEventDescriptionTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnEventDescriptionTopic: END! ******\n", g_RunningResult_File);
@@ -9868,7 +12268,8 @@ void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* p
         memcpy (pNewRtnEventDescription,pRtnEventDescription, sizeof(CShfeFtdcRtnEventDescriptionField));
     }
 
-    paramArray[0] = (void*)pNewRtnEventDescription;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnEventDescription;
     if (NULL == pRtnEventDescription) { 
         OutputCallbackMessage("SysUserSpi::pRtnEventDescription is NULL" , g_RunningResult_File); 
     } else {
@@ -9880,7 +12281,15 @@ void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* p
     }
 
     uv_mutex_lock (&g_RtnEventDescriptionTopic_mutex);
-    g_RtnEventDescriptionTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnEventDescriptionTopic_IOUser_vec.begin();
+        it != g_RtnEventDescriptionTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnEventDescriptionTopic_IOUser_vec.end()) {
+        g_RtnEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnEventDescriptionTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnEventDescriptionTopic_mutex);
 
     uv_async_send(&g_RtnEventDescriptionTopic_async);
@@ -9889,9 +12298,16 @@ void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* p
 
 void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* pRspQryFrontUniqueID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontUniqueIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFrontUniqueIDTopic_spi_callbackNumb: ", g_RspQryFrontUniqueIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
@@ -9930,10 +12346,11 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFrontUniqueID;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFrontUniqueID;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontUniqueID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontUniqueID is NULL" , g_RunningResult_File); 
@@ -9946,7 +12363,15 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontUniqueIDTopic_mutex);
-    g_RspQryFrontUniqueIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontUniqueIDTopic_IOUser_vec.begin();
+        it != g_RspQryFrontUniqueIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontUniqueIDTopic_IOUser_vec.end()) {
+        g_RspQryFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFrontUniqueIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontUniqueIDTopic_mutex);
 
     uv_async_send(&g_RspQryFrontUniqueIDTopic_async);
@@ -9955,9 +12380,16 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
 
 void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFrontUniqueID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFrontUniqueIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFrontUniqueIDTopic_spi_callbackNumb: ", g_RtnFrontUniqueIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
@@ -9974,7 +12406,8 @@ void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFro
         memcpy (pNewRtnFrontUniqueID,pRtnFrontUniqueID, sizeof(CShfeFtdcRtnFrontUniqueIDField));
     }
 
-    paramArray[0] = (void*)pNewRtnFrontUniqueID;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFrontUniqueID;
     if (NULL == pRtnFrontUniqueID) { 
         OutputCallbackMessage("SysUserSpi::pRtnFrontUniqueID is NULL" , g_RunningResult_File); 
     } else {
@@ -9983,7 +12416,15 @@ void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFro
     }
 
     uv_mutex_lock (&g_RtnFrontUniqueIDTopic_mutex);
-    g_RtnFrontUniqueIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFrontUniqueIDTopic_IOUser_vec.begin();
+        it != g_RtnFrontUniqueIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFrontUniqueIDTopic_IOUser_vec.end()) {
+        g_RtnFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFrontUniqueIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFrontUniqueIDTopic_mutex);
 
     uv_async_send(&g_RtnFrontUniqueIDTopic_async);
@@ -9992,9 +12433,16 @@ void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFro
 
 void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLinkAddrChangeField* pRspQryNetPartyLinkAddrChange, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkAddrChangeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPartyLinkAddrChangeTopic_spi_callbackNumb: ", g_RspQryNetPartyLinkAddrChangeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
@@ -10033,10 +12481,11 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPartyLinkAddrChange;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkAddrChange;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkAddrChange) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkAddrChange is NULL" , g_RunningResult_File); 
@@ -10055,7 +12504,15 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkAddrChangeTopic_mutex);
-    g_RspQryNetPartyLinkAddrChangeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPartyLinkAddrChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkAddrChangeTopic_mutex);
 
     uv_async_send(&g_RspQryNetPartyLinkAddrChangeTopic_async);
@@ -10064,9 +12521,16 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
 
 void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrChangeField* pRtnNetPartyLinkAddrChange){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkAddrChangeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPartyLinkAddrChangeTopic_spi_callbackNumb: ", g_RtnNetPartyLinkAddrChangeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
@@ -10083,7 +12547,8 @@ void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrCh
         memcpy (pNewRtnNetPartyLinkAddrChange,pRtnNetPartyLinkAddrChange, sizeof(CShfeFtdcRtnNetPartyLinkAddrChangeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPartyLinkAddrChange;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPartyLinkAddrChange;
     if (NULL == pRtnNetPartyLinkAddrChange) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPartyLinkAddrChange is NULL" , g_RunningResult_File); 
     } else {
@@ -10098,7 +12563,15 @@ void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrCh
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkAddrChangeTopic_mutex);
-    g_RtnNetPartyLinkAddrChangeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPartyLinkAddrChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkAddrChangeTopic_mutex);
 
     uv_async_send(&g_RtnNetPartyLinkAddrChangeTopic_async);
@@ -10107,9 +12580,16 @@ void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrCh
 
 void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLinkInfoField* pRspQryNetDelPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDelPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDelPartyLinkInfoTopic_spi_callbackNumb: ", g_RspQryNetDelPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -10148,10 +12628,11 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDelPartyLinkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDelPartyLinkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDelPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDelPartyLinkInfo is NULL" , g_RunningResult_File); 
@@ -10191,7 +12672,15 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDelPartyLinkInfoTopic_mutex);
-    g_RspQryNetDelPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDelPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDelPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetDelPartyLinkInfoTopic_async);
@@ -10200,9 +12689,16 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
 
 void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoField* pRtnNetDelPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDelPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDelPartyLinkInfoTopic_spi_callbackNumb: ", g_RtnNetDelPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -10219,7 +12715,8 @@ void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoFi
         memcpy (pNewRtnNetDelPartyLinkInfo,pRtnNetDelPartyLinkInfo, sizeof(CShfeFtdcRtnNetDelPartyLinkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDelPartyLinkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDelPartyLinkInfo;
     if (NULL == pRtnNetDelPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDelPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -10255,7 +12752,15 @@ void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoFi
     }
 
     uv_mutex_lock (&g_RtnNetDelPartyLinkInfoTopic_mutex);
-    g_RtnNetDelPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDelPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDelPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetDelPartyLinkInfoTopic_async);
@@ -10264,9 +12769,16 @@ void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoFi
 
 void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField* pRspQryPerformanceTop, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPerformanceTopTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryPerformanceTopTopic_spi_callbackNumb: ", g_RspQryPerformanceTopTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryPerformanceTopTopic: END! ******\n", g_RunningResult_File);
@@ -10305,10 +12817,11 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryPerformanceTop;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryPerformanceTop;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPerformanceTop) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPerformanceTop is NULL" , g_RunningResult_File); 
@@ -10330,7 +12843,15 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPerformanceTopTopic_mutex);
-    g_RspQryPerformanceTopTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPerformanceTopTopic_IOUser_vec.begin();
+        it != g_RspQryPerformanceTopTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPerformanceTopTopic_IOUser_vec.end()) {
+        g_RspQryPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryPerformanceTopTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPerformanceTopTopic_mutex);
 
     uv_async_send(&g_RspQryPerformanceTopTopic_async);
@@ -10339,9 +12860,16 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
 
 void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnPerformanceTop){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPerformanceTopTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnPerformanceTopTopic_spi_callbackNumb: ", g_RtnPerformanceTopTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnPerformanceTopTopic: END! ******\n", g_RunningResult_File);
@@ -10358,7 +12886,8 @@ void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnP
         memcpy (pNewRtnPerformanceTop,pRtnPerformanceTop, sizeof(CShfeFtdcRtnPerformanceTopField));
     }
 
-    paramArray[0] = (void*)pNewRtnPerformanceTop;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnPerformanceTop;
     if (NULL == pRtnPerformanceTop) { 
         OutputCallbackMessage("SysUserSpi::pRtnPerformanceTop is NULL" , g_RunningResult_File); 
     } else {
@@ -10376,7 +12905,15 @@ void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnP
     }
 
     uv_mutex_lock (&g_RtnPerformanceTopTopic_mutex);
-    g_RtnPerformanceTopTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPerformanceTopTopic_IOUser_vec.begin();
+        it != g_RtnPerformanceTopTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPerformanceTopTopic_IOUser_vec.end()) {
+        g_RtnPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnPerformanceTopTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPerformanceTopTopic_mutex);
 
     uv_async_send(&g_RtnPerformanceTopTopic_async);
@@ -10385,9 +12922,16 @@ void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnP
 
 void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusField* pRspQryInstrumentStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInstrumentStatusTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryInstrumentStatusTopic_spi_callbackNumb: ", g_RspQryInstrumentStatusTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
@@ -10426,10 +12970,11 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryInstrumentStatus;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryInstrumentStatus;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInstrumentStatus) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInstrumentStatus is NULL" , g_RunningResult_File); 
@@ -10447,7 +12992,15 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInstrumentStatusTopic_mutex);
-    g_RspQryInstrumentStatusTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInstrumentStatusTopic_IOUser_vec.begin();
+        it != g_RspQryInstrumentStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInstrumentStatusTopic_IOUser_vec.end()) {
+        g_RspQryInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryInstrumentStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInstrumentStatusTopic_mutex);
 
     uv_async_send(&g_RspQryInstrumentStatusTopic_async);
@@ -10456,9 +13009,16 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
 
 void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* pRtnInstrumentStatus){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInstrumentStatusTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnInstrumentStatusTopic_spi_callbackNumb: ", g_RtnInstrumentStatusTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
@@ -10475,7 +13035,8 @@ void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* p
         memcpy (pNewRtnInstrumentStatus,pRtnInstrumentStatus, sizeof(CShfeFtdcRtnInstrumentStatusField));
     }
 
-    paramArray[0] = (void*)pNewRtnInstrumentStatus;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnInstrumentStatus;
     if (NULL == pRtnInstrumentStatus) { 
         OutputCallbackMessage("SysUserSpi::pRtnInstrumentStatus is NULL" , g_RunningResult_File); 
     } else {
@@ -10489,7 +13050,15 @@ void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* p
     }
 
     uv_mutex_lock (&g_RtnInstrumentStatusTopic_mutex);
-    g_RtnInstrumentStatusTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInstrumentStatusTopic_IOUser_vec.begin();
+        it != g_RtnInstrumentStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInstrumentStatusTopic_IOUser_vec.end()) {
+        g_RtnInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnInstrumentStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInstrumentStatusTopic_mutex);
 
     uv_async_send(&g_RtnInstrumentStatusTopic_async);
@@ -10498,9 +13067,16 @@ void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* p
 
 void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingSegmentAttrField* pRspQryCurrTradingSegmentAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryCurrTradingSegmentAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryCurrTradingSegmentAttrTopic_spi_callbackNumb: ", g_RspQryCurrTradingSegmentAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
@@ -10539,10 +13115,11 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryCurrTradingSegmentAttr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryCurrTradingSegmentAttr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryCurrTradingSegmentAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryCurrTradingSegmentAttr is NULL" , g_RunningResult_File); 
@@ -10560,7 +13137,15 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryCurrTradingSegmentAttrTopic_mutex);
-    g_RspQryCurrTradingSegmentAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.begin();
+        it != g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.end()) {
+        g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryCurrTradingSegmentAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryCurrTradingSegmentAttrTopic_mutex);
 
     uv_async_send(&g_RspQryCurrTradingSegmentAttrTopic_async);
@@ -10569,9 +13154,16 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
 
 void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegmentAttrField* pRtnCurrTradingSegmentAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnCurrTradingSegmentAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnCurrTradingSegmentAttrTopic_spi_callbackNumb: ", g_RtnCurrTradingSegmentAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
@@ -10588,7 +13180,8 @@ void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegment
         memcpy (pNewRtnCurrTradingSegmentAttr,pRtnCurrTradingSegmentAttr, sizeof(CShfeFtdcRtnCurrTradingSegmentAttrField));
     }
 
-    paramArray[0] = (void*)pNewRtnCurrTradingSegmentAttr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnCurrTradingSegmentAttr;
     if (NULL == pRtnCurrTradingSegmentAttr) { 
         OutputCallbackMessage("SysUserSpi::pRtnCurrTradingSegmentAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -10602,7 +13195,15 @@ void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegment
     }
 
     uv_mutex_lock (&g_RtnCurrTradingSegmentAttrTopic_mutex);
-    g_RtnCurrTradingSegmentAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.begin();
+        it != g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.end()) {
+        g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnCurrTradingSegmentAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnCurrTradingSegmentAttrTopic_mutex);
 
     uv_async_send(&g_RtnCurrTradingSegmentAttrTopic_async);
@@ -10611,9 +13212,16 @@ void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegment
 
 void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetAreaTopic_spi_callbackNumb: ", g_RspQryNetAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetAreaTopic: END! ******\n", g_RunningResult_File);
@@ -10652,10 +13260,11 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetArea;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetArea;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetArea) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetArea is NULL" , g_RunningResult_File); 
@@ -10670,7 +13279,15 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetAreaTopic_mutex);
-    g_RspQryNetAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetAreaTopic_mutex);
 
     uv_async_send(&g_RspQryNetAreaTopic_async);
@@ -10679,9 +13296,16 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
 
 void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetAreaTopic_spi_callbackNumb: ", g_RtnNetAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetAreaTopic: END! ******\n", g_RunningResult_File);
@@ -10698,7 +13322,8 @@ void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){
         memcpy (pNewRtnNetArea,pRtnNetArea, sizeof(CShfeFtdcRtnNetAreaField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetArea;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetArea;
     if (NULL == pRtnNetArea) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetArea is NULL" , g_RunningResult_File); 
     } else {
@@ -10709,7 +13334,15 @@ void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){
     }
 
     uv_mutex_lock (&g_RtnNetAreaTopic_mutex);
-    g_RtnNetAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetAreaTopic_IOUser_vec.end()) {
+        g_RtnNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetAreaTopic_mutex);
 
     uv_async_send(&g_RtnNetAreaTopic_async);
@@ -10718,9 +13351,16 @@ void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){
 
 void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQryNetSubArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetSubAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetSubAreaTopic_spi_callbackNumb: ", g_RspQryNetSubAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaTopic: END! ******\n", g_RunningResult_File);
@@ -10759,10 +13399,11 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetSubArea;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetSubArea;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubArea) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetSubArea is NULL" , g_RunningResult_File); 
@@ -10778,7 +13419,15 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubAreaTopic_mutex);
-    g_RspQryNetSubAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetSubAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubAreaTopic_mutex);
 
     uv_async_send(&g_RspQryNetSubAreaTopic_async);
@@ -10787,9 +13436,16 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
 
 void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubArea){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetSubAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetSubAreaTopic_spi_callbackNumb: ", g_RtnNetSubAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaTopic: END! ******\n", g_RunningResult_File);
@@ -10806,7 +13462,8 @@ void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubAre
         memcpy (pNewRtnNetSubArea,pRtnNetSubArea, sizeof(CShfeFtdcRtnNetSubAreaField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetSubArea;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetSubArea;
     if (NULL == pRtnNetSubArea) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetSubArea is NULL" , g_RunningResult_File); 
     } else {
@@ -10818,7 +13475,15 @@ void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubAre
     }
 
     uv_mutex_lock (&g_RtnNetSubAreaTopic_mutex);
-    g_RtnNetSubAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetSubAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubAreaTopic_IOUser_vec.end()) {
+        g_RtnNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetSubAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubAreaTopic_mutex);
 
     uv_async_send(&g_RtnNetSubAreaTopic_async);
@@ -10827,9 +13492,16 @@ void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubAre
 
 void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRspQryNetSubAreaIP, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetSubAreaIPTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetSubAreaIPTopic_spi_callbackNumb: ", g_RspQryNetSubAreaIPTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
@@ -10868,10 +13540,11 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetSubAreaIP;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetSubAreaIP;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubAreaIP) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetSubAreaIP is NULL" , g_RunningResult_File); 
@@ -10887,7 +13560,15 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubAreaIPTopic_mutex);
-    g_RspQryNetSubAreaIPTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubAreaIPTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubAreaIPTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubAreaIPTopic_IOUser_vec.end()) {
+        g_RspQryNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetSubAreaIPTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubAreaIPTopic_mutex);
 
     uv_async_send(&g_RspQryNetSubAreaIPTopic_async);
@@ -10896,9 +13577,16 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
 
 void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSubAreaIP){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetSubAreaIPTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetSubAreaIPTopic_spi_callbackNumb: ", g_RtnNetSubAreaIPTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
@@ -10915,7 +13603,8 @@ void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSu
         memcpy (pNewRtnNetSubAreaIP,pRtnNetSubAreaIP, sizeof(CShfeFtdcRtnNetSubAreaIPField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetSubAreaIP;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetSubAreaIP;
     if (NULL == pRtnNetSubAreaIP) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetSubAreaIP is NULL" , g_RunningResult_File); 
     } else {
@@ -10927,7 +13616,15 @@ void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSu
     }
 
     uv_mutex_lock (&g_RtnNetSubAreaIPTopic_mutex);
-    g_RtnNetSubAreaIPTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubAreaIPTopic_IOUser_vec.begin();
+        it != g_RtnNetSubAreaIPTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubAreaIPTopic_IOUser_vec.end()) {
+        g_RtnNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetSubAreaIPTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubAreaIPTopic_mutex);
 
     uv_async_send(&g_RtnNetSubAreaIPTopic_async);
@@ -10936,9 +13633,16 @@ void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSu
 
 void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNetDevice, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceTopic_spi_callbackNumb: ", g_RspQryNetDeviceTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTopic: END! ******\n", g_RunningResult_File);
@@ -10977,10 +13681,11 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDevice;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDevice;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDevice) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDevice is NULL" , g_RunningResult_File); 
@@ -11024,7 +13729,15 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceTopic_mutex);
-    g_RspQryNetDeviceTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceTopic_async);
@@ -11033,9 +13746,16 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
 
 void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDeviceTopic_spi_callbackNumb: ", g_RtnNetDeviceTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTopic: END! ******\n", g_RunningResult_File);
@@ -11052,7 +13772,8 @@ void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){
         memcpy (pNewRtnNetDevice,pRtnNetDevice, sizeof(CShfeFtdcRtnNetDeviceField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDevice;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDevice;
     if (NULL == pRtnNetDevice) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDevice is NULL" , g_RunningResult_File); 
     } else {
@@ -11092,7 +13813,15 @@ void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){
     }
 
     uv_mutex_lock (&g_RtnNetDeviceTopic_mutex);
-    g_RtnNetDeviceTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDeviceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceTopic_mutex);
 
     uv_async_send(&g_RtnNetDeviceTopic_async);
@@ -11101,9 +13830,16 @@ void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){
 
 void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectField* pRspQryNetDeviceDetect, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceDetectTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceDetectTopic_spi_callbackNumb: ", g_RspQryNetDeviceDetectTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceDetectTopic: END! ******\n", g_RunningResult_File);
@@ -11142,10 +13878,11 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDeviceDetect;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDeviceDetect;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceDetect) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceDetect is NULL" , g_RunningResult_File); 
@@ -11160,7 +13897,15 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceDetectTopic_mutex);
-    g_RspQryNetDeviceDetectTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceDetectTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceDetectTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceDetectTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceDetectTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceDetectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceDetectTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceDetectTopic_async);
@@ -11169,9 +13914,16 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
 
 void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQryNetBuilding, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBuildingTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetBuildingTopic_spi_callbackNumb: ", g_RspQryNetBuildingTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetBuildingTopic: END! ******\n", g_RunningResult_File);
@@ -11210,10 +13962,11 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetBuilding;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetBuilding;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBuilding) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBuilding is NULL" , g_RunningResult_File); 
@@ -11228,7 +13981,15 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBuildingTopic_mutex);
-    g_RspQryNetBuildingTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBuildingTopic_IOUser_vec.begin();
+        it != g_RspQryNetBuildingTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBuildingTopic_IOUser_vec.end()) {
+        g_RspQryNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetBuildingTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBuildingTopic_mutex);
 
     uv_async_send(&g_RspQryNetBuildingTopic_async);
@@ -11237,9 +13998,16 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
 
 void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuilding){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBuildingTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetBuildingTopic_spi_callbackNumb: ", g_RtnNetBuildingTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetBuildingTopic: END! ******\n", g_RunningResult_File);
@@ -11256,7 +14024,8 @@ void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuil
         memcpy (pNewRtnNetBuilding,pRtnNetBuilding, sizeof(CShfeFtdcRtnNetBuildingField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetBuilding;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetBuilding;
     if (NULL == pRtnNetBuilding) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetBuilding is NULL" , g_RunningResult_File); 
     } else {
@@ -11267,7 +14036,15 @@ void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuil
     }
 
     uv_mutex_lock (&g_RtnNetBuildingTopic_mutex);
-    g_RtnNetBuildingTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBuildingTopic_IOUser_vec.begin();
+        it != g_RtnNetBuildingTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBuildingTopic_IOUser_vec.end()) {
+        g_RtnNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetBuildingTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBuildingTopic_mutex);
 
     uv_async_send(&g_RtnNetBuildingTopic_async);
@@ -11276,9 +14053,16 @@ void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuil
 
 void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoom, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetRoomTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetRoomTopic_spi_callbackNumb: ", g_RspQryNetRoomTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetRoomTopic: END! ******\n", g_RunningResult_File);
@@ -11317,10 +14101,11 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetRoom;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetRoom;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetRoom) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetRoom is NULL" , g_RunningResult_File); 
@@ -11336,7 +14121,15 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetRoomTopic_mutex);
-    g_RspQryNetRoomTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetRoomTopic_IOUser_vec.begin();
+        it != g_RspQryNetRoomTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetRoomTopic_IOUser_vec.end()) {
+        g_RspQryNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetRoomTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetRoomTopic_mutex);
 
     uv_async_send(&g_RspQryNetRoomTopic_async);
@@ -11345,9 +14138,16 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
 
 void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetRoomTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetRoomTopic_spi_callbackNumb: ", g_RtnNetRoomTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetRoomTopic: END! ******\n", g_RunningResult_File);
@@ -11364,7 +14164,8 @@ void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){
         memcpy (pNewRtnNetRoom,pRtnNetRoom, sizeof(CShfeFtdcRtnNetRoomField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetRoom;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetRoom;
     if (NULL == pRtnNetRoom) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetRoom is NULL" , g_RunningResult_File); 
     } else {
@@ -11376,7 +14177,15 @@ void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){
     }
 
     uv_mutex_lock (&g_RtnNetRoomTopic_mutex);
-    g_RtnNetRoomTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetRoomTopic_IOUser_vec.begin();
+        it != g_RtnNetRoomTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetRoomTopic_IOUser_vec.end()) {
+        g_RtnNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetRoomTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetRoomTopic_mutex);
 
     uv_async_send(&g_RtnNetRoomTopic_async);
@@ -11385,9 +14194,16 @@ void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){
 
 void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQryNetCabinets, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCabinetsTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetCabinetsTopic_spi_callbackNumb: ", g_RspQryNetCabinetsTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetCabinetsTopic: END! ******\n", g_RunningResult_File);
@@ -11426,10 +14242,11 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetCabinets;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetCabinets;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCabinets) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCabinets is NULL" , g_RunningResult_File); 
@@ -11447,7 +14264,15 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCabinetsTopic_mutex);
-    g_RspQryNetCabinetsTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCabinetsTopic_IOUser_vec.begin();
+        it != g_RspQryNetCabinetsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCabinetsTopic_IOUser_vec.end()) {
+        g_RspQryNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetCabinetsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCabinetsTopic_mutex);
 
     uv_async_send(&g_RspQryNetCabinetsTopic_async);
@@ -11456,9 +14281,16 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
 
 void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabinets){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCabinetsTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetCabinetsTopic_spi_callbackNumb: ", g_RtnNetCabinetsTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetCabinetsTopic: END! ******\n", g_RunningResult_File);
@@ -11475,7 +14307,8 @@ void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabi
         memcpy (pNewRtnNetCabinets,pRtnNetCabinets, sizeof(CShfeFtdcRtnNetCabinetsField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetCabinets;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetCabinets;
     if (NULL == pRtnNetCabinets) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetCabinets is NULL" , g_RunningResult_File); 
     } else {
@@ -11489,7 +14322,15 @@ void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabi
     }
 
     uv_mutex_lock (&g_RtnNetCabinetsTopic_mutex);
-    g_RtnNetCabinetsTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCabinetsTopic_IOUser_vec.begin();
+        it != g_RtnNetCabinetsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCabinetsTopic_IOUser_vec.end()) {
+        g_RtnNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetCabinetsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCabinetsTopic_mutex);
 
     uv_async_send(&g_RtnNetCabinetsTopic_async);
@@ -11498,9 +14339,16 @@ void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabi
 
 void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetOIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetOIDTopic_spi_callbackNumb: ", g_RspQryNetOIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetOIDTopic: END! ******\n", g_RunningResult_File);
@@ -11539,10 +14387,11 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetOID;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetOID;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetOID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetOID is NULL" , g_RunningResult_File); 
@@ -11562,7 +14411,15 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetOIDTopic_mutex);
-    g_RspQryNetOIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetOIDTopic_IOUser_vec.begin();
+        it != g_RspQryNetOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetOIDTopic_IOUser_vec.end()) {
+        g_RspQryNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetOIDTopic_mutex);
 
     uv_async_send(&g_RspQryNetOIDTopic_async);
@@ -11571,9 +14428,16 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
 
 void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetOIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetOIDTopic_spi_callbackNumb: ", g_RtnNetOIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetOIDTopic: END! ******\n", g_RunningResult_File);
@@ -11590,7 +14454,8 @@ void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){
         memcpy (pNewRtnNetOID,pRtnNetOID, sizeof(CShfeFtdcRtnNetOIDField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetOID;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetOID;
     if (NULL == pRtnNetOID) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetOID is NULL" , g_RunningResult_File); 
     } else {
@@ -11606,7 +14471,15 @@ void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){
     }
 
     uv_mutex_lock (&g_RtnNetOIDTopic_mutex);
-    g_RtnNetOIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetOIDTopic_IOUser_vec.begin();
+        it != g_RtnNetOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetOIDTopic_IOUser_vec.end()) {
+        g_RtnNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetOIDTopic_mutex);
 
     uv_async_send(&g_RtnNetOIDTopic_async);
@@ -11615,9 +14488,16 @@ void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){
 
 void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* pRspQryNetTimePolicy, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetTimePolicyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetTimePolicyTopic_spi_callbackNumb: ", g_RspQryNetTimePolicyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
@@ -11656,10 +14536,11 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetTimePolicy;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetTimePolicy;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetTimePolicy) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetTimePolicy is NULL" , g_RunningResult_File); 
@@ -11679,7 +14560,15 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetTimePolicyTopic_mutex);
-    g_RspQryNetTimePolicyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetTimePolicyTopic_IOUser_vec.begin();
+        it != g_RspQryNetTimePolicyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetTimePolicyTopic_IOUser_vec.end()) {
+        g_RspQryNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetTimePolicyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetTimePolicyTopic_mutex);
 
     uv_async_send(&g_RspQryNetTimePolicyTopic_async);
@@ -11688,9 +14577,16 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
 
 void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNetTimePolicy){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetTimePolicyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetTimePolicyTopic_spi_callbackNumb: ", g_RtnNetTimePolicyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
@@ -11707,7 +14603,8 @@ void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNet
         memcpy (pNewRtnNetTimePolicy,pRtnNetTimePolicy, sizeof(CShfeFtdcRtnNetTimePolicyField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetTimePolicy;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetTimePolicy;
     if (NULL == pRtnNetTimePolicy) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetTimePolicy is NULL" , g_RunningResult_File); 
     } else {
@@ -11723,7 +14620,15 @@ void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetTimePolicyTopic_mutex);
-    g_RtnNetTimePolicyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetTimePolicyTopic_IOUser_vec.begin();
+        it != g_RtnNetTimePolicyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetTimePolicyTopic_IOUser_vec.end()) {
+        g_RtnNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetTimePolicyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetTimePolicyTopic_mutex);
 
     uv_async_send(&g_RtnNetTimePolicyTopic_async);
@@ -11732,9 +14637,16 @@ void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNet
 
 void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* pRspQryNetGatherTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetGatherTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetGatherTaskTopic_spi_callbackNumb: ", g_RspQryNetGatherTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
@@ -11773,10 +14685,11 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetGatherTask;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetGatherTask;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetGatherTask) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetGatherTask is NULL" , g_RunningResult_File); 
@@ -11794,7 +14707,15 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetGatherTaskTopic_mutex);
-    g_RspQryNetGatherTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetGatherTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetGatherTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetGatherTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetGatherTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetGatherTaskTopic_mutex);
 
     uv_async_send(&g_RspQryNetGatherTaskTopic_async);
@@ -11803,9 +14724,16 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
 
 void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNetGatherTask){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetGatherTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetGatherTaskTopic_spi_callbackNumb: ", g_RtnNetGatherTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
@@ -11822,7 +14750,8 @@ void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNet
         memcpy (pNewRtnNetGatherTask,pRtnNetGatherTask, sizeof(CShfeFtdcRtnNetGatherTaskField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetGatherTask;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetGatherTask;
     if (NULL == pRtnNetGatherTask) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetGatherTask is NULL" , g_RunningResult_File); 
     } else {
@@ -11836,7 +14765,15 @@ void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetGatherTaskTopic_mutex);
-    g_RtnNetGatherTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetGatherTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetGatherTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetGatherTaskTopic_IOUser_vec.end()) {
+        g_RtnNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetGatherTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetGatherTaskTopic_mutex);
 
     uv_async_send(&g_RtnNetGatherTaskTopic_async);
@@ -11845,9 +14782,16 @@ void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNet
 
 void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRspQryNetDeviceChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceChgTopic_spi_callbackNumb: ", g_RspQryNetDeviceChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
@@ -11886,10 +14830,11 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDeviceChg;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDeviceChg;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceChg is NULL" , g_RunningResult_File); 
@@ -11904,7 +14849,15 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceChgTopic_mutex);
-    g_RspQryNetDeviceChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceChgTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceChgTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceChgTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceChgTopic_async);
@@ -11913,9 +14866,16 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
 
 void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDeviceChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceChgTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDeviceChgTopic_spi_callbackNumb: ", g_RtnNetDeviceChgTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
@@ -11932,7 +14892,8 @@ void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDe
         memcpy (pNewRtnNetDeviceChg,pRtnNetDeviceChg, sizeof(CShfeFtdcRtnNetDeviceChgField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDeviceChg;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDeviceChg;
     if (NULL == pRtnNetDeviceChg) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDeviceChg is NULL" , g_RunningResult_File); 
     } else {
@@ -11943,7 +14904,15 @@ void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDe
     }
 
     uv_mutex_lock (&g_RtnNetDeviceChgTopic_mutex);
-    g_RtnNetDeviceChgTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceChgTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceChgTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDeviceChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceChgTopic_mutex);
 
     uv_async_send(&g_RtnNetDeviceChgTopic_async);
@@ -11952,9 +14921,16 @@ void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDe
 
 void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* pRspQryNetDeviceType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceTypeTopic_spi_callbackNumb: ", g_RspQryNetDeviceTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
@@ -11993,10 +14969,11 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDeviceType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDeviceType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceType is NULL" , g_RunningResult_File); 
@@ -12011,7 +14988,15 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceTypeTopic_mutex);
-    g_RspQryNetDeviceTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceTypeTopic_async);
@@ -12020,9 +15005,16 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
 
 void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNetDeviceType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDeviceTypeTopic_spi_callbackNumb: ", g_RtnNetDeviceTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
@@ -12039,7 +15031,8 @@ void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNet
         memcpy (pNewRtnNetDeviceType,pRtnNetDeviceType, sizeof(CShfeFtdcRtnNetDeviceTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDeviceType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDeviceType;
     if (NULL == pRtnNetDeviceType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDeviceType is NULL" , g_RunningResult_File); 
     } else {
@@ -12050,7 +15043,15 @@ void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetDeviceTypeTopic_mutex);
-    g_RtnNetDeviceTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceTypeTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDeviceTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetDeviceTypeTopic_async);
@@ -12059,9 +15060,16 @@ void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNet
 
 void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategoryField* pRspQryNetDeviceCategory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceCategoryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDeviceCategoryTopic_spi_callbackNumb: ", g_RspQryNetDeviceCategoryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
@@ -12100,10 +15108,11 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDeviceCategory;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDeviceCategory;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceCategory) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceCategory is NULL" , g_RunningResult_File); 
@@ -12118,7 +15127,15 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceCategoryTopic_mutex);
-    g_RspQryNetDeviceCategoryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceCategoryTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceCategoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceCategoryTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDeviceCategoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceCategoryTopic_mutex);
 
     uv_async_send(&g_RspQryNetDeviceCategoryTopic_async);
@@ -12127,9 +15144,16 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
 
 void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField* pRtnNetDeviceCategory){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceCategoryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDeviceCategoryTopic_spi_callbackNumb: ", g_RtnNetDeviceCategoryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
@@ -12146,7 +15170,8 @@ void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField*
         memcpy (pNewRtnNetDeviceCategory,pRtnNetDeviceCategory, sizeof(CShfeFtdcRtnNetDeviceCategoryField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDeviceCategory;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDeviceCategory;
     if (NULL == pRtnNetDeviceCategory) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDeviceCategory is NULL" , g_RunningResult_File); 
     } else {
@@ -12157,7 +15182,15 @@ void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField*
     }
 
     uv_mutex_lock (&g_RtnNetDeviceCategoryTopic_mutex);
-    g_RtnNetDeviceCategoryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceCategoryTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceCategoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceCategoryTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDeviceCategoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceCategoryTopic_mutex);
 
     uv_async_send(&g_RtnNetDeviceCategoryTopic_async);
@@ -12166,9 +15199,16 @@ void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField*
 
 void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField* pRspQryNetManufactory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetManufactoryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetManufactoryTopic_spi_callbackNumb: ", g_RspQryNetManufactoryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetManufactoryTopic: END! ******\n", g_RunningResult_File);
@@ -12207,10 +15247,11 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetManufactory;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetManufactory;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetManufactory) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetManufactory is NULL" , g_RunningResult_File); 
@@ -12225,7 +15266,15 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetManufactoryTopic_mutex);
-    g_RspQryNetManufactoryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetManufactoryTopic_IOUser_vec.begin();
+        it != g_RspQryNetManufactoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetManufactoryTopic_IOUser_vec.end()) {
+        g_RspQryNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetManufactoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetManufactoryTopic_mutex);
 
     uv_async_send(&g_RspQryNetManufactoryTopic_async);
@@ -12234,9 +15283,16 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
 
 void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnNetManufactory){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetManufactoryTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetManufactoryTopic_spi_callbackNumb: ", g_RtnNetManufactoryTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetManufactoryTopic: END! ******\n", g_RunningResult_File);
@@ -12253,7 +15309,8 @@ void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnN
         memcpy (pNewRtnNetManufactory,pRtnNetManufactory, sizeof(CShfeFtdcRtnNetManufactoryField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetManufactory;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetManufactory;
     if (NULL == pRtnNetManufactory) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetManufactory is NULL" , g_RunningResult_File); 
     } else {
@@ -12264,7 +15321,15 @@ void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetManufactoryTopic_mutex);
-    g_RtnNetManufactoryTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetManufactoryTopic_IOUser_vec.begin();
+        it != g_RtnNetManufactoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetManufactoryTopic_IOUser_vec.end()) {
+        g_RtnNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetManufactoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetManufactoryTopic_mutex);
 
     uv_async_send(&g_RtnNetManufactoryTopic_async);
@@ -12273,9 +15338,16 @@ void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnN
 
 void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRspQryNetCommunity, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCommunityTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetCommunityTopic_spi_callbackNumb: ", g_RspQryNetCommunityTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetCommunityTopic: END! ******\n", g_RunningResult_File);
@@ -12314,10 +15386,11 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetCommunity;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetCommunity;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCommunity) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCommunity is NULL" , g_RunningResult_File); 
@@ -12332,7 +15405,15 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCommunityTopic_mutex);
-    g_RspQryNetCommunityTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCommunityTopic_IOUser_vec.begin();
+        it != g_RspQryNetCommunityTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCommunityTopic_IOUser_vec.end()) {
+        g_RspQryNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetCommunityTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCommunityTopic_mutex);
 
     uv_async_send(&g_RspQryNetCommunityTopic_async);
@@ -12341,9 +15422,16 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
 
 void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCommunity){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCommunityTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetCommunityTopic_spi_callbackNumb: ", g_RtnNetCommunityTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetCommunityTopic: END! ******\n", g_RunningResult_File);
@@ -12360,7 +15448,8 @@ void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCo
         memcpy (pNewRtnNetCommunity,pRtnNetCommunity, sizeof(CShfeFtdcRtnNetCommunityField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetCommunity;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetCommunity;
     if (NULL == pRtnNetCommunity) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetCommunity is NULL" , g_RunningResult_File); 
     } else {
@@ -12371,7 +15460,15 @@ void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCo
     }
 
     uv_mutex_lock (&g_RtnNetCommunityTopic_mutex);
-    g_RtnNetCommunityTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCommunityTopic_IOUser_vec.begin();
+        it != g_RtnNetCommunityTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCommunityTopic_IOUser_vec.end()) {
+        g_RtnNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetCommunityTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCommunityTopic_mutex);
 
     uv_async_send(&g_RtnNetCommunityTopic_async);
@@ -12380,9 +15477,16 @@ void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCo
 
 void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQryNetPortType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPortTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPortTypeTopic_spi_callbackNumb: ", g_RspQryNetPortTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPortTypeTopic: END! ******\n", g_RunningResult_File);
@@ -12421,10 +15525,11 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPortType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPortType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPortType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPortType is NULL" , g_RunningResult_File); 
@@ -12440,7 +15545,15 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPortTypeTopic_mutex);
-    g_RspQryNetPortTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPortTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetPortTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPortTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPortTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPortTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetPortTypeTopic_async);
@@ -12449,9 +15562,16 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
 
 void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPortType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPortTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPortTypeTopic_spi_callbackNumb: ", g_RtnNetPortTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPortTypeTopic: END! ******\n", g_RunningResult_File);
@@ -12468,7 +15588,8 @@ void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPort
         memcpy (pNewRtnNetPortType,pRtnNetPortType, sizeof(CShfeFtdcRtnNetPortTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPortType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPortType;
     if (NULL == pRtnNetPortType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPortType is NULL" , g_RunningResult_File); 
     } else {
@@ -12480,7 +15601,15 @@ void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPort
     }
 
     uv_mutex_lock (&g_RtnNetPortTypeTopic_mutex);
-    g_RtnNetPortTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPortTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetPortTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPortTypeTopic_IOUser_vec.end()) {
+        g_RtnNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPortTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPortTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetPortTypeTopic_async);
@@ -12489,9 +15618,16 @@ void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPort
 
 void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpotField* pRspQryNetPartAccessSpot, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartAccessSpotTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPartAccessSpotTopic_spi_callbackNumb: ", g_RspQryNetPartAccessSpotTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
@@ -12530,10 +15666,11 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPartAccessSpot;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPartAccessSpot;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartAccessSpot) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartAccessSpot is NULL" , g_RunningResult_File); 
@@ -12548,7 +15685,15 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartAccessSpotTopic_mutex);
-    g_RspQryNetPartAccessSpotTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartAccessSpotTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartAccessSpotTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartAccessSpotTopic_IOUser_vec.end()) {
+        g_RspQryNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPartAccessSpotTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartAccessSpotTopic_mutex);
 
     uv_async_send(&g_RspQryNetPartAccessSpotTopic_async);
@@ -12557,9 +15702,16 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
 
 void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField* pRtnNetPartAccessSpot){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartAccessSpotTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPartAccessSpotTopic_spi_callbackNumb: ", g_RtnNetPartAccessSpotTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
@@ -12576,7 +15728,8 @@ void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField*
         memcpy (pNewRtnNetPartAccessSpot,pRtnNetPartAccessSpot, sizeof(CShfeFtdcRtnNetPartAccessSpotField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPartAccessSpot;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPartAccessSpot;
     if (NULL == pRtnNetPartAccessSpot) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPartAccessSpot is NULL" , g_RunningResult_File); 
     } else {
@@ -12587,7 +15740,15 @@ void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField*
     }
 
     uv_mutex_lock (&g_RtnNetPartAccessSpotTopic_mutex);
-    g_RtnNetPartAccessSpotTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartAccessSpotTopic_IOUser_vec.begin();
+        it != g_RtnNetPartAccessSpotTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartAccessSpotTopic_IOUser_vec.end()) {
+        g_RtnNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPartAccessSpotTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartAccessSpotTopic_mutex);
 
     uv_async_send(&g_RtnNetPartAccessSpotTopic_async);
@@ -12596,9 +15757,16 @@ void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField*
 
 void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRspQryNetInterface, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetInterfaceTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetInterfaceTopic_spi_callbackNumb: ", g_RspQryNetInterfaceTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetInterfaceTopic: END! ******\n", g_RunningResult_File);
@@ -12637,10 +15805,11 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetInterface;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetInterface;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetInterface) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetInterface is NULL" , g_RunningResult_File); 
@@ -12666,7 +15835,15 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetInterfaceTopic_mutex);
-    g_RspQryNetInterfaceTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetInterfaceTopic_IOUser_vec.begin();
+        it != g_RspQryNetInterfaceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetInterfaceTopic_IOUser_vec.end()) {
+        g_RspQryNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetInterfaceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetInterfaceTopic_mutex);
 
     uv_async_send(&g_RspQryNetInterfaceTopic_async);
@@ -12675,9 +15852,16 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
 
 void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetInterface){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetInterfaceTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetInterfaceTopic_spi_callbackNumb: ", g_RtnNetInterfaceTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetInterfaceTopic: END! ******\n", g_RunningResult_File);
@@ -12694,7 +15878,8 @@ void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetIn
         memcpy (pNewRtnNetInterface,pRtnNetInterface, sizeof(CShfeFtdcRtnNetInterfaceField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetInterface;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetInterface;
     if (NULL == pRtnNetInterface) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetInterface is NULL" , g_RunningResult_File); 
     } else {
@@ -12716,7 +15901,15 @@ void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetIn
     }
 
     uv_mutex_lock (&g_RtnNetInterfaceTopic_mutex);
-    g_RtnNetInterfaceTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetInterfaceTopic_IOUser_vec.begin();
+        it != g_RtnNetInterfaceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetInterfaceTopic_IOUser_vec.end()) {
+        g_RtnNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetInterfaceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetInterfaceTopic_mutex);
 
     uv_async_send(&g_RtnNetInterfaceTopic_async);
@@ -12725,9 +15918,16 @@ void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetIn
 
 void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* pRspQryNetGeneralOID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetGeneralOIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetGeneralOIDTopic_spi_callbackNumb: ", g_RspQryNetGeneralOIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
@@ -12766,10 +15966,11 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetGeneralOID;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetGeneralOID;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetGeneralOID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetGeneralOID is NULL" , g_RunningResult_File); 
@@ -12787,7 +15988,15 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetGeneralOIDTopic_mutex);
-    g_RspQryNetGeneralOIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetGeneralOIDTopic_IOUser_vec.begin();
+        it != g_RspQryNetGeneralOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetGeneralOIDTopic_IOUser_vec.end()) {
+        g_RspQryNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetGeneralOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetGeneralOIDTopic_mutex);
 
     uv_async_send(&g_RspQryNetGeneralOIDTopic_async);
@@ -12796,9 +16005,16 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
 
 void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNetGeneralOID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetGeneralOIDTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetGeneralOIDTopic_spi_callbackNumb: ", g_RtnNetGeneralOIDTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
@@ -12815,7 +16031,8 @@ void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNet
         memcpy (pNewRtnNetGeneralOID,pRtnNetGeneralOID, sizeof(CShfeFtdcRtnNetGeneralOIDField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetGeneralOID;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetGeneralOID;
     if (NULL == pRtnNetGeneralOID) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetGeneralOID is NULL" , g_RunningResult_File); 
     } else {
@@ -12829,7 +16046,15 @@ void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetGeneralOIDTopic_mutex);
-    g_RtnNetGeneralOIDTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetGeneralOIDTopic_IOUser_vec.begin();
+        it != g_RtnNetGeneralOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetGeneralOIDTopic_IOUser_vec.end()) {
+        g_RtnNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetGeneralOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetGeneralOIDTopic_mutex);
 
     uv_async_send(&g_RtnNetGeneralOIDTopic_async);
@@ -12838,9 +16063,16 @@ void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNet
 
 void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField* pRspQryNetMonitorType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTypeTopic_spi_callbackNumb: ", g_RspQryNetMonitorTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
@@ -12879,10 +16111,11 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorType is NULL" , g_RunningResult_File); 
@@ -12897,7 +16130,15 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTypeTopic_mutex);
-    g_RspQryNetMonitorTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTypeTopic_async);
@@ -12906,9 +16147,16 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
 
 void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnNetMonitorType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTypeTopic_spi_callbackNumb: ", g_RtnNetMonitorTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
@@ -12925,7 +16173,8 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnN
         memcpy (pNewRtnNetMonitorType,pRtnNetMonitorType, sizeof(CShfeFtdcRtnNetMonitorTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorType;
     if (NULL == pRtnNetMonitorType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorType is NULL" , g_RunningResult_File); 
     } else {
@@ -12936,7 +16185,15 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTypeTopic_mutex);
-    g_RtnNetMonitorTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTypeTopic_async);
@@ -12945,9 +16202,16 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnN
 
 void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrScopeField* pRspQryNetMonitorAttrScope, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorAttrScopeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorAttrScopeTopic_spi_callbackNumb: ", g_RspQryNetMonitorAttrScopeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
@@ -12986,10 +16250,11 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorAttrScope;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorAttrScope;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorAttrScope) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorAttrScope is NULL" , g_RunningResult_File); 
@@ -13005,7 +16270,15 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorAttrScopeTopic_mutex);
-    g_RspQryNetMonitorAttrScopeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorAttrScopeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorAttrScopeTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorAttrScopeTopic_async);
@@ -13014,9 +16287,16 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
 
 void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeField* pRtnNetMonitorAttrScope){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorAttrScopeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorAttrScopeTopic_spi_callbackNumb: ", g_RtnNetMonitorAttrScopeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
@@ -13033,7 +16313,8 @@ void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeFi
         memcpy (pNewRtnNetMonitorAttrScope,pRtnNetMonitorAttrScope, sizeof(CShfeFtdcRtnNetMonitorAttrScopeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorAttrScope;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorAttrScope;
     if (NULL == pRtnNetMonitorAttrScope) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorAttrScope is NULL" , g_RunningResult_File); 
     } else {
@@ -13045,7 +16326,15 @@ void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeFi
     }
 
     uv_mutex_lock (&g_RtnNetMonitorAttrScopeTopic_mutex);
-    g_RtnNetMonitorAttrScopeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorAttrScopeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorAttrScopeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorAttrScopeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorAttrScopeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorAttrScopeTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorAttrScopeTopic_async);
@@ -13054,9 +16343,16 @@ void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeFi
 
 void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTypeField* pRspQryNetMonitorAttrType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorAttrTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorAttrTypeTopic_spi_callbackNumb: ", g_RspQryNetMonitorAttrTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
@@ -13095,10 +16391,11 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorAttrType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorAttrType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorAttrType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorAttrType is NULL" , g_RunningResult_File); 
@@ -13117,7 +16414,15 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorAttrTypeTopic_mutex);
-    g_RspQryNetMonitorAttrTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorAttrTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorAttrTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorAttrTypeTopic_async);
@@ -13126,9 +16431,16 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
 
 void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeField* pRtnNetMonitorAttrType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorAttrTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorAttrTypeTopic_spi_callbackNumb: ", g_RtnNetMonitorAttrTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
@@ -13145,7 +16457,8 @@ void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeFiel
         memcpy (pNewRtnNetMonitorAttrType,pRtnNetMonitorAttrType, sizeof(CShfeFtdcRtnNetMonitorAttrTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorAttrType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorAttrType;
     if (NULL == pRtnNetMonitorAttrType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorAttrType is NULL" , g_RunningResult_File); 
     } else {
@@ -13160,7 +16473,15 @@ void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeFiel
     }
 
     uv_mutex_lock (&g_RtnNetMonitorAttrTypeTopic_mutex);
-    g_RtnNetMonitorAttrTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorAttrTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorAttrTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorAttrTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorAttrTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorAttrTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorAttrTypeTopic_async);
@@ -13169,9 +16490,16 @@ void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeFiel
 
 void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObjectAttrField* pRspQryNetMonitorObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorObjectAttrTopic_spi_callbackNumb: ", g_RspQryNetMonitorObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -13210,10 +16538,11 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorObjectAttr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorObjectAttr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorObjectAttr is NULL" , g_RunningResult_File); 
@@ -13229,7 +16558,15 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorObjectAttrTopic_mutex);
-    g_RspQryNetMonitorObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorObjectAttrTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorObjectAttrTopic_async);
@@ -13238,9 +16575,16 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
 
 void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttrField* pRtnNetMonitorObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorObjectAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorObjectAttrTopic_spi_callbackNumb: ", g_RtnNetMonitorObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
@@ -13257,7 +16601,8 @@ void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttr
         memcpy (pNewRtnNetMonitorObjectAttr,pRtnNetMonitorObjectAttr, sizeof(CShfeFtdcRtnNetMonitorObjectAttrField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorObjectAttr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorObjectAttr;
     if (NULL == pRtnNetMonitorObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -13269,7 +16614,15 @@ void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttr
     }
 
     uv_mutex_lock (&g_RtnNetMonitorObjectAttrTopic_mutex);
-    g_RtnNetMonitorObjectAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorObjectAttrTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorObjectAttrTopic_async);
@@ -13278,9 +16631,16 @@ void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttr
 
 void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQryNetFuncArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetFuncAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetFuncAreaTopic_spi_callbackNumb: ", g_RspQryNetFuncAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetFuncAreaTopic: END! ******\n", g_RunningResult_File);
@@ -13319,10 +16679,11 @@ void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetFuncArea;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetFuncArea;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetFuncArea) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetFuncArea is NULL" , g_RunningResult_File); 
@@ -13338,7 +16699,15 @@ void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetFuncAreaTopic_mutex);
-    g_RspQryNetFuncAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetFuncAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetFuncAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetFuncAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetFuncAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetFuncAreaTopic_mutex);
 
     uv_async_send(&g_RspQryNetFuncAreaTopic_async);
@@ -13347,9 +16716,16 @@ void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQ
 
 void SysUserSpi::OnRtnNetFuncAreaTopic(CShfeFtdcRtnNetFuncAreaField* pRtnNetFuncArea){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetFuncAreaTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetFuncAreaTopic_spi_callbackNumb: ", g_RtnNetFuncAreaTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetFuncAreaTopic: END! ******\n", g_RunningResult_File);
@@ -13366,7 +16742,8 @@ void SysUserSpi::OnRtnNetFuncAreaTopic(CShfeFtdcRtnNetFuncAreaField* pRtnNetFunc
         memcpy (pNewRtnNetFuncArea,pRtnNetFuncArea, sizeof(CShfeFtdcRtnNetFuncAreaField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetFuncArea;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetFuncArea;
     if (NULL == pRtnNetFuncArea) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetFuncArea is NULL" , g_RunningResult_File); 
     } else {
@@ -13378,7 +16755,15 @@ void SysUserSpi::OnRtnNetFuncAreaTopic(CShfeFtdcRtnNetFuncAreaField* pRtnNetFunc
     }
 
     uv_mutex_lock (&g_RtnNetFuncAreaTopic_mutex);
-    g_RtnNetFuncAreaTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetFuncAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetFuncAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetFuncAreaTopic_IOUser_vec.end()) {
+        g_RtnNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetFuncAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetFuncAreaTopic_mutex);
 
     uv_async_send(&g_RtnNetFuncAreaTopic_async);
@@ -13387,9 +16772,16 @@ void SysUserSpi::OnRtnNetFuncAreaTopic(CShfeFtdcRtnNetFuncAreaField* pRtnNetFunc
 
 void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCommandTypeField* pRspQryNetMonitorCommandType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorCommandTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorCommandTypeTopic_spi_callbackNumb: ", g_RspQryNetMonitorCommandTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorCommandTypeTopic: END! ******\n", g_RunningResult_File);
@@ -13428,10 +16820,11 @@ void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCom
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorCommandType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorCommandType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorCommandType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorCommandType is NULL" , g_RunningResult_File); 
@@ -13453,7 +16846,15 @@ void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCom
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorCommandTypeTopic_mutex);
-    g_RspQryNetMonitorCommandTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorCommandTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorCommandTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorCommandTypeTopic_async);
@@ -13462,9 +16863,16 @@ void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCom
 
 void SysUserSpi::OnRtnNetMonitorCommandTypeTopic(CShfeFtdcRtnNetMonitorCommandTypeField* pRtnNetMonitorCommandType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorCommandTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorCommandTypeTopic_spi_callbackNumb: ", g_RtnNetMonitorCommandTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorCommandTypeTopic: END! ******\n", g_RunningResult_File);
@@ -13481,7 +16889,8 @@ void SysUserSpi::OnRtnNetMonitorCommandTypeTopic(CShfeFtdcRtnNetMonitorCommandTy
         memcpy (pNewRtnNetMonitorCommandType,pRtnNetMonitorCommandType, sizeof(CShfeFtdcRtnNetMonitorCommandTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorCommandType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorCommandType;
     if (NULL == pRtnNetMonitorCommandType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorCommandType is NULL" , g_RunningResult_File); 
     } else {
@@ -13499,7 +16908,15 @@ void SysUserSpi::OnRtnNetMonitorCommandTypeTopic(CShfeFtdcRtnNetMonitorCommandTy
     }
 
     uv_mutex_lock (&g_RtnNetMonitorCommandTypeTopic_mutex);
-    g_RtnNetMonitorCommandTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorCommandTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorCommandTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorCommandTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorCommandTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorCommandTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorCommandTypeTopic_async);
@@ -13508,9 +16925,16 @@ void SysUserSpi::OnRtnNetMonitorCommandTypeTopic(CShfeFtdcRtnNetMonitorCommandTy
 
 void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorActionGroupField* pRspQryNetMonitorActionGroup, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorActionGroupTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorActionGroupTopic_spi_callbackNumb: ", g_RspQryNetMonitorActionGroupTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionGroupTopic: END! ******\n", g_RunningResult_File);
@@ -13549,10 +16973,11 @@ void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorAct
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorActionGroup;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorActionGroup;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorActionGroup) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorActionGroup is NULL" , g_RunningResult_File); 
@@ -13569,7 +16994,15 @@ void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorAct
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorActionGroupTopic_mutex);
-    g_RspQryNetMonitorActionGroupTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorActionGroupTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorActionGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorActionGroupTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorActionGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorActionGroupTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorActionGroupTopic_async);
@@ -13578,9 +17011,16 @@ void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorAct
 
 void SysUserSpi::OnRtnNetMonitorActionGroupTopic(CShfeFtdcRtnNetMonitorActionGroupField* pRtnNetMonitorActionGroup){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorActionGroupTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorActionGroupTopic_spi_callbackNumb: ", g_RtnNetMonitorActionGroupTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionGroupTopic: END! ******\n", g_RunningResult_File);
@@ -13597,7 +17037,8 @@ void SysUserSpi::OnRtnNetMonitorActionGroupTopic(CShfeFtdcRtnNetMonitorActionGro
         memcpy (pNewRtnNetMonitorActionGroup,pRtnNetMonitorActionGroup, sizeof(CShfeFtdcRtnNetMonitorActionGroupField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorActionGroup;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorActionGroup;
     if (NULL == pRtnNetMonitorActionGroup) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorActionGroup is NULL" , g_RunningResult_File); 
     } else {
@@ -13610,7 +17051,15 @@ void SysUserSpi::OnRtnNetMonitorActionGroupTopic(CShfeFtdcRtnNetMonitorActionGro
     }
 
     uv_mutex_lock (&g_RtnNetMonitorActionGroupTopic_mutex);
-    g_RtnNetMonitorActionGroupTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorActionGroupTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorActionGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorActionGroupTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorActionGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorActionGroupTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorActionGroupTopic_async);
@@ -13619,9 +17068,16 @@ void SysUserSpi::OnRtnNetMonitorActionGroupTopic(CShfeFtdcRtnNetMonitorActionGro
 
 void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDeviceGroupField* pRspQryNetMonitorDeviceGroup, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorDeviceGroupTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorDeviceGroupTopic_spi_callbackNumb: ", g_RspQryNetMonitorDeviceGroupTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
@@ -13660,10 +17116,11 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorDeviceGroup;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceGroup;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorDeviceGroup) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorDeviceGroup is NULL" , g_RunningResult_File); 
@@ -13680,7 +17137,15 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorDeviceGroupTopic_mutex);
-    g_RspQryNetMonitorDeviceGroupTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorDeviceGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorDeviceGroupTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorDeviceGroupTopic_async);
@@ -13689,9 +17154,16 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
 
 void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGroupField* pRtnNetMonitorDeviceGroup){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorDeviceGroupTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorDeviceGroupTopic_spi_callbackNumb: ", g_RtnNetMonitorDeviceGroupTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
@@ -13708,7 +17180,8 @@ void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGro
         memcpy (pNewRtnNetMonitorDeviceGroup,pRtnNetMonitorDeviceGroup, sizeof(CShfeFtdcRtnNetMonitorDeviceGroupField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorDeviceGroup;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorDeviceGroup;
     if (NULL == pRtnNetMonitorDeviceGroup) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorDeviceGroup is NULL" , g_RunningResult_File); 
     } else {
@@ -13721,7 +17194,15 @@ void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGro
     }
 
     uv_mutex_lock (&g_RtnNetMonitorDeviceGroupTopic_mutex);
-    g_RtnNetMonitorDeviceGroupTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorDeviceGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorDeviceGroupTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorDeviceGroupTopic_async);
@@ -13730,9 +17211,16 @@ void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGro
 
 void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskInfoField* pRspQryNetMonitorTaskInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTaskInfoTopic_spi_callbackNumb: ", g_RspQryNetMonitorTaskInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
@@ -13771,10 +17259,11 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorTaskInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskInfo is NULL" , g_RunningResult_File); 
@@ -13805,7 +17294,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskInfoTopic_mutex);
-    g_RspQryNetMonitorTaskInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTaskInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTaskInfoTopic_async);
@@ -13814,9 +17311,16 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
 
 void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoField* pRtnNetMonitorTaskInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTaskInfoTopic_spi_callbackNumb: ", g_RtnNetMonitorTaskInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
@@ -13833,7 +17337,8 @@ void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoFiel
         memcpy (pNewRtnNetMonitorTaskInfo,pRtnNetMonitorTaskInfo, sizeof(CShfeFtdcRtnNetMonitorTaskInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorTaskInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorTaskInfo;
     if (NULL == pRtnNetMonitorTaskInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorTaskInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -13860,7 +17365,15 @@ void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoFiel
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskInfoTopic_mutex);
-    g_RtnNetMonitorTaskInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskInfoTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTaskInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTaskInfoTopic_async);
@@ -13869,9 +17382,16 @@ void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoFiel
 
 void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTaskResultField* pRspQryNetMonitorTaskResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTaskResultTopic_spi_callbackNumb: ", g_RspQryNetMonitorTaskResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
@@ -13910,10 +17430,11 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorTaskResult;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskResult;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskResult is NULL" , g_RunningResult_File); 
@@ -13933,7 +17454,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskResultTopic_mutex);
-    g_RspQryNetMonitorTaskResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskResultTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTaskResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskResultTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTaskResultTopic_async);
@@ -13942,9 +17471,16 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
 
 void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResultField* pRtnNetMonitorTaskResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTaskResultTopic_spi_callbackNumb: ", g_RtnNetMonitorTaskResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
@@ -13961,7 +17497,8 @@ void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResult
         memcpy (pNewRtnNetMonitorTaskResult,pRtnNetMonitorTaskResult, sizeof(CShfeFtdcRtnNetMonitorTaskResultField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorTaskResult;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorTaskResult;
     if (NULL == pRtnNetMonitorTaskResult) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorTaskResult is NULL" , g_RunningResult_File); 
     } else {
@@ -13977,7 +17514,15 @@ void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResult
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskResultTopic_mutex);
-    g_RtnNetMonitorTaskResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskResultTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskResultTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTaskResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskResultTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTaskResultTopic_async);
@@ -13986,9 +17531,16 @@ void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResult
 
 void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorTaskObjectSetField* pRspQryNetMonitorTaskObjectSet, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskObjectSetTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTaskObjectSetTopic_spi_callbackNumb: ", g_RspQryNetMonitorTaskObjectSetTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
@@ -14027,10 +17579,11 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorTaskObjectSet;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskObjectSet;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskObjectSet) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskObjectSet is NULL" , g_RunningResult_File); 
@@ -14046,7 +17599,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskObjectSetTopic_mutex);
-    g_RspQryNetMonitorTaskObjectSetTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTaskObjectSetTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskObjectSetTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTaskObjectSetTopic_async);
@@ -14055,9 +17616,16 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
 
 void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObjectSetField* pRtnNetMonitorTaskObjectSet){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskObjectSetTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTaskObjectSetTopic_spi_callbackNumb: ", g_RtnNetMonitorTaskObjectSetTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
@@ -14074,7 +17642,8 @@ void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObj
         memcpy (pNewRtnNetMonitorTaskObjectSet,pRtnNetMonitorTaskObjectSet, sizeof(CShfeFtdcRtnNetMonitorTaskObjectSetField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorTaskObjectSet;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorTaskObjectSet;
     if (NULL == pRtnNetMonitorTaskObjectSet) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorTaskObjectSet is NULL" , g_RunningResult_File); 
     } else {
@@ -14086,7 +17655,15 @@ void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObj
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskObjectSetTopic_mutex);
-    g_RtnNetMonitorTaskObjectSetTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTaskObjectSetTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskObjectSetTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTaskObjectSetTopic_async);
@@ -14095,9 +17672,16 @@ void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObj
 
 void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoField* pRspQryNetPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPartyLinkInfoTopic_spi_callbackNumb: ", g_RspQryNetPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -14136,10 +17720,11 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPartyLinkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkInfo is NULL" , g_RunningResult_File); 
@@ -14179,7 +17764,15 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkInfoTopic_mutex);
-    g_RspQryNetPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetPartyLinkInfoTopic_async);
@@ -14188,9 +17781,16 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
 
 void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* pRtnNetPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPartyLinkInfoTopic_spi_callbackNumb: ", g_RtnNetPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -14207,7 +17807,8 @@ void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* p
         memcpy (pNewRtnNetPartyLinkInfo,pRtnNetPartyLinkInfo, sizeof(CShfeFtdcRtnNetPartyLinkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPartyLinkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPartyLinkInfo;
     if (NULL == pRtnNetPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -14243,7 +17844,15 @@ void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* p
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkInfoTopic_mutex);
-    g_RtnNetPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetPartyLinkInfoTopic_async);
@@ -14252,9 +17861,16 @@ void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* p
 
 void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActionAttrField* pRspQryNetMonitorActionAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorActionAttrTopic_spi_callbackNumb: ", g_RspQryNetMonitorActionAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
@@ -14293,10 +17909,11 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorActionAttr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorActionAttr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorActionAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorActionAttr is NULL" , g_RunningResult_File); 
@@ -14312,7 +17929,15 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorActionAttrTopic_mutex);
-    g_RspQryNetMonitorActionAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorActionAttrTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorActionAttrTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorActionAttrTopic_async);
@@ -14321,9 +17946,16 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
 
 void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttrField* pRtnNetMonitorActionAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorActionAttrTopic_spi_callbackNumb: ", g_RtnNetMonitorActionAttrTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
@@ -14340,7 +17972,8 @@ void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttr
         memcpy (pNewRtnNetMonitorActionAttr,pRtnNetMonitorActionAttr, sizeof(CShfeFtdcRtnNetMonitorActionAttrField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorActionAttr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorActionAttr;
     if (NULL == pRtnNetMonitorActionAttr) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorActionAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -14352,7 +17985,15 @@ void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttr
     }
 
     uv_mutex_lock (&g_RtnNetMonitorActionAttrTopic_mutex);
-    g_RtnNetMonitorActionAttrTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorActionAttrTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorActionAttrTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorActionAttrTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorActionAttrTopic_async);
@@ -14361,9 +18002,16 @@ void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttr
 
 void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNetModule, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetModuleTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetModuleTopic_spi_callbackNumb: ", g_RspQryNetModuleTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetModuleTopic: END! ******\n", g_RunningResult_File);
@@ -14402,10 +18050,11 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetModule;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetModule;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetModule) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetModule is NULL" , g_RunningResult_File); 
@@ -14426,7 +18075,15 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetModuleTopic_mutex);
-    g_RspQryNetModuleTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetModuleTopic_IOUser_vec.begin();
+        it != g_RspQryNetModuleTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetModuleTopic_IOUser_vec.end()) {
+        g_RspQryNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetModuleTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetModuleTopic_mutex);
 
     uv_async_send(&g_RspQryNetModuleTopic_async);
@@ -14435,9 +18092,16 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
 
 void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetModuleTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetModuleTopic_spi_callbackNumb: ", g_RtnNetModuleTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetModuleTopic: END! ******\n", g_RunningResult_File);
@@ -14454,7 +18118,8 @@ void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){
         memcpy (pNewRtnNetModule,pRtnNetModule, sizeof(CShfeFtdcRtnNetModuleField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetModule;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetModule;
     if (NULL == pRtnNetModule) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetModule is NULL" , g_RunningResult_File); 
     } else {
@@ -14471,7 +18136,15 @@ void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){
     }
 
     uv_mutex_lock (&g_RtnNetModuleTopic_mutex);
-    g_RtnNetModuleTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetModuleTopic_IOUser_vec.begin();
+        it != g_RtnNetModuleTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetModuleTopic_IOUser_vec.end()) {
+        g_RtnNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetModuleTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetModuleTopic_mutex);
 
     uv_async_send(&g_RtnNetModuleTopic_async);
@@ -14480,9 +18153,16 @@ void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){
 
 void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRspQryNetEventExpr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetEventExprTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetEventExprTopic_spi_callbackNumb: ", g_RspQryNetEventExprTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetEventExprTopic: END! ******\n", g_RunningResult_File);
@@ -14521,10 +18201,11 @@ void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetEventExpr;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetEventExpr;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventExpr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetEventExpr is NULL" , g_RunningResult_File); 
@@ -14549,7 +18230,15 @@ void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventExprTopic_mutex);
-    g_RspQryNetEventExprTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventExprTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventExprTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventExprTopic_IOUser_vec.end()) {
+        g_RspQryNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetEventExprTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventExprTopic_mutex);
 
     uv_async_send(&g_RspQryNetEventExprTopic_async);
@@ -14558,9 +18247,16 @@ void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRs
 
 void SysUserSpi::OnRtnNetEventExprTopic(CShfeFtdcRtnNetEventExprField* pRtnNetEventExpr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetEventExprTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetEventExprTopic_spi_callbackNumb: ", g_RtnNetEventExprTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetEventExprTopic: END! ******\n", g_RunningResult_File);
@@ -14577,7 +18273,8 @@ void SysUserSpi::OnRtnNetEventExprTopic(CShfeFtdcRtnNetEventExprField* pRtnNetEv
         memcpy (pNewRtnNetEventExpr,pRtnNetEventExpr, sizeof(CShfeFtdcRtnNetEventExprField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetEventExpr;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetEventExpr;
     if (NULL == pRtnNetEventExpr) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetEventExpr is NULL" , g_RunningResult_File); 
     } else {
@@ -14598,7 +18295,15 @@ void SysUserSpi::OnRtnNetEventExprTopic(CShfeFtdcRtnNetEventExprField* pRtnNetEv
     }
 
     uv_mutex_lock (&g_RtnNetEventExprTopic_mutex);
-    g_RtnNetEventExprTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventExprTopic_IOUser_vec.begin();
+        it != g_RtnNetEventExprTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventExprTopic_IOUser_vec.end()) {
+        g_RtnNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetEventExprTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventExprTopic_mutex);
 
     uv_async_send(&g_RtnNetEventExprTopic_async);
@@ -14607,9 +18312,16 @@ void SysUserSpi::OnRtnNetEventExprTopic(CShfeFtdcRtnNetEventExprField* pRtnNetEv
 
 void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRspQryNetEventType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetEventTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetEventTypeTopic_spi_callbackNumb: ", g_RspQryNetEventTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetEventTypeTopic: END! ******\n", g_RunningResult_File);
@@ -14648,10 +18360,11 @@ void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRs
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetEventType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetEventType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetEventType is NULL" , g_RunningResult_File); 
@@ -14666,7 +18379,15 @@ void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventTypeTopic_mutex);
-    g_RspQryNetEventTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetEventTypeTopic_async);
@@ -14675,9 +18396,16 @@ void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRs
 
 void SysUserSpi::OnRtnNetEventTypeTopic(CShfeFtdcRtnNetEventTypeField* pRtnNetEventType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetEventTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetEventTypeTopic_spi_callbackNumb: ", g_RtnNetEventTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetEventTypeTopic: END! ******\n", g_RunningResult_File);
@@ -14694,7 +18422,8 @@ void SysUserSpi::OnRtnNetEventTypeTopic(CShfeFtdcRtnNetEventTypeField* pRtnNetEv
         memcpy (pNewRtnNetEventType,pRtnNetEventType, sizeof(CShfeFtdcRtnNetEventTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetEventType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetEventType;
     if (NULL == pRtnNetEventType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetEventType is NULL" , g_RunningResult_File); 
     } else {
@@ -14705,7 +18434,15 @@ void SysUserSpi::OnRtnNetEventTypeTopic(CShfeFtdcRtnNetEventTypeField* pRtnNetEv
     }
 
     uv_mutex_lock (&g_RtnNetEventTypeTopic_mutex);
-    g_RtnNetEventTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventTypeTopic_IOUser_vec.end()) {
+        g_RtnNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetEventTypeTopic_async);
@@ -14714,9 +18451,16 @@ void SysUserSpi::OnRtnNetEventTypeTopic(CShfeFtdcRtnNetEventTypeField* pRtnNetEv
 
 void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeField* pRspQryNetSubEventType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetSubEventTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetSubEventTypeTopic_spi_callbackNumb: ", g_RspQryNetSubEventTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubEventTypeTopic: END! ******\n", g_RunningResult_File);
@@ -14755,10 +18499,11 @@ void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetSubEventType;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetSubEventType;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubEventType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetSubEventType is NULL" , g_RunningResult_File); 
@@ -14773,7 +18518,15 @@ void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubEventTypeTopic_mutex);
-    g_RspQryNetSubEventTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubEventTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubEventTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetSubEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubEventTypeTopic_mutex);
 
     uv_async_send(&g_RspQryNetSubEventTypeTopic_async);
@@ -14782,9 +18535,16 @@ void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeFiel
 
 void SysUserSpi::OnRtnNetSubEventTypeTopic(CShfeFtdcRtnNetSubEventTypeField* pRtnNetSubEventType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetSubEventTypeTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetSubEventTypeTopic_spi_callbackNumb: ", g_RtnNetSubEventTypeTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetSubEventTypeTopic: END! ******\n", g_RunningResult_File);
@@ -14801,7 +18561,8 @@ void SysUserSpi::OnRtnNetSubEventTypeTopic(CShfeFtdcRtnNetSubEventTypeField* pRt
         memcpy (pNewRtnNetSubEventType,pRtnNetSubEventType, sizeof(CShfeFtdcRtnNetSubEventTypeField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetSubEventType;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetSubEventType;
     if (NULL == pRtnNetSubEventType) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetSubEventType is NULL" , g_RunningResult_File); 
     } else {
@@ -14812,7 +18573,15 @@ void SysUserSpi::OnRtnNetSubEventTypeTopic(CShfeFtdcRtnNetSubEventTypeField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetSubEventTypeTopic_mutex);
-    g_RtnNetSubEventTypeTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubEventTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetSubEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubEventTypeTopic_IOUser_vec.end()) {
+        g_RtnNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetSubEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubEventTypeTopic_mutex);
 
     uv_async_send(&g_RtnNetSubEventTypeTopic_async);
@@ -14821,9 +18590,16 @@ void SysUserSpi::OnRtnNetSubEventTypeTopic(CShfeFtdcRtnNetSubEventTypeField* pRt
 
 void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* pRspQryNetEventLevel, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetEventLevelTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetEventLevelTopic_spi_callbackNumb: ", g_RspQryNetEventLevelTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetEventLevelTopic: END! ******\n", g_RunningResult_File);
@@ -14862,10 +18638,11 @@ void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* p
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetEventLevel;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetEventLevel;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventLevel) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetEventLevel is NULL" , g_RunningResult_File); 
@@ -14881,7 +18658,15 @@ void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventLevelTopic_mutex);
-    g_RspQryNetEventLevelTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventLevelTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventLevelTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventLevelTopic_IOUser_vec.end()) {
+        g_RspQryNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetEventLevelTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventLevelTopic_mutex);
 
     uv_async_send(&g_RspQryNetEventLevelTopic_async);
@@ -14890,9 +18675,16 @@ void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* p
 
 void SysUserSpi::OnRtnNetEventLevelTopic(CShfeFtdcRtnNetEventLevelField* pRtnNetEventLevel){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetEventLevelTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetEventLevelTopic_spi_callbackNumb: ", g_RtnNetEventLevelTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetEventLevelTopic: END! ******\n", g_RunningResult_File);
@@ -14909,7 +18701,8 @@ void SysUserSpi::OnRtnNetEventLevelTopic(CShfeFtdcRtnNetEventLevelField* pRtnNet
         memcpy (pNewRtnNetEventLevel,pRtnNetEventLevel, sizeof(CShfeFtdcRtnNetEventLevelField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetEventLevel;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetEventLevel;
     if (NULL == pRtnNetEventLevel) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetEventLevel is NULL" , g_RunningResult_File); 
     } else {
@@ -14921,7 +18714,15 @@ void SysUserSpi::OnRtnNetEventLevelTopic(CShfeFtdcRtnNetEventLevelField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetEventLevelTopic_mutex);
-    g_RtnNetEventLevelTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventLevelTopic_IOUser_vec.begin();
+        it != g_RtnNetEventLevelTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventLevelTopic_IOUser_vec.end()) {
+        g_RtnNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetEventLevelTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventLevelTopic_mutex);
 
     uv_async_send(&g_RtnNetEventLevelTopic_async);
@@ -14930,9 +18731,16 @@ void SysUserSpi::OnRtnNetEventLevelTopic(CShfeFtdcRtnNetEventLevelField* pRtnNet
 
 void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonitorTaskStatusResultField* pRspQryNetMonitorTaskStatusResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskStatusResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTaskStatusResultTopic_spi_callbackNumb: ", g_RspQryNetMonitorTaskStatusResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
@@ -14971,10 +18779,11 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorTaskStatusResult;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskStatusResult;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskStatusResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskStatusResult is NULL" , g_RunningResult_File); 
@@ -14992,7 +18801,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskStatusResultTopic_mutex);
-    g_RspQryNetMonitorTaskStatusResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTaskStatusResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskStatusResultTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTaskStatusResultTopic_async);
@@ -15001,9 +18818,16 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
 
 void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTaskStatusResultField* pRtnNetMonitorTaskStatusResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskStatusResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTaskStatusResultTopic_spi_callbackNumb: ", g_RtnNetMonitorTaskStatusResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
@@ -15020,7 +18844,8 @@ void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTask
         memcpy (pNewRtnNetMonitorTaskStatusResult,pRtnNetMonitorTaskStatusResult, sizeof(CShfeFtdcRtnNetMonitorTaskStatusResultField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorTaskStatusResult;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorTaskStatusResult;
     if (NULL == pRtnNetMonitorTaskStatusResult) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorTaskStatusResult is NULL" , g_RunningResult_File); 
     } else {
@@ -15034,7 +18859,15 @@ void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTask
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskStatusResultTopic_mutex);
-    g_RtnNetMonitorTaskStatusResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTaskStatusResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskStatusResultTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTaskStatusResultTopic_async);
@@ -15043,9 +18876,16 @@ void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTask
 
 void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQryNetCfgFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCfgFileTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetCfgFileTopic_spi_callbackNumb: ", g_RspQryNetCfgFileTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetCfgFileTopic: END! ******\n", g_RunningResult_File);
@@ -15084,10 +18924,11 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetCfgFile;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetCfgFile;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCfgFile) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCfgFile is NULL" , g_RunningResult_File); 
@@ -15103,7 +18944,15 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCfgFileTopic_mutex);
-    g_RspQryNetCfgFileTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCfgFileTopic_IOUser_vec.begin();
+        it != g_RspQryNetCfgFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCfgFileTopic_IOUser_vec.end()) {
+        g_RspQryNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetCfgFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCfgFileTopic_mutex);
 
     uv_async_send(&g_RspQryNetCfgFileTopic_async);
@@ -15112,9 +18961,16 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
 
 void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFile){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCfgFileTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetCfgFileTopic_spi_callbackNumb: ", g_RtnNetCfgFileTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetCfgFileTopic: END! ******\n", g_RunningResult_File);
@@ -15131,7 +18987,8 @@ void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFil
         memcpy (pNewRtnNetCfgFile,pRtnNetCfgFile, sizeof(CShfeFtdcRtnNetCfgFileField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetCfgFile;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetCfgFile;
     if (NULL == pRtnNetCfgFile) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetCfgFile is NULL" , g_RunningResult_File); 
     } else {
@@ -15143,7 +19000,15 @@ void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFil
     }
 
     uv_mutex_lock (&g_RtnNetCfgFileTopic_mutex);
-    g_RtnNetCfgFileTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCfgFileTopic_IOUser_vec.begin();
+        it != g_RtnNetCfgFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCfgFileTopic_IOUser_vec.end()) {
+        g_RtnNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetCfgFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCfgFileTopic_mutex);
 
     uv_async_send(&g_RtnNetCfgFileTopic_async);
@@ -15152,9 +19017,16 @@ void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFil
 
 void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDeviceTaskField* pRspQryNetMonitorDeviceTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorDeviceTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorDeviceTaskTopic_spi_callbackNumb: ", g_RspQryNetMonitorDeviceTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
@@ -15193,10 +19065,11 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorDeviceTask;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceTask;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorDeviceTask) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorDeviceTask is NULL" , g_RunningResult_File); 
@@ -15217,7 +19090,15 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorDeviceTaskTopic_mutex);
-    g_RspQryNetMonitorDeviceTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorDeviceTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorDeviceTaskTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorDeviceTaskTopic_async);
@@ -15226,9 +19107,16 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
 
 void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTaskField* pRtnNetMonitorDeviceTask){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorDeviceTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorDeviceTaskTopic_spi_callbackNumb: ", g_RtnNetMonitorDeviceTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
@@ -15245,7 +19133,8 @@ void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTask
         memcpy (pNewRtnNetMonitorDeviceTask,pRtnNetMonitorDeviceTask, sizeof(CShfeFtdcRtnNetMonitorDeviceTaskField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorDeviceTask;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorDeviceTask;
     if (NULL == pRtnNetMonitorDeviceTask) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorDeviceTask is NULL" , g_RunningResult_File); 
     } else {
@@ -15262,7 +19151,15 @@ void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTask
     }
 
     uv_mutex_lock (&g_RtnNetMonitorDeviceTaskTopic_mutex);
-    g_RtnNetMonitorDeviceTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorDeviceTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorDeviceTaskTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorDeviceTaskTopic_async);
@@ -15271,9 +19168,16 @@ void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTask
 
 void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorTaskInstAttrsField* pRspQryNetMonitorTaskInstAttrs, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskInstAttrsTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMonitorTaskInstAttrsTopic_spi_callbackNumb: ", g_RspQryNetMonitorTaskInstAttrsTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskInstAttrsTopic: END! ******\n", g_RunningResult_File);
@@ -15312,10 +19216,11 @@ void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorT
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMonitorTaskInstAttrs;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskInstAttrs;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskInstAttrs) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskInstAttrs is NULL" , g_RunningResult_File); 
@@ -15334,7 +19239,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorT
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskInstAttrsTopic_mutex);
-    g_RspQryNetMonitorTaskInstAttrsTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMonitorTaskInstAttrsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskInstAttrsTopic_mutex);
 
     uv_async_send(&g_RspQryNetMonitorTaskInstAttrsTopic_async);
@@ -15343,9 +19256,16 @@ void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorT
 
 void SysUserSpi::OnRtnNetMonitorTaskInstAttrsTopic(CShfeFtdcRtnNetMonitorTaskInstAttrsField* pRtnNetMonitorTaskInstAttrs){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskInstAttrsTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMonitorTaskInstAttrsTopic_spi_callbackNumb: ", g_RtnNetMonitorTaskInstAttrsTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskInstAttrsTopic: END! ******\n", g_RunningResult_File);
@@ -15362,7 +19282,8 @@ void SysUserSpi::OnRtnNetMonitorTaskInstAttrsTopic(CShfeFtdcRtnNetMonitorTaskIns
         memcpy (pNewRtnNetMonitorTaskInstAttrs,pRtnNetMonitorTaskInstAttrs, sizeof(CShfeFtdcRtnNetMonitorTaskInstAttrsField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMonitorTaskInstAttrs;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMonitorTaskInstAttrs;
     if (NULL == pRtnNetMonitorTaskInstAttrs) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMonitorTaskInstAttrs is NULL" , g_RunningResult_File); 
     } else {
@@ -15377,7 +19298,15 @@ void SysUserSpi::OnRtnNetMonitorTaskInstAttrsTopic(CShfeFtdcRtnNetMonitorTaskIns
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskInstAttrsTopic_mutex);
-    g_RtnNetMonitorTaskInstAttrsTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMonitorTaskInstAttrsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskInstAttrsTopic_mutex);
 
     uv_async_send(&g_RtnNetMonitorTaskInstAttrsTopic_async);
@@ -15386,9 +19315,16 @@ void SysUserSpi::OnRtnNetMonitorTaskInstAttrsTopic(CShfeFtdcRtnNetMonitorTaskIns
 
 void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperField* pRspQryFileGeneralOper, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileGeneralOperTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryFileGeneralOperTopic_spi_callbackNumb: ", g_RspQryFileGeneralOperTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
@@ -15427,10 +19363,11 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryFileGeneralOper;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryFileGeneralOper;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileGeneralOper) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileGeneralOper is NULL" , g_RunningResult_File); 
@@ -15454,7 +19391,15 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileGeneralOperTopic_mutex);
-    g_RspQryFileGeneralOperTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileGeneralOperTopic_IOUser_vec.begin();
+        it != g_RspQryFileGeneralOperTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileGeneralOperTopic_IOUser_vec.end()) {
+        g_RspQryFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryFileGeneralOperTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileGeneralOperTopic_mutex);
 
     uv_async_send(&g_RspQryFileGeneralOperTopic_async);
@@ -15463,9 +19408,16 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
 
 void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRtnFileGeneralOper){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileGeneralOperTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnFileGeneralOperTopic_spi_callbackNumb: ", g_RtnFileGeneralOperTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
@@ -15482,7 +19434,8 @@ void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRt
         memcpy (pNewRtnFileGeneralOper,pRtnFileGeneralOper, sizeof(CShfeFtdcRtnFileGeneralOperField));
     }
 
-    paramArray[0] = (void*)pNewRtnFileGeneralOper;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnFileGeneralOper;
     if (NULL == pRtnFileGeneralOper) { 
         OutputCallbackMessage("SysUserSpi::pRtnFileGeneralOper is NULL" , g_RunningResult_File); 
     } else {
@@ -15502,7 +19455,15 @@ void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRt
     }
 
     uv_mutex_lock (&g_RtnFileGeneralOperTopic_mutex);
-    g_RtnFileGeneralOperTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileGeneralOperTopic_IOUser_vec.begin();
+        it != g_RtnFileGeneralOperTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileGeneralOperTopic_IOUser_vec.end()) {
+        g_RtnFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnFileGeneralOperTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileGeneralOperTopic_mutex);
 
     uv_async_send(&g_RtnFileGeneralOperTopic_async);
@@ -15511,9 +19472,16 @@ void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRt
 
 void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQryNetBaseLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBaseLineTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetBaseLineTopic_spi_callbackNumb: ", g_RspQryNetBaseLineTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineTopic: END! ******\n", g_RunningResult_File);
@@ -15552,10 +19520,11 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetBaseLine;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetBaseLine;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLine) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBaseLine is NULL" , g_RunningResult_File); 
@@ -15574,7 +19543,15 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineTopic_mutex);
-    g_RspQryNetBaseLineTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetBaseLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineTopic_mutex);
 
     uv_async_send(&g_RspQryNetBaseLineTopic_async);
@@ -15583,9 +19560,16 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
 
 void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBaseLine){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBaseLineTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetBaseLineTopic_spi_callbackNumb: ", g_RtnNetBaseLineTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineTopic: END! ******\n", g_RunningResult_File);
@@ -15602,7 +19586,8 @@ void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBase
         memcpy (pNewRtnNetBaseLine,pRtnNetBaseLine, sizeof(CShfeFtdcRtnNetBaseLineField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetBaseLine;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetBaseLine;
     if (NULL == pRtnNetBaseLine) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetBaseLine is NULL" , g_RunningResult_File); 
     } else {
@@ -15617,7 +19602,15 @@ void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBase
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineTopic_mutex);
-    g_RtnNetBaseLineTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetBaseLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineTopic_mutex);
 
     uv_async_send(&g_RtnNetBaseLineTopic_async);
@@ -15626,9 +19619,16 @@ void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBase
 
 void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskField* pRspQryNetBaseLineTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBaseLineTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetBaseLineTaskTopic_spi_callbackNumb: ", g_RspQryNetBaseLineTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineTaskTopic: END! ******\n", g_RunningResult_File);
@@ -15667,10 +19667,11 @@ void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskFiel
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetBaseLineTask;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetBaseLineTask;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLineTask) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBaseLineTask is NULL" , g_RunningResult_File); 
@@ -15690,7 +19691,15 @@ void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineTaskTopic_mutex);
-    g_RspQryNetBaseLineTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetBaseLineTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineTaskTopic_mutex);
 
     uv_async_send(&g_RspQryNetBaseLineTaskTopic_async);
@@ -15699,9 +19708,16 @@ void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskFiel
 
 void SysUserSpi::OnRtnNetBaseLineTaskTopic(CShfeFtdcRtnNetBaseLineTaskField* pRtnNetBaseLineTask){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBaseLineTaskTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetBaseLineTaskTopic_spi_callbackNumb: ", g_RtnNetBaseLineTaskTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineTaskTopic: END! ******\n", g_RunningResult_File);
@@ -15718,7 +19734,8 @@ void SysUserSpi::OnRtnNetBaseLineTaskTopic(CShfeFtdcRtnNetBaseLineTaskField* pRt
         memcpy (pNewRtnNetBaseLineTask,pRtnNetBaseLineTask, sizeof(CShfeFtdcRtnNetBaseLineTaskField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetBaseLineTask;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetBaseLineTask;
     if (NULL == pRtnNetBaseLineTask) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetBaseLineTask is NULL" , g_RunningResult_File); 
     } else {
@@ -15734,7 +19751,15 @@ void SysUserSpi::OnRtnNetBaseLineTaskTopic(CShfeFtdcRtnNetBaseLineTaskField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineTaskTopic_mutex);
-    g_RtnNetBaseLineTaskTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineTaskTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetBaseLineTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineTaskTopic_mutex);
 
     uv_async_send(&g_RtnNetBaseLineTaskTopic_async);
@@ -15743,9 +19768,16 @@ void SysUserSpi::OnRtnNetBaseLineTaskTopic(CShfeFtdcRtnNetBaseLineTaskField* pRt
 
 void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResultField* pRspQryNetBaseLineResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBaseLineResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetBaseLineResultTopic_spi_callbackNumb: ", g_RspQryNetBaseLineResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
@@ -15784,10 +19816,11 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetBaseLineResult;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetBaseLineResult;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLineResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBaseLineResult is NULL" , g_RunningResult_File); 
@@ -15808,7 +19841,15 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineResultTopic_mutex);
-    g_RspQryNetBaseLineResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineResultTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetBaseLineResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineResultTopic_mutex);
 
     uv_async_send(&g_RspQryNetBaseLineResultTopic_async);
@@ -15817,9 +19858,16 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
 
 void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField* pRtnNetBaseLineResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBaseLineResultTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetBaseLineResultTopic_spi_callbackNumb: ", g_RtnNetBaseLineResultTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
@@ -15836,7 +19884,8 @@ void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField*
         memcpy (pNewRtnNetBaseLineResult,pRtnNetBaseLineResult, sizeof(CShfeFtdcRtnNetBaseLineResultField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetBaseLineResult;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetBaseLineResult;
     if (NULL == pRtnNetBaseLineResult) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetBaseLineResult is NULL" , g_RunningResult_File); 
     } else {
@@ -15853,7 +19902,15 @@ void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField*
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineResultTopic_mutex);
-    g_RtnNetBaseLineResultTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineResultTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineResultTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetBaseLineResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineResultTopic_mutex);
 
     uv_async_send(&g_RtnNetBaseLineResultTopic_async);
@@ -15862,9 +19919,16 @@ void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField*
 
 void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLinkStatusInfoField* pRspQryNetPartyLinkStatusInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkStatusInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPartyLinkStatusInfoTopic_spi_callbackNumb: ", g_RspQryNetPartyLinkStatusInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
@@ -15903,10 +19967,11 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPartyLinkStatusInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkStatusInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkStatusInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkStatusInfo is NULL" , g_RunningResult_File); 
@@ -15924,7 +19989,15 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkStatusInfoTopic_mutex);
-    g_RspQryNetPartyLinkStatusInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPartyLinkStatusInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkStatusInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetPartyLinkStatusInfoTopic_async);
@@ -15933,9 +20006,16 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
 
 void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatusInfoField* pRtnNetPartyLinkStatusInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkStatusInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPartyLinkStatusInfoTopic_spi_callbackNumb: ", g_RtnNetPartyLinkStatusInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
@@ -15952,7 +20032,8 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
         memcpy (pNewRtnNetPartyLinkStatusInfo,pRtnNetPartyLinkStatusInfo, sizeof(CShfeFtdcRtnNetPartyLinkStatusInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPartyLinkStatusInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPartyLinkStatusInfo;
     if (NULL == pRtnNetPartyLinkStatusInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPartyLinkStatusInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -15966,7 +20047,15 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkStatusInfoTopic_mutex);
-    g_RtnNetPartyLinkStatusInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPartyLinkStatusInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkStatusInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetPartyLinkStatusInfoTopic_async);
@@ -15975,9 +20064,16 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
 
 void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLineInfoField* pRspQryNetMemberSDHLineInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMemberSDHLineInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetMemberSDHLineInfoTopic_spi_callbackNumb: ", g_RspQryNetMemberSDHLineInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetMemberSDHLineInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16016,10 +20112,11 @@ void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetMemberSDHLineInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetMemberSDHLineInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMemberSDHLineInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMemberSDHLineInfo is NULL" , g_RunningResult_File); 
@@ -16057,7 +20154,15 @@ void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMemberSDHLineInfoTopic_mutex);
-    g_RspQryNetMemberSDHLineInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetMemberSDHLineInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMemberSDHLineInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetMemberSDHLineInfoTopic_async);
@@ -16066,9 +20171,16 @@ void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLi
 
 void SysUserSpi::OnRtnNetMemberSDHLineInfoTopic(CShfeFtdcRtnNetMemberSDHLineInfoField* pRtnNetMemberSDHLineInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMemberSDHLineInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetMemberSDHLineInfoTopic_spi_callbackNumb: ", g_RtnNetMemberSDHLineInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetMemberSDHLineInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16085,7 +20197,8 @@ void SysUserSpi::OnRtnNetMemberSDHLineInfoTopic(CShfeFtdcRtnNetMemberSDHLineInfo
         memcpy (pNewRtnNetMemberSDHLineInfo,pRtnNetMemberSDHLineInfo, sizeof(CShfeFtdcRtnNetMemberSDHLineInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetMemberSDHLineInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetMemberSDHLineInfo;
     if (NULL == pRtnNetMemberSDHLineInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetMemberSDHLineInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16119,7 +20232,15 @@ void SysUserSpi::OnRtnNetMemberSDHLineInfoTopic(CShfeFtdcRtnNetMemberSDHLineInfo
     }
 
     uv_mutex_lock (&g_RtnNetMemberSDHLineInfoTopic_mutex);
-    g_RtnNetMemberSDHLineInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.end()) {
+        g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetMemberSDHLineInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMemberSDHLineInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetMemberSDHLineInfoTopic_async);
@@ -16128,9 +20249,16 @@ void SysUserSpi::OnRtnNetMemberSDHLineInfoTopic(CShfeFtdcRtnNetMemberSDHLineInfo
 
 void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField* pRspQryNetDDNLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDDNLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetDDNLinkInfoTopic_spi_callbackNumb: ", g_RspQryNetDDNLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetDDNLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16169,10 +20297,11 @@ void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetDDNLinkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetDDNLinkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDDNLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDDNLinkInfo is NULL" , g_RunningResult_File); 
@@ -16193,7 +20322,15 @@ void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDDNLinkInfoTopic_mutex);
-    g_RspQryNetDDNLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDDNLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetDDNLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDDNLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetDDNLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDDNLinkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetDDNLinkInfoTopic_async);
@@ -16202,9 +20339,16 @@ void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField*
 
 void SysUserSpi::OnRtnNetDDNLinkInfoTopic(CShfeFtdcRtnNetDDNLinkInfoField* pRtnNetDDNLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDDNLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetDDNLinkInfoTopic_spi_callbackNumb: ", g_RtnNetDDNLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetDDNLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16221,7 +20365,8 @@ void SysUserSpi::OnRtnNetDDNLinkInfoTopic(CShfeFtdcRtnNetDDNLinkInfoField* pRtnN
         memcpy (pNewRtnNetDDNLinkInfo,pRtnNetDDNLinkInfo, sizeof(CShfeFtdcRtnNetDDNLinkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetDDNLinkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetDDNLinkInfo;
     if (NULL == pRtnNetDDNLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetDDNLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16238,7 +20383,15 @@ void SysUserSpi::OnRtnNetDDNLinkInfoTopic(CShfeFtdcRtnNetDDNLinkInfoField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetDDNLinkInfoTopic_mutex);
-    g_RtnNetDDNLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDDNLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetDDNLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDDNLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetDDNLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDDNLinkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetDDNLinkInfoTopic_async);
@@ -16247,9 +20400,16 @@ void SysUserSpi::OnRtnNetDDNLinkInfoTopic(CShfeFtdcRtnNetDDNLinkInfoField* pRtnN
 
 void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemberLinkInfoField* pRspQryNetPseudMemberLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPseudMemberLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPseudMemberLinkInfoTopic_spi_callbackNumb: ", g_RspQryNetPseudMemberLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPseudMemberLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16288,10 +20448,11 @@ void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemb
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPseudMemberLinkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPseudMemberLinkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPseudMemberLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPseudMemberLinkInfo is NULL" , g_RunningResult_File); 
@@ -16320,7 +20481,15 @@ void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemb
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPseudMemberLinkInfoTopic_mutex);
-    g_RspQryNetPseudMemberLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPseudMemberLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPseudMemberLinkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetPseudMemberLinkInfoTopic_async);
@@ -16329,9 +20498,16 @@ void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemb
 
 void SysUserSpi::OnRtnNetPseudMemberLinkInfoTopic(CShfeFtdcRtnNetPseudMemberLinkInfoField* pRtnNetPseudMemberLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPseudMemberLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPseudMemberLinkInfoTopic_spi_callbackNumb: ", g_RtnNetPseudMemberLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPseudMemberLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16348,7 +20524,8 @@ void SysUserSpi::OnRtnNetPseudMemberLinkInfoTopic(CShfeFtdcRtnNetPseudMemberLink
         memcpy (pNewRtnNetPseudMemberLinkInfo,pRtnNetPseudMemberLinkInfo, sizeof(CShfeFtdcRtnNetPseudMemberLinkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPseudMemberLinkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPseudMemberLinkInfo;
     if (NULL == pRtnNetPseudMemberLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPseudMemberLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16373,7 +20550,15 @@ void SysUserSpi::OnRtnNetPseudMemberLinkInfoTopic(CShfeFtdcRtnNetPseudMemberLink
     }
 
     uv_mutex_lock (&g_RtnNetPseudMemberLinkInfoTopic_mutex);
-    g_RtnNetPseudMemberLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPseudMemberLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPseudMemberLinkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetPseudMemberLinkInfoTopic_async);
@@ -16382,9 +20567,16 @@ void SysUserSpi::OnRtnNetPseudMemberLinkInfoTopic(CShfeFtdcRtnNetPseudMemberLink
 
 void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField* pRspQryOuterDeviceInf, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOuterDeviceInfTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryOuterDeviceInfTopic_spi_callbackNumb: ", g_RspQryOuterDeviceInfTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryOuterDeviceInfTopic: END! ******\n", g_RunningResult_File);
@@ -16423,10 +20615,11 @@ void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryOuterDeviceInf;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryOuterDeviceInf;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOuterDeviceInf) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOuterDeviceInf is NULL" , g_RunningResult_File); 
@@ -16442,7 +20635,15 @@ void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOuterDeviceInfTopic_mutex);
-    g_RspQryOuterDeviceInfTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOuterDeviceInfTopic_IOUser_vec.begin();
+        it != g_RspQryOuterDeviceInfTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOuterDeviceInfTopic_IOUser_vec.end()) {
+        g_RspQryOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryOuterDeviceInfTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOuterDeviceInfTopic_mutex);
 
     uv_async_send(&g_RspQryOuterDeviceInfTopic_async);
@@ -16451,9 +20652,16 @@ void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField*
 
 void SysUserSpi::OnRtnNetOuterDeviceInfTopic(CShfeFtdcRtnNetOuterDeviceInfField* pRtnNetOuterDeviceInf){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetOuterDeviceInfTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetOuterDeviceInfTopic_spi_callbackNumb: ", g_RtnNetOuterDeviceInfTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetOuterDeviceInfTopic: END! ******\n", g_RunningResult_File);
@@ -16470,7 +20678,8 @@ void SysUserSpi::OnRtnNetOuterDeviceInfTopic(CShfeFtdcRtnNetOuterDeviceInfField*
         memcpy (pNewRtnNetOuterDeviceInf,pRtnNetOuterDeviceInf, sizeof(CShfeFtdcRtnNetOuterDeviceInfField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetOuterDeviceInf;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetOuterDeviceInf;
     if (NULL == pRtnNetOuterDeviceInf) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetOuterDeviceInf is NULL" , g_RunningResult_File); 
     } else {
@@ -16482,7 +20691,15 @@ void SysUserSpi::OnRtnNetOuterDeviceInfTopic(CShfeFtdcRtnNetOuterDeviceInfField*
     }
 
     uv_mutex_lock (&g_RtnNetOuterDeviceInfTopic_mutex);
-    g_RtnNetOuterDeviceInfTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetOuterDeviceInfTopic_IOUser_vec.begin();
+        it != g_RtnNetOuterDeviceInfTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetOuterDeviceInfTopic_IOUser_vec.end()) {
+        g_RtnNetOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetOuterDeviceInfTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetOuterDeviceInfTopic_mutex);
 
     uv_async_send(&g_RtnNetOuterDeviceInfTopic_async);
@@ -16491,9 +20708,16 @@ void SysUserSpi::OnRtnNetOuterDeviceInfTopic(CShfeFtdcRtnNetOuterDeviceInfField*
 
 void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPingResultInfoField* pRspQryNetLocalPingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetLocalPingResultInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetLocalPingResultInfoTopic_spi_callbackNumb: ", g_RspQryNetLocalPingResultInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16532,10 +20756,11 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetLocalPingResultInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetLocalPingResultInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetLocalPingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetLocalPingResultInfo is NULL" , g_RunningResult_File); 
@@ -16555,7 +20780,15 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetLocalPingResultInfoTopic_mutex);
-    g_RspQryNetLocalPingResultInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetLocalPingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetLocalPingResultInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetLocalPingResultInfoTopic_async);
@@ -16564,9 +20797,16 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
 
 void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResultInfoField* pRtnNetLocalPingResultInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetLocalPingResultInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetLocalPingResultInfoTopic_spi_callbackNumb: ", g_RtnNetLocalPingResultInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16583,7 +20823,8 @@ void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResult
         memcpy (pNewRtnNetLocalPingResultInfo,pRtnNetLocalPingResultInfo, sizeof(CShfeFtdcRtnNetLocalPingResultInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetLocalPingResultInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetLocalPingResultInfo;
     if (NULL == pRtnNetLocalPingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetLocalPingResultInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16599,7 +20840,15 @@ void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResult
     }
 
     uv_mutex_lock (&g_RtnNetLocalPingResultInfoTopic_mutex);
-    g_RtnNetLocalPingResultInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetLocalPingResultInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetLocalPingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetLocalPingResultInfoTopic_IOUser_vec.end()) {
+        g_RtnNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetLocalPingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetLocalPingResultInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetLocalPingResultInfoTopic_async);
@@ -16608,9 +20857,16 @@ void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResult
 
 void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePingResultInfoField* pRspQryNetRomotePingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetRomotePingResultInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetRomotePingResultInfoTopic_spi_callbackNumb: ", g_RspQryNetRomotePingResultInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16649,10 +20905,11 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetRomotePingResultInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetRomotePingResultInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetRomotePingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetRomotePingResultInfo is NULL" , g_RunningResult_File); 
@@ -16675,7 +20932,15 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetRomotePingResultInfoTopic_mutex);
-    g_RspQryNetRomotePingResultInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetRomotePingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetRomotePingResultInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetRomotePingResultInfoTopic_async);
@@ -16684,9 +20949,16 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
 
 void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResultInfoField* pRtnNetRomotePingResultInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetRomotePingResultInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetRomotePingResultInfoTopic_spi_callbackNumb: ", g_RtnNetRomotePingResultInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
@@ -16703,7 +20975,8 @@ void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResu
         memcpy (pNewRtnNetRomotePingResultInfo,pRtnNetRomotePingResultInfo, sizeof(CShfeFtdcRtnNetRomotePingResultInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetRomotePingResultInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetRomotePingResultInfo;
     if (NULL == pRtnNetRomotePingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetRomotePingResultInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16722,7 +20995,15 @@ void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResu
     }
 
     uv_mutex_lock (&g_RtnNetRomotePingResultInfoTopic_mutex);
-    g_RtnNetRomotePingResultInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetRomotePingResultInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetRomotePingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetRomotePingResultInfoTopic_IOUser_vec.end()) {
+        g_RtnNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetRomotePingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetRomotePingResultInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetRomotePingResultInfoTopic_async);
@@ -16731,9 +21012,16 @@ void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResu
 
 void SysUserSpi::OnRtnMonitorTopProcessInfo(CShfeFtdcRtnMonitorTopProcessInfoField* pRtnMonitorTopProcessInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMonitorTopProcessInfo: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMonitorTopProcessInfo_spi_callbackNumb: ", g_RtnMonitorTopProcessInfo_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMonitorTopProcessInfo: END! ******\n", g_RunningResult_File);
@@ -16750,7 +21038,8 @@ void SysUserSpi::OnRtnMonitorTopProcessInfo(CShfeFtdcRtnMonitorTopProcessInfoFie
         memcpy (pNewRtnMonitorTopProcessInfo,pRtnMonitorTopProcessInfo, sizeof(CShfeFtdcRtnMonitorTopProcessInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnMonitorTopProcessInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMonitorTopProcessInfo;
     if (NULL == pRtnMonitorTopProcessInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnMonitorTopProcessInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16773,7 +21062,15 @@ void SysUserSpi::OnRtnMonitorTopProcessInfo(CShfeFtdcRtnMonitorTopProcessInfoFie
     }
 
     uv_mutex_lock (&g_RtnMonitorTopProcessInfo_mutex);
-    g_RtnMonitorTopProcessInfo_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMonitorTopProcessInfo_IOUser_vec.begin();
+        it != g_RtnMonitorTopProcessInfo_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMonitorTopProcessInfo_IOUser_vec.end()) {
+        g_RtnMonitorTopProcessInfo_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMonitorTopProcessInfo_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMonitorTopProcessInfo_mutex);
 
     uv_async_send(&g_RtnMonitorTopProcessInfo_async);
@@ -16782,9 +21079,16 @@ void SysUserSpi::OnRtnMonitorTopProcessInfo(CShfeFtdcRtnMonitorTopProcessInfoFie
 
 void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopologyField* pRspQrySysInternalTopology, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysInternalTopologyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQrySysInternalTopologyTopic_spi_callbackNumb: ", g_RspQrySysInternalTopologyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQrySysInternalTopologyTopic: END! ******\n", g_RunningResult_File);
@@ -16823,10 +21127,11 @@ void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopo
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQrySysInternalTopology;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQrySysInternalTopology;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysInternalTopology) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysInternalTopology is NULL" , g_RunningResult_File); 
@@ -16844,7 +21149,15 @@ void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysInternalTopologyTopic_mutex);
-    g_RspQrySysInternalTopologyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysInternalTopologyTopic_IOUser_vec.begin();
+        it != g_RspQrySysInternalTopologyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysInternalTopologyTopic_IOUser_vec.end()) {
+        g_RspQrySysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQrySysInternalTopologyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysInternalTopologyTopic_mutex);
 
     uv_async_send(&g_RspQrySysInternalTopologyTopic_async);
@@ -16853,9 +21166,16 @@ void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopo
 
 void SysUserSpi::OnRtnSysInternalTopologyTopic(CShfeFtdcRtnSysInternalTopologyField* pRtnSysInternalTopology){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSysInternalTopologyTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnSysInternalTopologyTopic_spi_callbackNumb: ", g_RtnSysInternalTopologyTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnSysInternalTopologyTopic: END! ******\n", g_RunningResult_File);
@@ -16872,7 +21192,8 @@ void SysUserSpi::OnRtnSysInternalTopologyTopic(CShfeFtdcRtnSysInternalTopologyFi
         memcpy (pNewRtnSysInternalTopology,pRtnSysInternalTopology, sizeof(CShfeFtdcRtnSysInternalTopologyField));
     }
 
-    paramArray[0] = (void*)pNewRtnSysInternalTopology;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnSysInternalTopology;
     if (NULL == pRtnSysInternalTopology) { 
         OutputCallbackMessage("SysUserSpi::pRtnSysInternalTopology is NULL" , g_RunningResult_File); 
     } else {
@@ -16886,7 +21207,15 @@ void SysUserSpi::OnRtnSysInternalTopologyTopic(CShfeFtdcRtnSysInternalTopologyFi
     }
 
     uv_mutex_lock (&g_RtnSysInternalTopologyTopic_mutex);
-    g_RtnSysInternalTopologyTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysInternalTopologyTopic_IOUser_vec.begin();
+        it != g_RtnSysInternalTopologyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysInternalTopologyTopic_IOUser_vec.end()) {
+        g_RtnSysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnSysInternalTopologyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysInternalTopologyTopic_mutex);
 
     uv_async_send(&g_RtnSysInternalTopologyTopic_async);
@@ -16895,9 +21224,16 @@ void SysUserSpi::OnRtnSysInternalTopologyTopic(CShfeFtdcRtnSysInternalTopologyFi
 
 void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField* pRspQryMemberLinkCost, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMemberLinkCostTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryMemberLinkCostTopic_spi_callbackNumb: ", g_RspQryMemberLinkCostTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryMemberLinkCostTopic: END! ******\n", g_RunningResult_File);
@@ -16936,10 +21272,11 @@ void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField*
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryMemberLinkCost;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryMemberLinkCost;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemberLinkCost) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMemberLinkCost is NULL" , g_RunningResult_File); 
@@ -16961,7 +21298,15 @@ void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemberLinkCostTopic_mutex);
-    g_RspQryMemberLinkCostTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemberLinkCostTopic_IOUser_vec.begin();
+        it != g_RspQryMemberLinkCostTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemberLinkCostTopic_IOUser_vec.end()) {
+        g_RspQryMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryMemberLinkCostTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemberLinkCostTopic_mutex);
 
     uv_async_send(&g_RspQryMemberLinkCostTopic_async);
@@ -16970,9 +21315,16 @@ void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField*
 
 void SysUserSpi::OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField* pRtnMemberLinkCost){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMemberLinkCostTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnMemberLinkCostTopic_spi_callbackNumb: ", g_RtnMemberLinkCostTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnMemberLinkCostTopic: END! ******\n", g_RunningResult_File);
@@ -16989,7 +21341,8 @@ void SysUserSpi::OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField* pRtnM
         memcpy (pNewRtnMemberLinkCost,pRtnMemberLinkCost, sizeof(CShfeFtdcRtnMemberLinkCostField));
     }
 
-    paramArray[0] = (void*)pNewRtnMemberLinkCost;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnMemberLinkCost;
     if (NULL == pRtnMemberLinkCost) { 
         OutputCallbackMessage("SysUserSpi::pRtnMemberLinkCost is NULL" , g_RunningResult_File); 
     } else {
@@ -17007,7 +21360,15 @@ void SysUserSpi::OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField* pRtnM
     }
 
     uv_mutex_lock (&g_RtnMemberLinkCostTopic_mutex);
-    g_RtnMemberLinkCostTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemberLinkCostTopic_IOUser_vec.begin();
+        it != g_RtnMemberLinkCostTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemberLinkCostTopic_IOUser_vec.end()) {
+        g_RtnMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnMemberLinkCostTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemberLinkCostTopic_mutex);
 
     uv_async_send(&g_RtnMemberLinkCostTopic_async);
@@ -17016,9 +21377,16 @@ void SysUserSpi::OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField* pRtnM
 
 void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylinkMonthlyRentField* pRspQryNetPartylinkMonthlyRent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartylinkMonthlyRentTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetPartylinkMonthlyRentTopic_spi_callbackNumb: ", g_RspQryNetPartylinkMonthlyRentTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartylinkMonthlyRentTopic: END! ******\n", g_RunningResult_File);
@@ -17057,10 +21425,11 @@ void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylin
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetPartylinkMonthlyRent;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetPartylinkMonthlyRent;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartylinkMonthlyRent) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartylinkMonthlyRent is NULL" , g_RunningResult_File); 
@@ -17078,7 +21447,15 @@ void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylin
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartylinkMonthlyRentTopic_mutex);
-    g_RspQryNetPartylinkMonthlyRentTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.end()) {
+        g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetPartylinkMonthlyRentTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartylinkMonthlyRentTopic_mutex);
 
     uv_async_send(&g_RspQryNetPartylinkMonthlyRentTopic_async);
@@ -17087,9 +21464,16 @@ void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylin
 
 void SysUserSpi::OnRtnNetPartylinkMonthlyRentTopic(CShfeFtdcRtnNetPartylinkMonthlyRentField* pRtnNetPartylinkMonthlyRent){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartylinkMonthlyRentTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetPartylinkMonthlyRentTopic_spi_callbackNumb: ", g_RtnNetPartylinkMonthlyRentTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetPartylinkMonthlyRentTopic: END! ******\n", g_RunningResult_File);
@@ -17106,7 +21490,8 @@ void SysUserSpi::OnRtnNetPartylinkMonthlyRentTopic(CShfeFtdcRtnNetPartylinkMonth
         memcpy (pNewRtnNetPartylinkMonthlyRent,pRtnNetPartylinkMonthlyRent, sizeof(CShfeFtdcRtnNetPartylinkMonthlyRentField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetPartylinkMonthlyRent;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetPartylinkMonthlyRent;
     if (NULL == pRtnNetPartylinkMonthlyRent) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetPartylinkMonthlyRent is NULL" , g_RunningResult_File); 
     } else {
@@ -17120,7 +21505,15 @@ void SysUserSpi::OnRtnNetPartylinkMonthlyRentTopic(CShfeFtdcRtnNetPartylinkMonth
     }
 
     uv_mutex_lock (&g_RtnNetPartylinkMonthlyRentTopic_mutex);
-    g_RtnNetPartylinkMonthlyRentTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.begin();
+        it != g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.end()) {
+        g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetPartylinkMonthlyRentTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartylinkMonthlyRentTopic_mutex);
 
     uv_async_send(&g_RtnNetPartylinkMonthlyRentTopic_async);
@@ -17129,9 +21522,16 @@ void SysUserSpi::OnRtnNetPartylinkMonthlyRentTopic(CShfeFtdcRtnNetPartylinkMonth
 
 void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLinkInfoField* pRspQryNetNonPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RspQryNetNonPartyLinkInfoTopic_spi_callbackNumb: ", g_RspQryNetNonPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[4];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[5];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RspQryNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -17170,10 +21570,11 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
         return;
     }  	
 
-    paramArray[0] = (void*)pNewRspQryNetNonPartyLinkInfo;
-	paramArray[1] = (void*)pRspInfoNew;		
-	paramArray[2] = (void*)pId;
-    paramArray[3] = (void*)bIsLastNew;			
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRspQryNetNonPartyLinkInfo;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
+    paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetNonPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetNonPartyLinkInfo is NULL" , g_RunningResult_File); 
@@ -17213,7 +21614,15 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
-    g_RspQryNetNonPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RspQryNetNonPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RspQryNetNonPartyLinkInfoTopic_async);
@@ -17222,9 +21631,16 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
 
 void SysUserSpi::OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoField* pRtnNetNonPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-    OutputCallbackMessage("g_RtnNetNonPartyLinkInfoTopic_spi_callbackNumb: ", g_RtnNetNonPartyLinkInfoTopic_spi_callbackNumb++, g_RunningResult_File);
 
-    void** paramArray = new void*[1];
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }           
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: RtnNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
@@ -17241,7 +21657,8 @@ void SysUserSpi::OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoFi
         memcpy (pNewRtnNetNonPartyLinkInfo,pRtnNetNonPartyLinkInfo, sizeof(CShfeFtdcRtnNetNonPartyLinkInfoField));
     }
 
-    paramArray[0] = (void*)pNewRtnNetNonPartyLinkInfo;
+    paramArray[0] = (void*)pSpiObj;
+    paramArray[1] = (void*)pNewRtnNetNonPartyLinkInfo;
     if (NULL == pRtnNetNonPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRtnNetNonPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -17277,7 +21694,15 @@ void SysUserSpi::OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoFi
     }
 
     uv_mutex_lock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
-    g_RtnNetNonPartyLinkInfoTopic_queue.push ((void**)&paramArray[0]);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
+    g_RtnNetNonPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
 
     uv_async_send(&g_RtnNetNonPartyLinkInfoTopic_async);
