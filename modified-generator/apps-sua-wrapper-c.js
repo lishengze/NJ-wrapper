@@ -10,9 +10,9 @@ var fileData= hereDoc(function () {
 /*#include <nan.h>
 #include "ftdcsysuserapi-wrapper.h"
 #include "FtdcSysUserApiStruct.h"
-#include "spi-transform.h"
 #include "sysuserspi.h"
 #include "tool-function.h"
+#include "id-func.h"
 #include "CCrypto.h"
 #include <string.h>
 
@@ -24,29 +24,26 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
-    _userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
-    _spi = new SysUserSpi();
-    if (NULL == _spi) {
-       OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: _spi is NULL", g_RunningResult_File);
+    m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
+    m_spi = new SysUserSpi();
+    if (NULL == m_spi) {
+       OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);
        return;
     }
 }
 
 FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
-    _userApi->Release();
+    m_userApi->Release();
     
-    if (NULL != _spi) {
-        delete _spi;
-        _spi = NULL;
+    if (NULL != m_spi) {
+        delete m_spi;
+        m_spi = NULL;
     }
     
     g_RunningResult_File.close();
-    
-    uv_close((uv_handle_t*) &g_FrontConnected_async, NULL);
-    uv_close((uv_handle_t*) &g_FrontDisconnected_async, NULL);
-    uv_close((uv_handle_t*) &g_HeartBeatWarning_async, NULL);    
 */
 });
+    
 var jsonContent=require("./package.json");
 var Packagelength=jsonContent.FTD.packages[0].package.length;
 var beforeRspQryTopCpuInfoTopic=0;
@@ -58,13 +55,6 @@ while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.na
     AfterRtnNetNonPartyLinkInfoTopic++;
 }
 AfterRtnNetNonPartyLinkInfoTopic++;
-
-for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
-    var funcName = jsonContent.FTD.packages[0].package[i].$.name;
-    if(funcName.substring(0,3)==="Rsp" || funcName.substring(0,3)==="Rtn") {
-        fileData+="    uv_close((uv_handle_t*) &g_" + funcName  + "_async" +",NULL);\n";
-    }
-}
 
 fileData+=hereDoc(function(){
 /*}
@@ -132,7 +122,7 @@ fileData+=hereDoc(function(){/*
  exports->Set(Nan::New("FtdcSysUserApi_Wrapper").ToLocalChecked(), tpl->GetFunction());
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::New) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
     if (info.IsConstructCall()) {
         // Invoked as constructor: `new FtdcSysUserApi_Wrapper(...)`
         Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
@@ -149,54 +139,59 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::New) {
     }
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Release) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Release) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    obj->_userApi->Release();
+    obj->m_userApi->Release();
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Init) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Init) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    obj->_userApi->Init();
+    obj->m_userApi->Init();
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::Join) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::Join) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    int result=obj->_userApi->Join();
+    int result=obj->m_userApi->Join();
     info.GetReturnValue().Set(Nan::New<v8::Int32>(result));
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::GetTradingDay) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::GetTradingDay) {
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
-    const char* result=obj->_userApi->GetTradingDay();
+    const char* result=obj->m_userApi->GetTradingDay();
     info.GetReturnValue().Set(Nan::New<v8::String>(result).ToLocalChecked());
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterFront) {
+NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterFront) {
     Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
     String::Utf8Value utf8Str(fileData);
 
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
 
-    obj->_userApi->RegisterFront(*utf8Str);
+    obj->m_userApi->RegisterFront(*utf8Str);
 
     info.GetReturnValue().SetUndefined();
 }
 
-NAN_METHOD(FtdcSysUserApi_Wrapper::RegisterSpi) {
+int g_idnumb = 0;
+NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterSpi) {
     std::cout<<"RegisterSpi Called!"<<std::endl;
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(info[0]->IsObject())
     {
-        //obj->_spi=new SysUserSpi(Nan::To<v8::Object>(info[0]).ToLocalChecked());
-        //obj->_userApi->RegisterSpi(obj->_spi);
-        SpiObj.Reset(Nan::To<v8::Object>(info[0]).ToLocalChecked());
-        obj->_userApi->RegisterSpi(obj->_spi);
+        //obj->m_spi=new SysUserSpi(Nan::To<v8::Object>(info[0]).ToLocalChecked());
+        //obj->m_userApi->RegisterSpi(obj->m_spi);
+        
+        obj->m_spi->m_spiobj.Reset(Nan::To<v8::Object>(info[0]).ToLocalChecked());
+        // obj->m_spi->m_frontid = GetFrontID();
+        obj->m_spi->m_frontid = ++g_idnumb;
+        obj->m_userApi->RegisterSpi(obj->m_spi);
     }
     info.GetReturnValue().SetUndefined();
 }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqUserLogin) {
      std::cout<<"ReqUserLogin Called!"<<std::endl;
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -225,17 +220,18 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqUserLogin) {
      v8::Local<v8::Object> paramOnePasswordObj=Nan::To<v8::Object>( Nan::Get(paramOne,Nan::New<v8::String>("Password").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();
      v8::String::Utf8Value paramOnePasswordStr(Nan::To<v8::String>(paramOnePasswordObj).ToLocalChecked());
      // strcpy_s(field.Password, 41, *paramOnePasswordStr);
-     strncpy(field.Password, *paramOnePasswordStr,41);
+     strncpy(field.Password, *paramOnePasswordStr, 41);
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-     int64_t nRequestID=paramTwo->Value();
+     int nRequestID = (int)paramTwo->Value();
 
      //call natvie method
-     double returnValue= obj->_userApi->ReqUserLogin(&field, nRequestID);
+     double returnValue= obj->m_userApi->ReqUserLogin(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
-     }
-NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
+}
+     
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      std::cout<<"ReqQrySysUserLoginTopic Called!"<<std::endl;
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -270,16 +266,19 @@ NAN_METHOD(FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      std::cout<<*paramOneVersionIDStr<<std::endl;
      //convert parameter two
      v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();
-     int64_t nRequestID=paramTwo->Value();
+     int nRequestID=(int)paramTwo->Value();
 
      //call natvie method
-     double returnValue= obj->_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
+     double returnValue= obj->m_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
  }
 */
 });
-var NoneType=0;//测试无类型数量
+
+var maxTypeLength = 0;
+                
+var NoneType=0;//测试无类型数��?
 for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
     var strName = jsonContent.FTD.packages[0].package[i].$.name;
     if (strName !== "ReqQrySysUserLoginTopic"&&strName.substring(0, 3) === "Req" &&
@@ -305,7 +304,7 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         strName!=="ReqQryAppMonitorCfgTopic"
         ) {//取开头为Req结尾为Topic的package
 
-        fileData+= "NAN_METHOD(FtdcSysUserApi_Wrapper::" + strName + "){\n";
+        fileData+= "\nNAN_METHOD (FtdcSysUserApi_Wrapper::" + strName + ") {\n";
         fileData+= '  std::cout<<"' + strName + ' Called!"<<std::endl;\n';
         fileData+= "  FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());\n";
         fileData+= "  if(!(info[0]->IsObject() && info[1]->IsNumber()))\n";
@@ -315,6 +314,8 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
         fileData+= "  //convert parameter one\n";
         fileData+= "  v8::Local<v8::Object> paramOne=Nan::To<v8::Object>(info[0]).ToLocalChecked();\n";
         fileData+= "  CShfeFtdc" + jsonContent.FTD.packages[0].package[i].field[0].$.name + "Field field;\n\n";
+        
+
         var fieldDefineLength = jsonContent.FTD.fields[0].fieldDefine.length;
         for (var j = 0; j < fieldDefineLength; j++) {
             if (jsonContent.FTD.fields[0].fieldDefine[j].$.name === jsonContent.FTD.packages[0].package[i].field[0].$.name) {
@@ -341,8 +342,16 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                                 itemName + '").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();\n';
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
-                            TypeLength = jsonContent.FTD.types[0].String[w].$.length + 1;
-                           // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            TypeLength = parseInt(jsonContent.FTD.types[0].String[w].$.length) + 1;
+                            
+                            // console.log(typeof jsonContent.FTD.types[0].String[w].$.length);
+                            
+                            if (maxTypeLength < TypeLength) {
+                                maxTypeLength = TypeLength;
+                            }
+                            
+                            // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
+                            
                             fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
 
                         }
@@ -354,7 +363,12 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                                 itemName + '").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();\n';
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
-                            TypeLength = jsonContent.FTD.types[0].VString[w].$.length + 1;
+                            TypeLength = parseInt(jsonContent.FTD.types[0].VString[w].$.length) + 1;
+                            
+                            if (maxTypeLength < TypeLength) {
+                                maxTypeLength = TypeLength;
+                            }                            
+                            
                             // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
                             fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
                         }
@@ -394,7 +408,12 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
                                 itemName + '").ToLocalChecked()).ToLocalChecked() ).ToLocalChecked();\n';
                             fileData+= '  v8::String::Utf8Value paramOne' + itemName + 'fileData(Nan::To<v8::String>(paramOne' + itemName +
                                 'Obj).ToLocalChecked());\n';
-                            TypeLength = jsonContent.FTD.types[0].Array[w].$.length + 1;
+                            TypeLength = parseInt(jsonContent.FTD.types[0].Array[w].$.length) + 1;
+                            
+                            if (maxTypeLength < TypeLength) {
+                                maxTypeLength = TypeLength;
+                            }                         
+                            
                             // fileData+= "  strcpy_s(field." + itemName + "," + TypeLength + ",*paramOne" + itemName + "fileData);\n\n";
                             fileData+= "  strncpy(field." + itemName + ", *paramOne" + itemName + "fileData, " + TypeLength + ");\n\n";
 
@@ -440,9 +459,9 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
 
                     fileData+= "  //convert parameter two\n";
                     fileData+= "  v8::Local<v8::Integer> paramTwo=Nan::To<v8::Integer>(info[1]).ToLocalChecked();\n";
-                    fileData+= "  int64_t nRequestID=paramTwo->Value();\n\n";
+                    fileData+= "  int nRequestID=(int)paramTwo->Value();\n\n";
                     fileData+= "  //call native method\n";
-                    fileData+= "  double returnValue= obj->_userApi->" + jsonContent.FTD.packages[0].package[i].$.name +
+                    fileData+= "  double returnValue= obj->m_userApi->" + jsonContent.FTD.packages[0].package[i].$.name +
                         "(&field, nRequestID);\n\n";
                     fileData+= "  info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));\n";
                     fileData+= "}\n";
@@ -452,152 +471,154 @@ for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++) {
 
 }
 
-function getTypeLength(itemType){
-//    var IntLength=jsonContent.FTD.types[0].Int.length;
-//    var stringLength=jsonContent.FTD.types[0].String.length;
-//    var vstringLength=jsonContent.FTD.types[0].VString.length;
-//    var RangeIntLength=jsonContent.FTD.types[0].RangeInt.length;
-//    var EnumCharLength=jsonContent.FTD.types[0].EnumChar.length;
-//    var fixNumberLength=jsonContent.FTD.types[0].FixNumber.length;
-//    var ArrayLength=jsonContent.FTD.types[0].Array.length;
-//    var Floatlength=jsonContent.FTD.types[0].Float.length;
-//    var CharLength=jsonContent.FTD.types[0].Char.length;
-//    var WordLength=jsonContent.FTD.types[0].Word.length;
-//    var QWordLength=jsonContent.FTD.types[0].QWord.length;
-    for(var i=0;i<IntLength;i++) {
-        if (jsonContent.FTD.types[0].Int[i].$.typename === itemType) {
-          return 1;
-        }
-    }
-    for(var i=0;i<stringLength;i++) {
-        if (jsonContent.FTD.types[0].String[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].String[i].$.length+1;
-        }
-    }
-    for(var i=0;i<vstringLength;i++) {
-        if (jsonContent.FTD.types[0].VString[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].VString[i].$.length+1;
-        }
-    }
+console.log("maxTypeLength: " +  maxTypeLength);
 
-    for(var i=0;i<RangeIntLength;i++) {
-        if (jsonContent.FTD.types[0].RangeInt[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].RangeInt[i].$.length+1;
-        }
-    }
-    for(var i=0;i<EnumCharLength;i++) {
-        if (jsonContent.FTD.types[0].EnumChar[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<fixNumberLength;i++) {
-        if (jsonContent.FTD.types[0].FixNumber[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<ArrayLength;i++) {
-        if (jsonContent.FTD.types[0].Array[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].Array[i].$.length+1;
-        }
-    }
-    for(var i=0;i<Floatlength;i++) {
-        if (jsonContent.FTD.types[0].Float[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<CharLength;i++) {
-        if (jsonContent.FTD.types[0].Char[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<WordLength;i++) {
-        if (jsonContent.FTD.types[0].Word[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<QWordLength;i++) {
-        if (jsonContent.FTD.types[0].QWord[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    NoneType++;
-    return 100;
+// function getTypeLength(itemType){
+// //    var IntLength=jsonContent.FTD.types[0].Int.length;
+// //    var stringLength=jsonContent.FTD.types[0].String.length;
+// //    var vstringLength=jsonContent.FTD.types[0].VString.length;
+// //    var RangeIntLength=jsonContent.FTD.types[0].RangeInt.length;
+// //    var EnumCharLength=jsonContent.FTD.types[0].EnumChar.length;
+// //    var fixNumberLength=jsonContent.FTD.types[0].FixNumber.length;
+// //    var ArrayLength=jsonContent.FTD.types[0].Array.length;
+// //    var Floatlength=jsonContent.FTD.types[0].Float.length;
+// //    var CharLength=jsonContent.FTD.types[0].Char.length;
+// //    var WordLength=jsonContent.FTD.types[0].Word.length;
+// //    var QWordLength=jsonContent.FTD.types[0].QWord.length;
+//     for(var i=0;i<IntLength;i++) {
+//         if (jsonContent.FTD.types[0].Int[i].$.typename === itemType) {
+//           return 1;
+//         }
+//     }
+//     for(var i=0;i<stringLength;i++) {
+//         if (jsonContent.FTD.types[0].String[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].String[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<vstringLength;i++) {
+//         if (jsonContent.FTD.types[0].VString[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].VString[i].$.length+1;
+//         }
+//     }
+
+//     for(var i=0;i<RangeIntLength;i++) {
+//         if (jsonContent.FTD.types[0].RangeInt[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].RangeInt[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<EnumCharLength;i++) {
+//         if (jsonContent.FTD.types[0].EnumChar[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<fixNumberLength;i++) {
+//         if (jsonContent.FTD.types[0].FixNumber[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<ArrayLength;i++) {
+//         if (jsonContent.FTD.types[0].Array[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].Array[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<Floatlength;i++) {
+//         if (jsonContent.FTD.types[0].Float[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<CharLength;i++) {
+//         if (jsonContent.FTD.types[0].Char[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<WordLength;i++) {
+//         if (jsonContent.FTD.types[0].Word[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<QWordLength;i++) {
+//         if (jsonContent.FTD.types[0].QWord[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     NoneType++;
+//     return 100;
 
 
-}
+// }
 
-function getTypeLength(itemType){
-    var IntLength=jsonContent.FTD.types[0].Int.length;
-    var stringLength=jsonContent.FTD.types[0].String.length;
-    var vstringLength=jsonContent.FTD.types[0].VString.length;
-    var RangeIntLength=jsonContent.FTD.types[0].RangeInt.length;
-    var EnumCharLength=jsonContent.FTD.types[0].EnumChar.length;
-    var fixNumberLength=jsonContent.FTD.types[0].FixNumber.length;
-    var ArrayLength=jsonContent.FTD.types[0].Array.length;
-    var Floatlength=jsonContent.FTD.types[0].Float.length;
-    var CharLength=jsonContent.FTD.types[0].Char.length;
-    var WordLength=jsonContent.FTD.types[0].Word.length;
-    var QWordLength=jsonContent.FTD.types[0].QWord.length;
-    for(var i=0;i<IntLength;i++) {
-        if (jsonContent.FTD.types[0].Int[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<stringLength;i++) {
-        if (jsonContent.FTD.types[0].String[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].String[i].$.length+1;
-        }
-    }
-    for(var i=0;i<vstringLength;i++) {
-        if (jsonContent.FTD.types[0].VString[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].VString[i].$.length+1;
-        }
-    }
+// function getTypeLength(itemType){
+//     var IntLength=jsonContent.FTD.types[0].Int.length;
+//     var stringLength=jsonContent.FTD.types[0].String.length;
+//     var vstringLength=jsonContent.FTD.types[0].VString.length;
+//     var RangeIntLength=jsonContent.FTD.types[0].RangeInt.length;
+//     var EnumCharLength=jsonContent.FTD.types[0].EnumChar.length;
+//     var fixNumberLength=jsonContent.FTD.types[0].FixNumber.length;
+//     var ArrayLength=jsonContent.FTD.types[0].Array.length;
+//     var Floatlength=jsonContent.FTD.types[0].Float.length;
+//     var CharLength=jsonContent.FTD.types[0].Char.length;
+//     var WordLength=jsonContent.FTD.types[0].Word.length;
+//     var QWordLength=jsonContent.FTD.types[0].QWord.length;
+//     for(var i=0;i<IntLength;i++) {
+//         if (jsonContent.FTD.types[0].Int[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<stringLength;i++) {
+//         if (jsonContent.FTD.types[0].String[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].String[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<vstringLength;i++) {
+//         if (jsonContent.FTD.types[0].VString[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].VString[i].$.length+1;
+//         }
+//     }
 
-    for(var i=0;i<RangeIntLength;i++) {
-        if (jsonContent.FTD.types[0].RangeInt[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].RangeInt[i].$.length+1;
-        }
-    }
-    for(var i=0;i<EnumCharLength;i++) {
-        if (jsonContent.FTD.types[0].EnumChar[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<fixNumberLength;i++) {
-        if (jsonContent.FTD.types[0].FixNumber[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<ArrayLength;i++) {
-        if (jsonContent.FTD.types[0].Array[i].$.typename === itemType) {
-            return jsonContent.FTD.types[0].Array[i].$.length+1;
-        }
-    }
-    for(var i=0;i<Floatlength;i++) {
-        if (jsonContent.FTD.types[0].Float[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<CharLength;i++) {
-        if (jsonContent.FTD.types[0].Char[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<WordLength;i++) {
-        if (jsonContent.FTD.types[0].Word[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    for(var i=0;i<QWordLength;i++) {
-        if (jsonContent.FTD.types[0].QWord[i].$.typename === itemType) {
-            return 1;
-        }
-    }
-    NoneType++;
-    return 100;
+//     for(var i=0;i<RangeIntLength;i++) {
+//         if (jsonContent.FTD.types[0].RangeInt[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].RangeInt[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<EnumCharLength;i++) {
+//         if (jsonContent.FTD.types[0].EnumChar[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<fixNumberLength;i++) {
+//         if (jsonContent.FTD.types[0].FixNumber[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<ArrayLength;i++) {
+//         if (jsonContent.FTD.types[0].Array[i].$.typename === itemType) {
+//             return jsonContent.FTD.types[0].Array[i].$.length+1;
+//         }
+//     }
+//     for(var i=0;i<Floatlength;i++) {
+//         if (jsonContent.FTD.types[0].Float[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<CharLength;i++) {
+//         if (jsonContent.FTD.types[0].Char[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<WordLength;i++) {
+//         if (jsonContent.FTD.types[0].Word[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     for(var i=0;i<QWordLength;i++) {
+//         if (jsonContent.FTD.types[0].QWord[i].$.typename === itemType) {
+//             return 1;
+//         }
+//     }
+//     NoneType++;
+//     return 100;
 
-}
+// }
 
 var pathName = '../new file/';
 var fileName = 'ftdcsysuserapi-wrapper.cpp';

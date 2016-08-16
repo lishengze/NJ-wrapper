@@ -2,17 +2,25 @@
  #define _SYSUSERSPI_H_
 
  #include "FtdcSysUserApi.h"
- #include "spi-transform.h"
+ #include "tool-function.h"
+ #include "id-func.h"
  #include "nan.h"
 
  class SysUserSpi: public CShfeFtdcSysUserSpi
  {
     public:
-        virtual void OnFrontConnected();
-        virtual void OnFrontDisConnected(int nReason);
-        virtual void OnHeartBeatWarning(int nTimeLapse);
+        Nan::Persistent<v8::Object> m_spiobj;
+        FRONT_ID m_frontid;
         
-        //以下为自动生成
+    public:
+        virtual ~SysUserSpi() {}
+        
+        virtual void OnFrontConnected();
+        
+        virtual void OnFrontDisConnected(int nReason);
+        
+        virtual void OnHeartBeatWarning(int nTimeLapse);
+
         virtual void OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField *pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
         virtual void OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField *pRtnTopCpuInfo);

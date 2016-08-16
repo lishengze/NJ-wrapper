@@ -1,5 +1,5 @@
 /**
- * Created by li.xiankui on 2015/8/25.
+ * Created by li.shengze on 2015/1/28.
  */
 
 var fs = require('fs');
@@ -10,29 +10,26 @@ var fileData = hereDoc(function () {
 /*#include "spi-transform.h"
 #include "FtdcSysUserApiStruct.h"
 #include "tool-function.h"
-#include "charset-convert.h"
+#include "callback-numb.h"
+#include "v8-transform-data.h"
 using namespace v8;
 
-// 添加对 queue， mutex, async 全局变量的定义
+#ifdef linux
+#include "charset-convert-linux.h"
+#endif
+
+#ifdef __WINDOWS_
+#include "charset-convert-windows.h"
+#endif
+
+#ifdef _WIN32
+#include "charset-convert-windows.h"
+#endif
 
 fstream g_RunningResult_File;
 Nan::Persistent<v8::Object> SpiObj;
-
-uv_async_t    g_FrontConnected_async;
-
-queue<int>    g_FrontDisconnected_queue;
-uv_mutex_t    g_FrontDisconnected_mutex;
-uv_async_t    g_FrontDisconnected_async;
-
-queue<int>    g_HeartBeatWarning_queue;
-uv_mutex_t    g_HeartBeatWarning_mutex;
-uv_async_t    g_HeartBeatWarning_async;
-
-//以下自动生成
 */});
 
-
-// 定义queue， mutex, async 全局变量;
 var jsonContent = require("./package.json");
 var Packagelength = jsonContent.FTD.packages[0].package.length;
 var beforeRspQryTopCpuInfoTopic = 0;
@@ -47,99 +44,197 @@ while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.na
 }
 AfterRtnNetNonPartyLinkInfoTopic++;
 
-for(var i = beforeRspQryTopCpuInfoTopic;i < AfterRtnNetNonPartyLinkInfoTopic;i++) {
-    var funcName = jsonContent.FTD.packages[0].package[i].$.name;
-    if (funcName.substring(0,3) ==="Rsp" || funcName.substring(0,3) ==="Rtn") {
-        fileData += 'queue<void**> ' + 'g_' + funcName + '_queue' + ';\n';
-        fileData += 'uv_mutex_t    ' + 'g_' + funcName + '_mutex' + ';\n';
-        fileData += 'uv_async_t    ' + 'g_' + funcName + '_async' + ';\n';
-        fileData += 'int           ' + 'g_' + funcName + '_trans_callbackNumb = 0;\n'
-        fileData += 'int           ' + 'g_' + funcName + '_trans_dataNumb     = 0;\n\n'
-    }
-}
-
-fileData += '\n';
-
-// 定义无法复用的 OnFrontConnected, OnFrontDisconnected, OnHeartBeatWarning;
 fileData += hereDoc(function(){/*
 void OnFrontConnected(uv_async_t *handle)
 {   
-    Nan::HandleScope scope;
+    OutputCallbackMessage ("\n****** spi-transform:: OnFrontConnected: START! ******", g_RunningResult_File);
+    queue<void**> receivedData;
 
-    if(SpiObj.IsEmpty()){
+    uv_mutex_lock(&g_FrontConnected_mutex);
+    
+    int dataNumb = g_FrontConnected_queue.size();
+    OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+    
+    while (!g_FrontConnected_queue.empty()) {
+      receivedData.push(g_FrontConnected_queue.front());
+      g_FrontConnected_queue.pop();
+    }
+    uv_mutex_unlock(&g_FrontConnected_mutex);
+    
+    while ( !receivedData.empty() ) {
+      void** paramArray = receivedData.front();
+      receivedData.pop();
+
+      if (NULL == paramArray ) {
+          OutputCallbackMessage ("spi-transform::Delivered OnFrontConnected paramArray is NULL", g_RunningResult_File);
+          OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+          return;
+      }
+
+      Nan::HandleScope scope;
+      Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0];
+
+      if (pSpiObj->IsEmpty()) {
+        OutputCallbackMessage ("spi-transform::pSpiObj is NULL", g_RunningResult_File);
+        OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
         return;
-    }
+      }
+      
+      v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj);
+      v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnFrontConnected").ToLocalChecked());
+      if(OnFrontConnected->IsFunction())
+      {
+          v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
+          Nan::Callback callback(function);
+          callback.Call(localSpiObj, 0, 0);
+      } else {
+          cout << "OnFrontConnected is not function!" << endl;
+          OutputCallbackMessage ("OnFrontConnected is not function!", g_RunningResult_File);
+      }
 
-    v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(SpiObj);
-    v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnFrontConnected").ToLocalChecked());
-    if(OnFrontConnected->IsFunction())
-    {
-        v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
-        Nan::Callback callback(function);
-        callback.Call(0, 0);
+      if(NULL != pSpiObj) {
+        delete pSpiObj;
+        pSpiObj = NULL;
+      }
+      
     }
+    
+    OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
 }
 
 void OnFrontDisconnected(uv_async_t *handle) {
-
-    queue<int> receivedData;
+    OutputCallbackMessage ("\n****** spi-transform:: OnFrontDisconnected: START! ******", g_RunningResult_File);
+    
+    queue<void**> receivedData;
     uv_mutex_lock(&g_FrontDisconnected_mutex);
+    
+    int dataNumb = g_FrontConnected_queue.size();
+    OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+    
     while (!g_FrontDisconnected_queue.empty()) {
       receivedData.push(g_FrontDisconnected_queue.front());
       g_FrontDisconnected_queue.pop();
     }
     uv_mutex_unlock(&g_FrontDisconnected_mutex);
+    
+    while ( !receivedData.empty() ) {
+      void** paramArray = receivedData.front();
+      receivedData.pop();
 
-    while( !receivedData.empty() ) {
-        int nReason = receivedData.front();
-        receivedData.pop();
+      if (NULL == paramArray ) {
+          OutputCallbackMessage ("spi-transform::Delivered OnFrontConnected paramArray is NULL", g_RunningResult_File);
+          OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+          return;
+      }
 
-        v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(SpiObj);
-        v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnRspQryTopCpuInfoTopic").ToLocalChecked());
+      Nan::HandleScope scope;
+      Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0];
+      if (pSpiObj->IsEmpty()) {
+        OutputCallbackMessage ("spi-transform::pSpiObj is NULL", g_RunningResult_File);
+        OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+      }
+      
+      v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj);
+      v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnFrontConnected").ToLocalChecked());
+      
+      int* pnReason = (int*)paramArray[1];
+      if(OnFrontConnected->IsFunction())
+      {
+          v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
+          Nan::Callback callback(function);          
+          
+          v8::Local<v8::Integer> nReasonJS=Nan::New<v8::Integer>(*pnReason);
+          v8::Local<v8::Value> param[1];
+          param[0]=Local<v8::Value>(nReasonJS);
+            
+          callback.Call(localSpiObj, 1, param);
+      } else {
+          OutputCallbackMessage ("OnFrontConnected is not function!", g_RunningResult_File);
+      }
 
-        if(!OnFrontConnected->IsFunction()){
-            OutputCallbackMessage("Disconnect reason: ", nReason, g_RunningResult_File);
-            v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
-            Nan::Callback callback(function);
-            int nReason=(int)handle->data;
-            v8::Local<v8::Integer> nReasonJS=Nan::New<v8::Integer>(nReason);
-            v8::Local<v8::Value> param[1];
-            param[0]=Local<v8::Value>(nReasonJS);
-            callback.Call(1, param);
-        }
+      if(NULL != pSpiObj) {
+        delete pSpiObj;
+        pSpiObj = NULL;
+      }
+      
+      if (NULL != pnReason) {
+        delete pnReason;
+        pnReason = NULL;
+      }
+      
     }
+    
+    OutputCallbackMessage ("****** spi-transform:: OnFrontDisconnected: END! ******\n", g_RunningResult_File);
 }
 
 void OnHeartBeatWarning(uv_async_t *handle)
 {
-    queue<int> receivedData;
+    OutputCallbackMessage ("\n****** spi-transform:: OnHeartBeatWarning: START! ******", g_RunningResult_File);
+    
+    queue<void**> receivedData;
     uv_mutex_lock(&g_HeartBeatWarning_mutex);
+    
+    int dataNumb = g_HeartBeatWarning_queue.size();
+    OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+    
     while (!g_HeartBeatWarning_queue.empty()) {
       receivedData.push(g_HeartBeatWarning_queue.front());
       g_HeartBeatWarning_queue.pop();
     }
     uv_mutex_unlock(&g_HeartBeatWarning_mutex);
+    
+    while ( !receivedData.empty() ) {
+      void** paramArray = receivedData.front();
+      receivedData.pop();
 
-    while( !receivedData.empty() ) {
-        int nTimeLapse = receivedData.front();
-        receivedData.pop();
+      if (NULL == paramArray ) {
+          OutputCallbackMessage ("spi-transform::Delivered OnFrontConnected paramArray is NULL", g_RunningResult_File);
+          OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+          return;
+      }
 
-        v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(SpiObj);
-        v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnRspQryTopCpuInfoTopic").ToLocalChecked());
+      Nan::HandleScope scope;
+      Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0];
+      if (pSpiObj->IsEmpty()) {
+        OutputCallbackMessage ("spi-transform::pSpiObj is NULL", g_RunningResult_File);
+        OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+      }
+      
+      v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj);
+      v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnFrontConnected").ToLocalChecked());
+      
+      int* pnTimeLapse = (int*)paramArray[1];
+      if(OnFrontConnected->IsFunction())
+      {
+          v8::Local<v8::Function> function=v8::Local<v8::Function>::Cast(OnFrontConnected);
+          Nan::Callback callback(function);          
+          
+          v8::Local<v8::Integer> nTimeLapseJS=Nan::New<v8::Integer>(*pnTimeLapse);
+          v8::Local<v8::Value> param[1];
+          param[0]=Local<v8::Value>(nTimeLapseJS);
+            
+          callback.Call(localSpiObj, 1, param);
+      } else {
+          OutputCallbackMessage ("localSpi OnHeartBeatWarning is not function!", g_RunningResult_File);
+      }
 
-        if(OnFrontConnected->IsFunction()){
-                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnFrontConnected);
-                Nan::Callback callback(function);
-                v8::Local<v8::Integer> nTimeLapseJS = Nan::New<v8::Integer>(nTimeLapse);
-                v8::Local<v8::Value> param[1];
-                param[0] = Local<v8::Value>(nTimeLapseJS);
-                callback.Call(1, param);
-         }
+      if(NULL != pSpiObj) {
+        delete pSpiObj;
+        pSpiObj = NULL;
+      }
+      
+      if (NULL != pnTimeLapse) {
+        delete pnTimeLapse;
+        pnTimeLapse = NULL;
+      }
+      
     }
-
+    
+    OutputCallbackMessage ("****** spi-transform:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);   
 }
-
- */});
+*/});
 
 var fieldLength = jsonContent.FTD.fields[0].fieldDefine.length;
 var beforeRspQryTopCpuInfoTopic=0;
@@ -154,11 +249,6 @@ AfterRtnNetNonPartyLinkInfoTopic++;
 
 var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
 
-/**
- * Rsp 与 Rtn 回调的区别
- * Rsp 有四个参数, 所以在V8转换时要对paraArray[4](三个简洁参数)进行操作(赋值，释放空间);
- * Rtn 只有一个参数;
- *  */
 for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++) {
     var fieldName = jsonContent.FTD.packages[0].package[i].field[0].$.name;
     var funcName  = jsonContent.FTD.packages[0].package[i].$.name;
@@ -182,7 +272,6 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
         fileData += "{" + "\n";
         fileData += tabSpace[1] + "OutputCallbackMessage(\"\\n****** spi-transform:: "+ funcName + ": START! ******\", g_RunningResult_File);\n";
         fileData += tabSpace[1] + "OutputCallbackMessage(\""+ callbackNumbName+": \", "+callbackNumbName+"++, g_RunningResult_File);\n\n"
-        fileData += tabSpace[1] + "// 将全局队列数据转存到 receivedData 进行处理;" + "\n";
         fileData += tabSpace[1] + "queue<void**> receivedData;" + "\n";
         fileData += tabSpace[1] + "uv_mutex_lock (&" + mutexName + ");" + "\n\n";
         fileData += tabSpace[1] + "int dataNumb = " + queueName + ".size();\n";
@@ -194,51 +283,52 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
         fileData += tabSpace[2] + queueName + ".pop();" + "\n";
         fileData += tabSpace[1] + "}" + "\n";
         fileData += tabSpace[1] + "uv_mutex_unlock (&" + mutexName + ");"  + "\n\n";
-        fileData += tabSpace[1] + "while ( !receivedData.empty() ) {"  + "\n";            // 数据处理部分;
+        fileData += tabSpace[1] + "while ( !receivedData.empty() ) {"  + "\n";            
         fileData += tabSpace[2] + "void** paramArray = receivedData.front();" + "\n";
         fileData += tabSpace[2] + "receivedData.pop();" + "\n\n";
-        fileData += tabSpace[2] + "// 检测队列中的数据是否为空!" + "\n";
 		
         fileData += tabSpace[2] + "if (NULL == paramArray ) {" + "\n";
         fileData += tabSpace[3] + "OutputCallbackMessage (\"spi-transform::Delivered " + funcName + " paramArray is NULL\", g_RunningResult_File);" + "\n";
         fileData += tabSpace[3] + "OutputCallbackMessage (\"****** spi-transform:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";        
         fileData += tabSpace[3] + "return;" + "\n";
         fileData += tabSpace[2] + "}" + "\n\n";        
-        
-        fileData += tabSpace[2] + "Nan::HandleScope scope;" + "\n";
+       
+		fileData += hereDoc(function(){/*
+      Nan::HandleScope scope;
+      Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0];
+      if (pSpiObj->IsEmpty()) {
+        OutputCallbackMessage ("spi-transform::pSpiObj is NULL", g_RunningResult_File);
+        OutputCallbackMessage ("****** spi-transform:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;
+      }
+      
+      v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj);
+      v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get(Nan::New<v8::String>("OnFrontConnected").ToLocalChecked());
+              
+             */});
 		
-        fileData += tabSpace[2] + "if (SpiObj.IsEmpty()) {" + "\n";
-        fileData += tabSpace[3] + "OutputCallbackMessage (\"spi-transform::" + funcName + "SpiObi is Empty\", g_RunningResult_File);" + "\n";
-        fileData += tabSpace[3] + "OutputCallbackMessage (\"****** spi-transform:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
-        fileData += tabSpace[3] + "return;" + "\n";
-        fileData += tabSpace[2] + "}" + "\n\n";
-		
-        fileData += tabSpace[2] + "v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(SpiObj);" + "\n";
-        fileData += tabSpace[2] + "v8::Local<v8::Value> OnFrontConnected = localSpiObj->Get (Nan::New<v8::String> (\"On" + funcName +"\").ToLocalChecked());" + "\n\n";
-		
+	    fileData += tabSpace[2] + valueTypeName + "* " + pValueName + " = (" + valueTypeName+"*)(paramArray[1]);" + "\n";
+        if (funcType === "Rsp" ) {
+            fileData += tabSpace[2] + "CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);" + "\n";
+            fileData += tabSpace[2] + "int* pRequestID = (int*)paramArray[3];" + "\n";
+            fileData += tabSpace[2] + "bool* pIsLastNew = (bool*)paramArray[4];" + "\n\n";
+		}
+        		
         fileData += tabSpace[2] + "if (OnFrontConnected->IsFunction()) {" + "\n\n";
         fileData += tabSpace[3] + "v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnFrontConnected);" + "\n";
         fileData += tabSpace[3] + "Nan::Callback callback(function);" + "\n\n";
-
-	    fileData += tabSpace[3] + valueTypeName + "* " + pValueName + " = (" + valueTypeName+"*)(paramArray[0]);" + "\n";
-        if (funcType === "Rsp" ) {
-            fileData += tabSpace[3] + "CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[1]);" + "\n";
-            fileData += tabSpace[3] + "int nRequestID = *(int*)paramArray[2];" + "\n";
-            fileData += tabSpace[3] + "bool nIsLastNew = *(bool*)paramArray[3];" + "\n\n";
-		}
 		
 		var pJsValueName = pValueName + "JS";
 		fileData += tabSpace[3] + "v8::Local<v8::Object> "+ pJsValueName +" = Nan::New<v8::Object>();\n";		
 		if (funcType === "Rsp") {
 			fileData += tabSpace[3] + "v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();\n";
-			fileData += tabSpace[3] + "v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(nRequestID);\n";
-			fileData += tabSpace[3] + "v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(nIsLastNew);\n";
+			fileData += tabSpace[3] + "v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);\n";
+			fileData += tabSpace[3] + "v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);\n";
 		}
 		fileData += tabSpace[3] + "\n";
         fileData += tabSpace[3] + "if (NULL != " + pValueName + ") { \n";
 		fileData += tabSpace[4] + "string utf8string;\n";
          
-        // 绑定p"+fieldName+"JS对象的属性和键值\n";
         for(var j = 0; j < fieldLength; j++) {			
             var tmpFieldDefine = jsonContent.FTD.fields[0].fieldDefine[j];
             if ( tmpFieldDefine.$.name === fieldName) {
@@ -246,18 +336,11 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
                 
                 for(var k = 0; k < itemlength; k++) {
 
-                    //获取每个field的item对象, itemType;
                     var itemName = tmpFieldDefine.item[k].$.name;
                     var itemType = tmpFieldDefine.item[k].$.type.substring(1, tmpFieldDefine.item[k].$.type.length - 4);
 
                     fileData += tabSpace[4] + "v8::Local<v8::String> " + itemName
                               + " = Nan::New<v8::String> (\"" + itemName + "\").ToLocalChecked();" + "\n";
-                    /**
-                     * 将itemType 与 V8 中的类型对应;
-                     * 遍历给定的types ,如果itemType与某个相同边用V8中对应的类型进行转换;
-                     * V8::Integer: Int, RangInt,
-                     * V8::Number: QWord, FixNumber,
-                     *  */
 
                     var itemValueName = itemName + "Value";
 
@@ -351,13 +434,13 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
                         }
                     }
                     
-                    if(isString === true) {//String、Array、VString , string type
-                    //     fileData += tabSpace[4] + "string& utf8string;\n";
-                        fileData += tabSpace[4] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", utf8string);\n";
-                        fileData += tabSpace[4] + "v8::Local<v8::String> "+ itemValueName + " = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();\n";
+                    if(isString === true) {//String銆丄rray銆乂String , string type
+                         fileData += tabSpace[4] + "Gb2312ToUtf8("+ pValueName + "->"+itemName +", utf8string);\n";
+                        fileData += tabSpace[4] + "v8::Local<v8::String> "+ itemValueName 
+                                                + " = Nan::New<v8::String> (" + pValueName + "->"+itemName + ").ToLocalChecked();\n";
                     }
 
-                    // 绑定JS value;
+                    // 缁戝畾JS value;
                     fileData += tabSpace[4] + pJsValueName + "->Set(Local<v8::Value> ("+itemName+"), Local<v8::Value>("+itemValueName+"));\n\n";
 
                 }
@@ -393,7 +476,7 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
 		fileData += tabSpace[4] + "params[0] = Local<v8::Value>(Nan::Undefined());\n";
 		fileData += tabSpace[3] + "};\n";
 		
-		if ("Rsp" == funcType) {
+		if ("Rsp" === funcType) {
 			fileData += hereDoc(function(){/*
             if (NULL != pRspInfo) {
                 params[1] = Local<v8::Value>(pRspInfoJS);
@@ -403,38 +486,55 @@ for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++
             params[2] = Local<v8::Value>(nRequestIDJS);
             params[3] = Local<v8::Value>(nIsLastNewJS);
 			
-            callback.Call(4, params);
+            callback.Call(localSpiObj, 4, params);
 
-        } // OnFrontConnected->IsFunction() end!
-
-        for(int i = 0;i < 4; i++){
-            if (NULL != paramArray[i]) {
-                delete []paramArray[i];
-                paramArray[i] = NULL;
-            }
-        }*/ });
+        } // OnFrontConnected->IsFunction() end!*/ });                    
 		} else {
             fileData += hereDoc(function(){/*
-			callback.Call(1, params);
+			callback.Call(localSpiObj, 1, params);
 			
-        } // OnFrontConnected->IsFunction() end!
-
-        for(int i = 0;i < 1; i ++){
-            if (NULL != paramArray[i]) {
-                delete []paramArray[i];
-                paramArray[i] = NULL;
-            }
-        }*/});   
-
+        } // OnFrontConnected->IsFunction() end!*/});   
 		}
-		
-        fileData += hereDoc(function(){/*
+        
+        fileData += "\n\n";
+        fileData += hereDoc (function(){/* 
+     if(NULL != pSpiObj) {
+        delete pSpiObj;
+        pSpiObj = NULL;
+      }
+*/ });        
+        fileData += tabSpace[2] + "if (NULL != "+ pValueName +") { \n";
+        fileData += tabSpace[3] + "delete " + pValueName + ";\n";
+        fileData += tabSpace[3] + pValueName + " = NULL;\n";
+        fileData += tabSpace[2] + "}\n";
+        
+        if ("Rsp" === funcType) {
+            fileData += hereDoc (function(){/*
+        if (NULL != pRspInfo) {
+           delete []pRspInfo;
+           pRspInfo = NULL;
+        }       
+        
+        if (NULL != pRequestID) {
+           delete []pRequestID;
+           pRequestID = NULL;
+        }  
+        
+        if (NULL != pIsLastNew) {
+           delete []pIsLastNew;
+           pIsLastNew = NULL;
+        }  
+*/ });   
+        }	
+        	
+        fileData += hereDoc (function () {/*
         if (NULL != paramArray) {
            delete []paramArray;
            paramArray = NULL;
         }       
     } // while() end!;
-*/});      
+*/});
+      
         fileData += tabSpace[1] + "OutputCallbackMessage(\"****** spi-transform:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
         fileData += "}\n\n";
     }  // end if ("Rsp" || "Rtn")
