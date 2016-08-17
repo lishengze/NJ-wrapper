@@ -5,6 +5,7 @@
  #include "tool-function.h"
  #include "id-func.h"
  #include "nan.h"
+ #include "v8-transform-data.h"
 
  class SysUserSpi: public CShfeFtdcSysUserSpi
  {
@@ -13,7 +14,7 @@
         FRONT_ID m_frontid;
         
     public:
-        virtual ~SysUserSpi() {}
+        ~SysUserSpi() { DeInitV8Transformdata(); }
         
         virtual void OnFrontConnected();
         

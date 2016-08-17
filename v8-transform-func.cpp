@@ -2102,17 +2102,17 @@ void OnRspQryMonitorObjectTopic (uv_async_t *handle)
     queue<void**>* pReceivedData;
     uv_mutex_lock (&g_RspQryMonitorObjectTopic_mutex);
 
-		cout << "g_V8_OnRspQryMonitorObjectTopic:    " << dec << g_V8_OnRspQryMonitorObjectTopic++ << endl;
+		// cout << "g_V8_OnRspQryMonitorObjectTopic:    " << dec << g_V8_OnRspQryMonitorObjectTopic++ << endl;
 
     int ioUserNumb = g_RspQryMonitorObjectTopic_IOUser_vec.size();
-    cout << "g_V8_ioUserNumb:  " << dec << ioUserNumb << endl;
+    // cout << "g_V8_ioUserNumb:  " << dec << ioUserNumb << endl;
     pReceivedData = new queue<void**>[ioUserNumb];
     int i = 0;
     for(vector<FRONT_ID>::iterator it = g_RspQryMonitorObjectTopic_IOUser_vec.begin();
         it != g_RspQryMonitorObjectTopic_IOUser_vec.end(); it++ , i++) {
         int dataNumb = g_RspQryMonitorObjectTopic_Data_map[*it].size();
         
-        cout << "FrontID:  " << dec << *it << " , it's datarnumb is: " << dec << dataNumb << endl;
+        // cout << "FrontID:  " << dec << *it << " , it's datarnumb is: " << dec << dataNumb << endl;
         
         g_V8_OnRspQryMonitorObjectTopic_DataSum += dataNumb;
         //OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
@@ -2123,7 +2123,7 @@ void OnRspQryMonitorObjectTopic (uv_async_t *handle)
     }
     g_RspQryMonitorObjectTopic_IOUser_vec.clear();
 
-		cout << "g_V8_OnRspQryMonitorObjectTopic_DataSum:    " << dec << g_V8_OnRspQryMonitorObjectTopic_DataSum << endl;
+		// cout << "g_V8_OnRspQryMonitorObjectTopic_DataSum:    " << dec << g_V8_OnRspQryMonitorObjectTopic_DataSum << endl;
 		
     uv_mutex_unlock (&g_RspQryMonitorObjectTopic_mutex);
 

@@ -1021,9 +1021,12 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
     OutputCallbackMessage("****** SysUserSpi:: RspQryClientLoginTopic: END! ******\n", g_RunningResult_File);
 }
 
+// int g_test_OnRspQryMonitorObjectTopic = 0;
 void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorObjectTopic: START! ******", g_RunningResult_File);
-
+    // if (++g_test_OnRspQryMonitorObjectTopic > 620) {
+    //     cout <<"g_test_OnRspQryMonitorObjectTopic: " << g_test_OnRspQryMonitorObjectTopic << endl;
+    // }
     Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
     if (NULL == pSpiObj) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);

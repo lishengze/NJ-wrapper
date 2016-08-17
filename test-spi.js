@@ -1,8 +1,8 @@
 var path     = require('path')
 var spawn    = require('child_process').spawn;
 
-var rspUserLoginCallNumb = 1;
-var rspMonitorObjCallNumb = 1;
+var rspUserLoginCallNumb  = 1;
+var rspMonitorObjCallNumb = 0;
 
 var Spi = function(){
     
@@ -23,10 +23,7 @@ var Spi = function(){
                                     + this.user.userApi.ReqQrySysUserLoginTopic(this.user.loginField[i], 1) + "\n");			
             }	   
                              
-            for (var i = 0; i < this.user.monitorObjectReqNumbers; ++i) {                    
-                console.log("ReqQryMonitorObjectTopic "+ i + "  result:" 
-                                    + this.user.userApi.ReqQryMonitorObjectTopic(this.user.monitorObjectField, 1) + "\n");			
-            }	                                             
+                                             
             outputStr += '++++++++++++ JS FrontConnected END! +++++++++++++\n';         
             console.log(outputStr);       
     }        
@@ -43,40 +40,42 @@ var Spi = function(){
 					
 				} else {
 		            outputStr += "pRspQrySysUserLogin is NULL!\n";
-		    }        	
+		    }        
+
+            for (var i = 0; i < this.user.monitorObjectReqNumbers; ++i) {                    
+                console.log("ReqQryMonitorObjectTopic "+ i + "  result:" 
+                             + this.user.userApi.ReqQryMonitorObjectTopic(this.user.monitorObjectField, 1) + "\n");			
+            }		
 		        
-		        outputStr += "bIsLastNew :                " + bIsLast + "\n";
-		        outputStr += "rspCallNumb:                " + rspUserLoginCallNumb + "\n";
-		        outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";        
-		        rspUserLoginCallNumb++;
-		        console.log(outputStr);       
-		}
+            outputStr += "bIsLastNew :                " + bIsLast + "\n";
+            outputStr += "rspCallNumb:                " + rspUserLoginCallNumb + "\n";
+            outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";        
+            rspUserLoginCallNumb++;
+            console.log(outputStr);       
+	}
     
     this.OnRspQryMonitorObjectTopic = function (pRspQryMonitorObject, pRspInfo, nRequestID, bIsLast) {
-
+        rspMonitorObjCallNumb++;
         var outputStr =  "\n************ JS::OnRspQryMonitorObjectTopic: START! ***********\n";	
         outputStr += 'UserID:                  ' + this.user.loginField[0].UserID + "\n";
         if (pRspQryMonitorObject instanceof Object) {		
-            outputStr += "ObjectID :               " + pRspQryMonitorObject.ObjectID.toString() + "\n" + 
-                    "ObjectName :             " + pRspQryMonitorObject.ObjectName.toString() + "\n" + 
-                    "WarningActive :          " + pRspQryMonitorObject.WarningActive.toString() + "\n";							                                                
+            outputStr += "ObjectID :               " + pRspQryMonitorObject.ObjectID.toString() + "\n" 
+                       + "ObjectName :             " + pRspQryMonitorObject.ObjectName.toString() + "\n"  
+                       + "WarningActive :          " + pRspQryMonitorObject.WarningActive.toString() + "\n";							                                                
         } else {
             outputStr += "pRspQryMonitorObject is NULL;\n";
         }
         
         outputStr += "bIsLast:                 " + bIsLast.toString() + "\n";
         outputStr += "rspMonitorObjCallNumb:   " + rspMonitorObjCallNumb + "\n";
-        outputStr += "UID:                     " + process.getuid() + "\n";
-        outputStr += "PID:                     " + process.pid + "\n";
+        // outputStr += "UID:                     " + process.getuid() + "\n";
+        // outputStr += "PID:                     " + process.pid + "\n";
         outputStr += "************ JS::OnRspQryMonitorObjectTopic: END! *********** \n";
         
-        if (rspMonitorObjCallNumb%1000 === 0) {        	
+        // if (rspMonitorObjCallNumb % 1 === 0) {        	
         //   console.log(outputStr);
-        }
-        
-        rspMonitorObjCallNumb++;
-        
-        
+        // }    
+         
     }
 
     this.OnRspQrySysUserRegisterTopic = function (pRspQrySysUserRegister, pRspInfo, nRequestID, bIsLast) {

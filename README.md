@@ -6,7 +6,6 @@
 
 Nodejs native模块的编写需要学习V8引擎和nan。
 
-
 ## SysUserApi相关文件及其说明
 
 ### 1. FtdcSysUserApi.h
@@ -79,27 +78,51 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 	JS -> Nan::ObjectWrap, V8-data -> C++
 
 
-### 5. sysuserspi.h, sysuserspi.cpp
-
-	继承自CShfeFtdcSysUserSpi类，在封装的内部作为实际回调处理类。
-	sysuserspi.h, sysuserspi.cpp，运行在后台的线程环境中，无法直接将回调的数据进行V8封装，因此必须新建专门用于转换的V8线程用于转换。
+### 5. sysuserspi.h,sysuserspi.cpp; v8-transform-func.h, v8-transform-func.cpp.
+* 基本结构
+    1. sysuserspi.h ,sysuserspi.cpp 继承自CShfeFtdcSysUserSpi类，在封装的内部作为实际回调处理类。
+	2. v8-transform-func.h, v8-transform-func.cpp, 对回调的数据进行封装完成与js的回调交互。
+	    
+* 线程间数据传输
+	 1. sysuserspi.h, sysuserspi.cpp，运行在后台的线程环境中，无法直接将回调的数据进行V8封装，因此必须新建专门用于转换的V8线程用于转换。
 	所以 sysuserspi 主要负责回调数据的收集，并将其传输到V8转换线程中。
+	 2. sysuserspi线程与V8线程间依靠[libuv](http://docs.libuv.org/en/v1.x/)进行进程间的通信，libuv是nodejs底层的线程通信库，包含在nan中可以直接使用。libuv进程间通信是异步进行的，保证不会阻塞。而且使用libuv,sysuserspi线程只能唤醒v8线程中对应的转换api,不能传递数据,因为libuv只保证唤醒消息一定传送到，但消息附带的数据可能会丢失。这里我们将数据存储在全局性的变量中，用于线程间的传递。
 
-6. SpiCFunc.h, SpiCFunc.cc
+	
+* 回调中的多线程编程设计：
+	 1. 客户端在和后台每建立一个连接(RegisterFront())， 后台便会创建一个回调线程。这样如果多个客户端连接到后台便会产生多个sysuserapi线程，但是V8转换线程是唯一的，多个sysuserapi线程的回调api对应着V8线程中唯一的api，而且很多请求的回调需要多次相应才能将数据传输完全，如果不做区分，V8线程会将不同线程的回调数据弄混，导致传输错误。所以在设计用于传输数据全局变量时，为每一个回调接口创建线程相关的存储区域。sysuserspi线程在传入数据到全局变量时也是传输到自己线程相关的区域中。
+	
+	 2. 具体多线程编程设计:
+	    1. 在与后台建立连接(RegisterFront)，创建front-session时，获取一个全局性的线程id。并将其作为回调对象m_spi的一部分传送到后台。
+	    2. sysuserspi线程被后台调用时，因为直接回调的数据在回调结束后会被销毁，所以创建新的空间将后台回调数据存储下来，再将其内存的句柄存储到id相关的空间中，并将线程id也存储到全局空间中，令v8对应api知晓有哪个线程进行了回调，最后唤醒v8线程中对应的转换api.
+	    3. v8线程中的api被唤醒后，从全局id空间中获取有哪些线程进行了回调，然后根据id将对应的回调数据句柄地址从全局的变量中拷贝到本地新建的数据句柄空间中，再进行一一的转化。因为对全局句柄空间的访问时互斥的，将其内容拷贝到本地再转化就减少sysuserapi中对应api的等待时间。数据转化完后，边将本地申请的句柄空间和里面句柄所指向的内存空间都释放掉。
+	    4. 所有全局变量的存储访问都是由一一对应的锁控制，防止造成空间污染。
+	  
 
-	SysUserSpi这个回调类中的函数调用时并不是
-	在v8的主线程中调用，为了将回调的数据传送到
-	js环境中，需要将线程切换到v8的主线程。
-	这两个文件的作用就是定义uv_async_t对象和对应的
-	处理函数。
+### 6. id-func.cpp, id-func.h
 
-7. SysUserApiStruct_JS.js
+	通过一个全局queue维护id, 可以手动设置队列中id的数目，并使用全局锁来控制对队列的存储访问。
 
-	FtdcSysUserApiStruct.h中定义的结构体需要
-	在js中有相应的定义，这样js中发起服务请求时
+### 7. v8-transform-data.cpp, v8-transform-data.h
+*  定义了sysuserspi线程用于唤醒v8线程api的全局异步消息，类型为uv_async_t.
+*  定义了用于存储线程相关的回调数据的结构，使用的是map<id, queue<void**>>, 存储回调数据内存句柄的是queue<void** >, 使用map将其相关联。
+*  定义了存储线程id的数据结构， 类型为 vector<id>。对vectcr<id>的访问和对map<id, queue<void**>>的访问时顺序的，先记录id到vector<id>，再将id相关的数据存储到map<id, queue<void**>>。
+*  定义了访问全局变量的锁,类型为 uv_mutex_t。
+*  上面的每一个变量都是api相关的，每一个api都有对应的一套数据结构。
+*  InitV8Transformdata(), DeInitV8Transformdata()分别是对异步消息和全局锁的初始化以及析构。InitV8Transformdata() 在addon.cpp 被调用, DeInitV8Transformdata() 在SysUserSpi的析构函数中被调用。
+
+### 8. charset-convert-linux.h, charset-convert-linux.cpp.
+    字符串转换函数，回调函数中的数据时gb2312编码，后台无法直接显示，转换成utf-8编码。
+    
+### 9. tool-funciton.h, tool-function.cpp
+    工具性的一些函数
+    
+### 10. SysUserApiStruct_JS.js
+
+	FtdcSysUserApiStruct.h中定义的结构体需要在js中有相应的定义，这样js中发起服务请求时
 	就可以填充请求内容。
 
-8. test.js
+### 11. test.js
 
 	测试文件，在js中测试封装好的接口。
 
@@ -123,6 +146,7 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 ## 一些参考文档：
 * [V8概况](https://developers.google.com/v8/intro)，因为GFW的原因，这个
 链接需要翻墙查看，这个链接里可以学习到V8的基本设计元素和如何使用。
+
 * [V8 API](http://v8.paulfryzel.com/docs/master/)，这个API里需要重点
 关注的是各种数据类型和它们之间的转换。
 * [nan](https://github.com/nodejs/nan)，nan的API可以在这个链接里找到，
