@@ -3,6 +3,7 @@ var spawn    = require('child_process').spawn;
 
 var rspUserLoginCallNumb  = 1;
 var rspMonitorObjCallNumb = 0;
+var rtnObjectAttrCallNumb = 0;
 
 var Spi = function(){
     
@@ -42,11 +43,16 @@ var Spi = function(){
 		            outputStr += "pRspQrySysUserLogin is NULL!\n";
 		    }        
 
+            for (var i = 0; i < this.user.ReqQrySubscriberNumbers; ++i) {                    
+                console.log("ReqQrySubscriberTopic "+ i + "  result:" 
+                             + this.user.userApi.ReqQrySubscriberTopic(this.user.reqQrySubscriberData, 1) + "\n");			
+            }		
+		        
             for (var i = 0; i < this.user.monitorObjectReqNumbers; ++i) {                    
                 console.log("ReqQryMonitorObjectTopic "+ i + "  result:" 
                              + this.user.userApi.ReqQryMonitorObjectTopic(this.user.monitorObjectField, 1) + "\n");			
-            }		
-		        
+            }	
+
             outputStr += "bIsLastNew :                " + bIsLast + "\n";
             outputStr += "rspCallNumb:                " + rspUserLoginCallNumb + "\n";
             outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";        
@@ -68,13 +74,11 @@ var Spi = function(){
         
         outputStr += "bIsLast:                 " + bIsLast.toString() + "\n";
         outputStr += "rspMonitorObjCallNumb:   " + rspMonitorObjCallNumb + "\n";
-        // outputStr += "UID:                     " + process.getuid() + "\n";
-        // outputStr += "PID:                     " + process.pid + "\n";
         outputStr += "************ JS::OnRspQryMonitorObjectTopic: END! *********** \n";
-        
-        // if (rspMonitorObjCallNumb % 1 === 0) {        	
-        //   console.log(outputStr);
-        // }    
+
+        if (bIsLast === true) {
+            console.log (outputStr);
+        }
          
     }
 
@@ -83,7 +87,7 @@ var Spi = function(){
         
         if (pRspQrySysUserRegister instanceof Object) {
             outputStr += "UserID:                               " + pRspQrySysUserRegister.UserID.toString() + "\n"
-                    + "Privilege:                            " + pRspQrySysUserRegister.Privilege.toString() + "\n";
+                       + "Privilege:                            " + pRspQrySysUserRegister.Privilege.toString() + "\n";
         } else {
             outputStr += "pRspQrySysUserRegister is NULL!\n";    
         }
@@ -94,6 +98,26 @@ var Spi = function(){
         console.log(outputStr);
         this.OnRspQrySysUserRegisterTopicCallTime++;        
         
+    }
+
+    // 订阅RtnObjectAttrTopic;
+    this.OnRtnObjectAttrTopic = function (pRtnObjectAttr) {
+        var outputStr = "\n************ JS::OnRtnObjectAttrTopic: START! ***********\n";
+        ++rtnObjectAttrCallNumb;
+        if (pRtnObjectAttr instanceof Object) {
+            outputStr +=  "ObjectID:                " + pRtnObjectAttr.ObjectID + "\n"
+                        + "AttrType:                " + pRtnObjectAttr.AttrType + "\n"
+                        + "MonDate:                 " + pRtnObjectAttr.MonDate + "\n"
+                        + "MonTime:                 " + pRtnObjectAttr.MonTime + "\n"
+                        + "ValueType:               " + pRtnObjectAttr.ValueType + "\n"
+                        + "AttrValue:               " + pRtnObjectAttr.AttrValue + "\n"
+        } else {
+            outputStr += "pRtnObjectAttr:          NULL!\n"; 
+        }
+        outputStr += "rtnObjectAttrCallNumb:   " + rtnObjectAttrCallNumb + "\n";
+        outputStr += "************ JS::OnRtnObjectAttrTopic: END! *********** \n";    
+
+        console.log(outputStr);
     }
 };
     

@@ -14,17 +14,26 @@ loginField[0].VersionID = "2.0.0.0";
 
 var monitorObjectField  = new structJs.CShfeFtdcReqQryMonitorObjectField();
 
+var objectID = "TMS.PuDian.app.sysprobe.1";
+var attrType = "CPUUsage";
+var reqQrySubscriberData = new structJs.CShfeFtdcReqQrySubscriberField();
+reqQrySubscriberData.ObjectID = objectID+'.'+attrType;
+reqQrySubscriberData.ObjectNum = -1;
+reqQrySubscriberData.KeepAlive = 1;
+
 var userWorkDirName = 'usr/' + loginField[0].UserID + '/';
 
 user.userApi = new addon.FtdcSysUserApi_Wrapper(userWorkDirName);
 user.loginReqNumbers                   = 1;
 user.monitorObjectReqNumbers           = 1;
 user.ReqQrySysUserRegisterTopicNumbers = 0;
+user.ReqQrySubscriberNumbers           = 1;
 
-user.loginField         = loginField;
-user.monitorObjectField = monitorObjectField;
-user.Spi                = new spi.Spi();
-user.Spi.user           = user;
+user.loginField           = loginField;
+user.monitorObjectField   = monitorObjectField;
+user.reqQrySubscriberData = reqQrySubscriberData;
+user.Spi                  = new spi.Spi();
+user.Spi.user             = user;
 
 user.userApi.RegisterFront(realTimeSystemPath);    
 user.userApi.RegisterSpi(user.Spi);
