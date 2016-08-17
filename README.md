@@ -6,27 +6,29 @@
 
 Nodejs native模块的编写需要学习V8引擎和nan。
 
+
+
 ## SysUserApi相关文件及其说明
 
 ### 1. FtdcSysUserApi.h
 
 	该文件包含两个类：CShfeFtdcSysUserApi：请求api; CShfeFtdcSysUserSpi：回调api.
 
-	1. API中，从CreateFtdcSysUserApi到SubscribePartAccount的9个请求，都是用于初始化与后台的链接。这些请求与其对应的回调无法从源文件xml中获取其函数名和参数信息，需要手动封装。
+1. API中，从CreateFtdcSysUserApi到SubscribePartAccount的9个请求，都是用于初始化与后台的链接。这些请求与其对应的回调无法从源文件xml中获取其函数名和参数信息，需要手动封装。
 
-	2. 除了需要手动封装的api.其余的api都可以从源文件xml中获取api的核心信息名kernalFuncName, 对应的函数名、返回值、参数都是以同样的规律由kernalFuncName扩展而来。
-		 * 请求API：
+2. 除了需要手动封装的api.其余的api都可以从源文件xml中获取api的核心信息名kernalFuncName, 对应的函数名、返回值、参数都是以同样的规律由kernalFuncName扩展而来。
+	* 请求API：
 		 virtual int ReqQry+kernalFuncName+Topic  (CShfeFtdcReqQry+kernalFuncName+Field * pReqQry+kernalFuncName, int nRequestID);
-		 * 实时回调API:
+	* 实时回调API:
 		 virtual void OnRtn+kernalFuncName+Topic (CShfeFtdcRtn+kernalFuncName+Field* pRtn+kernalFuncName);
-		 * 非实时回调API:
+	* 非实时回调API:
 		 virtual void OnRsp+kernalFuncName+Topic (CShfeFtdcRspQry+kernalFuncName+Field* pRspQry+kernalFuncName,  CShfeFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 
-	3. 请求api的函数参数包含两个部分，一个是请求相关的字段，一个是RequsetID. RequsetID被用来标记针对使用同一个请求接口的不同请求，nRequestID会在回调中被返回。这样使用同一个请求接口的不同请求只要RequestID不同，就可以得到相对应的回调信息。
+3. 请求api的函数参数包含两个部分，一个是请求相关的字段，一个是RequsetID. RequsetID被用来标记针对使用同一个请求接口的不同请求，nRequestID会在回调中被返回。这样使用同一个请求接口的不同请求只要RequestID不同，就可以得到相对应的回调信息。
 
-	4. 一个请求函数ReqFunction 对应一个非实时回调函数(RspFunction)和实时回调函数(RtnFunction)。
-		* 实时回调API: 提出请求后，后台会不断的推送实时消息。
-		* 非实时回调API: 提出请求后，后台将某一段时间的数据发送过来，这个时间段由请求字段指定，若是不指定时间段，后台会将所有的数据都发过来。回调中的pRspQry+kernalFuncName为有效字段信息。pRspInfo 为错误信息字段，若是回调信息出错则有效信息为	null，错误代码和错误信息会在pRspInfo中。nRequestID为请求时填入的nRequestID，用于标记不同的请求。bIsLast 标记是否是当前回调的最后一个数据字段，某些回调的信息很多需要分多次发送。
+4. 一个请求函数ReqFunction 对应一个非实时回调函数(RspFunction)和实时回调函数(RtnFunction)。
+	* 实时回调API: 提出请求后，后台会不断的推送实时消息。
+	* 非实时回调API: 提出请求后，后台将某一段时间的数据发送过来，这个时间段由请求字段指定，若是不指定时间段，后台会将所有的数据都发过来。回调中的pRspQry+kernalFuncName为有效字段信息。pRspInfo 为错误信息字段，若是回调信息出错则有效信息为	null，错误代码和错误信息会在pRspInfo中。nRequestID为请求时填入的nRequestID，用于标记不同的请求。bIsLast 标记是否是当前回调的最后一个数据字段，某些回调的信息很多需要分多次发送。
 
 	与后台通讯的交互逻辑便是以这三类API接口为基础，基本没有改变。
 
@@ -34,9 +36,9 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 ### 2. FtdcSysUserApiStruct.h
 
 	结构体定义文件。定义了请求，实时回调，非实时回调的信息字段。
-	* 请求字段:     	CShfeFtdcReqQry+kernalFuncName+Field;
-	* 实时回调字段:  	 CShfeFtdcRtn+kernalFuncName+Field;
-	* 非实时回调字段:  CShfeFtdcRspQry+kernalFuncName+Field;
+* 请求字段:     	CShfeFtdcReqQry+kernalFuncName+Field;
+* 实时回调字段:  	 CShfeFtdcRtn+kernalFuncName+Field;
+* 非实时回调字段:  CShfeFtdcRspQry+kernalFuncName+Field;
 
 ### 3. FtdcSysUserApiDataType.h
 
@@ -57,9 +59,9 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 
 ### 1. addon.cpp
 	初始化一些用于封装的数据结构。
-	* 封装CShfeFtdcSysUserApi::CreateFtdcSysUserApi, CreateFtdcSysUserApi是CShfeFtdcSysUserApi中的静态方法，必须单独封装。
-	* 建立封装过程的日志文件，文件句柄为g_RunningResult_File, 文件名为 "log.txt"。
-	* 初始化用于回调时多线程间传递与存储的数据结构。
+* 封装CShfeFtdcSysUserApi::CreateFtdcSysUserApi, CreateFtdcSysUserApi是CShfeFtdcSysUserApi中的静态方法，必须单独封装。
+* 建立封装过程的日志文件，文件句柄为g_RunningResult_File, 文件名为 "log.txt"。
+* 初始化用于回调时多线程间传递与存储的数据结构。
 
 	编译后的结果输出于: ./build/Release/addon.node
 
@@ -76,6 +78,7 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 	封装CShfeFtdcSysUserApi这个类, 封装请求的api.
 	使用Nan::ObjectWrap,将请求的字段封装，用于C++后台请求。
 	JS -> Nan::ObjectWrap, V8-data -> C++
+	
 
 
 ### 5. sysuserspi.h,sysuserspi.cpp; v8-transform-func.h, v8-transform-func.cpp.
@@ -129,19 +132,19 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 
 ### 如何编译
 参考[node-gyp](https://github.com/nodejs/node-gyp)
-命令行进入项目的根目录，执行以下命令：
 
-<pre><code>
-	npm install --verbose --arch=ia32 >compile-info.txt
-</code></pre>
+命令行进入项目的根目录，执行以下命令:
+
+```
+npm install --verbose --arch=ia32 >compile-info.txt
+```
+
 或是
-<pre><code>
-	node-gyp build --verbose >compile-info.txt
-</code></pre>
 
-<pre><code>
-	npm install --verbose --arch=ia32 >info.txt
-</code></pre>
+```
+node-gyp build --verbose >compile-info.txt
+```
+
 
 ## 一些参考文档：
 * [V8概况](https://developers.google.com/v8/intro)，因为GFW的原因，这个
