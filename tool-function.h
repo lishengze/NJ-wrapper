@@ -12,6 +12,8 @@ using std::string;
 using std::fstream;
 using std::ios;
 
+string showCurTime();
+
 template <class valueType>
 void OutputCallbackMessage(valueType data) {
 	cout << data << endl;

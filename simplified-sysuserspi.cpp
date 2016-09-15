@@ -3,9 +3,11 @@
 #include "simplified-sysuserspi.h"
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 using std::string;
 
 extern fstream g_RunningResult_File;
+extern double g_stopusec;
 
 int g_RspQrySysUserLoginTopic_spi_callbackNumb = 0;
 int g_RspQryNetMonitorAttrScopeTopic_spi_callbackNumb = 0;
@@ -15,22 +17,13 @@ int g_RtnObjectAttrTopic_spi_callbackNumb = 0;
 struct timeval g_startTime;
 struct timeval g_endTime;
 
-extern long g_stopusec;
-
-//SysUserSpi::SysUserSpi() {
-//
-//	m_frontid = -1;
-//
-//	m_MonitorObjectTopicNumb = 0;
-//
-//	m_SysUserLoginTopicNumb = 0;
-//}
-
 void SysUserSpi::OnFrontConnected(){
 
-	OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++\n", g_RunningResult_File);
+  OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++", g_RunningResult_File);
 
-  OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected() END! +++++++++++++++\n", g_RunningResult_File);
+//   OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++\n", g_RunningResult_File);
+
+//   OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected() END! +++++++++++++++\n", g_RunningResult_File);
 }
 
 void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRspQrySysUserLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -78,17 +71,23 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
 void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField *pRtnObjectAttr) {
   ++g_RtnObjectAttrTopic_spi_callbackNumb;
   gettimeofday( &g_endTime, NULL );
-  if (1000000 * ( g_endTime.tv_sec - g_startTime.tv_sec ) + g_endTime.tv_usec - g_startTime.tv_usec > g_stopusec) {
-    cout << "Time: " << g_stopusec << " callbackNumb: " << g_RtnObjectAttrTopic_spi_callbackNumb
-         << " data: " << sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb << " bytes"<< endl;
+  if (1000000 * (double)( g_endTime.tv_sec - g_startTime.tv_sec ) + (double)(g_endTime.tv_usec - g_startTime.tv_usec) > g_stopusec) {
+    // cout << "Time: " << g_stopusec << "us callbackNumb: " << g_RtnObjectAttrTopic_spi_callbackNumb
+    //      << " data: " << sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb << " bytes"<< endl;
+
+    OutputCallbackMessage("Communication Time: ", g_stopusec/1000000, g_RunningResult_File);
+    OutputCallbackMessage("callbackNumb: ", g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
+    OutputCallbackMessage("data: ", sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
+    OutputCallbackMessage("EndTime: ", showCurTime(), g_RunningResult_File);
     exit(0);
   }
 }
 
+
 // void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField *pRtnObjectAttr) {
 // 	OutputCallbackMessage("\n****** SysUserSpi:: OnRtnObjectAttrTopic: START! ******", g_RunningResult_File);
 // 	OutputCallbackMessage("callbackNumb:                  ", g_RtnObjectAttrTopic_spi_callbackNumb++, g_RunningResult_File);
-//
+
 // 	if (NULL == pRtnObjectAttr) {
 // 		OutputCallbackMessage("pRspQryMonitorObject:          NULL", g_RunningResult_File);
 // 	} else {

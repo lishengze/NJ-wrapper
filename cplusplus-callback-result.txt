@@ -1,0 +1,48 @@
+
+++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++
+
+
+++++++++++++++ SysUserSpi::OnFrontConnected() END! +++++++++++++++
+
+Time: 30000000
+callbackNumb: 2910
+data: 1257120
+
+++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++
+
+
+++++++++++++++ SysUserSpi::OnFrontConnected() END! +++++++++++++++
+
+Time: 1
+callbackNumb: 97
+data: 41904
+
+++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++
+Time: 2
+callbackNumb: 195
+data: 84240
+
+++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++
+Time: 1800
+callbackNumb: 175057
+data: 75624624
+
+
+
+++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++
+StartTime: Thu Sep 15 18:43:25 2016
+
+Communication Time: 1
+callbackNumb: 95
+data: 41040
+EndTime: Thu Sep 15 18:43:26 2016
+
+
+++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++
+StartTime: Thu Sep 15 18:45:27 2016
+
+Communication Time: 3600
+callbackNumb: 349593
+data: 151024176
+EndTime: Thu Sep 15 19:45:27 2016
+

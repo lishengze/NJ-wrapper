@@ -7,7 +7,8 @@ fstream g_RunningResult_File;
 CShfeFtdcSysUserApi* g_pUserApi;
 SysUserSpi* g_pUserSpi;
 
-char* g_realTimeSystemPath = (char*)("tcp://172.1.128.172:19943");
+char* g_realTimeSystemPath = (char*)("tcp://192.168.100.1:19943");
+// char* g_realTimeSystemPath = (char*)("tcp://172.1.128.172:19943");
 // char* g_realTimeSystemPath = (char*)("tcp://172.1.128.165:18841");
 char* g_innerTestSystemPath = (char*)("tcp://172.1.128.111:18842");
 
@@ -15,7 +16,7 @@ int g_FrontID = 0;
 
 void ConnectToFront(int userNumber) {
 
-	g_RunningResult_File.open("cplusplus-callback-result.txt", ios::out);
+	g_RunningResult_File.open("cplusplus-callback-result.txt", ios::app|ios::out);
 
 	if (!g_RunningResult_File) {
 		OutputCallbackMessage("Failed to open running-message.txt", g_RunningResult_File);

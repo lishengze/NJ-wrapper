@@ -1,4 +1,4 @@
 *.out
 /.vscode/
-*.o
-*.txt
+*.o 
+makefile
