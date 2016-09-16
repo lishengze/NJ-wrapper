@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "addon",
+      "target_name": "addon-ubuntu",
       "sources": [ "addon.cpp","ftdcsysuserapi-wrapper.cpp", "sysuserspi.cpp","v8-transform-data.cpp","v8-transform-func.cpp", "id-func.cpp", "tool-function.cpp","charset-convert-linux.cpp","CCrypto.h","CDes.cpp" ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",

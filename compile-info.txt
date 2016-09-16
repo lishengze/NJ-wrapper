@@ -1,0 +1,3 @@
+make: Entering directory `/home/lee/github/nj-wrapper/build'
+  g++ -shared -pthread -rdynamic -m64  -Wl,-soname=addon-ubuntu.node -o Release/obj.target/addon-ubuntu.node -Wl,--start-group Release/obj.target/addon-ubuntu/addon.o Release/obj.target/addon-ubuntu/ftdcsysuserapi-wrapper.o Release/obj.target/addon-ubuntu/sysuserspi.o Release/obj.target/addon-ubuntu/v8-transform-data.o Release/obj.target/addon-ubuntu/v8-transform-func.o Release/obj.target/addon-ubuntu/id-func.o Release/obj.target/addon-ubuntu/tool-function.o Release/obj.target/addon-ubuntu/charset-convert-linux.o Release/obj.target/addon-ubuntu/CDes.o -Wl,--end-group -lsysuserapi
+make: Leaving directory `/home/lee/github/nj-wrapper/build'
