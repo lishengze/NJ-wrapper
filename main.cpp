@@ -8,7 +8,7 @@ using std::endl;
 #include "tool-function.h"
 
 double g_sec = 60;
-double g_min = 60;
+double g_min = 30;
 double g_stopusec = g_min * g_sec * 1000000;
 
 extern struct timeval g_startTime;
@@ -33,8 +33,17 @@ int main(int argc, char* argv[])
        		 TestReqQrySubscriberTopic();
 
 			 gettimeofday( &g_startTime, NULL );
-			 OutputCallbackMessage("StartTime: ", showCurTime(), g_RunningResult_File);
 
+			 	time_t t;
+				struct tm *pnow = NULL;
+
+				t = time(&t);
+				pnow = localtime(&t);
+
+				string curTime = asctime(pnow);
+
+			//  OutputCallbackMessage("StartTime: ", showCurTime(), g_RunningResult_File);
+			 OutputCallbackMessage("StartTime:     ", curTime, g_RunningResult_File);
      } else if (0 == reqOption) {
 			 break;
 		 }

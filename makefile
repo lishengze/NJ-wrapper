@@ -7,13 +7,13 @@ OBJS = main.o CplusReq.o simplified-sysuserspi.o tool-function.o
 $(TARGET):$(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) -L../c-wrapper -lsysuserapi
 
-main.o:main.cpp CplusReq.h
+main.o:main.cpp CplusReq.h tool-function.h simplified-sysuserspi.h
 	$(CC) -c main.cpp
 
 CplusReq.o:CplusReq.cpp CplusReq.h FtdcSysUserApi.h simplified-sysuserspi.h tool-function.h
 	$(CC) -c CplusReq.cpp
 
-simplified-sysuserspi.o:simplified-sysuserspi.cpp simplified-sysuserspi.h FtdcSysUserApi.h tool-function.h
+simplified-sysuserspi.o:simplified-sysuserspi.cpp simplified-sysuserspi.h FtdcSysUserApi.h tool-function.h CplusReq.h
 	$(CC) -c simplified-sysuserspi.cpp
 
 tool-function.o:tool-function.cpp tool-function.h

@@ -1,6 +1,7 @@
 #include "FtdcSysUserApi.h"
 #include "tool-function.h"
 #include "simplified-sysuserspi.h"
+#include "CplusReq.h"
 #include <stdlib.h>
 #include <string.h>
 #include <string>
@@ -19,7 +20,21 @@ struct timeval g_endTime;
 
 void SysUserSpi::OnFrontConnected(){
 
-  OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++", g_RunningResult_File);
+    TestReqQrySubscriberTopic();
+
+    gettimeofday( &g_startTime, NULL );
+
+    time_t t;
+    struct tm *pnow = NULL;
+
+    t = time(&t);
+    pnow = localtime(&t);
+
+    string curTime = asctime(pnow);
+
+    OutputCallbackMessage("StartTime:     ", curTime, g_RunningResult_File);
+
+//   OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected()+++++++++++++++", g_RunningResult_File);
 
 //   OutputCallbackMessage("\n++++++++++++++ SysUserSpi::OnFrontConnected() SATRT! +++++++++++++++\n", g_RunningResult_File);
 
@@ -75,10 +90,24 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField *pRtnObjectAtt
     // cout << "Time: " << g_stopusec << "us callbackNumb: " << g_RtnObjectAttrTopic_spi_callbackNumb
     //      << " data: " << sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb << " bytes"<< endl;
 
-    OutputCallbackMessage("Communication Time: ", g_stopusec/1000000, g_RunningResult_File);
-    OutputCallbackMessage("callbackNumb: ", g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
-    OutputCallbackMessage("data: ", sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
-    OutputCallbackMessage("EndTime: ", showCurTime(), g_RunningResult_File);
+    OutputCallbackMessage("Time:          ", g_stopusec/1000000, g_RunningResult_File);
+    OutputCallbackMessage("callbackNumb:  ", g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
+    OutputCallbackMessage("AevCallbkNumb: ", (double)g_RtnObjectAttrTopic_spi_callbackNumb / (g_stopusec/1000000), g_RunningResult_File);
+    OutputCallbackMessage("data:          ", sizeof(CShfeFtdcRtnObjectAttrField) * g_RtnObjectAttrTopic_spi_callbackNumb, g_RunningResult_File);
+    g_RunningResult_File << endl;
+    // OutputCallbackMessage("EndTime:       ", showCurTime(), g_RunningResult_File);
+
+    time_t t;
+    struct tm *pnow = NULL;
+
+    t = time(&t);
+    pnow = localtime(&t);
+
+    string curTime = asctime(pnow);
+
+//  OutputCallbackMessage("StartTime: ", showCurTime(), g_RunningResult_File);
+    OutputCallbackMessage("EndTime:       ", curTime, g_RunningResult_File);
+    g_RunningResult_File << endl;
     exit(0);
   }
 }

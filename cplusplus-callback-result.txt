@@ -46,3 +46,370 @@ callbackNumb: 349593
 data: 151024176
 EndTime: Thu Sep 15 19:45:27 2016
 
+
+StartTime: Sat Sep 17 11:42:31 2016
+
+Time:          1
+callbackNumb:  97
+data:          41904
+
+EndTime: Sat Sep 17 11:42:32 2016
+
+
+
+StartTime:      Sat Sep 17 11:43:55 2016
+
+Time:          1
+callbackNumb:  97
+data:          41904
+
+EndTime:       Sat Sep 17 11:43:56 2016
+
+
+
+StartTime:     Sat Sep 17 11:44:33 2016
+
+Time:          1
+callbackNumb:  98
+data:          42336
+
+EndTime:       Sat Sep 17 11:44:34 2016
+
+
+
+StartTime:     Sat Sep 17 11:46:22 2016
+
+Time:          1
+callbackNumb:  97
+data:          41904
+
+EndTime:       Sat Sep 17 11:46:23 2016
+
+
+StartTime:     Sat Sep 17 11:46:52 2016
+
+Time:          1
+callbackNumb:  96
+data:          41472
+
+EndTime:       Sat Sep 17 11:46:53 2016
+
+
+StartTime:     Sat Sep 17 11:47:32 2016
+
+Time:          3600
+callbackNumb:  348307
+data:          150468624
+
+EndTime:       Sat Sep 17 12:47:32 2016
+
+
+StartTime:     Sat Sep 17 12:57:31 2016
+
+Time:          5
+callbackNumb:  486
+AevCallbkNumb: 97.2
+data:          209952
+
+EndTime:       Sat Sep 17 12:57:36 2016
+
+
+StartTime:     Sat Sep 17 12:58:18 2016
+
+Time:          5
+callbackNumb:  484
+AevCallbkNumb: 96.8
+data:          209088
+
+EndTime:       Sat Sep 17 12:58:23 2016
+
+
+StartTime:     Sat Sep 17 13:01:26 2016
+
+Time:          5
+callbackNumb:  483
+AevCallbkNumb: 96.6
+data:          208656
+
+EndTime:       Sat Sep 17 13:01:31 2016
+
+
+StartTime:     Sat Sep 17 13:01:49 2016
+
+Time:          5
+callbackNumb:  485
+AevCallbkNumb: 97
+data:          209520
+
+EndTime:       Sat Sep 17 13:01:54 2016
+
+
+StartTime:     Sat Sep 17 13:02:13 2016
+
+Time:          5
+callbackNumb:  484
+AevCallbkNumb: 96.8
+data:          209088
+
+EndTime:       Sat Sep 17 13:02:18 2016
+
+
+StartTime:     Sat Sep 17 13:03:01 2016
+
+Time:          30
+callbackNumb:  2908
+AevCallbkNumb: 96.9333
+data:          1256256
+
+EndTime:       Sat Sep 17 13:03:32 2016
+
+
+StartTime:     Sat Sep 17 13:04:26 2016
+
+Time:          30
+callbackNumb:  2906
+AevCallbkNumb: 96.8667
+data:          1255392
+
+EndTime:       Sat Sep 17 13:04:56 2016
+
+
+StartTime:     Sat Sep 17 13:05:34 2016
+
+Time:          30
+callbackNumb:  2909
+AevCallbkNumb: 96.9667
+data:          1256688
+
+EndTime:       Sat Sep 17 13:06:04 2016
+
+
+StartTime:     Sat Sep 17 13:06:35 2016
+
+Time:          30
+callbackNumb:  2908
+AevCallbkNumb: 96.9333
+data:          1256256
+
+EndTime:       Sat Sep 17 13:07:05 2016
+
+
+StartTime:     Sat Sep 17 13:08:46 2016
+
+Time:          30
+callbackNumb:  2904
+AevCallbkNumb: 96.8
+data:          1254528
+
+EndTime:       Sat Sep 17 13:09:16 2016
+
+
+StartTime:     Sat Sep 17 13:09:50 2016
+Time:          60
+callbackNumb:  5804
+AevCallbkNumb: 96.7333
+data:          2507328
+
+EndTime:       Sat Sep 17 13:10:50 2016
+
+
+StartTime:     Sat Sep 17 13:11:09 2016
+
+Time:          60
+callbackNumb:  5808
+AevCallbkNumb: 96.8
+data:          2509056
+
+EndTime:       Sat Sep 17 13:12:09 2016
+
+
+StartTime:     Sat Sep 17 13:12:29 2016
+
+Time:          60
+callbackNumb:  5808
+AevCallbkNumb: 96.8
+data:          2509056
+
+EndTime:       Sat Sep 17 13:13:29 2016
+
+
+StartTime:     Sat Sep 17 13:13:50 2016
+
+Time:          60
+callbackNumb:  5806
+AevCallbkNumb: 96.7667
+data:          2508192
+
+EndTime:       Sat Sep 17 13:14:50 2016
+
+
+StartTime:     Sat Sep 17 13:15:19 2016
+
+Time:          60
+callbackNumb:  5809
+AevCallbkNumb: 96.8167
+data:          2509488
+
+EndTime:       Sat Sep 17 13:16:19 2016
+
+
+StartTime:     Sat Sep 17 13:17:52 2016
+
+Time:          300
+callbackNumb:  29019
+AevCallbkNumb: 96.73
+data:          12536208
+
+EndTime:       Sat Sep 17 13:22:52 2016
+
+
+StartTime:     Sat Sep 17 13:23:20 2016
+
+Time:          300
+callbackNumb:  28995
+AevCallbkNumb: 96.65
+data:          12525840
+
+EndTime:       Sat Sep 17 13:28:20 2016
+
+
+StartTime:     Sat Sep 17 13:33:24 2016
+
+Time:          300
+callbackNumb:  29063
+AevCallbkNumb: 96.8767
+data:          12555216
+
+EndTime:       Sat Sep 17 13:38:24 2016
+
+
+StartTime:     Sat Sep 17 13:38:44 2016
+
+Time:          300
+callbackNumb:  28992
+AevCallbkNumb: 96.64
+data:          12524544
+
+EndTime:       Sat Sep 17 13:43:44 2016
+
+
+StartTime:     Sat Sep 17 13:44:11 2016
+
+Time:          300
+callbackNumb:  29269
+AevCallbkNumb: 97.5633
+data:          12644208
+
+EndTime:       Sat Sep 17 13:49:11 2016
+
+
+StartTime:     Sat Sep 17 13:49:36 2016
+
+Time:          300
+callbackNumb:  29292
+AevCallbkNumb: 97.64
+data:          12654144
+
+EndTime:       Sat Sep 17 13:54:36 2016
+
+
+StartTime:     Sat Sep 17 13:55:10 2016
+
+Time:          3600
+callbackNumb:  351336
+AevCallbkNumb: 97.5933
+data:          151777152
+
+EndTime:       Sat Sep 17 14:55:10 2016
+
+
+StartTime:     Sat Sep 17 15:01:16 2016
+
+Time:          3600
+callbackNumb:  349713
+AevCallbkNumb: 97.1425
+data:          151076016
+
+EndTime:       Sat Sep 17 16:01:16 2016
+
+
+StartTime:     Sat Sep 17 16:01:41 2016
+
+Time:          3600
+callbackNumb:  348467
+AevCallbkNumb: 96.7964
+data:          150537744
+
+EndTime:       Sat Sep 17 17:01:41 2016
+
+
+StartTime:     Sat Sep 17 17:02:09 2016
+
+Time:          3600
+callbackNumb:  347820
+AevCallbkNumb: 96.6167
+data:          150258240
+
+EndTime:       Sat Sep 17 18:02:09 2016
+
+
+StartTime:     Sat Sep 17 18:02:30 2016
+
+Time:          3600
+callbackNumb:  348239
+AevCallbkNumb: 96.7331
+data:          150439248
+
+EndTime:       Sat Sep 17 19:02:30 2016
+
+
+StartTime:     Sat Sep 17 19:03:05 2016
+
+Time:          1800
+callbackNumb:  174320
+AevCallbkNumb: 96.8444
+data:          75306240
+
+EndTime:       Sat Sep 17 19:33:05 2016
+
+
+StartTime:     Sat Sep 17 19:33:23 2016
+
+Time:          1800
+callbackNumb:  174318
+AevCallbkNumb: 96.8433
+data:          75305376
+
+EndTime:       Sat Sep 17 20:03:23 2016
+
+
+StartTime:     Sat Sep 17 20:05:38 2016
+
+Time:          1800
+callbackNumb:  174399
+AevCallbkNumb: 96.8883
+data:          75340368
+
+EndTime:       Sat Sep 17 20:35:38 2016
+
+
+StartTime:     Sat Sep 17 20:36:04 2016
+
+Time:          1800
+callbackNumb:  174200
+AevCallbkNumb: 96.7778
+data:          75254400
+
+EndTime:       Sat Sep 17 21:06:04 2016
+
+
+StartTime:     Sat Sep 17 21:07:06 2016
+
+Time:          1800
+callbackNumb:  175442
+AevCallbkNumb: 97.4678
+data:          75790944
+
+EndTime:       Sat Sep 17 21:37:06 2016
+
+
