@@ -45,5 +45,14 @@ void OutputCallbackMessage(string varName, valueType varValue, fstream& f_File) 
 	}	
 }
 
+template<class valueType>
+void OutputCallbackMessage(string varName, valueType varValue, string value2, fstream& f_File) {
+	cout << varName << varValue << value2 << endl;
+	if (f_File) {
+		f_File << varName << varValue << value2 << endl;
+	} else {
+	//	cout << varName << varValue << endl;
+	}	
+}
 
 #endif

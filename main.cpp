@@ -7,11 +7,15 @@ using std::endl;
 
 #include "tool-function.h"
 
-double g_sec = 60;
-double g_min = 30;
+double g_sec = 1;
+double g_min = 1;
 double g_stopusec = g_min * g_sec * 1000000;
 
+extern int g_RtnObjectAttrTopic_spi_callbackNumb;
 extern struct timeval g_startTime;
+extern bool g_rtn_over;
+extern int g_reqNumb;
+extern int g_testTimeIndex;
 
 int main(int argc, char* argv[])
 {
@@ -29,8 +33,21 @@ int main(int argc, char* argv[])
 		 }else if (2 == reqOption) {
 			 TestReqQryMonitorObjectTopic(1);
 		 } else if (3 == reqOption) {
-			 
-       		 TestReqQrySubscriberTopic();
+
+			 if (g_reqNumb == 6) {
+				cout << "reset time!" << endl;
+				cout << "g_sec: "; cin >> g_sec;
+				cout << "g_min: "; cin >> g_min;
+				g_stopusec = g_min * g_sec * 1000000;
+				g_reqNumb = 1;
+				g_testTimeIndex++;
+			 }
+
+
+			 g_rtn_over = false;
+			 g_RtnObjectAttrTopic_spi_callbackNumb = 0;
+
+       		//  TestReqQrySubscriberTopic();
 
 			 gettimeofday( &g_startTime, NULL );
 

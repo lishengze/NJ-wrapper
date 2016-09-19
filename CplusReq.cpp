@@ -16,7 +16,7 @@ int g_FrontID = 0;
 
 void ConnectToFront(int userNumber) {
 
-	g_RunningResult_File.open("cplusplus-callback-result.txt", ios::app|ios::out);
+	g_RunningResult_File.open("test-ubuntu.txt", ios::app|ios::out);
 
 	if (!g_RunningResult_File) {
 		OutputCallbackMessage("Failed to open running-message.txt", g_RunningResult_File);
