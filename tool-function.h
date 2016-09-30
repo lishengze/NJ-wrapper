@@ -27,7 +27,7 @@ void OutputCallbackMessage(valueType data, fstream& f_File) {
 	} else {
 	//	cout << data << endl;
 	}
-	
+
 }
 
 template<class valueType>
@@ -42,8 +42,17 @@ void OutputCallbackMessage(string varName, valueType varValue, fstream& f_File) 
 		f_File << varName << varValue << endl;
 	} else {
 	//	cout << varName << varValue << endl;
-	}	
+	}
 }
 
+template<class valueType>
+void OutputCallbackMessage(string varName, valueType varValue, string varName2, fstream& f_File) {
+	cout << varName << varValue << varName2 << endl;
+	if (f_File) {
+		f_File << varName << varValue << varName2 << endl;
+	} else {
+	//	cout << varName << varValue << endl;
+	}
+}
 
 #endif

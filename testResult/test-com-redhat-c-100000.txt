@@ -1,0 +1,281 @@
+********* Test ReqQrySubscriberTopic ************
+g_rtn_callback_onesec:       10000
+
+
+StartTime:     Wed Sep 21 15:59:45 2016
+
+Time:          1
+CallbackNumb:  34201
+AevCallbkNumb: 34201
+Bandwidth:     14.0904MB/S
+ReqNumb:       1
+
+EndTime:       Wed Sep 21 15:59:46 2016
+
+
+StartTime:     Wed Sep 21 15:59:46 2016
+
+Time:          1
+CallbackNumb:  40500
+AevCallbkNumb: 40500
+Bandwidth:     16.6855MB/S
+ReqNumb:       2
+
+EndTime:       Wed Sep 21 15:59:47 2016
+
+
+StartTime:     Wed Sep 21 15:59:47 2016
+
+Time:          1
+CallbackNumb:  36992
+AevCallbkNumb: 36992
+Bandwidth:     15.2402MB/S
+ReqNumb:       3
+
+EndTime:       Wed Sep 21 15:59:48 2016
+
+
+StartTime:     Wed Sep 21 15:59:48 2016
+
+Time:          1
+CallbackNumb:  47560
+AevCallbkNumb: 47560
+Bandwidth:     19.5941MB/S
+ReqNumb:       4
+
+EndTime:       Wed Sep 21 15:59:49 2016
+
+
+StartTime:     Wed Sep 21 15:59:49 2016
+
+Time:          1
+CallbackNumb:  42848
+AevCallbkNumb: 42848
+Bandwidth:     17.6528MB/S
+ReqNumb:       5
+
+EndTime:       Wed Sep 21 15:59:50 2016
+
+
+StartTime:     Wed Sep 21 15:59:50 2016
+
+Time:          5
+CallbackNumb:  300800
+AevCallbkNumb: 60160
+Bandwidth:     24.7852MB/S
+ReqNumb:       1
+
+EndTime:       Wed Sep 21 15:59:55 2016
+
+
+StartTime:     Wed Sep 21 15:59:55 2016
+
+Time:          5
+CallbackNumb:  343700
+AevCallbkNumb: 68740
+Bandwidth:     28.32MB/S
+ReqNumb:       2
+
+EndTime:       Wed Sep 21 16:00:00 2016
+
+
+StartTime:     Wed Sep 21 16:00:00 2016
+
+Time:          5
+CallbackNumb:  318000
+AevCallbkNumb: 63600
+Bandwidth:     26.2024MB/S
+ReqNumb:       3
+
+EndTime:       Wed Sep 21 16:00:05 2016
+
+
+StartTime:     Wed Sep 21 16:00:05 2016
+
+Time:          5
+CallbackNumb:  224847
+AevCallbkNumb: 44969.4
+Bandwidth:     18.5268MB/S
+ReqNumb:       4
+
+EndTime:       Wed Sep 21 16:00:10 2016
+
+
+StartTime:     Wed Sep 21 16:00:10 2016
+
+Time:          5
+CallbackNumb:  226602
+AevCallbkNumb: 45320.4
+Bandwidth:     18.6714MB/S
+ReqNumb:       5
+
+EndTime:       Wed Sep 21 16:00:15 2016
+
+
+StartTime:     Wed Sep 21 16:00:15 2016
+
+Time:          30
+CallbackNumb:  1358751
+AevCallbkNumb: 45291.7
+Bandwidth:     18.6596MB/S
+ReqNumb:       1
+
+EndTime:       Wed Sep 21 16:00:45 2016
+
+
+StartTime:     Wed Sep 21 16:00:45 2016
+
+Time:          30
+CallbackNumb:  1592682
+AevCallbkNumb: 53089.4
+Bandwidth:     21.8722MB/S
+ReqNumb:       2
+
+EndTime:       Wed Sep 21 16:01:15 2016
+
+
+StartTime:     Wed Sep 21 16:01:15 2016
+
+Time:          30
+CallbackNumb:  1524818
+AevCallbkNumb: 50827.3
+Bandwidth:     20.9402MB/S
+ReqNumb:       3
+
+EndTime:       Wed Sep 21 16:01:45 2016
+
+
+StartTime:     Wed Sep 21 16:01:45 2016
+
+Time:          30
+CallbackNumb:  1606500
+AevCallbkNumb: 53550
+Bandwidth:     22.0619MB/S
+ReqNumb:       4
+
+EndTime:       Wed Sep 21 16:02:15 2016
+
+
+StartTime:     Wed Sep 21 16:02:15 2016
+
+Time:          30
+CallbackNumb:  1562844
+AevCallbkNumb: 52094.8
+Bandwidth:     21.4624MB/S
+ReqNumb:       5
+
+EndTime:       Wed Sep 21 16:02:45 2016
+
+
+StartTime:     Wed Sep 21 16:02:45 2016
+
+Time:          60
+CallbackNumb:  3245056
+AevCallbkNumb: 54084.3
+Bandwidth:     22.282MB/S
+ReqNumb:       1
+
+EndTime:       Wed Sep 21 16:03:45 2016
+
+
+StartTime:     Wed Sep 21 16:03:45 2016
+
+Time:          60
+CallbackNumb:  3308600
+AevCallbkNumb: 55143.3
+Bandwidth:     22.7184MB/S
+ReqNumb:       2
+
+EndTime:       Wed Sep 21 16:04:45 2016
+
+
+StartTime:     Wed Sep 21 16:04:45 2016
+
+Time:          60
+CallbackNumb:  3201700
+AevCallbkNumb: 53361.7
+Bandwidth:     21.9843MB/S
+ReqNumb:       3
+
+EndTime:       Wed Sep 21 16:05:45 2016
+
+
+StartTime:     Wed Sep 21 16:05:45 2016
+
+Time:          60
+CallbackNumb:  3108535
+AevCallbkNumb: 51808.9
+Bandwidth:     21.3446MB/S
+ReqNumb:       4
+
+EndTime:       Wed Sep 21 16:06:45 2016
+
+
+StartTime:     Wed Sep 21 16:06:45 2016
+
+Time:          60
+CallbackNumb:  3185865
+AevCallbkNumb: 53097.8
+Bandwidth:     21.8756MB/S
+ReqNumb:       5
+
+EndTime:       Wed Sep 21 16:07:45 2016
+
+
+StartTime:     Wed Sep 21 16:07:45 2016
+
+Time:          300
+CallbackNumb:  16848600
+AevCallbkNumb: 56162
+Bandwidth:     23.138MB/S
+ReqNumb:       1
+
+EndTime:       Wed Sep 21 16:12:45 2016
+
+
+StartTime:     Wed Sep 21 16:12:45 2016
+
+Time:          300
+CallbackNumb:  15771535
+AevCallbkNumb: 52571.8
+Bandwidth:     21.6589MB/S
+ReqNumb:       2
+
+EndTime:       Wed Sep 21 16:17:45 2016
+
+
+StartTime:     Wed Sep 21 16:17:45 2016
+
+Time:          300
+CallbackNumb:  15868164
+AevCallbkNumb: 52893.9
+Bandwidth:     21.7916MB/S
+ReqNumb:       3
+
+EndTime:       Wed Sep 21 16:22:45 2016
+
+
+StartTime:     Wed Sep 21 16:22:45 2016
+
+Time:          300
+CallbackNumb:  16826853
+AevCallbkNumb: 56089.5
+Bandwidth:     23.1082MB/S
+ReqNumb:       4
+
+EndTime:       Wed Sep 21 16:27:45 2016
+
+
+StartTime:     Wed Sep 21 16:27:45 2016
+
+Time:          300
+CallbackNumb:  16941348
+AevCallbkNumb: 56471.2
+Bandwidth:     23.2654MB/S
+ReqNumb:       5
+
+EndTime:       Wed Sep 21 16:32:45 2016
+
+
+StartTime:     Wed Sep 21 16:32:45 2016
+

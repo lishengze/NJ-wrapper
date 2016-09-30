@@ -1,0 +1,50 @@
+StartTime:     Mon Sep 19 17:28:42 2016
+
+StartTime:     Mon Sep 19 17:32:50 2016
+
+Time:          10
+callbackNumb:  195229
+AevCallbkNumb: 19522.9
+data:          84338928
+bandwidth:     8.04319MB/S
+
+EndTime:       Mon Sep 19 17:33:00 2016
+
+
+StartTime:     Mon Sep 19 17:35:17 2016
+
+Time:          10
+callbackNumb:  420893
+AevCallbkNumb: 42089.3
+data:          181825776
+bandwidth:     17.3403MB/S
+
+EndTime:       Mon Sep 19 17:35:27 2016
+
+
+StartTime:     Mon Sep 19 17:37:13 2016
+
+StartTime:     Mon Sep 19 17:38:13 2016
+
+Time:          60
+callbackNumb:  2355025
+AevCallbkNumb: 39250.4
+data:          1017370800
+bandwidth:     16.1707MB/S
+
+EndTime:       Mon Sep 19 17:39:13 2016
+
+
+StartTime:     Mon Sep 19 17:47:38 2016
+
+Time:          300
+callbackNumb:  13437201
+AevCallbkNumb: 44790.7
+data:          5804870832
+bandwidth:     18.4532MB/S
+
+EndTime:       Mon Sep 19 17:52:38 2016
+
+
+StartTime:     Mon Sep 19 17:55:16 2016
+
