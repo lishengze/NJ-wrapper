@@ -16,9 +16,9 @@ using std::string;
 
 using namespace v8;
 
-#ifdef linux
-#include "charset-convert-linux.h"
-#endif
+// #ifdef linux
+// #include "charset-convert-linux.h"
+// #endif
 
 #ifdef __WINDOWS_
 #include "charset-convert-windows.h"

@@ -7,7 +7,7 @@
 #include <queue>
 #include <map>
 #include <vector>
-#include <pthread.h>
+
 #include <iostream>
 using std::queue;
 using std::map;
@@ -20,9 +20,10 @@ using std::dec;
 
 using namespace v8;
 
-#ifdef linux
-#include "charset-convert-linux.h"
-#endif
+// #ifdef linux
+// #include "charset-convert-linux.h"
+// #include <pthread.h>
+// #endif
 
 #ifdef __WINDOWS_
 #include "charset-convert-windows.h"
