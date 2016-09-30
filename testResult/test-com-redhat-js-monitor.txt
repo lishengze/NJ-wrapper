@@ -1,0 +1,50 @@
+********* Test ReqQryMonitorObjectTopic ************
+g_monitor_callback_sumNumber:       189900
+
+StartTime:     Fri Sep 23 2016 11:53:54 GMT+0800 (CST)
+CostTime:      4.609s
+SumCallbkNumb: 189900
+AevCallbkNumb: 41201.996094597525
+Bandwidth:     7.740777235637391 MB/S
+EndTime:       Fri Sep 23 2016 11:53:58 GMT+0800 (CST)
+
+********* Test ReqQryMonitorObjectTopic ************
+g_monitor_callback_sumNumber:       379800
+
+StartTime:     Fri Sep 23 2016 11:53:59 GMT+0800 (CST)
+CostTime:      9.161s
+SumCallbkNumb: 379800
+AevCallbkNumb: 41458.35607466434
+Bandwidth:     7.788940569599986 MB/S
+EndTime:       Fri Sep 23 2016 11:54:08 GMT+0800 (CST)
+
+********* Test ReqQryMonitorObjectTopic ************
+g_monitor_callback_sumNumber:       569700
+
+StartTime:     Fri Sep 23 2016 11:54:09 GMT+0800 (CST)
+CostTime:      14.277s
+SumCallbkNumb: 569700
+AevCallbkNumb: 39903.3410380332
+Bandwidth:     7.49679392289404 MB/S
+EndTime:       Fri Sep 23 2016 11:54:24 GMT+0800 (CST)
+
+********* Test ReqQryMonitorObjectTopic ************
+g_monitor_callback_sumNumber:       759600
+
+StartTime:     Fri Sep 23 2016 11:54:25 GMT+0800 (CST)
+CostTime:      19.431s
+SumCallbkNumb: 759600
+AevCallbkNumb: 39092.17230199166
+Bandwidth:     7.344396537296636 MB/S
+EndTime:       Fri Sep 23 2016 11:54:44 GMT+0800 (CST)
+
+********* Test ReqQryMonitorObjectTopic ************
+g_monitor_callback_sumNumber:       949500
+
+StartTime:     Fri Sep 23 2016 11:54:45 GMT+0800 (CST)
+CostTime:      23.033s
+SumCallbkNumb: 949500
+AevCallbkNumb: 41223.46198931967
+Bandwidth:     7.744810115715003 MB/S
+EndTime:       Fri Sep 23 2016 11:55:08 GMT+0800 (CST)
+
