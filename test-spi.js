@@ -132,17 +132,18 @@ var Spi = function(){
 
     this.OnFrontConnected = function()
     {
-      if (true === g_isTestTtn)
-      {
-        var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
-        this.TestReqQrySubscriberTopic(1);
-      }
+      console.log ('FrontConnected!');
+      // if (true === g_isTestTtn)
+      // {
+      //   var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
+      //   this.TestReqQrySubscriberTopic(1);
+      // }
 
-      if (true === g_isTestReqMonitor)
-      {
-        var testfileName = path.join (__dirname, './test-com-redhat-js-monitor.txt');
-        this.TestReqQryMonitorObjectTopic(g_ReqQryMonitorObjectTopic_Numb);
-      }
+      // if (true === g_isTestReqMonitor)
+      // {
+      //   var testfileName = path.join (__dirname, './test-com-redhat-js-monitor.txt');
+      //   this.TestReqQryMonitorObjectTopic(g_ReqQryMonitorObjectTopic_Numb);
+      // }
     }
 
      if (true === g_isTestBandwidth) {
@@ -291,24 +292,6 @@ var Spi = function(){
             outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";
             g_RspQrySysUserLoginTopic_spi_callbackNumb++;
             console.log(outputStr);
-    }
-
-    this.OnRspQrySysUserRegisterTopic = function (pRspQrySysUserRegister, pRspInfo, nRequestID, bIsLast)
-    {
-        var outputStr = "\n************ JS::OnRspQrySysUserRegisterTopic: START! ***********\n";
-
-        if (pRspQrySysUserRegister instanceof Object) {
-            outputStr += "UserID:                               " + pRspQrySysUserRegister.UserID.toString() + "\n"
-                       + "Privilege:                            " + pRspQrySysUserRegister.Privilege.toString() + "\n";
-        } else {
-            outputStr += "pRspQrySysUserRegister is NULL!\n";
-        }
-
-        outputStr += "bIsLast in JS is:                     " + bIsLast.toString() + "\n";
-        outputStr += "************ JS::OnRspQrySysUserRegisterTopic: END! ***********\n"
-
-        console.log(outputStr);
-        this.OnRspQrySysUserRegisterTopicCallTime++;
     }
 };
 

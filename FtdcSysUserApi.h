@@ -1,10 +1,10 @@
 /////////////////////////////////////////////////////////////////////////
-///@system ĞÂÒ»´ú½»Ò×ËùÏµÍ³·çÏÕ¼à¿ØÏµÍ³
-///@company ÉÏº£ÆÚ»õĞÅÏ¢¼¼ÊõÓĞÏŞ¹«Ë¾
+///@system æ–°ä¸€ä»£äº¤æ˜“æ‰€ç³»ç»Ÿé£é™©ç›‘æ§ç³»ç»Ÿ
+///@company ä¸Šæµ·æœŸè´§ä¿¡æ¯æŠ€æœ¯æœ‰é™å…¬å¸
 ///@file FtdcSysUserApi.h
-///@brief ¶¨ÒåÁË¿Í»§¶Ë½Ó¿Ú
+///@brief å®šä¹‰äº†å®¢æˆ·ç«¯æ¥å£
 ///@history 
-///20070227	zhangjie		´´½¨¸ÃÎÄ¼ş
+///20070227	zhangjie		åˆ›å»ºè¯¥æ–‡ä»¶
 /////////////////////////////////////////////////////////////////////////
 
 #if !defined(_FTDCSYSUSERAPI_H)
@@ -30,279 +30,279 @@
 class CShfeFtdcSysUserSpi
 {
 public:
-	///µ±¿Í»§¶ËÓë½»Ò×ºóÌ¨½¨Á¢ÆğÍ¨ĞÅÁ¬½ÓÊ±£¨»¹Î´µÇÂ¼Ç°£©£¬¸Ã·½·¨±»µ÷ÓÃ¡£
+	///å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“åå°å»ºç«‹èµ·é€šä¿¡è¿æ¥æ—¶ï¼ˆè¿˜æœªç™»å½•å‰ï¼‰ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚
 	virtual void OnFrontConnected(){};
 	
-	///µ±¿Í»§¶ËÓë½»Ò×ºóÌ¨Í¨ĞÅÁ¬½Ó¶Ï¿ªÊ±£¬¸Ã·½·¨±»µ÷ÓÃ¡£µ±·¢ÉúÕâ¸öÇé¿öºó£¬API»á×Ô¶¯ÖØĞÂÁ¬½Ó£¬¿Í»§¶Ë¿É²»×ö´¦Àí¡£
-	///@param nReason ´íÎóÔ­Òò
-	///        0x1001 ÍøÂç¶ÁÊ§°Ü
-	///        0x1002 ÍøÂçĞ´Ê§°Ü
-	///        0x2001 ½ÓÊÕĞÄÌø³¬Ê±
-	///        0x2002 ·¢ËÍĞÄÌøÊ§°Ü
-	///        0x2003 ÊÕµ½´íÎó±¨ÎÄ
+	///å½“å®¢æˆ·ç«¯ä¸äº¤æ˜“åå°é€šä¿¡è¿æ¥æ–­å¼€æ—¶ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚å½“å‘ç”Ÿè¿™ä¸ªæƒ…å†µåï¼ŒAPIä¼šè‡ªåŠ¨é‡æ–°è¿æ¥ï¼Œå®¢æˆ·ç«¯å¯ä¸åšå¤„ç†ã€‚
+	///@param nReason é”™è¯¯åŸå› 
+	///        0x1001 ç½‘ç»œè¯»å¤±è´¥
+	///        0x1002 ç½‘ç»œå†™å¤±è´¥
+	///        0x2001 æ¥æ”¶å¿ƒè·³è¶…æ—¶
+	///        0x2002 å‘é€å¿ƒè·³å¤±è´¥
+	///        0x2003 æ”¶åˆ°é”™è¯¯æŠ¥æ–‡
 	virtual void OnFrontDisconnected(int nReason){};
 		
-	///ĞÄÌø³¬Ê±¾¯¸æ¡£µ±³¤Ê±¼äÎ´ÊÕµ½±¨ÎÄÊ±£¬¸Ã·½·¨±»µ÷ÓÃ¡£
-	///@param nTimeLapse ¾àÀëÉÏ´Î½ÓÊÕ±¨ÎÄµÄÊ±¼ä
+	///å¿ƒè·³è¶…æ—¶è­¦å‘Šã€‚å½“é•¿æ—¶é—´æœªæ”¶åˆ°æŠ¥æ–‡æ—¶ï¼Œè¯¥æ–¹æ³•è¢«è°ƒç”¨ã€‚
+	///@param nTimeLapse è·ç¦»ä¸Šæ¬¡æ¥æ”¶æŠ¥æ–‡çš„æ—¶é—´
 	virtual void OnHeartBeatWarning(int nTimeLapse){};
 	
 
-	///CPUÓ¦´ğ
+	///CPUåº”ç­”
 	virtual void OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField *pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///CPUÓ¦´ğ
+	///CPUåº”ç­”
 	virtual void OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField *pRtnTopCpuInfo) {};
 
-	///MemÓ¦´ğ
+	///Memåº”ç­”
 	virtual void OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField *pRspQryTopMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///MemÓ¦´ğ
+	///Memåº”ç­”
 	virtual void OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField *pRtnTopMemInfo) {};
 
-	///processÓ¦´ğ
+	///processåº”ç­”
 	virtual void OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField *pRspQryTopProcessInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///processÓ¦´ğ
+	///processåº”ç­”
 	virtual void OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField *pRtnTopProcessInfo) {};
 
-	///filesystemÓ¦´ğ
+	///filesystemåº”ç­”
 	virtual void OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField *pRspQryFileSystemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///filesystemÓ¦´ğ
+	///filesystemåº”ç­”
 	virtual void OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField *pRtnFileSystemInfo) {};
 
-	///networkÓ¦´ğ
+	///networkåº”ç­”
 	virtual void OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField *pRspQryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///networkÓ¦´ğ
+	///networkåº”ç­”
 	virtual void OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField *pRtnNetworkInfo) {};
 
-	///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢Ó¦´ğ
+	///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯åº”ç­”
 	virtual void OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField *pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢Ó¦´ğ
+	///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯åº”ç­”
 	virtual void OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField *pRtnMonitorObject) {};
 
-	///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµÓ¦´ğ
+	///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»åº”ç­”
 	virtual void OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField *pRspQryObjectRational, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµÓ¦´ğ
+	///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»åº”ç­”
 	virtual void OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField *pRtnObjectRational) {};
 
-	///ÈÕÖ¾ÎÄ¼şÄÚÈİÓ¦´ğ
+	///æ—¥å¿—æ–‡ä»¶å†…å®¹åº”ç­”
 	virtual void OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField *pRspQrySyslogInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÕÖ¾ÎÄ¼şÄÚÈİÓ¦´ğ
+	///æ—¥å¿—æ–‡ä»¶å†…å®¹åº”ç­”
 	virtual void OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField *pRtnSyslogInfo) {};
 
-	///¼à¿ØÄÚÈİ¶©ÔÄÓ¦´ğ
+	///ç›‘æ§å†…å®¹è®¢é˜…åº”ç­”
 	virtual void OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField *pRspQrySubscriber, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶ÔÏó¹ØÏµ²éÑ¯Ó¦´ğ
+	///å¯¹è±¡å…³ç³»æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField *pRspQryOidRelation, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶ÔÏó¹ØÏµ²éÑ¯Ó¦´ğ
+	///å¯¹è±¡å…³ç³»æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField *pRtnOidRelation) {};
 
-	///ÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇóÓ¦´ğ
+	///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField *pRspQryUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇóÓ¦´ğ
+	///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField *pRtnUserInfo) {};
 
-	///ÔÚÏßÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇóÓ¦´ğ
+	///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField *pRspQryOnlineUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÔÚÏßÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇóÓ¦´ğ
+	///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField *pRtnOnlineUserInfo) {};
 
-	///¸æ¾¯ÊÂ¼ş²éÑ¯ÇëÇóÓ¦´ğ
+	///å‘Šè­¦äº‹ä»¶æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField *pRspQryWarningEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¸æ¾¯ÊÂ¼ş²éÑ¯ÇëÇóÓ¦´ğ
+	///å‘Šè­¦äº‹ä»¶æŸ¥è¯¢è¯·æ±‚åº”ç­”
 	virtual void OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField *pRtnWarningEvent) {};
 
-	///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+	///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField *pRspQryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+	///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField *pRtnObjectAttr) {};
 
-	///ÎŞĞ§±¨µ¥²éÑ¯Ó¦´ğ
+	///æ— æ•ˆæŠ¥å•æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderField *pRspQryInvalidateOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÎŞĞ§±¨µ¥²éÑ¯Ó¦´ğ
+	///æ— æ•ˆæŠ¥å•æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField *pRtnInvalidateOrder) {};
 
-	///±¨µ¥×´Ì¬²éÑ¯Ó¦´ğ
+	///æŠ¥å•çŠ¶æ€æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField *pRspQryOrderStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///±¨µ¥×´Ì¬²éÑ¯Ó¦´ğ
+	///æŠ¥å•çŠ¶æ€æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField *pRtnOrderStatus) {};
 
-	///±¨µ¥³É½»²éÑ¯Ó¦´ğ
+	///æŠ¥å•æˆäº¤æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField *pRspQryBargainOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///±¨µ¥³É½»²éÑ¯Ó¦´ğ
+	///æŠ¥å•æˆäº¤æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField *pRtnBargainOrder) {};
 
-	///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯Ó¦´ğ
+	///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField *pRspQryInstProperty, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯Ó¦´ğ
+	///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField *pRtnInstProperty) {};
 
-	///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯Ó¦´ğ
+	///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField *pRspQryMarginRate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯Ó¦´ğ
+	///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField *pRtnMarginRate) {};
 
-	///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯Ó¦´ğ
+	///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField *pRspQryPriceLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯Ó¦´ğ
+	///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField *pRtnPriceLimit) {};
 
-	///»áÔ±ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField *pRspQryPartPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField *pRtnPartPosiLimit) {};
 
-	///¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///å®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitField *pRspQryClientPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///å®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField *pRtnClientPosiLimit) {};
 
-	///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitField *pRspQrySpecialPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯Ó¦´ğ
+	///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField *pRtnSpecialPosiLimit) {};
 
-	///ÕË»§³öÈë½ğ²éÑ¯Ó¦´ğ
+	///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField *pRspQryTransactionChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÕË»§³öÈë½ğ²éÑ¯Ó¦´ğ
+	///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField *pRtnTransactionChg) {};
 
-	///¿Í»§Êı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField *pRspQryClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¿Í»§Êı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnClientChgTopic(CShfeFtdcRtnClientChgField *pRtnClientChg) {};
 
-	///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField *pRspQryPartClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField *pRtnPartClientChg) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField *pRspQryPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField *pRtnPosiLimitChg) {};
 
-	///±£Öµ¶î¶È±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField *pRspQryHedgeDetailChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///±£Öµ¶î¶È±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField *pRtnHedgeDetailChg) {};
 
-	///»áÔ±±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField *pRspQryParticipantChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField *pRtnParticipantChg) {};
 
-	///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField *pRspQryMarginRateChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯Ó¦´ğ
+	///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField *pRtnMarginRateChg) {};
 
-	///IPµØÖ·±ä¶¯²éÑ¯Ó¦´ğ
+	///IPåœ°å€å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField *pRspQryUserIpChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///IPµØÖ·±ä¶¯²éÑ¯Ó¦´ğ
+	///IPåœ°å€å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField *pRtnUserIpChg) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitChgField *pRspQryClientPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgField *pRtnClientPosiLimitChg) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgField *pRspQrySpecPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯Ó¦´ğ
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField *pRtnSpecPosiLimitChg) {};
 
-	///ÀúÊ·¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+	///å†å²å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttrField *pRspQryHistoryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÀúÊ·¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯Ó¦´ğ
+	///å†å²å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField *pRtnHistoryObjectAttr) {};
 
-	///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯Ó¦´ğ
+	///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField *pRspQryFrontInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯Ó¦´ğ
+	///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField *pRtnFrontInfo) {};
 
-	///ÓÃ»§µÇÂ¼Ó¦´ğ
+	///ç”¨æˆ·ç™»å½•åº”ç­”
 	virtual void OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField *pRspQrySysUserLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÓÃ»§µÇ³öÓ¦´ğ
+	///ç”¨æˆ·ç™»å‡ºåº”ç­”
 	virtual void OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField *pRspQrySysUserLogout, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÓÃ»§ĞŞ¸ÄÃÜÂëÓ¦´ğ
+	///ç”¨æˆ·ä¿®æ”¹å¯†ç åº”ç­”
 	virtual void OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswordUpdateField *pRspQrySysUserPasswordUpdate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///×¢²áÓÃ»§Ó¦´ğ
+	///æ³¨å†Œç”¨æˆ·åº”ç­”
 	virtual void OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterField *pRspQrySysUserRegister, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///É¾³ıÓÃ»§Ó¦´ğ
+	///åˆ é™¤ç”¨æˆ·åº”ç­”
 	virtual void OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField *pRspQrySysUserDelete, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±³õÊ¼»¯Ó¦´ğ
+	///ä¼šå‘˜åˆå§‹åŒ–åº”ç­”
 	virtual void OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitField *pRspQryParticipantInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±³õÊ¼»¯Ó¦´ğ
+	///ä¼šå‘˜åˆå§‹åŒ–åº”ç­”
 	virtual void OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField *pRtnParticipantInit) {};
 
-	///×ùÏ¯³õÊ¼»¯Ó¦´ğ
+	///åº§å¸­åˆå§‹åŒ–åº”ç­”
 	virtual void OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField *pRspQryUserInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///×ùÏ¯³õÊ¼»¯Ó¦´ğ
+	///åº§å¸­åˆå§‹åŒ–åº”ç­”
 	virtual void OnRtnUserInitTopic(CShfeFtdcRtnUserInitField *pRtnUserInit) {};
 
-	///¿Í»§³õÊ¼»¯Ó¦´ğ
+	///å®¢æˆ·åˆå§‹åŒ–åº”ç­”
 	virtual void OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField *pRspQryClientInit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¿Í»§³õÊ¼»¯Ó¦´ğ
+	///å®¢æˆ·åˆå§‹åŒ–åº”ç­”
 	virtual void OnRtnClientInitTopic(CShfeFtdcRtnClientInitField *pRtnClientInit) {};
 
-	///½»Ò×ÈÕÖ¾²éÑ¯Ó¦´ğ
+	///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField *pRspQryTradeLog, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÈÕÖ¾²éÑ¯Ó¦´ğ
+	///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField *pRtnTradeLog) {};
 
-	///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯
 	virtual void OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginInfoField *pRspQryTradeUserLoginInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯
 	virtual void OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoField *pRtnTradeUserLoginInfo) {};
 
-	///»áÔ±½»Ò×²éÑ¯Ó¦´ğ
+	///ä¼šå‘˜äº¤æ˜“æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField *pRspQryPartTrade, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×·åÖµ²éÑ¯Ó¦´ğ
+	///äº¤æ˜“å³°å€¼æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField *pRspQryTradepeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
 	///
@@ -320,259 +320,262 @@ public:
 	///
 	virtual void OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkInfoField *pRspQryHistoryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¼à¿ØÏµÍ³ÔÚÏßÓÃ»§Ó¦´ğ
+	///ç›‘æ§ç³»ç»Ÿåœ¨çº¿ç”¨æˆ·åº”ç­”
 	virtual void OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField *pRspQryMonitorOnlineUser, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÏµÍ³Ç°ÖÃÍ³¼ÆÓ¦´ğ
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®ç»Ÿè®¡åº”ç­”
 	virtual void OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField *pRspQryFrontStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¼à¿ØÏµÍ³Ê±ÖÓÍ¬²½
+	///ç›‘æ§ç³»ç»Ÿæ—¶é’ŸåŒæ­¥
 	virtual void OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField *pRtnSysTimeSync) {};
 
-	///Êı¾İÖĞĞÄÇĞ»»Í¨Öª
+	///æ•°æ®ä¸­å¿ƒåˆ‡æ¢é€šçŸ¥
 	virtual void OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField *pRtnDataCenterChg) {};
 
-	///ÀúÊ··åÖµ²éÑ¯Ó¦´ğ
+	///å†å²å³°å€¼æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakField *pRspQryHistoryTradePeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÕÖ¾ÊÂ¼ş²éÑ¯Ó¦´ğ
+	///æ—¥å¿—äº‹ä»¶æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField *pRspQrySyslogEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÕÖ¾ÊÂ¼şÓ¦´ğ
+	///æ—¥å¿—äº‹ä»¶åº”ç­”
 	virtual void OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField *pRtnSyslogEvent) {};
 
-	///WebÓ¦ÓÃĞÅÏ¢
+	///Webåº”ç”¨ä¿¡æ¯
 	virtual void OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField *pRspQryWebAppInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///WebÓ¦ÓÃĞÅÏ¢
+	///Webåº”ç”¨ä¿¡æ¯
 	virtual void OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField *pRtnWebAppInfo) {};
 
-	///Ó¦ÓÃservletĞÅÏ¢
+	///åº”ç”¨servletä¿¡æ¯
 	virtual void OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField *pRspQryServletInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ó¦ÓÃservletĞÅÏ¢
+	///åº”ç”¨servletä¿¡æ¯
 	virtual void OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField *pRtnServletInfo) {};
 
-	///ÎÄ¼şĞÅÏ¢
+	///æ–‡ä»¶ä¿¡æ¯
 	virtual void OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField *pRspQryFileInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÎÄ¼şĞÅÏ¢
+	///æ–‡ä»¶ä¿¡æ¯
 	virtual void OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField *pRtnFileInfo) {};
 
-	///Ó¦ÓÃ»á»°ĞÅÏ¢
+	///åº”ç”¨ä¼šè¯ä¿¡æ¯
 	virtual void OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField *pRspQrySessionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ó¦ÓÃ»á»°ĞÅÏ¢
+	///åº”ç”¨ä¼šè¯ä¿¡æ¯
 	virtual void OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField *pRtnSessionInfo) {};
 
-	///JDBCĞÅÏ¢
+	///JDBCä¿¡æ¯
 	virtual void OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField *pRspQryJDBCInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///JDBCĞÅÏ¢
+	///JDBCä¿¡æ¯
 	virtual void OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField *pRtnJDBCInfo) {};
 
-	///Ïß³ÌĞÅÏ¢
+	///çº¿ç¨‹ä¿¡æ¯
 	virtual void OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField *pRspQryThreadInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ïß³ÌĞÅÏ¢
+	///çº¿ç¨‹ä¿¡æ¯
 	virtual void OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField *pRtnThreadInfo) {};
 
-	///ĞéÄâ»úĞÅÏ¢
+	///è™šæ‹Ÿæœºä¿¡æ¯
 	virtual void OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField *pRspQryVMInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ĞéÄâ»úĞÅÏ¢
+	///è™šæ‹Ÿæœºä¿¡æ¯
 	virtual void OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField *pRtnVMInfo) {};
 
-	///ÏµÍ³ÊôĞÔĞÅÏ¢
+	///ç³»ç»Ÿå±æ€§ä¿¡æ¯
 	virtual void OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField *pRspQryPropertyInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏµÍ³ÊôĞÔĞÅÏ¢
+	///ç³»ç»Ÿå±æ€§ä¿¡æ¯
 	virtual void OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField *pRtnPropertyInfo) {};
 
-	///ÏµÍ³ÄÚ´æ³ØĞÅÏ¢
+	///ç³»ç»Ÿå†…å­˜æ± ä¿¡æ¯
 	virtual void OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField *pRspQryMemPoolInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏµÍ³ÄÚ´æ³ØĞÅÏ¢
+	///ç³»ç»Ÿå†…å­˜æ± ä¿¡æ¯
 	virtual void OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField *pRtnMemPoolInfo) {};
 
-	///ÎÄ¼şÄÚÈİĞÅÏ¢
+	///æ–‡ä»¶å†…å®¹ä¿¡æ¯
 	virtual void OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoField *pRspQryFileContentInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÎÄ¼şÄÚÈİĞÅÏ¢
+	///æ–‡ä»¶å†…å®¹ä¿¡æ¯
 	virtual void OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField *pRtnFileContentInfo) {};
 
-	///Á¬½ÓĞÅÏ¢
+	///è¿æ¥ä¿¡æ¯
 	virtual void OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField *pRspQryConnectionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Á¬½ÓĞÅÏ¢
+	///è¿æ¥ä¿¡æ¯
 	virtual void OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField *pRtnConnectionInfo) {};
 
-	///Á¬½ÓÆ÷ĞÅÏ¢
+	///è¿æ¥å™¨ä¿¡æ¯
 	virtual void OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField *pRspQryConnectorInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Á¬½ÓÆ÷ĞÅÏ¢
+	///è¿æ¥å™¨ä¿¡æ¯
 	virtual void OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField *pRtnConnectorInfo) {};
 
-	///Êı¾İ¿â²éÑ¯Ó¦´ğ
+	///æ•°æ®åº“æŸ¥è¯¢åº”ç­”
 	virtual void OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField *pRspQryDBQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Êı¾İ¿â²éÑ¯Ó¦´ğ
+	///æ•°æ®åº“æŸ¥è¯¢åº”ç­”
 	virtual void OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField *pRtnDBQuery) {};
 
-	///Í¨ÓÃ·µ»ØÓ¦´ğ
+	///é€šç”¨è¿”å›åº”ç­”
 	virtual void OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField *pSysGeneralField, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Í¨ÓÃ·µ»ØÓ¦´ğ
+	///é€šç”¨è¿”å›åº”ç­”
 	virtual void OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField *pSysGeneralField) {};
 
-	///ÎÄ¼ş´«ÊäÓ¦´ğ
+	///æ–‡ä»¶ä¼ è¾“åº”ç­”
 	virtual void OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField *pRspQryGetFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¸æ¾¯Ã÷Ï¸
+	///å‘Šè­¦æ˜ç»†
 	virtual void OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField *pRspQryWarningQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Í¨ÓÃ²Ù×÷
+	///å‘Šè­¦æ¿€æ´»å˜æ›´
+	virtual void OnRtnWarningActiveChange(CShfeFtdcRtnWarningActiveChangeField *pRtnWarningActiveChange) {};
+
+	///é€šç”¨æ“ä½œ
 	virtual void OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField *pRspQryGeneralOperate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Í¨ÓÃ²Ù×÷
+	///é€šç”¨æ“ä½œ
 	virtual void OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField *pRtnGeneralOperate) {};
 
-	///ÍøÂçÉè±¸Á¬½Ó¹ØÏµ
+	///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»
 	virtual void OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedField *pRspQryNetDeviceLinked, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÍøÂçÉè±¸Á¬½Ó¹ØÏµ
+	///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»
 	virtual void OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField *pRtnNetDeviceLinked) {};
 
-	///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯
 	virtual void OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginStatField *pRspQryTradeUserLoginStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 	virtual void OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOrderRttStatField *pRspQryTradeFrontOrderRttStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 	virtual void OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRttStatField *pRtnTradeFrontOrderRttStat) {};
 
-	///»áÔ±Ï¯Î»½»Ò××´Ì¬
+	///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 	virtual void OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeOrderStatesField *pRspQryParticTradeOrderStates, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±Ï¯Î»½»Ò××´Ì¬
+	///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 	virtual void OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderStatesField *pRtnParticTradeOrderStates) {};
 
-	///ÏµÍ³Â·ÓÉĞÅÏ¢
+	///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 	virtual void OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField *pRspQryRouterInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏµÍ³Â·ÓÉĞÅÏ¢
+	///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 	virtual void OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField *pRtnRouterInfo) {};
 
-	///´ÅÅÌI/OĞÅÏ¢
+	///ç£ç›˜I/Oä¿¡æ¯
 	virtual void OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField *pRspQryDiskIO, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///´ÅÅÌI/OĞÅÏ¢
+	///ç£ç›˜I/Oä¿¡æ¯
 	virtual void OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField *pRtnDiskIO) {};
 
-	///ÏµÍ³×´Ì¬ĞÅÏ¢
+	///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 	virtual void OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField *pRspQryStatInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÏµÍ³×´Ì¬ĞÅÏ¢
+	///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 	virtual void OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField *pRtnStatInfo) {};
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 	virtual void OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttCutLineField *pRspQryTradeOrderRttCutLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 	virtual void OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLineField *pRtnTradeOrderRttCutLine) {};
 
-	///»áÔ±¿Í»§ĞÅÏ¢
+	///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 	virtual void OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField *pRspQryClientInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±¿Í»§ĞÅÏ¢
+	///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 	virtual void OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField *pRtnClientInfo) {};
 
-	///Ó¦´ğÊÂ¼şÃèÊö
+	///åº”ç­”äº‹ä»¶æè¿°
 	virtual void OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionField *pRspQryEventDescription, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄÊÂ¼şÃèÊö
+	///è®¢é˜…äº‹ä»¶æè¿°
 	virtual void OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField *pRtnEventDescription) {};
 
-	///Ó¦´ğÇ°ÖÃÎ¨Ò»IDĞÅÏ¢
+	///åº”ç­”å‰ç½®å”¯ä¸€IDä¿¡æ¯
 	virtual void OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField *pRspQryFrontUniqueID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄÇ°ÖÃÎ¨Ò»IDĞÅÏ¢
+	///è®¢é˜…å‰ç½®å”¯ä¸€IDä¿¡æ¯
 	virtual void OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField *pRtnFrontUniqueID) {};
 
-	///»áÔ±ÏßÂ·µØÖ·±ä¸ü»ØÓ¦
+	///ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´å›åº”
 	virtual void OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLinkAddrChangeField *pRspQryNetPartyLinkAddrChange, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄ»áÔ±ÏßÂ·µØÖ·±ä¸üĞÅÏ¢
+	///è®¢é˜…ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´ä¿¡æ¯
 	virtual void OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrChangeField *pRtnNetPartyLinkAddrChange) {};
 
-	///Ó¦´ğÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+	///åº”ç­”å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 	virtual void OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLinkInfoField *pRspQryNetDelPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+	///è®¢é˜…å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 	virtual void OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoField *pRtnNetDelPartyLinkInfo) {};
 
-	///·µ»ØÍøÂçĞÔÄÜÅÅĞò
+	///è¿”å›ç½‘ç»œæ€§èƒ½æ’åº
 	virtual void OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField *pRspQryPerformanceTop, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄÍøÂçĞÔÄÜÅÅĞò
+	///è®¢é˜…ç½‘ç»œæ€§èƒ½æ’åº
 	virtual void OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField *pRtnPerformanceTop) {};
 
-	///·µ»ØÔ¼×´Ì¬ÇĞ»»Êı¾İ
+	///è¿”å›çº¦çŠ¶æ€åˆ‡æ¢æ•°æ®
 	virtual void OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusField *pRspQryInstrumentStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄÔ¼×´Ì¬ÇĞ»»Êı¾İ
+	///è®¢é˜…çº¦çŠ¶æ€åˆ‡æ¢æ•°æ®
 	virtual void OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField *pRtnInstrumentStatus) {};
 
-	///·µ»ØºÏÔ¼½»Ò×½ÚĞÅÏ¢
+	///è¿”å›åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 	virtual void OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingSegmentAttrField *pRspQryCurrTradingSegmentAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄºÏÔ¼½»Ò×½ÚĞÅÏ¢
+	///è®¢é˜…åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 	virtual void OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegmentAttrField *pRtnCurrTradingSegmentAttr) {};
 
-	///ÍøÂç´óÇø»®·ÖÓ¦´ğ
+	///ç½‘ç»œå¤§åŒºåˆ’åˆ†åº”ç­”
 	virtual void OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField *pRspQryNetArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÍøÂç´óÇø»®·ÖÓ¦´ğ
+	///ç½‘ç»œå¤§åŒºåˆ’åˆ†åº”ç­”
 	virtual void OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField *pRtnNetArea) {};
 
-	///ÍøÂç×ÓÇøÓ¦´ğ
+	///ç½‘ç»œå­åŒºåº”ç­”
 	virtual void OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField *pRspQryNetSubArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÍøÂç×ÓÇøÓ¦´ğ
+	///ç½‘ç»œå­åŒºåº”ç­”
 	virtual void OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField *pRtnNetSubArea) {};
 
-	///ÍøÂç×ÓÇøIPÓ¦´ğ
+	///ç½‘ç»œå­åŒºIPåº”ç­”
 	virtual void OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField *pRspQryNetSubAreaIP, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÍøÂç×ÓÇøIPÓ¦´ğ
+	///ç½‘ç»œå­åŒºIPåº”ç­”
 	virtual void OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField *pRtnNetSubAreaIP) {};
 
-	///ÍøÂçÉè±¸
+	///ç½‘ç»œè®¾å¤‡
 	virtual void OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField *pRspQryNetDevice, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÍøÂçÉè±¸
+	///ç½‘ç»œè®¾å¤‡
 	virtual void OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField *pRtnNetDevice) {};
 
-	///ÍøÂçÉè±¸Ì½²âÇëÇóÓ¦´ğ
+	///ç½‘ç»œè®¾å¤‡æ¢æµ‹è¯·æ±‚åº”ç­”
 	virtual void OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectField *pRspQryNetDeviceDetect, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///´óÂ¥
+	///å¤§æ¥¼
 	virtual void OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField *pRspQryNetBuilding, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///´óÂ¥
+	///å¤§æ¥¼
 	virtual void OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField *pRtnNetBuilding) {};
 
-	///»ú·¿
+	///æœºæˆ¿
 	virtual void OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField *pRspQryNetRoom, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ú·¿
+	///æœºæˆ¿
 	virtual void OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField *pRtnNetRoom) {};
 
-	///»ú¹ñ
+	///æœºæŸœ
 	virtual void OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField *pRspQryNetCabinets, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ú¹ñ
+	///æœºæŸœ
 	virtual void OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField *pRtnNetCabinets) {};
 
 	///OID
@@ -581,64 +584,64 @@ public:
 	///OID
 	virtual void OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField *pRtnNetOID) {};
 
-	///Ê±¼ä²ßÂÔ
+	///æ—¶é—´ç­–ç•¥
 	virtual void OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField *pRspQryNetTimePolicy, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ê±¼ä²ßÂÔ
+	///æ—¶é—´ç­–ç•¥
 	virtual void OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField *pRtnNetTimePolicy) {};
 
-	///²É¼¯ÈÎÎñ
+	///é‡‡é›†ä»»åŠ¡
 	virtual void OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField *pRspQryNetGatherTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///²É¼¯ÈÎÎñ
+	///é‡‡é›†ä»»åŠ¡
 	virtual void OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField *pRtnNetGatherTask) {};
 
-	///Éè±¸±ä¸ü
+	///è®¾å¤‡å˜æ›´
 	virtual void OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField *pRspQryNetDeviceChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Éè±¸±ä¸ü
+	///è®¾å¤‡å˜æ›´
 	virtual void OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField *pRtnNetDeviceChg) {};
 
-	///³£ÓÃÉè±¸ĞÍºÅ
+	///å¸¸ç”¨è®¾å¤‡å‹å·
 	virtual void OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField *pRspQryNetDeviceType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///³£ÓÃÉè±¸ĞÍºÅ
+	///å¸¸ç”¨è®¾å¤‡å‹å·
 	virtual void OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField *pRtnNetDeviceType) {};
 
-	///³£ÓÃÉè±¸Àà±ğ
+	///å¸¸ç”¨è®¾å¤‡ç±»åˆ«
 	virtual void OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategoryField *pRspQryNetDeviceCategory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///³£ÓÃÉè±¸Àà±ğ
+	///å¸¸ç”¨è®¾å¤‡ç±»åˆ«
 	virtual void OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField *pRtnNetDeviceCategory) {};
 
-	///Éè±¸³§ÉÌ
+	///è®¾å¤‡å‚å•†
 	virtual void OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField *pRspQryNetManufactory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Éè±¸³§ÉÌ
+	///è®¾å¤‡å‚å•†
 	virtual void OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField *pRtnNetManufactory) {};
 
-	///Éè±¸¹²Í¬Ìå
+	///è®¾å¤‡å…±åŒä½“
 	virtual void OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField *pRspQryNetCommunity, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Éè±¸¹²Í¬Ìå
+	///è®¾å¤‡å…±åŒä½“
 	virtual void OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField *pRtnNetCommunity) {};
 
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	virtual void OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField *pRspQryNetPortType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶Ë¿ÚÀàĞÍ
+	///ç«¯å£ç±»å‹
 	virtual void OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField *pRtnNetPortType) {};
 
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	virtual void OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpotField *pRspQryNetPartAccessSpot, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±½ÓÈëµØµã
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹
 	virtual void OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField *pRtnNetPartAccessSpot) {};
 
-	///¶Ë¿Ú
+	///ç«¯å£
 	virtual void OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField *pRspQryNetInterface, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶Ë¿Ú
+	///ç«¯å£
 	virtual void OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField *pRtnNetInterface) {};
 
 	///GeneralOID
@@ -647,327 +650,332 @@ public:
 	///GeneralOID
 	virtual void OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField *pRtnNetGeneralOID) {};
 
-	///¼à¿Ø¶ÔÏóÀà±ğ
+	///ç›‘æ§å¯¹è±¡ç±»åˆ«
 	virtual void OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField *pRspQryNetMonitorType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¼à¿Ø¶ÔÏóÀà±ğ
+	///ç›‘æ§å¯¹è±¡ç±»åˆ«
 	virtual void OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField *pRtnNetMonitorType) {};
 
-	///Ö¸±êÍ³±í
+	///æŒ‡æ ‡ç»Ÿè¡¨
 	virtual void OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrScopeField *pRspQryNetMonitorAttrScope, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ö¸±êÍ³±í
+	///æŒ‡æ ‡ç»Ÿè¡¨
 	virtual void OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeField *pRtnNetMonitorAttrScope) {};
 
-	///¼à¿ØÖ¸±ê±í
+	///ç›‘æ§æŒ‡æ ‡è¡¨
 	virtual void OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTypeField *pRspQryNetMonitorAttrType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¼à¿ØÖ¸±ê±í
+	///ç›‘æ§æŒ‡æ ‡è¡¨
 	virtual void OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeField *pRtnNetMonitorAttrType) {};
 
-	///¼à¿Ø¶ÔÏóÖ¸±ê±í
+	///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 	virtual void OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObjectAttrField *pRspQryNetMonitorObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¼à¿Ø¶ÔÏóÖ¸±ê±í
+	///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 	virtual void OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttrField *pRtnNetMonitorObjectAttr) {};
 
-	///Éè±¸¶ÔÏó×é±í
+	///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 	virtual void OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDeviceGroupField *pRspQryNetMonitorDeviceGroup, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Éè±¸¶ÔÏó×é±í
+	///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 	virtual void OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGroupField *pRtnNetMonitorDeviceGroup) {};
 
-	///ÈÎÎñĞÅÏ¢±í
+	///ä»»åŠ¡ä¿¡æ¯è¡¨
 	virtual void OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskInfoField *pRspQryNetMonitorTaskInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÎÎñĞÅÏ¢±í
+	///ä»»åŠ¡ä¿¡æ¯è¡¨
 	virtual void OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoField *pRtnNetMonitorTaskInfo) {};
 
-	///ÈÎÎñ½á¹û±í
+	///ä»»åŠ¡ç»“æœè¡¨
 	virtual void OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTaskResultField *pRspQryNetMonitorTaskResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÎÎñ½á¹û±í
+	///ä»»åŠ¡ç»“æœè¡¨
 	virtual void OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResultField *pRtnNetMonitorTaskResult) {};
 
-	///ÈÎÎñ¶ÔÏó¼¯
+	///ä»»åŠ¡å¯¹è±¡é›†
 	virtual void OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorTaskObjectSetField *pRspQryNetMonitorTaskObjectSet, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÎÎñ¶ÔÏó¼¯
+	///ä»»åŠ¡å¯¹è±¡é›†
 	virtual void OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObjectSetField *pRtnNetMonitorTaskObjectSet) {};
 
-	///»áÔ±Á´Â·ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 	virtual void OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoField *pRspQryNetPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±Á´Â·ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 	virtual void OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField *pRtnNetPartyLinkInfo) {};
 
-	///¼à¿Ø¶¯×÷Ö¸±ê¶ÔÕÕ±í
+	///ç›‘æ§åŠ¨ä½œæŒ‡æ ‡å¯¹ç…§è¡¨
 	virtual void OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActionAttrField *pRspQryNetMonitorActionAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ä£¿é
+	///æ¨¡å—
 	virtual void OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField *pRspQryNetModule, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ä£¿é
+	///æ¨¡å—
 	virtual void OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField *pRtnNetModule) {};
 
-	///ÈÎÎñ½á¹û×´Ì¬±í
+	///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 	virtual void OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonitorTaskStatusResultField *pRspQryNetMonitorTaskStatusResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÎÎñ½á¹û×´Ì¬±í
+	///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 	virtual void OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTaskStatusResultField *pRtnNetMonitorTaskStatusResult) {};
 
-	///Éè±¸ÅäÖÃ±í
+	///è®¾å¤‡é…ç½®è¡¨
 	virtual void OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField *pRspQryNetCfgFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Éè±¸ÅäÖÃ±í
+	///è®¾å¤‡é…ç½®è¡¨
 	virtual void OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField *pRtnNetCfgFile) {};
 
-	///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+	///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 	virtual void OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDeviceTaskField *pRspQryNetMonitorDeviceTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+	///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 	virtual void OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTaskField *pRtnNetMonitorDeviceTask) {};
 
-	///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+	///æ–‡ä»¶é€šç”¨æ“ä½œ
 	virtual void OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperField *pRspQryFileGeneralOper, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+	///æ–‡ä»¶é€šç”¨æ“ä½œ
 	virtual void OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField *pRtnFileGeneralOper) {};
 
-	///»ùÏß±í
+	///åŸºçº¿è¡¨
 	virtual void OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField *pRspQryNetBaseLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ùÏß±í
+	///åŸºçº¿è¡¨
 	virtual void OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField *pRtnNetBaseLine) {};
 
-	///»ùÏß½á¹û±í
+	///åŸºçº¿ç»“æœè¡¨
 	virtual void OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResultField *pRspQryNetBaseLineResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»ùÏß½á¹û±í
+	///åŸºçº¿ç»“æœè¡¨
 	virtual void OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField *pRtnNetBaseLineResult) {};
 
-	///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 	virtual void OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLinkStatusInfoField *pRspQryNetPartyLinkStatusInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 	virtual void OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatusInfoField *pRtnNetPartyLinkStatusInfo) {};
 
-	///±¾µØping½á¹û
+	///æœ¬åœ°pingç»“æœ
 	virtual void OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPingResultInfoField *pRspQryNetLocalPingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///±¾µØping½á¹û
+	///æœ¬åœ°pingç»“æœ
 	virtual void OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResultInfoField *pRtnNetLocalPingResultInfo) {};
 
-	///Ô¶³Ìping½á¹û
+	///è¿œç¨‹pingç»“æœ
 	virtual void OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePingResultInfoField *pRspQryNetRomotePingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///Ô¶³Ìping½á¹û
+	///è¿œç¨‹pingç»“æœ
 	virtual void OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResultInfoField *pRtnNetRomotePingResultInfo) {};
 
-	///·µ»Ø»áÔ±Á´Â··ÑÓÃ±í
+	///è¿”å›ä¼šå‘˜é“¾è·¯è´¹ç”¨è¡¨
 	virtual void OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField *pRspQryMemberLinkCost, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄ»áÔ±Á´Â··ÑÓÃ±í
+	///è®¢é˜…ä¼šå‘˜é“¾è·¯è´¹ç”¨è¡¨
 	virtual void OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField *pRtnMemberLinkCost) {};
 
-	///·µ»Ø·Ç»áÔ±Á´Â·±íĞÅÏ¢
+	///è¿”å›éä¼šå‘˜é“¾è·¯è¡¨ä¿¡æ¯
 	virtual void OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLinkInfoField *pRspQryNetNonPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
 
-	///¶©ÔÄ·Ç»áÔ±Á´Â·±íĞÅÏ¢
+	///è®¢é˜…éä¼šå‘˜é“¾è·¯è¡¨ä¿¡æ¯
 	virtual void OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoField *pRtnNetNonPartyLinkInfo) {};
 };
 
 class SYSUSER_API_EXPORT CShfeFtdcSysUserApi
 {
 public:
-	///´´½¨SysUserApi
-	///@param pszFlowPath ´æÖü¶©ÔÄĞÅÏ¢ÎÄ¼şµÄÄ¿Â¼£¬Ä¬ÈÏÎªµ±Ç°Ä¿Â¼
-	///@return ´´½¨³öµÄUserApi
+	///åˆ›å»ºSysUserApi
+	///@param pszFlowPath å­˜è´®è®¢é˜…ä¿¡æ¯æ–‡ä»¶çš„ç›®å½•ï¼Œé»˜è®¤ä¸ºå½“å‰ç›®å½•
+	///@return åˆ›å»ºå‡ºçš„UserApi
 	static CShfeFtdcSysUserApi *CreateFtdcSysUserApi(const char *pszFlowPath = "");
-	
-	///É¾³ı½Ó¿Ú¶ÔÏó±¾Éí
-	///@remark ²»ÔÙÊ¹ÓÃ±¾½Ó¿Ú¶ÔÏóÊ±,µ÷ÓÃ¸Ãº¯ÊıÉ¾³ı½Ó¿Ú¶ÔÏó
+	// static CShfeFtdcSysUserApi *CreateFtdcSysUserApi(const char *pszFlowPath = ""){return NULL;}
+
+
+	///åˆ é™¤æ¥å£å¯¹è±¡æœ¬èº«
+	///@remark ä¸å†ä½¿ç”¨æœ¬æ¥å£å¯¹è±¡æ—¶,è°ƒç”¨è¯¥å‡½æ•°åˆ é™¤æ¥å£å¯¹è±¡
 	virtual void Release() = 0;
 	
-	///³õÊ¼»¯
-	///@remark ³õÊ¼»¯ÔËĞĞ»·¾³,Ö»ÓĞµ÷ÓÃºó,½Ó¿Ú²Å¿ªÊ¼¹¤×÷
+	///åˆå§‹åŒ–
+	///@remark åˆå§‹åŒ–è¿è¡Œç¯å¢ƒ,åªæœ‰è°ƒç”¨å,æ¥å£æ‰å¼€å§‹å·¥ä½œ
 	virtual void Init() = 0;
 	
-	///µÈ´ı½Ó¿ÚÏß³Ì½áÊøÔËĞĞ
-	///@return Ïß³ÌÍË³ö´úÂë
+	///ç­‰å¾…æ¥å£çº¿ç¨‹ç»“æŸè¿è¡Œ
+	///@return çº¿ç¨‹é€€å‡ºä»£ç 
 	virtual int Join() = 0;
 	
-	///»ñÈ¡µ±Ç°½»Ò×ÈÕ
-	///@retrun »ñÈ¡µ½µÄ½»Ò×ÈÕ
-	///@remark Ö»ÓĞµÇÂ¼³É¹¦ºó,²ÅÄÜµÃµ½ÕıÈ·µÄ½»Ò×ÈÕ
+	///è·å–å½“å‰äº¤æ˜“æ—¥
+	///@retrun è·å–åˆ°çš„äº¤æ˜“æ—¥
+	///@remark åªæœ‰ç™»å½•æˆåŠŸå,æ‰èƒ½å¾—åˆ°æ­£ç¡®çš„äº¤æ˜“æ—¥
 	virtual const char *GetTradingDay() = 0;
 	
-	///×¢²áÇ°ÖÃ»úÍøÂçµØÖ·
-	///@param pszFrontAddress£ºÇ°ÖÃ»úÍøÂçµØÖ·¡£
-	///@remark ÍøÂçµØÖ·µÄ¸ñÊ½Îª£º¡°protocol://ipaddress:port¡±£¬Èç£º¡±tcp://127.0.0.1:17001¡±¡£ 
-	///@remark ¡°tcp¡±´ú±í´«ÊäĞ­Òé£¬¡°127.0.0.1¡±´ú±í·şÎñÆ÷µØÖ·¡£¡±17001¡±´ú±í·şÎñÆ÷¶Ë¿ÚºÅ¡£
+	///æ³¨å†Œå‰ç½®æœºç½‘ç»œåœ°å€
+	///@param pszFrontAddressï¼šå‰ç½®æœºç½‘ç»œåœ°å€ã€‚
+	///@remark ç½‘ç»œåœ°å€çš„æ ¼å¼ä¸ºï¼šâ€œprotocol://ipaddress:portâ€ï¼Œå¦‚ï¼šâ€tcp://127.0.0.1:17001â€ã€‚ 
+	///@remark â€œtcpâ€ä»£è¡¨ä¼ è¾“åè®®ï¼Œâ€œ127.0.0.1â€ä»£è¡¨æœåŠ¡å™¨åœ°å€ã€‚â€17001â€ä»£è¡¨æœåŠ¡å™¨ç«¯å£å·ã€‚
 	virtual void RegisterFront(char *pszFrontAddress) = 0;
 	
-	///×¢²á»Øµ÷½Ó¿Ú
-	///@param pSpi ÅÉÉú×Ô»Øµ÷½Ó¿ÚÀàµÄÊµÀı
+	///æ³¨å†Œå›è°ƒæ¥å£
+	///@param pSpi æ´¾ç”Ÿè‡ªå›è°ƒæ¥å£ç±»çš„å®ä¾‹
 	virtual void RegisterSpi(CShfeFtdcSysUserSpi *pSpi) = 0;
 	
-	///¶©ÔÄÊĞ³¡ĞĞÇé¡£
-	///@param nTopicID ÊĞ³¡ĞĞÇéÖ÷Ìâ  
-	///@param nResumeType ÊĞ³¡ĞĞÇéÖØ´«·½Ê½  
-	///        TERT_RESTART:´Ó±¾½»Ò×ÈÕ¿ªÊ¼ÖØ´«
-	///        TERT_RESUME:´ÓÉÏ´ÎÊÕµ½µÄĞø´«
-	///        TERT_QUICK:ÏÈ´«ËÍµ±Ç°ĞĞÇé¿ìÕÕ,ÔÙ´«ËÍµÇÂ¼ºóÊĞ³¡ĞĞÇéµÄÄÚÈİ
-	///@remark ¸Ã·½·¨ÒªÔÚInit·½·¨Ç°µ÷ÓÃ¡£Èô²»µ÷ÓÃÔò²»»áÊÕµ½Ë½ÓĞÁ÷µÄÊı¾İ¡£
+	///è®¢é˜…å¸‚åœºè¡Œæƒ…ã€‚
+	///@param nTopicID å¸‚åœºè¡Œæƒ…ä¸»é¢˜  
+	///@param nResumeType å¸‚åœºè¡Œæƒ…é‡ä¼ æ–¹å¼  
+	///        TERT_RESTART:ä»æœ¬äº¤æ˜“æ—¥å¼€å§‹é‡ä¼ 
+	///        TERT_RESUME:ä»ä¸Šæ¬¡æ”¶åˆ°çš„ç»­ä¼ 
+	///        TERT_QUICK:å…ˆä¼ é€å½“å‰è¡Œæƒ…å¿«ç…§,å†ä¼ é€ç™»å½•åå¸‚åœºè¡Œæƒ…çš„å†…å®¹
+	///@remark è¯¥æ–¹æ³•è¦åœ¨Initæ–¹æ³•å‰è°ƒç”¨ã€‚è‹¥ä¸è°ƒç”¨åˆ™ä¸ä¼šæ”¶åˆ°ç§æœ‰æµçš„æ•°æ®ã€‚
 	virtual void SubscribeMarketDataTopic(int nTopicID, TE_RESUME_TYPE nResumeType) = 0;
 	
-	///¶©ÔÄ»áÔ±ÊµÊ±×Ê½ğ×´¿ö¡£
-	///@remark ¸Ã·½·¨ÒªÔÚInit·½·¨Ç°µ÷ÓÃ¡£Èô²»µ÷ÓÃÔò²»»áÊÕµ½Êı¾İ¡£
+	///è®¢é˜…ä¼šå‘˜å®æ—¶èµ„é‡‘çŠ¶å†µã€‚
+	///@remark è¯¥æ–¹æ³•è¦åœ¨Initæ–¹æ³•å‰è°ƒç”¨ã€‚è‹¥ä¸è°ƒç”¨åˆ™ä¸ä¼šæ”¶åˆ°æ•°æ®ã€‚
 	virtual void SubscribePartAccount(void) = 0;
 
-	///ÓÃ»§µÇÂ¼ÇëÇó
+	///ç”¨æˆ·ç™»å½•è¯·æ±‚
 	virtual int ReqUserLogin(CShfeFtdcReqUserLoginField *pReqUserLoginField, int nRequestID) = 0;
 	
 
-	///CPU²éÑ¯
+	///CPUæŸ¥è¯¢
 	virtual int ReqQryTopCpuInfoTopic(CShfeFtdcReqQryTopCpuInfoField *pReqQryTopCpuInfo, int nRequestID) = 0;
 
-	///Mem²éÑ¯
+	///MemæŸ¥è¯¢
 	virtual int ReqQryTopMemInfoTopic(CShfeFtdcReqQryTopMemInfoField *pReqQryTopMemInfo, int nRequestID) = 0;
 
-	///process²éÑ¯
+	///processæŸ¥è¯¢
 	virtual int ReqQryTopProcessInfoTopic(CShfeFtdcReqQryTopProcessInfoField *pReqQryTopProcessInfo, int nRequestID) = 0;
 
-	///filesystem²éÑ¯
+	///filesystemæŸ¥è¯¢
 	virtual int ReqQryFileSystemInfoTopic(CShfeFtdcReqQryFileSystemInfoField *pReqQryFileSystemInfo, int nRequestID) = 0;
 
-	///network²éÑ¯
+	///networkæŸ¥è¯¢
 	virtual int ReqQryNetworkInfoTopic(CShfeFtdcReqQryNetworkInfoField *pReqQryNetworkInfo, int nRequestID) = 0;
 
-	///»ñµÃ¼à¿Ø¶ÔÏóĞÅÏ¢²éÑ¯
+	///ä¸»æœºç¯å¢ƒä¿¡æ¯æŸ¥è¯¢
+	virtual int ReqQryHostEnvTopic(CShfeFtdcReqQryHostEnvField *pReqQryHostEnv, int nRequestID) = 0;
+
+	///è·å¾—ç›‘æ§å¯¹è±¡ä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryMonitorObjectTopic(CShfeFtdcReqQryMonitorObjectField *pReqQryMonitorObject, int nRequestID) = 0;
 
-	///»ñµÃÒµÎñ½ø³ÌºÍÖ÷»úµÄ¶ÔÓ¦¹ØÏµ²éÑ¯
+	///è·å¾—ä¸šåŠ¡è¿›ç¨‹å’Œä¸»æœºçš„å¯¹åº”å…³ç³»æŸ¥è¯¢
 	virtual int ReqQryObjectRationalTopic(CShfeFtdcReqQryObjectRationalField *pReqQryObjectRational, int nRequestID) = 0;
 
-	///ÈÕÖ¾ÎÄ¼şÄÚÈİ²éÑ¯
+	///æ—¥å¿—æ–‡ä»¶å†…å®¹æŸ¥è¯¢
 	virtual int ReqQrySyslogInfoTopic(CShfeFtdcReqQrySyslogInfoField *pReqQrySyslogInfo, int nRequestID) = 0;
 
-	///¼à¿ØÄÚÈİ¶©ÔÄÇëÇó
+	///ç›‘æ§å†…å®¹è®¢é˜…è¯·æ±‚
 	virtual int ReqQrySubscriberTopic(CShfeFtdcReqQrySubscriberField *pReqQrySubscriber, int nRequestID) = 0;
 
-	///¶ÔÏó¹ØÏµ²éÑ¯
+	///å¯¹è±¡å…³ç³»æŸ¥è¯¢
 	virtual int ReqQryOidRelationTopic(CShfeFtdcReqQryOidRelationField *pReqQryOidRelation, int nRequestID) = 0;
 
-	///ÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇó
+	///ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 	virtual int ReqQryUserInfoTopic(CShfeFtdcReqQryUserInfoField *pReqQryUserInfo, int nRequestID) = 0;
 
-	///ÔÚÏßÓÃ»§ĞÅÏ¢²éÑ¯ÇëÇó
+	///åœ¨çº¿ç”¨æˆ·ä¿¡æ¯æŸ¥è¯¢è¯·æ±‚
 	virtual int ReqQryOnlineUserInfoTopic(CShfeFtdcReqQryOnlineUserInfoField *pReqQryOnlineUserInfo, int nRequestID) = 0;
 
-	///¸æ¾¯ÊÂ¼ş²éÑ¯ÇëÇó
+	///å‘Šè­¦äº‹ä»¶æŸ¥è¯¢è¯·æ±‚
 	virtual int ReqQryWarningEventTopic(CShfeFtdcReqQryWarningEventField *pReqQryWarningEvent, int nRequestID) = 0;
 
-	///¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯
+	///å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢
 	virtual int ReqQryObjectAttrTopic(CShfeFtdcReqQryObjectAttrField *pReqQryObjectAttr, int nRequestID) = 0;
 
-	///ÎŞĞ§±¨µ¥²éÑ¯
+	///æ— æ•ˆæŠ¥å•æŸ¥è¯¢
 	virtual int ReqQryInvalidateOrderTopic(CShfeFtdcReqQryInvalidateOrderField *pReqQryInvalidateOrder, int nRequestID) = 0;
 
-	///±¨µ¥×´Ì¬²éÑ¯
+	///æŠ¥å•çŠ¶æ€æŸ¥è¯¢
 	virtual int ReqQryOrderStatusTopic(CShfeFtdcReqQryOrderStatusField *pReqQryOrderStatus, int nRequestID) = 0;
 
-	///±¨µ¥³É½»²éÑ¯
+	///æŠ¥å•æˆäº¤æŸ¥è¯¢
 	virtual int ReqQryBargainOrderTopic(CShfeFtdcReqQryBargainOrderField *pReqQryBargainOrder, int nRequestID) = 0;
 
-	///ºÏÔ¼»ù±¾ÊôĞÔ²éÑ¯
+	///åˆçº¦åŸºæœ¬å±æ€§æŸ¥è¯¢
 	virtual int ReqQryInstPropertyTopic(CShfeFtdcReqQryInstPropertyField *pReqQryInstProperty, int nRequestID) = 0;
 
-	///ºÏÔ¼±£Ö¤½ğÂÊ²éÑ¯
+	///åˆçº¦ä¿è¯é‡‘ç‡æŸ¥è¯¢
 	virtual int ReqQryMarginRateTopic(CShfeFtdcReqQryMarginRateField *pReqQryMarginRate, int nRequestID) = 0;
 
-	///ºÏÔ¼ÕÇµøÍ£°å²éÑ¯
+	///åˆçº¦æ¶¨è·Œåœæ¿æŸ¥è¯¢
 	virtual int ReqQryPriceLimitTopic(CShfeFtdcReqQryPriceLimitField *pReqQryPriceLimit, int nRequestID) = 0;
 
-	///»áÔ±ÏŞ²Ö²éÑ¯
+	///ä¼šå‘˜é™ä»“æŸ¥è¯¢
 	virtual int ReqQryPartPosiLimitTopic(CShfeFtdcReqQryPartPosiLimitField *pReqQryPartPosiLimit, int nRequestID) = 0;
 
-	///¿Í»§ÏŞ²Ö²éÑ¯
+	///å®¢æˆ·é™ä»“æŸ¥è¯¢
 	virtual int ReqQryClientPosiLimitTopic(CShfeFtdcReqQryClientPosiLimitField *pReqQryClientPosiLimit, int nRequestID) = 0;
 
-	///ÌØÊâ¿Í»§ÏŞ²Ö²éÑ¯
+	///ç‰¹æ®Šå®¢æˆ·é™ä»“æŸ¥è¯¢
 	virtual int ReqQrySpecialPosiLimitTopic(CShfeFtdcReqQrySpecialPosiLimitField *pReqQrySpecialPosiLimit, int nRequestID) = 0;
 
-	///ÕË»§³öÈë½ğ²éÑ¯
+	///è´¦æˆ·å‡ºå…¥é‡‘æŸ¥è¯¢
 	virtual int ReqQryTransactionChgTopic(CShfeFtdcReqQryTransactionChgField *pReqQryTransactionChg, int nRequestID) = 0;
 
-	///¿Í»§Êı¾İ±ä¶¯²éÑ¯
+	///å®¢æˆ·æ•°æ®å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryClientChgTopic(CShfeFtdcReqQryClientChgField *pReqQryClientChg, int nRequestID) = 0;
 
-	///»áÔ±¿Í»§¶ÔÕÕ±ä¶¯²éÑ¯
+	///ä¼šå‘˜å®¢æˆ·å¯¹ç…§å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryPartClientChgTopic(CShfeFtdcReqQryPartClientChgField *pReqQryPartClientChg, int nRequestID) = 0;
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryPosiLimitChgTopic(CShfeFtdcReqQryPosiLimitChgField *pReqQryPosiLimitChg, int nRequestID) = 0;
 
-	///±£Öµ¶î¶È±ä¶¯²éÑ¯
+	///ä¿å€¼é¢åº¦å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryHedgeDetailChgTopic(CShfeFtdcReqQryHedgeDetailChgField *pReqQryHedgeDetailChg, int nRequestID) = 0;
 
-	///»áÔ±±ä¶¯²éÑ¯
+	///ä¼šå‘˜å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryParticipantChgTopic(CShfeFtdcReqQryParticipantChgField *pReqQryParticipantChg, int nRequestID) = 0;
 
-	///±£Ö¤½ğÂÊ±ä¶¯²éÑ¯
+	///ä¿è¯é‡‘ç‡å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryMarginRateChgTopic(CShfeFtdcReqQryMarginRateChgField *pReqQryMarginRateChg, int nRequestID) = 0;
 
-	///IPµØÖ·±ä¶¯²éÑ¯
+	///IPåœ°å€å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryUserIpChgTopic(CShfeFtdcReqQryUserIpChgField *pReqQryUserIpChg, int nRequestID) = 0;
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQryClientPosiLimitChgTopic(CShfeFtdcReqQryClientPosiLimitChgField *pReqQryClientPosiLimitChg, int nRequestID) = 0;
 
-	///ÏŞ²ÖÊı¾İ±ä¶¯²éÑ¯
+	///é™ä»“æ•°æ®å˜åŠ¨æŸ¥è¯¢
 	virtual int ReqQrySpecPosiLimitChgTopic(CShfeFtdcReqQrySpecPosiLimitChgField *pReqQrySpecPosiLimitChg, int nRequestID) = 0;
 
-	///ÀúÊ·¶ÔÏó×´Ì¬Ö¸±ê²éÑ¯
+	///å†å²å¯¹è±¡çŠ¶æ€æŒ‡æ ‡æŸ¥è¯¢
 	virtual int ReqQryHistoryObjectAttrTopic(CShfeFtdcReqQryHistoryObjectAttrField *pReqQryHistoryObjectAttr, int nRequestID) = 0;
 
-	///Ç°ÖÃÏìÓ¦ĞÅÏ¢²éÑ¯
+	///å‰ç½®å“åº”ä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryFrontInfoTopic(CShfeFtdcReqQryFrontInfoField *pReqQryFrontInfo, int nRequestID) = 0;
 
-	///ÓÃ»§µÇÂ¼
+	///ç”¨æˆ·ç™»å½•
 	virtual int ReqQrySysUserLoginTopic(CShfeFtdcReqQrySysUserLoginField *pReqQrySysUserLogin, int nRequestID) = 0;
 
-	///ÓÃ»§µÇ³ö
+	///ç”¨æˆ·ç™»å‡º
 	virtual int ReqQrySysUserLogoutTopic(CShfeFtdcReqQrySysUserLogoutField *pReqQrySysUserLogout, int nRequestID) = 0;
 
-	///ÓÃ»§ĞŞ¸ÄÃÜÂë
+	///ç”¨æˆ·ä¿®æ”¹å¯†ç 
 	virtual int ReqQrySysUserPasswordUpdateTopic(CShfeFtdcReqQrySysUserPasswordUpdateField *pReqQrySysUserPasswordUpdate, int nRequestID) = 0;
 
-	///×¢²áÓÃ»§
+	///æ³¨å†Œç”¨æˆ·
 	virtual int ReqQrySysUserRegisterTopic(CShfeFtdcReqQrySysUserRegisterField *pReqQrySysUserRegister, int nRequestID) = 0;
 
-	///É¾³ıÓÃ»§
+	///åˆ é™¤ç”¨æˆ·
 	virtual int ReqQrySysUserDeleteTopic(CShfeFtdcReqQrySysUserDeleteField *pReqQrySysUserDelete, int nRequestID) = 0;
 
-	///½»Ò×ÈÕÖ¾²éÑ¯
+	///äº¤æ˜“æ—¥å¿—æŸ¥è¯¢
 	virtual int ReqQryTradeLogTopic(CShfeFtdcReqQryTradeLogField *pReqQryTradeLog, int nRequestID) = 0;
 
-	///¸æ¾¯ÊÂ¼şĞŞ¸Ä
+	///å‘Šè­¦äº‹ä»¶ä¿®æ”¹
 	virtual int ReqQryWarningEventUpdateTopic(CShfeFtdcReqQryWarningEventUpdateField *pReqQryWarningEventUpdate, int nRequestID) = 0;
 
-	///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢²éÑ¯
+	///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryTradeUserLoginInfoTopic(CShfeFtdcReqQryTradeUserLoginInfoField *pReqQryTradeUserLoginInfo, int nRequestID) = 0;
 
-	///»áÔ±½»Ò×²éÑ¯
+	///ä¼šå‘˜äº¤æ˜“æŸ¥è¯¢
 	virtual int ReqQryPartTradeTopic(CShfeFtdcReqQryPartTradeField *pReqQryPartTrade, int nRequestID) = 0;
 
-	///½»Ò×·åÖµ²éÑ¯
+	///äº¤æ˜“å³°å€¼æŸ¥è¯¢
 	virtual int ReqQryTradepeakTopic(CShfeFtdcReqQryTradepeakField *pReqQryTradepeak, int nRequestID) = 0;
 
-	///¹ÜÀíÆ½Ì¨³õÊ¼»¯ĞÅÏ¢²éÑ¯
+	///ç®¡ç†å¹³å°åˆå§‹åŒ–ä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryParticipantInitTopic(CShfeFtdcReqQryParticipantInitField *pReqQryParticipantInit, int nRequestID) = 0;
 
-	///¹ÜÀíÆ½Ì¨³õÊ¼»¯ĞÅÏ¢²éÑ¯
+	///ç®¡ç†å¹³å°åˆå§‹åŒ–ä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryUserInitTopic(CShfeFtdcReqQryUserInitField *pReqQryUserInit, int nRequestID) = 0;
 
 	///
@@ -979,214 +987,217 @@ public:
 	///
 	virtual int ReqQryHistoryNetworkInfoTopic(CShfeFtdcReqQryHistoryNetworkInfoField *pReqQryHistoryNetworkInfo, int nRequestID) = 0;
 
-	///¼à¿ØÏµÍ³ÔÚÏßÓÃ»§²éÑ¯
+	///ç›‘æ§ç³»ç»Ÿåœ¨çº¿ç”¨æˆ·æŸ¥è¯¢
 	virtual int ReqQryMonitorOnlineUser(CShfeFtdcReqQryMonitorOnlineUserField *pReqQryMonitorOnlineUser, int nRequestID) = 0;
 
-	///½»Ò×ÏµÍ³Ç°ÖÃÍ³¼Æ²éÑ¯
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®ç»Ÿè®¡æŸ¥è¯¢
 	virtual int ReqQryFrontStat(CShfeFtdcReqQryFrontStatField *pReqQryFrontStat, int nRequestID) = 0;
 
-	///ÀúÊ··åÖµ²éÑ¯
+	///å†å²å³°å€¼æŸ¥è¯¢
 	virtual int ReqQryHistoryTradePeakTopic(CShfeFtdcReqQryHistoryTradePeakField *pReqQryHistoryTradePeak, int nRequestID) = 0;
 
-	///ÈÕÖ¾ÊÂ¼ş²éÑ¯
+	///æ—¥å¿—äº‹ä»¶æŸ¥è¯¢
 	virtual int ReqQrySyslogEventTopic(CShfeFtdcReqQrySyslogEventField *pReqQrySyslogEvent, int nRequestID) = 0;
 
-	///ÈÕÖ¾ÊÂ¼ş¶©ÔÄÇëÇó
+	///æ—¥å¿—äº‹ä»¶è®¢é˜…è¯·æ±‚
 	virtual int ReqQrySyslogEventSubcriberTopic(CShfeFtdcReqQrySyslogEventSubcriberField *pReqQrySyslogEventSubcriber, int nRequestID) = 0;
 
-	///tomcatĞÅÏ¢²éÑ¯
+	///tomcatä¿¡æ¯æŸ¥è¯¢
 	virtual int ReqQryTomcatInfoTopic(CShfeFtdcReqQryTomcatInfoField *pReqQryTomcatInfo, int nRequestID) = 0;
 
-	///Êı¾İ¿â²éÑ¯
+	///æ•°æ®åº“æŸ¥è¯¢
 	virtual int ReqQryDBQueryTopic(CShfeFtdcReqQryDBQueryField *pReqQryDBQuery, int nRequestID) = 0;
 
-	///ÎÄ¼ş´«ÊäÇëÇó
+	///æ–‡ä»¶ä¼ è¾“è¯·æ±‚
 	virtual int ReqQryGetFileTopic(CShfeFtdcReqQryGetFileField *pReqQryGetFile, int nRequestID) = 0;
 
-	///ÈÕÖ¾ÊÂ¼şĞŞ¸ÄÇëÇó
+	///æ—¥å¿—äº‹ä»¶ä¿®æ”¹è¯·æ±‚
 	virtual int ReqQrySyslogEventUpdateTopic(CShfeFtdcReqQrySyslogEventUpdateField *pReqQrySyslogEventUpdate, int nRequestID) = 0;
 
-	///¸æ¾¯Ã÷Ï¸²éÑ¯
+	///å‘Šè­¦æ˜ç»†æŸ¥è¯¢
 	virtual int ReqQryWarningQueryTopic(CShfeFtdcReqQryWarningQueryField *pReqQryWarningQuery, int nRequestID) = 0;
 
-	///ÍøÕ¾·ÃÎÊ²éÑ¯
+	///ç½‘ç«™è®¿é—®æŸ¥è¯¢
 	virtual int ReqQryWebVisitTopic(CShfeFtdcReqQryWebVisitField *pReqQryWebVisit, int nRequestID) = 0;
 
-	///Í¨ÓÃ²Ù×÷
+	///å‘Šè­¦æ¿€æ´»å˜æ›´
+	virtual int ReqQryWarningActiveChange(CShfeFtdcReqQryWarningActiveChangeField *pReqQryWarningActiveChange, int nRequestID) = 0;
+
+	///é€šç”¨æ“ä½œ
 	virtual int ReqQryGeneralOperateTopic(CShfeFtdcReqQryGeneralOperateField *pReqQryGeneralOperate, int nRequestID) = 0;
 
-	///ÍøÂçÉè±¸Á¬½Ó¹ØÏµÇëÇó
+	///ç½‘ç»œè®¾å¤‡è¿æ¥å…³ç³»è¯·æ±‚
 	virtual int ReqQryNetDeviceLinkedTopic(CShfeFtdcReqQryNetDeviceLinkedField *pReqQryNetDeviceLinked, int nRequestID) = 0;
 
-	///½»Ò×ÏµÍ³µÇÂ¼ĞÅÏ¢ÇëÇó
+	///äº¤æ˜“ç³»ç»Ÿç™»å½•ä¿¡æ¯è¯·æ±‚
 	virtual int ReqQryTradeUserLoginStatTopic(CShfeFtdcReqQryTradeUserLoginStatField *pReqQryTradeUserLoginStat, int nRequestID) = 0;
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥ÏìÓ¦ĞÅÏ¢
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•å“åº”ä¿¡æ¯
 	virtual int ReqQryTradeFrontOrderRttStatTopic(CShfeFtdcReqQryTradeFrontOrderRttStatField *pReqQryTradeFrontOrderRttStat, int nRequestID) = 0;
 
-	///»áÔ±Ï¯Î»½»Ò××´Ì¬
+	///ä¼šå‘˜å¸­ä½äº¤æ˜“çŠ¶æ€
 	virtual int ReqQryParticTradeOrderStatesTopic(CShfeFtdcReqQryParticTradeOrderStatesField *pReqQryParticTradeOrderStates, int nRequestID) = 0;
 
-	///ÏµÍ³Â·ÓÉĞÅÏ¢
+	///ç³»ç»Ÿè·¯ç”±ä¿¡æ¯
 	virtual int ReqQryRouterInfoTopic(CShfeFtdcReqQryRouterInfoField *pReqQryRouterInfo, int nRequestID) = 0;
 
-	///´ÅÅÌI/OĞÅÏ¢
+	///ç£ç›˜I/Oä¿¡æ¯
 	virtual int ReqQryDiskIOTopic(CShfeFtdcReqQryDiskIOField *pReqQryDiskIO, int nRequestID) = 0;
 
-	///ÏµÍ³×´Ì¬ĞÅÏ¢
+	///ç³»ç»ŸçŠ¶æ€ä¿¡æ¯
 	virtual int ReqQryStatInfoTopic(CShfeFtdcReqQryStatInfoField *pReqQryStatInfo, int nRequestID) = 0;
 
-	///½»Ò×ÏµÍ³Ç°ÖÃ±¨µ¥·Ö²¼Çø¼ä
+	///äº¤æ˜“ç³»ç»Ÿå‰ç½®æŠ¥å•åˆ†å¸ƒåŒºé—´
 	virtual int ReqQryTradeOrderRttCutLineTopic(CShfeFtdcReqQryTradeOrderRttCutLineField *pReqQryTradeOrderRttCutLine, int nRequestID) = 0;
 
-	///»áÔ±¿Í»§ĞÅÏ¢
+	///ä¼šå‘˜å®¢æˆ·ä¿¡æ¯
 	virtual int ReqQryClientInfoTopic(CShfeFtdcReqQryClientInfoField *pReqQryClientInfo, int nRequestID) = 0;
 
-	///ÇëÇóÊÂ¼şÃèÊö
+	///è¯·æ±‚äº‹ä»¶æè¿°
 	virtual int ReqQryEventDescriptionTopic(CShfeFtdcReqQryEventDescriptionField *pReqQryEventDescription, int nRequestID) = 0;
 
-	///¶©ÔÄÇ°ÖÃÎ¨Ò»IDĞÅÏ¢
+	///è®¢é˜…å‰ç½®å”¯ä¸€IDä¿¡æ¯
 	virtual int ReqQryFrontUniqueIDTopic(CShfeFtdcReqQryFrontUniqueIDField *pReqQryFrontUniqueID, int nRequestID) = 0;
 
-	///»áÔ±ÏßÂ·µØÖ·±ä¸üÇëÇó
+	///ä¼šå‘˜çº¿è·¯åœ°å€å˜æ›´è¯·æ±‚
 	virtual int ReqQryNetPartyLinkAddrChangeTopic(CShfeFtdcReqQryNetPartyLinkAddrChangeField *pReqQryNetPartyLinkAddrChange, int nRequestID) = 0;
 
-	///ÇëÇóÒÑÉ¾³ı»áÔ±ÁĞ±íĞÅÏ¢
+	///è¯·æ±‚å·²åˆ é™¤ä¼šå‘˜åˆ—è¡¨ä¿¡æ¯
 	virtual int ReqQryNetDelPartyLinkInfoTopic(CShfeFtdcReqQryNetDelPartyLinkInfoField *pReqQryNetDelPartyLinkInfo, int nRequestID) = 0;
 
-	///ÇëÇóÍøÂçĞÔÄÜÅÅĞò
+	///è¯·æ±‚ç½‘ç»œæ€§èƒ½æ’åº
 	virtual int ReqQryPerformanceTopTopic(CShfeFtdcReqQryPerformanceTopField *pReqQryPerformanceTop, int nRequestID) = 0;
 
-	///ÇëÇóÔ¼×´Ì¬ÇĞ»»Êı¾İ
+	///è¯·æ±‚çº¦çŠ¶æ€åˆ‡æ¢æ•°æ®
 	virtual int ReqQryInstrumentStatusTopic(CShfeFtdcReqQryInstrumentStatusField *pReqQryInstrumentStatus, int nRequestID) = 0;
 
-	///ÇëÇóºÏÔ¼½»Ò×½ÚĞÅÏ¢
+	///è¯·æ±‚åˆçº¦äº¤æ˜“èŠ‚ä¿¡æ¯
 	virtual int ReqQryCurrTradingSegmentAttrTopic(CShfeFtdcReqQryCurrTradingSegmentAttrField *pReqQryCurrTradingSegmentAttr, int nRequestID) = 0;
 
-	///×îĞÂÍøÂçÖ¸±ê²éÑ¯
+	///æœ€æ–°ç½‘ç»œæŒ‡æ ‡æŸ¥è¯¢
 	virtual int ReqQryRealTimeNetObjectAttrTopic(CShfeFtdcReqQryRealTimeNetObjectAttrField *pReqQryRealTimeNetObjectAttr, int nRequestID) = 0;
 
-	///ÍøÂç´óÇø»®·Ö²éÑ¯
+	///ç½‘ç»œå¤§åŒºåˆ’åˆ†æŸ¥è¯¢
 	virtual int ReqQryNetAreaTopic(CShfeFtdcReqQryNetAreaField *pReqQryNetArea, int nRequestID) = 0;
 
-	///ÍøÂç×ÓÇø²éÑ¯
+	///ç½‘ç»œå­åŒºæŸ¥è¯¢
 	virtual int ReqQryNetSubAreaTopic(CShfeFtdcReqQryNetSubAreaField *pReqQryNetSubArea, int nRequestID) = 0;
 
-	///ÍøÂç×ÓÇøIP²éÑ¯
+	///ç½‘ç»œå­åŒºIPæŸ¥è¯¢
 	virtual int ReqQryNetSubAreaIPTopic(CShfeFtdcReqQryNetSubAreaIPField *pReqQryNetSubAreaIP, int nRequestID) = 0;
 
-	///ÍøÂçÉè±¸Ì½²âÇëÇó
+	///ç½‘ç»œè®¾å¤‡æ¢æµ‹è¯·æ±‚
 	virtual int ReqQryNetDeviceDetectTopic(CShfeFtdcReqQryNetDeviceDetectField *pReqQryNetDeviceDetect, int nRequestID) = 0;
 
-	///ÍøÂçÉè±¸²éÑ¯ÇëÇó
+	///ç½‘ç»œè®¾å¤‡æŸ¥è¯¢è¯·æ±‚
 	virtual int ReqQryNetDeviceRequestTopic(CShfeFtdcReqQryNetDeviceRequestField *pReqQryNetDeviceRequest, int nRequestID) = 0;
 
-	///´óÂ¥²éÑ¯
+	///å¤§æ¥¼æŸ¥è¯¢
 	virtual int ReqQryNetBuildingTopic(CShfeFtdcReqQryNetBuildingField *pReqQryNetBuilding, int nRequestID) = 0;
 
-	///»ú·¿²éÑ¯
+	///æœºæˆ¿æŸ¥è¯¢
 	virtual int ReqQryNetRoomTopic(CShfeFtdcReqQryNetRoomField *pReqQryNetRoom, int nRequestID) = 0;
 
-	///»ú¹ñ²éÑ¯
+	///æœºæŸœæŸ¥è¯¢
 	virtual int ReqQryNetCabinetsTopic(CShfeFtdcReqQryNetCabinetsField *pReqQryNetCabinets, int nRequestID) = 0;
 
 	///OID
 	virtual int ReqQryNetOIDTopic(CShfeFtdcReqQryNetOIDField *pReqQryNetOID, int nRequestID) = 0;
 
-	///Ê±¼ä²ßÂÔ
+	///æ—¶é—´ç­–ç•¥
 	virtual int ReqQryNetTimePolicyTopic(CShfeFtdcReqQryNetTimePolicyField *pReqQryNetTimePolicy, int nRequestID) = 0;
 
-	///²É¼¯ÈÎÎñ²éÑ¯
+	///é‡‡é›†ä»»åŠ¡æŸ¥è¯¢
 	virtual int ReqQryNetGatherTaskTopic(CShfeFtdcReqQryNetGatherTaskField *pReqQryNetGatherTask, int nRequestID) = 0;
 
-	///Éè±¸±ä¸üÇëÇó
+	///è®¾å¤‡å˜æ›´è¯·æ±‚
 	virtual int ReqQryNetDeviceChgTopic(CShfeFtdcReqQryNetDeviceChgField *pReqQryNetDeviceChg, int nRequestID) = 0;
 
-	///³£ÓÃÉè±¸ĞÍºÅÇëÇó
+	///å¸¸ç”¨è®¾å¤‡å‹å·è¯·æ±‚
 	virtual int ReqQryNetDeviceTypeTopic(CShfeFtdcReqQryNetDeviceTypeField *pReqQryNetDeviceType, int nRequestID) = 0;
 
-	///³£ÓÃÉè±¸Àà±ğÇëÇó
+	///å¸¸ç”¨è®¾å¤‡ç±»åˆ«è¯·æ±‚
 	virtual int ReqQryNetDeviceCategoryTopic(CShfeFtdcReqQryNetDeviceCategoryField *pReqQryNetDeviceCategory, int nRequestID) = 0;
 
-	///Éè±¸³§ÉÌÇëÇó
+	///è®¾å¤‡å‚å•†è¯·æ±‚
 	virtual int ReqQryNetManufactoryTopic(CShfeFtdcReqQryNetManufactoryField *pReqQryNetManufactory, int nRequestID) = 0;
 
-	///Éè±¸¹²Í¬ÌåÇëÇó
+	///è®¾å¤‡å…±åŒä½“è¯·æ±‚
 	virtual int ReqQryNetCommunityTopic(CShfeFtdcReqQryNetCommunityField *pReqQryNetCommunity, int nRequestID) = 0;
 
-	///¶Ë¿ÚÀàĞÍÇëÇó
+	///ç«¯å£ç±»å‹è¯·æ±‚
 	virtual int ReqQryNetPortTypeTopic(CShfeFtdcReqQryNetPortTypeField *pReqQryNetPortType, int nRequestID) = 0;
 
-	///»áÔ±½ÓÈëµØµãÇëÇó
+	///ä¼šå‘˜æ¥å…¥åœ°ç‚¹è¯·æ±‚
 	virtual int ReqQryNetPartAccessSpotTopic(CShfeFtdcReqQryNetPartAccessSpotField *pReqQryNetPartAccessSpot, int nRequestID) = 0;
 
-	///¶Ë¿ÚÇëÇó
+	///ç«¯å£è¯·æ±‚
 	virtual int ReqQryNetInterfaceTopic(CShfeFtdcReqQryNetInterfaceField *pReqQryNetInterface, int nRequestID) = 0;
 
-	///GeneralOIDÇëÇó
+	///GeneralOIDè¯·æ±‚
 	virtual int ReqQryNetGeneralOIDTopic(CShfeFtdcReqQryNetGeneralOIDField *pReqQryNetGeneralOID, int nRequestID) = 0;
 
-	///¼à¿Ø¶ÔÏóÀà±ğ
+	///ç›‘æ§å¯¹è±¡ç±»åˆ«
 	virtual int ReqQryNetMonitorTypeTopic(CShfeFtdcReqQryNetMonitorTypeField *pReqQryNetMonitorType, int nRequestID) = 0;
 
-	///Ö¸±êÍ³±í
+	///æŒ‡æ ‡ç»Ÿè¡¨
 	virtual int ReqQryNetMonitorAttrScopeTopic(CShfeFtdcReqQryNetMonitorAttrScopeField *pReqQryNetMonitorAttrScope, int nRequestID) = 0;
 
-	///¼à¿ØÖ¸±ê±í
+	///ç›‘æ§æŒ‡æ ‡è¡¨
 	virtual int ReqQryNetMonitorAttrTypeTopic(CShfeFtdcReqQryNetMonitorAttrTypeField *pReqQryNetMonitorAttrType, int nRequestID) = 0;
 
-	///¼à¿Ø¶ÔÏóÖ¸±ê±í
+	///ç›‘æ§å¯¹è±¡æŒ‡æ ‡è¡¨
 	virtual int ReqQryNetMonitorObjectAttrTopic(CShfeFtdcReqQryNetMonitorObjectAttrField *pReqQryNetMonitorObjectAttr, int nRequestID) = 0;
 
-	///Éè±¸¶ÔÏó×é±í
+	///è®¾å¤‡å¯¹è±¡ç»„è¡¨
 	virtual int ReqQryNetMonitorDeviceGroupTopic(CShfeFtdcReqQryNetMonitorDeviceGroupField *pReqQryNetMonitorDeviceGroup, int nRequestID) = 0;
 
-	///ÈÎÎñĞÅÏ¢±í
+	///ä»»åŠ¡ä¿¡æ¯è¡¨
 	virtual int ReqQryNetMonitorTaskInfoTopic(CShfeFtdcReqQryNetMonitorTaskInfoField *pReqQryNetMonitorTaskInfo, int nRequestID) = 0;
 
-	///ÈÎÎñ½á¹û±í
+	///ä»»åŠ¡ç»“æœè¡¨
 	virtual int ReqQryNetMonitorTaskResultTopic(CShfeFtdcReqQryNetMonitorTaskResultField *pReqQryNetMonitorTaskResult, int nRequestID) = 0;
 
-	///ÈÎÎñ¶ÔÏó¼¯
+	///ä»»åŠ¡å¯¹è±¡é›†
 	virtual int ReqQryNetMonitorTaskObjectSetTopic(CShfeFtdcReqQryNetMonitorTaskObjectSetField *pReqQryNetMonitorTaskObjectSet, int nRequestID) = 0;
 
-	///»áÔ±Á´Â·ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯ä¿¡æ¯è¡¨
 	virtual int ReqQryNetPartyLinkInfoTopic(CShfeFtdcReqQryNetPartyLinkInfoField *pReqQryNetPartyLinkInfo, int nRequestID) = 0;
 
-	///¼à¿Ø¶¯×÷Ö¸±ê¶ÔÕÕ±í
+	///ç›‘æ§åŠ¨ä½œæŒ‡æ ‡å¯¹ç…§è¡¨
 	virtual int ReqQryNetMonitorActionAttrTopic(CShfeFtdcReqQryNetMonitorActionAttrField *pReqQryNetMonitorActionAttr, int nRequestID) = 0;
 
-	///Ä£¿é
+	///æ¨¡å—
 	virtual int ReqQryNetModuleTopic(CShfeFtdcReqQryNetModuleField *pReqQryNetModule, int nRequestID) = 0;
 
-	///ÈÎÎñ½á¹û×´Ì¬±í
+	///ä»»åŠ¡ç»“æœçŠ¶æ€è¡¨
 	virtual int ReqQryNetMonitorTaskStatusResultTopic(CShfeFtdcReqQryNetMonitorTaskStatusResultField *pReqQryNetMonitorTaskStatusResult, int nRequestID) = 0;
 
-	///Éè±¸ÅäÖÃ±í
+	///è®¾å¤‡é…ç½®è¡¨
 	virtual int ReqQryNetCfgFileTopic(CShfeFtdcReqQryNetCfgFileField *pReqQryNetCfgFile, int nRequestID) = 0;
 
-	///ÈÎÎñ½á¹û¹æÔò·ÖÎö±í
+	///ä»»åŠ¡ç»“æœè§„åˆ™åˆ†æè¡¨
 	virtual int ReqQryNetMonitorDeviceTaskTopic(CShfeFtdcReqQryNetMonitorDeviceTaskField *pReqQryNetMonitorDeviceTask, int nRequestID) = 0;
 
-	///ÎÄ¼şÍ¨ÓÃ²Ù×÷
+	///æ–‡ä»¶é€šç”¨æ“ä½œ
 	virtual int ReqQryFileGeneralOperTopic(CShfeFtdcReqQryFileGeneralOperField *pReqQryFileGeneralOper, int nRequestID) = 0;
 
-	///»ùÏß±í
+	///åŸºçº¿è¡¨
 	virtual int ReqQryNetBaseLineTopic(CShfeFtdcReqQryNetBaseLineField *pReqQryNetBaseLine, int nRequestID) = 0;
 
-	///»ùÏß½á¹û±í
+	///åŸºçº¿ç»“æœè¡¨
 	virtual int ReqQryNetBaseLineResultTopic(CShfeFtdcReqQryNetBaseLineResultField *pReqQryNetBaseLineResult, int nRequestID) = 0;
 
-	///»áÔ±Á´Â·×´Ì¬ĞÅÏ¢±í
+	///ä¼šå‘˜é“¾è·¯çŠ¶æ€ä¿¡æ¯è¡¨
 	virtual int ReqQryNetPartyLinkStatusInfoTopic(CShfeFtdcReqQryNetPartyLinkStatusInfoField *pReqQryNetPartyLinkStatusInfo, int nRequestID) = 0;
 
-	///±¾µØping½á¹û
+	///æœ¬åœ°pingç»“æœ
 	virtual int ReqQryNetLocalPingResultInfoTopic(CShfeFtdcReqQryNetLocalPingResultInfoField *pReqQryNetLocalPingResultInfo, int nRequestID) = 0;
 
-	///Ô¶³Ìping½á¹û
+	///è¿œç¨‹pingç»“æœ
 	virtual int ReqQryNetRomotePingResultInfoTopic(CShfeFtdcReqQryNetRomotePingResultInfoField *pReqQryNetRomotePingResultInfo, int nRequestID) = 0;
 
-	///ÇëÇó·Ç»áÔ±Á´Â·±íĞÅÏ¢
+	///è¯·æ±‚éä¼šå‘˜é“¾è·¯è¡¨ä¿¡æ¯
 	virtual int ReqQryNetNonPartyLinkInfoTopic(CShfeFtdcReqQryNetNonPartyLinkInfoField *pReqQryNetNonPartyLinkInfo, int nRequestID) = 0;
 
 
