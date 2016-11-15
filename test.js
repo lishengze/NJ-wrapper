@@ -1,6 +1,5 @@
-var addon    = require("./addon");
 var spi      = require("./test-spi.js");
-
+var addon    = require("./addon.node");
 var SysUserApiStruct    = require("./SysUserApiStruct.js");
 
 var realTimeSystemPath  = "tcp://172.1.128.172:19943";

@@ -132,17 +132,18 @@ var Spi = function(){
 
     this.OnFrontConnected = function()
     {
-      if (true === g_isTestTtn)
-      {
-        var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
-        this.TestReqQrySubscriberTopic(1);
-      }
+      console.log ('FrontConnected!');
+      // if (true === g_isTestTtn)
+      // {
+      //   var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
+      //   this.TestReqQrySubscriberTopic(1);
+      // }
 
-      if (true === g_isTestReqMonitor)
-      {
-        var testfileName = path.join (__dirname, './test-com-redhat-js-monitor.txt');
-        this.TestReqQryMonitorObjectTopic(g_ReqQryMonitorObjectTopic_Numb);
-      }
+      // if (true === g_isTestReqMonitor)
+      // {
+      //   var testfileName = path.join (__dirname, './test-com-redhat-js-monitor.txt');
+      //   this.TestReqQryMonitorObjectTopic(g_ReqQryMonitorObjectTopic_Numb);
+      // }
     }
 
      if (true === g_isTestBandwidth) {

@@ -34,7 +34,7 @@ FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
     g_RunningResult_File.close();
 }
 
- void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
+void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
  Nan::HandleScope scope;
 
  // Prepare constructor template

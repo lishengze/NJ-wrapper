@@ -1,20 +1,20 @@
 在此解决方案中一次生成一个项目。若要启用并行生成，请添加“/m”开关。
-生成启动时间为 2016/11/3 10:17:44。
-节点 1 上的项目“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标)。
+生成启动时间为 2016/11/10 13:26:00。
+节点 1 上的项目“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标)。
 ValidateSolutionConfiguration:
   正在生成解决方案配置“Release|x64”。
-项目“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(1)正在节点 1 上生成“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(2) (默认目标)。
-D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj(69,274): error MSB4025: 未能加载项目文件。“”(十六进制值 0x0B)是无效的字符。 第 69 行，位置 274。
-已完成生成项目“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(默认目标)的操作 - 失败。
-已完成生成项目“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标)的操作 - 失败。
+项目“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(1)正在节点 1 上生成“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(2) (默认目标)。
+D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj(69,278): error MSB4025: 未能加载项目文件。“”(十六进制值 0x0B)是无效的字符。 第 69 行，位置 278。
+已完成生成项目“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(默认目标)的操作 - 失败。
+已完成生成项目“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标)的操作 - 失败。
 
 生成失败。
 
-“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标) (1) ->
-“D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(默认目标) (2) ->
-  D:\Document\github\nodejs\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj(69,274): error MSB4025: 未能加载项目文件。“”(十六进制值 0x0B)是无效的字符。 第 69 行，位置 274。
+“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\binding.sln”(默认目标) (1) ->
+“D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj”(默认目标) (2) ->
+  D:\Document\github\work-program\v8-warpper\nodejs-wrapper-windows\build\addon.vcxproj(69,278): error MSB4025: 未能加载项目文件。“”(十六进制值 0x0B)是无效的字符。 第 69 行，位置 278。
 
     0 个警告
     1 个错误
 
-已用时间 00:00:00.25
+已用时间 00:00:00.16
