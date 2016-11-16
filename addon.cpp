@@ -2,6 +2,7 @@
 #include "ftdcsysuserapi-wrapper.h"
 #include "tool-function.h"
 #include "v8-transform-data.h"
+#include "id-func.h"
 #include <fstream>
 using std::fstream;
 
@@ -10,6 +11,7 @@ extern fstream g_RunningResult_File;
 using namespace v8;
 
 void InitAll(Handle<Object> exports) {
+    InitFrontIDQueue();
         
     FtdcSysUserApi_Wrapper::InitExports (exports);
     

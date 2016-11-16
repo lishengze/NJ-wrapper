@@ -1,0 +1,9 @@
+
+************SysUserSpi::OnFrontConnected() START! ************
+************SysUserSpi::OnFrontConnected() END! ************
+
+
+****** v8-transform-func:: OnFrontConnected: START! ******
+dataNumb in this queue is: 1
+****** v8-transform-func:: OnFrontConnected: END! ******
+

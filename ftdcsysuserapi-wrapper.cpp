@@ -57,7 +57,7 @@ void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
-    cout << "FtdcSysUserApi_Wrapper::New!" << endl;
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::New START -----------");
     if (info.IsConstructCall()) {
         // Invoked as constructor: `new FtdcSysUserApi_Wrapper(...)`
         // cout << "new FtdcSysUserApi_Wrapper(...)!" << endl;
@@ -65,7 +65,6 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
 
         String::Utf8Value utf8Str(fileData);
         FtdcSysUserApi_Wrapper* obj = new FtdcSysUserApi_Wrapper(*utf8Str);
-        cout << *utf8Str << endl;
         obj->Wrap(info.This());
         info.GetReturnValue().Set(info.This());
         
@@ -77,9 +76,11 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
         Local<Function> cons = Nan::New<Function>(constructor);
         info.GetReturnValue().Set(cons->NewInstance(argc, argv));        
     }
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::New START -----------");
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterFront) {
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::RegisterFront START -----------");
     Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
     String::Utf8Value utf8Str(fileData);
 
@@ -88,36 +89,37 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterFront) {
     obj->m_userApi->RegisterFront(*utf8Str);
 
     info.GetReturnValue().SetUndefined();
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::RegisterFront END -----------");
 }
 
 int g_idnumb = 0;
 NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterSpi) {
-    std::cout<<"RegisterSpi Called!"<<std::endl;
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::RegisterSpi START -----------");
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(info[0]->IsObject())
     {
         //obj->m_spi=new SysUserSpi(Nan::To<v8::Object>(info[0]).ToLocalChecked());
         //obj->m_userApi->RegisterSpi(obj->m_spi);
-        
         obj->m_spi->m_spiobj.Reset(Nan::To<v8::Object>(info[0]).ToLocalChecked());
-        
         obj->m_spi->m_frontid = GetFrontID();
         
         // obj->m_spi->m_frontid = ++g_idnumb;
-        
         obj->m_userApi->RegisterSpi(obj->m_spi);
     }
     info.GetReturnValue().SetUndefined();
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::RegisterSpi END -----------");
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::Init) {
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::Init START -----------");
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     obj->m_userApi->Init();
     info.GetReturnValue().SetUndefined();
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::Init END -----------");
 }
      
 NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
-     std::cout<<"ReqQrySysUserLoginTopic Called!"<<std::endl;
+     OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic START -----------");
      FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
      if(!(info[0]->IsObject() && info[1]->IsNumber()))
      {
@@ -157,6 +159,7 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
      double returnValue= obj->m_userApi->ReqQrySysUserLoginTopic(&field, nRequestID);
 
      info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+     OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic END -----------");
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::Join) {
