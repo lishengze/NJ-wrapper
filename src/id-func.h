@@ -5,7 +5,6 @@ typedef int FRONT_ID;
 
 FRONT_ID GetFrontID();
 
-void ReAllocateID(FRONT_ID);
-
+void ReAllocateID(FRONT_ID&);
 
 #endif

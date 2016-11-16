@@ -1,0 +1,37 @@
+在此解决方案中一次生成一个项目。若要启用并行生成，请添加“/m”开关。
+生成启动时间为 2016/11/16 10:43:02。
+节点 1 上的项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(默认目标)。
+ValidateSolutionConfiguration:
+  正在生成解决方案配置“Release|x64”。
+项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(1)正在节点 1 上生成“C:\NodejsWrapper\windows-complete-new\src\build\addon.vcxproj”(2) (默认目标)。
+InitializeBuildStatus:
+  正在对“Release\obj\addon\addon.tlog\unsuccessfulbuild”执行 Touch 任务。
+ClCompile:
+  所有输出均为最新。
+  所有输出均为最新。
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.node" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib DelayImp.lib "C:\Users\li.shengze\.node-gyp\0.12.7\Release\node.lib" "C:\NodejsWrapper\windows-complete-new\src\sysuserapi.lib" Delayimp.lib /DELAYLOAD:iojs.exe /DELAYLOAD:node.exe /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /ignore:4199 /DLL Release\obj\addon\addon.obj
+  "Release\obj\addon\ftdcsysuserapi-wrapper.obj"
+  Release\obj\addon\sysuserspi.obj
+  "Release\obj\addon\v8-transform-data.obj"
+  "Release\obj\addon\v8-transform-func.obj"
+  "Release\obj\addon\id-func.obj"
+  "Release\obj\addon\tool-function.obj"
+  "Release\obj\addon\charset-convert-windows.obj"
+  Release\obj\addon\CDes.obj
+  Release\obj\addon\win_delay_load_hook.obj
+     正在创建库 C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.lib 和对象 C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.exp
+  正在生成代码
+  已完成代码的生成
+  addon.vcxproj -> C:\NodejsWrapper\windows-complete-new\src\build\Release\\addon.node
+FinalizeBuildStatus:
+  正在删除文件“Release\obj\addon\addon.tlog\unsuccessfulbuild”。
+  正在对“Release\obj\addon\addon.tlog\addon.lastbuildstate”执行 Touch 任务。
+已完成生成项目“C:\NodejsWrapper\windows-complete-new\src\build\addon.vcxproj”(默认目标)的操作。
+已完成生成项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(默认目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:01:18.53
