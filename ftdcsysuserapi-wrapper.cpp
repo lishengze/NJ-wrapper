@@ -16,13 +16,14 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
+    // cout << "FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper!" << endl;
     m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
-    // m_userApi = NULL;
     m_spi = new SysUserSpi();
     if (NULL == m_spi) {
        OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);
        return;
     }
+    // cout << "FtdcSysUserApi_Wrapper Constructor Done" << endl;
 }
 
 FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
@@ -56,19 +57,25 @@ void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
+    cout << "FtdcSysUserApi_Wrapper::New!" << endl;
     if (info.IsConstructCall()) {
         // Invoked as constructor: `new FtdcSysUserApi_Wrapper(...)`
+        // cout << "new FtdcSysUserApi_Wrapper(...)!" << endl;
         Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
+
         String::Utf8Value utf8Str(fileData);
         FtdcSysUserApi_Wrapper* obj = new FtdcSysUserApi_Wrapper(*utf8Str);
+        cout << *utf8Str << endl;
         obj->Wrap(info.This());
         info.GetReturnValue().Set(info.This());
+        
     } else {
         // Invoked as plain function `FtdcSysUserApi_Wrapper(...)`, turn into construct call.
+        // cout << "AB: info.IsConstructCall()" << endl;
         const int argc = 1;
         Local<Value> argv[argc] = { info[0] };
         Local<Function> cons = Nan::New<Function>(constructor);
-        info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(cons->NewInstance(argc, argv));        
     }
 }
 

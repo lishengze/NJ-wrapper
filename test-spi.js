@@ -2,6 +2,10 @@ var spawn        = require('child_process').spawn;
 var fs           = require ('fs');
 var path         = require ('path');
 
+var g_isTestTtn = false;
+var g_isTestReqMonitor = true;
+var g_isTestBandwidth = false;
+
 var InitializeTestBandwidthVar = function () {
   var g_RspQrySysUserLoginTopic_spi_callbackNumb = 0;
   var g_RspQryNetMonitorAttrScopeTopic_spi_callbackNumb = 0;
@@ -52,9 +56,6 @@ var InitializeTestBandwidthVar = function () {
 }
 
 var InitializeReqVar = function () {
-    var g_isTestTtn = true;
-    var g_isTestReqMonitor = false;
-    var g_isTestBandwidth = true;
 
     if (true === g_isTestBandwidth) {
       InitializeTestBandwidthVar();
@@ -219,7 +220,9 @@ var Spi = function(){
           }
 
         }
-     } else {
+     } 
+     else 
+     {
         this.OnRspQryMonitorObjectTopic = function (pRspQryMonitorObject, pRspInfo, nRequestID, bIsLast)
         {
             g_RspQryMonitorObjectTopic_spi_callbackNumb++;
