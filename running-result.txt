@@ -7,3 +7,20 @@
 dataNumb in this queue is: 1
 ****** v8-transform-func:: OnFrontConnected: END! ******
 
+
+****** SysUserSpi:: RspQrySysUserLoginTopic: START! ******
+pRspQrySysUserLogin->UserID: admin
+pRspQrySysUserLogin->TradingDay: 20161117
+pRspQrySysUserLogin->LoginTime: 09:42:13
+pRspQrySysUserLogin->Privilege: 63
+pRspQrySysUserLogin->VersionFlag: 0
+pRspInfo:0000000000000000
+nRequestID:1
+bIsLast:1
+****** SysUserSpi:: RspQrySysUserLoginTopic: END! ******
+
+
+****** v8-transform-func:: RspQrySysUserLoginTopic: START! ******
+dataNumb in this queue is: 1
+****** v8-transform-func:: RspQrySysUserLoginTopic: END! ******
+

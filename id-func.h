@@ -7,7 +7,7 @@ void InitFrontIDQueue ();
 
 FRONT_ID GetFrontID();
 
-void ReAllocateID(FRONT_ID);
+void ReAllocateID(FRONT_ID&);
 
 
 #endif

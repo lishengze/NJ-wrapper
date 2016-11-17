@@ -5,6 +5,7 @@ var path         = require ('path');
 var g_isTestTtn = false;
 var g_isTestReqMonitor = true;
 var g_isTestBandwidth = false;
+var g_isTestLogin = true;
 
 var InitializeTestBandwidthVar = function () {
   var g_RspQrySysUserLoginTopic_spi_callbackNumb = 0;
@@ -134,6 +135,9 @@ var Spi = function(){
     this.OnFrontConnected = function()
     {
       console.log ('FrontConnected!');
+      if (true === g_isTestLogin) {
+        this.user.userApi.ReqQrySysUserLoginTopic(this.user.loginField, 1);
+      }      
       // if (true === g_isTestTtn)
       // {
       //   var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
@@ -267,8 +271,7 @@ var Spi = function(){
 
     this.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast)
     {
-         var outputStr = "\n++++++++++++++++ JS OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
-         outputStr += 'UserID:                     ' + this.user.loginField[0].UserID + "\n";
+        var outputStr = "\n++++++++++++++++ JS OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
         if (pRspQrySysUserLogin instanceof Object) {
           outputStr += "LoginTime :                 " + pRspQrySysUserLogin.LoginTime.toString() + "\n"
                      + "UserID :                    " + pRspQrySysUserLogin.UserID.toString() + "\n"
@@ -280,21 +283,9 @@ var Spi = function(){
                 outputStr += "pRspQrySysUserLogin is NULL!\n";
         }
 
-            for (var i = 0; i < this.user.ReqQrySubscriberNumbers; ++i) {
-                console.log("ReqQrySubscriberTopic "+ i + "  result:"
-                             + this.user.userApi.ReqQrySubscriberTopic(this.user.reqQrySubscriberData, 1) + "\n");
-            }
-
-            for (var i = 0; i < this.user.monitorObjectReqNumbers; ++i) {
-                console.log("ReqQryMonitorObjectTopic "+ i + "  result:"
-                             + this.user.userApi.ReqQryMonitorObjectTopic(this.user.monitorObjectField, 1) + "\n");
-            }
-
-            outputStr += "bIsLastNew :                " + bIsLast + "\n";
-            outputStr += "rspCallNumb:                " + g_RspQrySysUserLoginTopic_spi_callbackNumb + "\n";
-            outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";
-            g_RspQrySysUserLoginTopic_spi_callbackNumb++;
-            console.log(outputStr);
+        outputStr += "bIsLastNew :                " + bIsLast + "\n";
+        outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";
+        console.log(outputStr);
     }
 };
 
