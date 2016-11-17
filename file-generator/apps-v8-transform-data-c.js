@@ -55,38 +55,6 @@ for (var i = 0; i < spiFuncName.length; ++i) {
     fileData += 'map<FRONT_ID, queue<void**> >   ' + 'g_' + spiFuncName[i] + '_Data_map' + ';\n\n'; 
 }
 
-
-// fileData += hereDoc(function () {        
-// /*
-// uv_mutex_t   g_FrontConnected_mutex;
-// uv_async_t   g_FrontConnected_async;
-// vector<FRONT_ID>   g_FrontConnected_IOUser_vec;
-// map<FRONT_ID, queue<void**> >   g_FrontConnected_Data_map;
-
-// uv_mutex_t   g_FrontDisconnected_mutex;
-// uv_async_t   g_FrontDisconnected_async;
-// vector<FRONT_ID>   g_FrontDisconnected_IOUser_vec;
-// map<FRONT_ID, queue<void**> >   g_FrontDisconnected_Data_map;
-
-// uv_mutex_t   g_HeartBeatWarning_mutex;
-// uv_async_t   g_HeartBeatWarning_async;
-// vector<FRONT_ID>   g_HeartBeatWarning_IOUser_vec;
-// map<FRONT_ID, queue<void**> >  g_HeartBeatWarning_Data_map;
-                
-// */});
-
-// for(var i = beforeRspQryTopCpuInfoTopic;i < AfterRtnNetNonPartyLinkInfoTopic;i++) {
-//     var funcName = jsonContent.FTD.packages[0].package[i].$.name;
-//     if (funcName.substring(0,3) ==="Rsp" || funcName.substring(0,3) ==="Rtn") {           
-//         fileData += 'uv_mutex_t   ' + 'g_' + funcName + '_mutex' + ';\n';
-//         fileData += 'uv_async_t   ' + 'g_' + funcName + '_async' + ';\n';     
-//         fileData += 'vector<FRONT_ID>    ' + 'g_' + funcName + '_IOUser_vec' + ';\n';  
-//         fileData += 'map<FRONT_ID, queue<void**> >   ' + 'g_' + funcName + '_Data_map' + ';\n\n';
-//     }
-// }
-    
-
-
 var pathName = '../new file/';
 var fileName = 'v8-transform-data.cpp';
 fs.writeFile(pathName + fileName, fileData, function (err) {

@@ -1,37 +1,89 @@
 在此解决方案中一次生成一个项目。若要启用并行生成，请添加“/m”开关。
-生成启动时间为 2016/11/16 10:43:02。
-节点 1 上的项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(默认目标)。
+生成启动时间为 2016/11/17 20:03:58。
+节点 1 上的项目“C:\windows-complete-new\src\build\binding.sln”(默认目标)。
 ValidateSolutionConfiguration:
-  正在生成解决方案配置“Release|x64”。
-项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(1)正在节点 1 上生成“C:\NodejsWrapper\windows-complete-new\src\build\addon.vcxproj”(2) (默认目标)。
+  正在生成解决方案配置“Release|Win32”。
+项目“C:\windows-complete-new\src\build\binding.sln”(1)正在节点 1 上生成“C:\windows-complete-new\src\build\addon.vcxproj”(2) (默认目标)。
 InitializeBuildStatus:
   正在对“Release\obj\addon\addon.tlog\unsuccessfulbuild”执行 Touch 任务。
 ClCompile:
-  所有输出均为最新。
-  所有输出均为最新。
-Link:
-  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64\link.exe /ERRORREPORT:QUEUE /OUT:"C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.node" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib DelayImp.lib "C:\Users\li.shengze\.node-gyp\0.12.7\Release\node.lib" "C:\NodejsWrapper\windows-complete-new\src\sysuserapi.lib" Delayimp.lib /DELAYLOAD:iojs.exe /DELAYLOAD:node.exe /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /ignore:4199 /DLL Release\obj\addon\addon.obj
-  "Release\obj\addon\ftdcsysuserapi-wrapper.obj"
-  Release\obj\addon\sysuserspi.obj
-  "Release\obj\addon\v8-transform-data.obj"
-  "Release\obj\addon\v8-transform-func.obj"
-  "Release\obj\addon\id-func.obj"
-  "Release\obj\addon\tool-function.obj"
-  "Release\obj\addon\charset-convert-windows.obj"
-  Release\obj\addon\CDes.obj
-  Release\obj\addon\win_delay_load_hook.obj
-     正在创建库 C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.lib 和对象 C:\NodejsWrapper\windows-complete-new\src\build\Release\addon.exp
-  正在生成代码
-  已完成代码的生成
-  addon.vcxproj -> C:\NodejsWrapper\windows-complete-new\src\build\Release\\addon.node
-FinalizeBuildStatus:
-  正在删除文件“Release\obj\addon\addon.tlog\unsuccessfulbuild”。
-  正在对“Release\obj\addon\addon.tlog\addon.lastbuildstate”执行 Touch 任务。
-已完成生成项目“C:\NodejsWrapper\windows-complete-new\src\build\addon.vcxproj”(默认目标)的操作。
-已完成生成项目“C:\NodejsWrapper\windows-complete-new\src\build\binding.sln”(默认目标)的操作。
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\amd64_x86\CL.exe /c /I"C:\Users\lishe\.node-gyp\0.12.7\include\node" /I"C:\Users\lishe\.node-gyp\0.12.7\src" /I"C:\Users\lishe\.node-gyp\0.12.7\deps\uv\include" /I"C:\Users\lishe\.node-gyp\0.12.7\deps\v8\include" /I..\..\node_modules\nan /I.. /Zi /nologo /W3 /WX- /Ox /Ob2 /Oi /Ot /Oy /GL /D NODE_GYP_MODULE_NAME=addon /D USING_UV_SHARED=1 /D USING_V8_SHARED=1 /D V8_DEPRECATION_WARNINGS=1 /D WIN32 /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D BUILDING_NODE_EXTENSION /D _WINDLL /GF /Gm- /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"Release\obj\addon\\" /Fd"Release\obj\addon\vc120.pdb" /Gd /TP /wd4351 /wd4355 /wd4800 /wd4251 /analyze- /errorReport:queue /MP ..\addon.cpp "..\v8-transform-data.cpp" "..\v8-transform-func.cpp"
+  addon.cpp
+..\addon.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [C:\windows-complete-new\src\build\addon.vcxproj]
+  v8-transform-data.cpp
+  v8-transform-func.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xlocale(337): warning C4530: 使用了 C++ 异常处理程序，但未启用展开语义。请指定 /EHsc (..\v8-transform-data.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c1xx : fatal error C1083: 无法打开源文件: “..\v8-transform-func.cpp”: No such file or directory [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApi.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(648): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(1417): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(2010): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(2679): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(3410): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(4042): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(4748): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiDataType.h(5362): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(1111): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(2201): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(3417): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(4590): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(5793): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(6939): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(8095): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(9356): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(10510): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(11653): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApiStruct.h(12867): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApi.h(549): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+c:\windows-complete-new\src\FtdcSysUserApi.h(1124): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+..\addon.cpp(18): error C3861: “InitFrontIDQueue”:  找不到标识符 [C:\windows-complete-new\src\build\addon.vcxproj]
+..\v8-transform-data.cpp(2): fatal error C1083: 无法打开包括文件: “v8-transform-func.h”: No such file or directory [C:\windows-complete-new\src\build\addon.vcxproj]
+已完成生成项目“C:\windows-complete-new\src\build\addon.vcxproj”(默认目标)的操作 - 失败。
+已完成生成项目“C:\windows-complete-new\src\build\binding.sln”(默认目标)的操作 - 失败。
 
-已成功生成。
-    0 个警告
-    0 个错误
+生成失败。
 
-已用时间 00:01:18.53
+“C:\windows-complete-new\src\build\binding.sln”(默认目标) (1) ->
+“C:\windows-complete-new\src\build\addon.vcxproj”(默认目标) (2) ->
+(ClCompile 目标) -> 
+  ..\addon.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [C:\windows-complete-new\src\build\addon.vcxproj]
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\xlocale(337): warning C4530: 使用了 C++ 异常处理程序，但未启用展开语义。请指定 /EHsc (..\v8-transform-data.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApi.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(648): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(1417): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(2010): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(2679): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(3410): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(4042): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(4748): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiDataType.h(5362): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(1111): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(2201): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(3417): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(4590): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(5793): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(6939): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(8095): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(9356): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(10510): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(11653): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApiStruct.h(12867): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApi.h(549): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+  c:\windows-complete-new\src\FtdcSysUserApi.h(1124): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 (..\addon.cpp) [C:\windows-complete-new\src\build\addon.vcxproj]
+
+
+“C:\windows-complete-new\src\build\binding.sln”(默认目标) (1) ->
+“C:\windows-complete-new\src\build\addon.vcxproj”(默认目标) (2) ->
+(ClCompile 目标) -> 
+  c1xx : fatal error C1083: 无法打开源文件: “..\v8-transform-func.cpp”: No such file or directory [C:\windows-complete-new\src\build\addon.vcxproj]
+  ..\addon.cpp(18): error C3861: “InitFrontIDQueue”:  找不到标识符 [C:\windows-complete-new\src\build\addon.vcxproj]
+  ..\v8-transform-data.cpp(2): fatal error C1083: 无法打开包括文件: “v8-transform-func.h”: No such file or directory [C:\windows-complete-new\src\build\addon.vcxproj]
+
+    26 个警告
+    3 个错误
+
+已用时间 00:00:05.99

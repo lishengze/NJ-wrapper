@@ -6,7 +6,7 @@ function hereDoc(f) {
     return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
 }
 var fileData = "";
-var jsonContent = require("./ApiData.json");
+var jsonContent = require("../lib/ApiData.json");
 
 var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
 

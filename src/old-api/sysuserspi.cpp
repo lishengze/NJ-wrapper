@@ -6,12 +6,10 @@
 #include "sysuserspi.h"
 #include "v8-transform-data.h"
 #include "tool-function.h"
-#include "charset-convert-linux.h"
 #include <fstream>
 #include <queue>
 #include <map>
 #include <vector>
-#include <pthread.h>
 using std::queue;
 using std::map;
 using std::vector;
@@ -19,13 +17,19 @@ using std::fstream;
 using std::cin;
 using std::cout;
 using std::endl;
-using std::dec;
-using std::string;
  
 extern fstream g_RunningResult_File;
  
 void SysUserSpi::OnFrontConnected () {
     OutputCallbackMessage("\n************SysUserSpi::OnFrontConnected() START! ************", g_RunningResult_File);
+
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    }   
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
 
     void** paramArray = new void*[1];
     if (NULL == paramArray) {
@@ -33,20 +37,19 @@ void SysUserSpi::OnFrontConnected () {
         OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
         return;
     }
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-    
     paramArray[0] = (void*)pSpiObj; 
         
     uv_mutex_lock(&g_FrontConnected_mutex);
-    g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
-    cout << "m_frontid:     " << this->m_frontid << endl;
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontConnected_IOUser_vec.begin();
+        it != g_FrontConnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontConnected_IOUser_vec.end()) {
+        g_FrontConnected_IOUser_vec.push_back(this->m_frontid);
+    }  
     g_FrontConnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     uv_mutex_unlock(&g_FrontConnected_mutex);
 
@@ -58,20 +61,20 @@ void SysUserSpi::OnFrontConnected () {
 void SysUserSpi::OnFrontDisConnected (int nReason) {
     OutputCallbackMessage("\n************SysUserSpi::OnFrontDisConnected() START! ************", g_RunningResult_File);
 
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+        return;        
+    } 
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
         return;
     }
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
     
     int* pReason = new int;
     if (NULL == pReason){
@@ -85,7 +88,16 @@ void SysUserSpi::OnFrontDisConnected (int nReason) {
     paramArray[1] = (void*)pReason;
     
     uv_mutex_lock(&g_FrontDisconnected_mutex);
-    g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_FrontDisconnected_IOUser_vec.begin();
+        it != g_FrontDisconnected_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid){
+             break;
+        }       
+    }            
+    if (it ==  g_FrontDisconnected_IOUser_vec.end()) {
+        g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
+    }      
     g_FrontDisconnected_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     uv_mutex_unlock(&g_FrontDisconnected_mutex);
     
@@ -98,19 +110,20 @@ void SysUserSpi::OnFrontDisConnected (int nReason) {
 void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) { 
     OutputCallbackMessage("\n************SysUserSpi::OnHeartBeatWarning() START! ************", g_RunningResult_File);
 
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+    if (NULL == pSpiObj) {
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
+        return;        
+    } 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
         OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
         return;
     }
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnHeartBeatWarning: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
+          
     memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
     
     int* pTimeLapse = new int;
@@ -125,8 +138,14 @@ void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) {
     paramArray[1] = (void*)pTimeLapse; 
         
     uv_mutex_lock(&g_HeartBeatWarning_mutex);
-    
-    g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_HeartBeatWarning_IOUser_vec.begin();
+        it != g_HeartBeatWarning_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;      
+    }            
+    if (it ==  g_HeartBeatWarning_IOUser_vec.end()) {
+        g_HeartBeatWarning_IOUser_vec.push_back(this->m_frontid);
+    }    
     g_HeartBeatWarning_Data_map[this->m_frontid].push((void**)(&paramArray[0]));
     
     uv_mutex_unlock(&g_HeartBeatWarning_mutex);
@@ -189,8 +208,8 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTopCpuInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopCpuInfo) { 
@@ -215,7 +234,14 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopCpuInfoTopic_mutex);
-    g_RspQryTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopCpuInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopCpuInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTopCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopCpuInfoTopic_mutex);
 
@@ -272,7 +298,14 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInf
     }
 
     uv_mutex_lock (&g_RtnTopCpuInfoTopic_mutex);
-    g_RtnTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopCpuInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopCpuInfoTopic_IOUser_vec.end()) {
+        g_RtnTopCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTopCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopCpuInfoTopic_mutex);
 
@@ -332,8 +365,8 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTopMemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopMemInfo) { 
@@ -353,7 +386,14 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopMemInfoTopic_mutex);
-    g_RspQryTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopMemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopMemInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTopMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopMemInfoTopic_mutex);
 
@@ -405,7 +445,14 @@ void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInf
     }
 
     uv_mutex_lock (&g_RtnTopMemInfoTopic_mutex);
-    g_RtnTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopMemInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopMemInfoTopic_IOUser_vec.end()) {
+        g_RtnTopMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTopMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopMemInfoTopic_mutex);
 
@@ -465,8 +512,8 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTopProcessInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTopProcessInfo) { 
@@ -494,7 +541,14 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTopProcessInfoTopic_mutex);
-    g_RspQryTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTopProcessInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTopProcessInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTopProcessInfoTopic_IOUser_vec.end()) {
+        g_RspQryTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTopProcessInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTopProcessInfoTopic_mutex);
 
@@ -554,7 +608,14 @@ void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnT
     }
 
     uv_mutex_lock (&g_RtnTopProcessInfoTopic_mutex);
-    g_RtnTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTopProcessInfoTopic_IOUser_vec.begin();
+        it != g_RtnTopProcessInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTopProcessInfoTopic_IOUser_vec.end()) {
+        g_RtnTopProcessInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTopProcessInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTopProcessInfoTopic_mutex);
 
@@ -614,8 +675,8 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFileSystemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileSystemInfo) { 
@@ -640,7 +701,14 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileSystemInfoTopic_mutex);
-    g_RspQryFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileSystemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileSystemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileSystemInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFileSystemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileSystemInfoTopic_mutex);
 
@@ -697,7 +765,14 @@ void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnF
     }
 
     uv_mutex_lock (&g_RtnFileSystemInfoTopic_mutex);
-    g_RtnFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileSystemInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileSystemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileSystemInfoTopic_IOUser_vec.end()) {
+        g_RtnFileSystemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFileSystemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileSystemInfoTopic_mutex);
 
@@ -757,8 +832,8 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetworkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetworkInfo) { 
@@ -784,7 +859,14 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetworkInfoTopic_mutex);
-    g_RspQryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetworkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetworkInfoTopic_mutex);
 
@@ -842,7 +924,14 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetwork
     }
 
     uv_mutex_lock (&g_RtnNetworkInfoTopic_mutex);
-    g_RtnNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetworkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetworkInfoTopic_mutex);
 
@@ -902,8 +991,8 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientLogin;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientLogin) { 
@@ -917,7 +1006,14 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientLoginTopic_mutex);
-    g_RspQryClientLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientLoginTopic_IOUser_vec.begin();
+        it != g_RspQryClientLoginTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientLoginTopic_IOUser_vec.end()) {
+        g_RspQryClientLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientLoginTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientLoginTopic_mutex);
 
@@ -925,12 +1021,8 @@ void SysUserSpi::OnRspQryClientLoginTopic(CShfeFtdcRspQryClientLoginField* pRspQ
     OutputCallbackMessage("****** SysUserSpi:: RspQryClientLoginTopic: END! ******\n", g_RunningResult_File);
 }
 
-int g_Sys_OnRspQryMonitorObjectTopic = 1;
 void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorObjectTopic: START! ******", g_RunningResult_File);
-
-    // cout << "ThreadID:               " << pthread_self()  << endl;
-    // cout << "FrontId:                " << this->m_frontid << endl;
 
     Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
     if (NULL == pSpiObj) {
@@ -981,11 +1073,10 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMonitorObject;
-		paramArray[2] = (void*)pRspInfoNew;		
-		paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
-		
-		
+			
     if (NULL == pRspQryMonitorObject) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMonitorObject is NULL" , g_RunningResult_File); 
     } else {
@@ -996,30 +1087,21 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
     OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
-    
-      
-    // cout << "g_Sys_OnRspQryMonitorObjectTopic:           " << dec <<g_Sys_OnRspQryMonitorObjectTopic++ << endl;
-    
+
     uv_mutex_lock (&g_RspQryMonitorObjectTopic_mutex);
-    
     vector<FRONT_ID>::iterator it ;
     for(it = g_RspQryMonitorObjectTopic_IOUser_vec.begin();
         it != g_RspQryMonitorObjectTopic_IOUser_vec.end(); it++ ) {
-        if (*it == this->m_frontid){
-        	 break;
-        }       
-    }            
-    if (it ==  g_RspQryMonitorObjectTopic_IOUser_vec.end()) {
-    	g_RspQryMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
-    }      
-
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMonitorObjectTopic_IOUser_vec.end()) {
+        g_RspQryMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMonitorObjectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
-    
     uv_mutex_unlock (&g_RspQryMonitorObjectTopic_mutex);
 
     uv_async_send(&g_RspQryMonitorObjectTopic_async);
-    
-    // OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorObjectTopic: END! ******\n", g_RunningResult_File);
+    OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorObjectTopic: END! ******\n", g_RunningResult_File);
 }
 
 void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMonitorObject){ 
@@ -1061,34 +1143,14 @@ void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMon
     }
 
     uv_mutex_lock (&g_RtnMonitorObjectTopic_mutex);
-    
-    // vector<FRONT_ID>::iterator it ;
-//    bool IsFrontIdIn = false;
-//    for(vector<FRONT_ID>::iterator it = g_RspQryMonitorObjectTopic_IOUser_vec.begin();
-//        it != g_RspQryMonitorObjectTopic_IOUser_vec.end(); it++ ) {
-//        if (*it == this->m_frontid){
-//        	 cout << "*it == m_frontid: " << "  *it: "<< *it <<"  this->m_frontid: " <<this->m_frontid<< endl;
-//        	 IsFrontIdIn = true;
-//        	 break;
-//        }       
-//        cout << "*it: "<< *it <<"  this->m_frontid: " <<this->m_frontid<< endl;
-//    }
-//    
-//    if (false == IsFrontIdIn) {
-//    	g_RtnMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
-//    }
-    
-    /**/
-    int dataNumb = g_RspQryMonitorObjectTopic_IOUser_vec.size();
-    int i = 0;
-    for (i; i < dataNumb; ++i) {
-    	if (g_RspQryMonitorObjectTopic_IOUser_vec[i] == this->m_frontid) break;
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMonitorObjectTopic_IOUser_vec.begin();
+        it != g_RtnMonitorObjectTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
     }
-    if (i == dataNumb) {
-    	cout << "i: " << i << " , dataNumb: " << dataNumb << endl;
-    	g_RtnMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
+    if (it == g_RtnMonitorObjectTopic_IOUser_vec.end()) {
+        g_RtnMonitorObjectTopic_IOUser_vec.push_back(this->m_frontid);
     }
-           
     g_RtnMonitorObjectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMonitorObjectTopic_mutex);
 
@@ -1148,8 +1210,8 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryObjectRational;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryObjectRational) { 
@@ -1163,7 +1225,14 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryObjectRationalTopic_mutex);
-    g_RspQryObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryObjectRationalTopic_IOUser_vec.begin();
+        it != g_RspQryObjectRationalTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryObjectRationalTopic_IOUser_vec.end()) {
+        g_RspQryObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryObjectRationalTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryObjectRationalTopic_mutex);
 
@@ -1209,7 +1278,14 @@ void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnO
     }
 
     uv_mutex_lock (&g_RtnObjectRationalTopic_mutex);
-    g_RtnObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnObjectRationalTopic_IOUser_vec.begin();
+        it != g_RtnObjectRationalTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnObjectRationalTopic_IOUser_vec.end()) {
+        g_RtnObjectRationalTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnObjectRationalTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnObjectRationalTopic_mutex);
 
@@ -1269,8 +1345,8 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySyslogInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySyslogInfo) { 
@@ -1288,7 +1364,14 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySyslogInfoTopic_mutex);
-    g_RspQrySyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySyslogInfoTopic_IOUser_vec.begin();
+        it != g_RspQrySyslogInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySyslogInfoTopic_IOUser_vec.end()) {
+        g_RspQrySyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySyslogInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySyslogInfoTopic_mutex);
 
@@ -1338,7 +1421,14 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInf
     }
 
     uv_mutex_lock (&g_RtnSyslogInfoTopic_mutex);
-    g_RtnSyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSyslogInfoTopic_IOUser_vec.begin();
+        it != g_RtnSyslogInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSyslogInfoTopic_IOUser_vec.end()) {
+        g_RtnSyslogInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSyslogInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSyslogInfoTopic_mutex);
 
@@ -1398,8 +1488,8 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySubscriber;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySubscriber) { 
@@ -1414,7 +1504,14 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySubscriberTopic_mutex);
-    g_RspQrySubscriberTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySubscriberTopic_IOUser_vec.begin();
+        it != g_RspQrySubscriberTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySubscriberTopic_IOUser_vec.end()) {
+        g_RspQrySubscriberTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySubscriberTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySubscriberTopic_mutex);
 
@@ -1474,8 +1571,8 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryOidRelation;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOidRelation) { 
@@ -1489,7 +1586,14 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOidRelationTopic_mutex);
-    g_RspQryOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOidRelationTopic_IOUser_vec.begin();
+        it != g_RspQryOidRelationTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOidRelationTopic_IOUser_vec.end()) {
+        g_RspQryOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryOidRelationTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOidRelationTopic_mutex);
 
@@ -1535,7 +1639,14 @@ void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRela
     }
 
     uv_mutex_lock (&g_RtnOidRelationTopic_mutex);
-    g_RtnOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOidRelationTopic_IOUser_vec.begin();
+        it != g_RtnOidRelationTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOidRelationTopic_IOUser_vec.end()) {
+        g_RtnOidRelationTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnOidRelationTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOidRelationTopic_mutex);
 
@@ -1595,8 +1706,8 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryUserInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserInfo) { 
@@ -1617,7 +1728,14 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserInfoTopic_mutex);
-    g_RspQryUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserInfoTopic_IOUser_vec.begin();
+        it != g_RspQryUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserInfoTopic_IOUser_vec.end()) {
+        g_RspQryUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserInfoTopic_mutex);
 
@@ -1670,7 +1788,14 @@ void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){
     }
 
     uv_mutex_lock (&g_RtnUserInfoTopic_mutex);
-    g_RtnUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserInfoTopic_IOUser_vec.begin();
+        it != g_RtnUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserInfoTopic_IOUser_vec.end()) {
+        g_RtnUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserInfoTopic_mutex);
 
@@ -1730,8 +1855,8 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryOnlineUserInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOnlineUserInfo) { 
@@ -1752,7 +1877,14 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOnlineUserInfoTopic_mutex);
-    g_RspQryOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOnlineUserInfoTopic_IOUser_vec.begin();
+        it != g_RspQryOnlineUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOnlineUserInfoTopic_IOUser_vec.end()) {
+        g_RspQryOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryOnlineUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOnlineUserInfoTopic_mutex);
 
@@ -1805,7 +1937,14 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnO
     }
 
     uv_mutex_lock (&g_RtnOnlineUserInfoTopic_mutex);
-    g_RtnOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOnlineUserInfoTopic_IOUser_vec.begin();
+        it != g_RtnOnlineUserInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOnlineUserInfoTopic_IOUser_vec.end()) {
+        g_RtnOnlineUserInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnOnlineUserInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOnlineUserInfoTopic_mutex);
 
@@ -1865,8 +2004,8 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryWarningEvent;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWarningEvent) { 
@@ -1893,7 +2032,14 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWarningEventTopic_mutex);
-    g_RspQryWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWarningEventTopic_IOUser_vec.begin();
+        it != g_RspQryWarningEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWarningEventTopic_IOUser_vec.end()) {
+        g_RspQryWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryWarningEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWarningEventTopic_mutex);
 
@@ -1953,7 +2099,14 @@ void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarni
     }
 
     uv_mutex_lock (&g_RtnWarningEventTopic_mutex);
-    g_RtnWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWarningEventTopic_IOUser_vec.begin();
+        it != g_RtnWarningEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWarningEventTopic_IOUser_vec.end()) {
+        g_RtnWarningEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnWarningEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWarningEventTopic_mutex);
 
@@ -2013,8 +2166,8 @@ void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUU
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryCPUUsage;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryCPUUsage) { 
@@ -2030,7 +2183,14 @@ void SysUserSpi::OnRspQryCPUUsageTopic(CShfeFtdcRspQryCPUUsageField* pRspQryCPUU
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryCPUUsageTopic_mutex);
-    g_RspQryCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryCPUUsageTopic_IOUser_vec.begin();
+        it != g_RspQryCPUUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryCPUUsageTopic_IOUser_vec.end()) {
+        g_RspQryCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryCPUUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryCPUUsageTopic_mutex);
 
@@ -2078,7 +2238,14 @@ void SysUserSpi::OnRtnCPUUsageTopic(CShfeFtdcRtnCPUUsageField* pRtnCPUUsage){
     }
 
     uv_mutex_lock (&g_RtnCPUUsageTopic_mutex);
-    g_RtnCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnCPUUsageTopic_IOUser_vec.begin();
+        it != g_RtnCPUUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnCPUUsageTopic_IOUser_vec.end()) {
+        g_RtnCPUUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnCPUUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnCPUUsageTopic_mutex);
 
@@ -2138,8 +2305,8 @@ void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMemoryUsage;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemoryUsage) { 
@@ -2155,7 +2322,14 @@ void SysUserSpi::OnRspQryMemoryUsageTopic(CShfeFtdcRspQryMemoryUsageField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemoryUsageTopic_mutex);
-    g_RspQryMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemoryUsageTopic_IOUser_vec.begin();
+        it != g_RspQryMemoryUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemoryUsageTopic_IOUser_vec.end()) {
+        g_RspQryMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMemoryUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemoryUsageTopic_mutex);
 
@@ -2203,7 +2377,14 @@ void SysUserSpi::OnRtnMemoryUsageTopic(CShfeFtdcRtnMemoryUsageField* pRtnMemoryU
     }
 
     uv_mutex_lock (&g_RtnMemoryUsageTopic_mutex);
-    g_RtnMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemoryUsageTopic_IOUser_vec.begin();
+        it != g_RtnMemoryUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemoryUsageTopic_IOUser_vec.end()) {
+        g_RtnMemoryUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMemoryUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemoryUsageTopic_mutex);
 
@@ -2263,8 +2444,8 @@ void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryDiskUsage;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDiskUsage) { 
@@ -2280,7 +2461,14 @@ void SysUserSpi::OnRspQryDiskUsageTopic(CShfeFtdcRspQryDiskUsageField* pRspQryDi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDiskUsageTopic_mutex);
-    g_RspQryDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDiskUsageTopic_IOUser_vec.begin();
+        it != g_RspQryDiskUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDiskUsageTopic_IOUser_vec.end()) {
+        g_RspQryDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryDiskUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDiskUsageTopic_mutex);
 
@@ -2328,7 +2516,14 @@ void SysUserSpi::OnRtnDiskUsageTopic(CShfeFtdcRtnDiskUsageField* pRtnDiskUsage){
     }
 
     uv_mutex_lock (&g_RtnDiskUsageTopic_mutex);
-    g_RtnDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDiskUsageTopic_IOUser_vec.begin();
+        it != g_RtnDiskUsageTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDiskUsageTopic_IOUser_vec.end()) {
+        g_RtnDiskUsageTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnDiskUsageTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDiskUsageTopic_mutex);
 
@@ -2388,8 +2583,8 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryObjectAttr) { 
@@ -2407,7 +2602,14 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryObjectAttrTopic_mutex);
-    g_RspQryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryObjectAttrTopic_mutex);
 
@@ -2457,7 +2659,14 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAtt
     }
 
     uv_mutex_lock (&g_RtnObjectAttrTopic_mutex);
-    g_RtnObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnObjectAttrTopic_mutex);
 
@@ -2517,8 +2726,8 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryInvalidateOrder;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInvalidateOrder) { 
@@ -2547,7 +2756,14 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInvalidateOrderTopic_mutex);
-    g_RspQryInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInvalidateOrderTopic_IOUser_vec.begin();
+        it != g_RspQryInvalidateOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInvalidateOrderTopic_IOUser_vec.end()) {
+        g_RspQryInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryInvalidateOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInvalidateOrderTopic_mutex);
 
@@ -2608,7 +2824,14 @@ void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRt
     }
 
     uv_mutex_lock (&g_RtnInvalidateOrderTopic_mutex);
-    g_RtnInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInvalidateOrderTopic_IOUser_vec.begin();
+        it != g_RtnInvalidateOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInvalidateOrderTopic_IOUser_vec.end()) {
+        g_RtnInvalidateOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnInvalidateOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInvalidateOrderTopic_mutex);
 
@@ -2668,8 +2891,8 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryOrderStatus;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOrderStatus) { 
@@ -2700,7 +2923,14 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOrderStatusTopic_mutex);
-    g_RspQryOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOrderStatusTopic_IOUser_vec.begin();
+        it != g_RspQryOrderStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOrderStatusTopic_IOUser_vec.end()) {
+        g_RspQryOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryOrderStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOrderStatusTopic_mutex);
 
@@ -2763,7 +2993,14 @@ void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderSt
     }
 
     uv_mutex_lock (&g_RtnOrderStatusTopic_mutex);
-    g_RtnOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnOrderStatusTopic_IOUser_vec.begin();
+        it != g_RtnOrderStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnOrderStatusTopic_IOUser_vec.end()) {
+        g_RtnOrderStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnOrderStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnOrderStatusTopic_mutex);
 
@@ -2823,8 +3060,8 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryBargainOrder;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryBargainOrder) { 
@@ -2846,7 +3083,14 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryBargainOrderTopic_mutex);
-    g_RspQryBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryBargainOrderTopic_IOUser_vec.begin();
+        it != g_RspQryBargainOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryBargainOrderTopic_IOUser_vec.end()) {
+        g_RspQryBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryBargainOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryBargainOrderTopic_mutex);
 
@@ -2900,7 +3144,14 @@ void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBarga
     }
 
     uv_mutex_lock (&g_RtnBargainOrderTopic_mutex);
-    g_RtnBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnBargainOrderTopic_IOUser_vec.begin();
+        it != g_RtnBargainOrderTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnBargainOrderTopic_IOUser_vec.end()) {
+        g_RtnBargainOrderTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnBargainOrderTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnBargainOrderTopic_mutex);
 
@@ -2960,8 +3211,8 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryInstProperty;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInstProperty) { 
@@ -2994,7 +3245,14 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInstPropertyTopic_mutex);
-    g_RspQryInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInstPropertyTopic_IOUser_vec.begin();
+        it != g_RspQryInstPropertyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInstPropertyTopic_IOUser_vec.end()) {
+        g_RspQryInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryInstPropertyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInstPropertyTopic_mutex);
 
@@ -3059,7 +3317,14 @@ void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstP
     }
 
     uv_mutex_lock (&g_RtnInstPropertyTopic_mutex);
-    g_RtnInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInstPropertyTopic_IOUser_vec.begin();
+        it != g_RtnInstPropertyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInstPropertyTopic_IOUser_vec.end()) {
+        g_RtnInstPropertyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnInstPropertyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInstPropertyTopic_mutex);
 
@@ -3119,8 +3384,8 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMarginRate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMarginRate) { 
@@ -3141,7 +3406,14 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMarginRateTopic_mutex);
-    g_RspQryMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMarginRateTopic_IOUser_vec.begin();
+        it != g_RspQryMarginRateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMarginRateTopic_IOUser_vec.end()) {
+        g_RspQryMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMarginRateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMarginRateTopic_mutex);
 
@@ -3194,7 +3466,14 @@ void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRat
     }
 
     uv_mutex_lock (&g_RtnMarginRateTopic_mutex);
-    g_RtnMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMarginRateTopic_IOUser_vec.begin();
+        it != g_RtnMarginRateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMarginRateTopic_IOUser_vec.end()) {
+        g_RtnMarginRateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMarginRateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMarginRateTopic_mutex);
 
@@ -3254,8 +3533,8 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPriceLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPriceLimit) { 
@@ -3274,7 +3553,14 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPriceLimitTopic_mutex);
-    g_RspQryPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPriceLimitTopic_IOUser_vec.begin();
+        it != g_RspQryPriceLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPriceLimitTopic_IOUser_vec.end()) {
+        g_RspQryPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPriceLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPriceLimitTopic_mutex);
 
@@ -3325,7 +3611,14 @@ void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimi
     }
 
     uv_mutex_lock (&g_RtnPriceLimitTopic_mutex);
-    g_RtnPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPriceLimitTopic_IOUser_vec.begin();
+        it != g_RtnPriceLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPriceLimitTopic_IOUser_vec.end()) {
+        g_RtnPriceLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPriceLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPriceLimitTopic_mutex);
 
@@ -3385,8 +3678,8 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPartPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartPosiLimit) { 
@@ -3409,7 +3702,14 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartPosiLimitTopic_mutex);
-    g_RspQryPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQryPartPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQryPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPartPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartPosiLimitTopic_mutex);
 
@@ -3464,7 +3764,14 @@ void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPar
     }
 
     uv_mutex_lock (&g_RtnPartPosiLimitTopic_mutex);
-    g_RtnPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPartPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnPartPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPartPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnPartPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPartPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPartPosiLimitTopic_mutex);
 
@@ -3524,8 +3831,8 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientPosiLimit) { 
@@ -3548,7 +3855,14 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientPosiLimitTopic_mutex);
-    g_RspQryClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQryClientPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQryClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientPosiLimitTopic_mutex);
 
@@ -3603,7 +3917,14 @@ void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRt
     }
 
     uv_mutex_lock (&g_RtnClientPosiLimitTopic_mutex);
-    g_RtnClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnClientPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnClientPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnClientPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientPosiLimitTopic_mutex);
 
@@ -3663,8 +3984,8 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySpecialPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySpecialPosiLimit) { 
@@ -3687,7 +4008,14 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySpecialPosiLimitTopic_mutex);
-    g_RspQrySpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySpecialPosiLimitTopic_IOUser_vec.begin();
+        it != g_RspQrySpecialPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySpecialPosiLimitTopic_IOUser_vec.end()) {
+        g_RspQrySpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySpecialPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySpecialPosiLimitTopic_mutex);
 
@@ -3742,7 +4070,14 @@ void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* p
     }
 
     uv_mutex_lock (&g_RtnSpecialPosiLimitTopic_mutex);
-    g_RtnSpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSpecialPosiLimitTopic_IOUser_vec.begin();
+        it != g_RtnSpecialPosiLimitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSpecialPosiLimitTopic_IOUser_vec.end()) {
+        g_RtnSpecialPosiLimitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSpecialPosiLimitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSpecialPosiLimitTopic_mutex);
 
@@ -3802,8 +4137,8 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTransactionChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTransactionChg) { 
@@ -3821,7 +4156,14 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTransactionChgTopic_mutex);
-    g_RspQryTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTransactionChgTopic_IOUser_vec.begin();
+        it != g_RspQryTransactionChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTransactionChgTopic_IOUser_vec.end()) {
+        g_RspQryTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTransactionChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTransactionChgTopic_mutex);
 
@@ -3871,7 +4213,14 @@ void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnT
     }
 
     uv_mutex_lock (&g_RtnTransactionChgTopic_mutex);
-    g_RtnTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTransactionChgTopic_IOUser_vec.begin();
+        it != g_RtnTransactionChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTransactionChgTopic_IOUser_vec.end()) {
+        g_RtnTransactionChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTransactionChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTransactionChgTopic_mutex);
 
@@ -3931,8 +4280,8 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientChg) { 
@@ -3953,7 +4302,14 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientChgTopic_mutex);
-    g_RspQryClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientChgTopic_IOUser_vec.begin();
+        it != g_RspQryClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientChgTopic_IOUser_vec.end()) {
+        g_RspQryClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientChgTopic_mutex);
 
@@ -4006,7 +4362,14 @@ void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){
     }
 
     uv_mutex_lock (&g_RtnClientChgTopic_mutex);
-    g_RtnClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientChgTopic_IOUser_vec.begin();
+        it != g_RtnClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientChgTopic_IOUser_vec.end()) {
+        g_RtnClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientChgTopic_mutex);
 
@@ -4066,8 +4429,8 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPartClientChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartClientChg) { 
@@ -4084,7 +4447,14 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartClientChgTopic_mutex);
-    g_RspQryPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartClientChgTopic_IOUser_vec.begin();
+        it != g_RspQryPartClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartClientChgTopic_IOUser_vec.end()) {
+        g_RspQryPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPartClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartClientChgTopic_mutex);
 
@@ -4133,7 +4503,14 @@ void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPar
     }
 
     uv_mutex_lock (&g_RtnPartClientChgTopic_mutex);
-    g_RtnPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPartClientChgTopic_IOUser_vec.begin();
+        it != g_RtnPartClientChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPartClientChgTopic_IOUser_vec.end()) {
+        g_RtnPartClientChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPartClientChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPartClientChgTopic_mutex);
 
@@ -4193,8 +4570,8 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPosiLimitChg) { 
@@ -4216,7 +4593,14 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPosiLimitChgTopic_mutex);
-    g_RspQryPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQryPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQryPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPosiLimitChgTopic_mutex);
 
@@ -4270,7 +4654,14 @@ void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiL
     }
 
     uv_mutex_lock (&g_RtnPosiLimitChgTopic_mutex);
-    g_RtnPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPosiLimitChgTopic_mutex);
 
@@ -4330,8 +4721,8 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHedgeDetailChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHedgeDetailChg) { 
@@ -4354,7 +4745,14 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHedgeDetailChgTopic_mutex);
-    g_RspQryHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHedgeDetailChgTopic_IOUser_vec.begin();
+        it != g_RspQryHedgeDetailChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHedgeDetailChgTopic_IOUser_vec.end()) {
+        g_RspQryHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHedgeDetailChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHedgeDetailChgTopic_mutex);
 
@@ -4409,7 +4807,14 @@ void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnH
     }
 
     uv_mutex_lock (&g_RtnHedgeDetailChgTopic_mutex);
-    g_RtnHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHedgeDetailChgTopic_IOUser_vec.begin();
+        it != g_RtnHedgeDetailChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHedgeDetailChgTopic_IOUser_vec.end()) {
+        g_RtnHedgeDetailChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnHedgeDetailChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHedgeDetailChgTopic_mutex);
 
@@ -4469,8 +4874,8 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryParticipantChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticipantChg) { 
@@ -4490,7 +4895,14 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticipantChgTopic_mutex);
-    g_RspQryParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticipantChgTopic_IOUser_vec.begin();
+        it != g_RspQryParticipantChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticipantChgTopic_IOUser_vec.end()) {
+        g_RspQryParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryParticipantChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticipantChgTopic_mutex);
 
@@ -4542,7 +4954,14 @@ void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnP
     }
 
     uv_mutex_lock (&g_RtnParticipantChgTopic_mutex);
-    g_RtnParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticipantChgTopic_IOUser_vec.begin();
+        it != g_RtnParticipantChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticipantChgTopic_IOUser_vec.end()) {
+        g_RtnParticipantChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnParticipantChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticipantChgTopic_mutex);
 
@@ -4602,8 +5021,8 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMarginRateChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMarginRateChg) { 
@@ -4625,7 +5044,14 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMarginRateChgTopic_mutex);
-    g_RspQryMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMarginRateChgTopic_IOUser_vec.begin();
+        it != g_RspQryMarginRateChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMarginRateChgTopic_IOUser_vec.end()) {
+        g_RspQryMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMarginRateChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMarginRateChgTopic_mutex);
 
@@ -4679,7 +5105,14 @@ void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMar
     }
 
     uv_mutex_lock (&g_RtnMarginRateChgTopic_mutex);
-    g_RtnMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMarginRateChgTopic_IOUser_vec.begin();
+        it != g_RtnMarginRateChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMarginRateChgTopic_IOUser_vec.end()) {
+        g_RtnMarginRateChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMarginRateChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMarginRateChgTopic_mutex);
 
@@ -4739,8 +5172,8 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryUserIpChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserIpChg) { 
@@ -4758,7 +5191,14 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserIpChgTopic_mutex);
-    g_RspQryUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserIpChgTopic_IOUser_vec.begin();
+        it != g_RspQryUserIpChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserIpChgTopic_IOUser_vec.end()) {
+        g_RspQryUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryUserIpChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserIpChgTopic_mutex);
 
@@ -4808,7 +5248,14 @@ void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){
     }
 
     uv_mutex_lock (&g_RtnUserIpChgTopic_mutex);
-    g_RtnUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserIpChgTopic_IOUser_vec.begin();
+        it != g_RtnUserIpChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserIpChgTopic_IOUser_vec.end()) {
+        g_RtnUserIpChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnUserIpChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserIpChgTopic_mutex);
 
@@ -4868,8 +5315,8 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientPosiLimitChg) { 
@@ -4891,7 +5338,14 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientPosiLimitChgTopic_mutex);
-    g_RspQryClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQryClientPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQryClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientPosiLimitChgTopic_mutex);
 
@@ -4945,7 +5399,14 @@ void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgFiel
     }
 
     uv_mutex_lock (&g_RtnClientPosiLimitChgTopic_mutex);
-    g_RtnClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnClientPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnClientPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnClientPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientPosiLimitChgTopic_mutex);
 
@@ -5005,8 +5466,8 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySpecPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySpecPosiLimitChg) { 
@@ -5028,7 +5489,14 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySpecPosiLimitChgTopic_mutex);
-    g_RspQrySpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySpecPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RspQrySpecPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySpecPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RspQrySpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySpecPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySpecPosiLimitChgTopic_mutex);
 
@@ -5082,7 +5550,14 @@ void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* p
     }
 
     uv_mutex_lock (&g_RtnSpecPosiLimitChgTopic_mutex);
-    g_RtnSpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSpecPosiLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnSpecPosiLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSpecPosiLimitChgTopic_IOUser_vec.end()) {
+        g_RtnSpecPosiLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSpecPosiLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSpecPosiLimitChgTopic_mutex);
 
@@ -5142,8 +5617,8 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHistoryObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryObjectAttr) { 
@@ -5167,7 +5642,14 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryObjectAttrTopic_mutex);
-    g_RspQryHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHistoryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryObjectAttrTopic_mutex);
 
@@ -5223,7 +5705,14 @@ void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField*
     }
 
     uv_mutex_lock (&g_RtnHistoryObjectAttrTopic_mutex);
-    g_RtnHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHistoryObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnHistoryObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHistoryObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnHistoryObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnHistoryObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHistoryObjectAttrTopic_mutex);
 
@@ -5283,8 +5772,8 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFrontInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontInfo) { 
@@ -5302,7 +5791,14 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontInfoTopic_mutex);
-    g_RspQryFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFrontInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontInfoTopic_IOUser_vec.end()) {
+        g_RspQryFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFrontInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontInfoTopic_mutex);
 
@@ -5352,7 +5848,14 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){
     }
 
     uv_mutex_lock (&g_RtnFrontInfoTopic_mutex);
-    g_RtnFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFrontInfoTopic_IOUser_vec.begin();
+        it != g_RtnFrontInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFrontInfoTopic_IOUser_vec.end()) {
+        g_RtnFrontInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFrontInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFrontInfoTopic_mutex);
 
@@ -5412,8 +5915,8 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysUserLogin;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserLogin) { 
@@ -5430,7 +5933,14 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserLoginTopic_mutex);
-    g_RspQrySysUserLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserLoginTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserLoginTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserLoginTopic_IOUser_vec.end()) {
+        g_RspQrySysUserLoginTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysUserLoginTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserLoginTopic_mutex);
 
@@ -5490,8 +6000,8 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysUserLogout;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserLogout) { 
@@ -5504,7 +6014,14 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserLogoutTopic_mutex);
-    g_RspQrySysUserLogoutTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserLogoutTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserLogoutTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserLogoutTopic_IOUser_vec.end()) {
+        g_RspQrySysUserLogoutTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysUserLogoutTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserLogoutTopic_mutex);
 
@@ -5564,8 +6081,8 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysUserPasswordUpdate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserPasswordUpdate) { 
@@ -5579,7 +6096,14 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserPasswordUpdateTopic_mutex);
-    g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.end()) {
+        g_RspQrySysUserPasswordUpdateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysUserPasswordUpdateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserPasswordUpdateTopic_mutex);
 
@@ -5639,8 +6163,8 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysUserRegister;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserRegister) { 
@@ -5654,7 +6178,14 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserRegisterTopic_mutex);
-    g_RspQrySysUserRegisterTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserRegisterTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserRegisterTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserRegisterTopic_IOUser_vec.end()) {
+        g_RspQrySysUserRegisterTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysUserRegisterTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserRegisterTopic_mutex);
 
@@ -5714,8 +6245,8 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysUserDelete;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysUserDelete) { 
@@ -5728,7 +6259,14 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysUserDeleteTopic_mutex);
-    g_RspQrySysUserDeleteTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysUserDeleteTopic_IOUser_vec.begin();
+        it != g_RspQrySysUserDeleteTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysUserDeleteTopic_IOUser_vec.end()) {
+        g_RspQrySysUserDeleteTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysUserDeleteTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysUserDeleteTopic_mutex);
 
@@ -5788,8 +6326,8 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryParticipantInit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticipantInit) { 
@@ -5807,7 +6345,14 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticipantInitTopic_mutex);
-    g_RspQryParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticipantInitTopic_IOUser_vec.begin();
+        it != g_RspQryParticipantInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticipantInitTopic_IOUser_vec.end()) {
+        g_RspQryParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryParticipantInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticipantInitTopic_mutex);
 
@@ -5857,7 +6402,14 @@ void SysUserSpi::OnRtnParticipantInitTopic(CShfeFtdcRtnParticipantInitField* pRt
     }
 
     uv_mutex_lock (&g_RtnParticipantInitTopic_mutex);
-    g_RtnParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticipantInitTopic_IOUser_vec.begin();
+        it != g_RtnParticipantInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticipantInitTopic_IOUser_vec.end()) {
+        g_RtnParticipantInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnParticipantInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticipantInitTopic_mutex);
 
@@ -5917,8 +6469,8 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryUserInit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryUserInit) { 
@@ -5936,7 +6488,14 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryUserInitTopic_mutex);
-    g_RspQryUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryUserInitTopic_IOUser_vec.begin();
+        it != g_RspQryUserInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryUserInitTopic_IOUser_vec.end()) {
+        g_RspQryUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryUserInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryUserInitTopic_mutex);
 
@@ -5986,7 +6545,14 @@ void SysUserSpi::OnRtnUserInitTopic(CShfeFtdcRtnUserInitField* pRtnUserInit){
     }
 
     uv_mutex_lock (&g_RtnUserInitTopic_mutex);
-    g_RtnUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUserInitTopic_IOUser_vec.begin();
+        it != g_RtnUserInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUserInitTopic_IOUser_vec.end()) {
+        g_RtnUserInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnUserInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUserInitTopic_mutex);
 
@@ -6046,8 +6612,8 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientInit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientInit) { 
@@ -6067,7 +6633,14 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientInitTopic_mutex);
-    g_RspQryClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientInitTopic_IOUser_vec.begin();
+        it != g_RspQryClientInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientInitTopic_IOUser_vec.end()) {
+        g_RspQryClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientInitTopic_mutex);
 
@@ -6119,7 +6692,14 @@ void SysUserSpi::OnRtnClientInitTopic(CShfeFtdcRtnClientInitField* pRtnClientIni
     }
 
     uv_mutex_lock (&g_RtnClientInitTopic_mutex);
-    g_RtnClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientInitTopic_IOUser_vec.begin();
+        it != g_RtnClientInitTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientInitTopic_IOUser_vec.end()) {
+        g_RtnClientInitTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnClientInitTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientInitTopic_mutex);
 
@@ -6179,8 +6759,8 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeLog;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeLog) { 
@@ -6194,7 +6774,14 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeLogTopic_mutex);
-    g_RspQryTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeLogTopic_IOUser_vec.begin();
+        it != g_RspQryTradeLogTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeLogTopic_IOUser_vec.end()) {
+        g_RspQryTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeLogTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeLogTopic_mutex);
 
@@ -6240,7 +6827,14 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){
     }
 
     uv_mutex_lock (&g_RtnTradeLogTopic_mutex);
-    g_RtnTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeLogTopic_IOUser_vec.begin();
+        it != g_RtnTradeLogTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeLogTopic_IOUser_vec.end()) {
+        g_RtnTradeLogTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTradeLogTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeLogTopic_mutex);
 
@@ -6300,8 +6894,8 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeUserLoginInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeUserLoginInfo) { 
@@ -6325,7 +6919,14 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeUserLoginInfoTopic_mutex);
-    g_RspQryTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeUserLoginInfoTopic_IOUser_vec.begin();
+        it != g_RspQryTradeUserLoginInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeUserLoginInfoTopic_IOUser_vec.end()) {
+        g_RspQryTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeUserLoginInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeUserLoginInfoTopic_mutex);
 
@@ -6381,7 +6982,14 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
     }
 
     uv_mutex_lock (&g_RtnTradeUserLoginInfoTopic_mutex);
-    g_RtnTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeUserLoginInfoTopic_IOUser_vec.begin();
+        it != g_RtnTradeUserLoginInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeUserLoginInfoTopic_IOUser_vec.end()) {
+        g_RtnTradeUserLoginInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTradeUserLoginInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeUserLoginInfoTopic_mutex);
 
@@ -6441,8 +7049,8 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPartTrade;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPartTrade) { 
@@ -6465,7 +7073,14 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPartTradeTopic_mutex);
-    g_RspQryPartTradeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPartTradeTopic_IOUser_vec.begin();
+        it != g_RspQryPartTradeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPartTradeTopic_IOUser_vec.end()) {
+        g_RspQryPartTradeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPartTradeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPartTradeTopic_mutex);
 
@@ -6525,8 +7140,8 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradepeak;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradepeak) { 
@@ -6546,7 +7161,14 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradepeakTopic_mutex);
-    g_RspQryTradepeakTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradepeakTopic_IOUser_vec.begin();
+        it != g_RspQryTradepeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradepeakTopic_IOUser_vec.end()) {
+        g_RspQryTradepeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradepeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradepeakTopic_mutex);
 
@@ -6594,7 +7216,14 @@ void SysUserSpi::OnRtnUpdateSysConfigTopic(CShfeFtdcRtnUpdateSysConfigField* pRt
     }
 
     uv_mutex_lock (&g_RtnUpdateSysConfigTopic_mutex);
-    g_RtnUpdateSysConfigTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnUpdateSysConfigTopic_IOUser_vec.begin();
+        it != g_RtnUpdateSysConfigTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnUpdateSysConfigTopic_IOUser_vec.end()) {
+        g_RtnUpdateSysConfigTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnUpdateSysConfigTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnUpdateSysConfigTopic_mutex);
 
@@ -6649,7 +7278,14 @@ void SysUserSpi::OnRtnSysUser(CShfeFtdcRtnSysUserField* pRtnSysUser){
     }
 
     uv_mutex_lock (&g_RtnSysUser_mutex);
-    g_RtnSysUser_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysUser_IOUser_vec.begin();
+        it != g_RtnSysUser_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysUser_IOUser_vec.end()) {
+        g_RtnSysUser_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSysUser_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysUser_mutex);
 
@@ -6701,7 +7337,14 @@ void SysUserSpi::OnRtnPriceLimitChgTopic(CShfeFtdcRtnPriceLimitChgField* pRtnPri
     }
 
     uv_mutex_lock (&g_RtnPriceLimitChgTopic_mutex);
-    g_RtnPriceLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPriceLimitChgTopic_IOUser_vec.begin();
+        it != g_RtnPriceLimitChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPriceLimitChgTopic_IOUser_vec.end()) {
+        g_RtnPriceLimitChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPriceLimitChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPriceLimitChgTopic_mutex);
 
@@ -6761,8 +7404,8 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHistoryCpuInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryCpuInfo) { 
@@ -6787,7 +7430,14 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryCpuInfoTopic_mutex);
-    g_RspQryHistoryCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryCpuInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryCpuInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryCpuInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryCpuInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHistoryCpuInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryCpuInfoTopic_mutex);
 
@@ -6847,8 +7497,8 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHistoryMemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryMemInfo) { 
@@ -6868,7 +7518,14 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryMemInfoTopic_mutex);
-    g_RspQryHistoryMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryMemInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryMemInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryMemInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryMemInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHistoryMemInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryMemInfoTopic_mutex);
 
@@ -6928,8 +7585,8 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHistoryNetworkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryNetworkInfo) { 
@@ -6955,7 +7612,14 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryNetworkInfoTopic_mutex);
-    g_RspQryHistoryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryNetworkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryNetworkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryNetworkInfoTopic_IOUser_vec.end()) {
+        g_RspQryHistoryNetworkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHistoryNetworkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryNetworkInfoTopic_mutex);
 
@@ -7015,8 +7679,8 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMonitorOnlineUser;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMonitorOnlineUser) { 
@@ -7030,7 +7694,14 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMonitorOnlineUser_mutex);
-    g_RspQryMonitorOnlineUser_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMonitorOnlineUser_IOUser_vec.begin();
+        it != g_RspQryMonitorOnlineUser_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMonitorOnlineUser_IOUser_vec.end()) {
+        g_RspQryMonitorOnlineUser_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMonitorOnlineUser_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMonitorOnlineUser_mutex);
 
@@ -7090,8 +7761,8 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFrontStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontStat) { 
@@ -7110,7 +7781,14 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontStat_mutex);
-    g_RspQryFrontStat_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontStat_IOUser_vec.begin();
+        it != g_RspQryFrontStat_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontStat_IOUser_vec.end()) {
+        g_RspQryFrontStat_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFrontStat_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontStat_mutex);
 
@@ -7156,7 +7834,14 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTime
     }
 
     uv_mutex_lock (&g_RtnSysTimeSyncTopic_mutex);
-    g_RtnSysTimeSyncTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysTimeSyncTopic_IOUser_vec.begin();
+        it != g_RtnSysTimeSyncTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysTimeSyncTopic_IOUser_vec.end()) {
+        g_RtnSysTimeSyncTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSysTimeSyncTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysTimeSyncTopic_mutex);
 
@@ -7201,7 +7886,14 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDat
     }
 
     uv_mutex_lock (&g_RtnDataCenterChgTopic_mutex);
-    g_RtnDataCenterChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDataCenterChgTopic_IOUser_vec.begin();
+        it != g_RtnDataCenterChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDataCenterChgTopic_IOUser_vec.end()) {
+        g_RtnDataCenterChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnDataCenterChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDataCenterChgTopic_mutex);
 
@@ -7261,8 +7953,8 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryHistoryTradePeak;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryHistoryTradePeak) { 
@@ -7289,7 +7981,14 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryHistoryTradePeakTopic_mutex);
-    g_RspQryHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryHistoryTradePeakTopic_IOUser_vec.begin();
+        it != g_RspQryHistoryTradePeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryHistoryTradePeakTopic_IOUser_vec.end()) {
+        g_RspQryHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryHistoryTradePeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryHistoryTradePeakTopic_mutex);
 
@@ -7348,7 +8047,14 @@ void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* p
     }
 
     uv_mutex_lock (&g_RtnHistoryTradePeakTopic_mutex);
-    g_RtnHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHistoryTradePeakTopic_IOUser_vec.begin();
+        it != g_RtnHistoryTradePeakTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHistoryTradePeakTopic_IOUser_vec.end()) {
+        g_RtnHistoryTradePeakTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnHistoryTradePeakTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHistoryTradePeakTopic_mutex);
 
@@ -7408,8 +8114,8 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySyslogEvent;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySyslogEvent) { 
@@ -7437,7 +8143,14 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySyslogEventTopic_mutex);
-    g_RspQrySyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySyslogEventTopic_IOUser_vec.begin();
+        it != g_RspQrySyslogEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySyslogEventTopic_IOUser_vec.end()) {
+        g_RspQrySyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySyslogEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySyslogEventTopic_mutex);
 
@@ -7496,7 +8209,14 @@ void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogE
     }
 
     uv_mutex_lock (&g_RtnSyslogEventTopic_mutex);
-    g_RtnSyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSyslogEventTopic_IOUser_vec.begin();
+        it != g_RtnSyslogEventTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSyslogEventTopic_IOUser_vec.end()) {
+        g_RtnSyslogEventTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSyslogEventTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSyslogEventTopic_mutex);
 
@@ -7556,8 +8276,8 @@ void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeDayChange;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeDayChange) { 
@@ -7572,7 +8292,14 @@ void SysUserSpi::OnRspQryTradeDayChangeTopic(CShfeFtdcRspQryTradeDayChangeField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeDayChangeTopic_mutex);
-    g_RspQryTradeDayChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeDayChangeTopic_IOUser_vec.begin();
+        it != g_RspQryTradeDayChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeDayChangeTopic_IOUser_vec.end()) {
+        g_RspQryTradeDayChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeDayChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeDayChangeTopic_mutex);
 
@@ -7632,8 +8359,8 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryWebAppInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWebAppInfo) { 
@@ -7660,7 +8387,14 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWebAppInfoTopic_mutex);
-    g_RspQryWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWebAppInfoTopic_IOUser_vec.begin();
+        it != g_RspQryWebAppInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWebAppInfoTopic_IOUser_vec.end()) {
+        g_RspQryWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryWebAppInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWebAppInfoTopic_mutex);
 
@@ -7719,7 +8453,14 @@ void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInf
     }
 
     uv_mutex_lock (&g_RtnWebAppInfoTopic_mutex);
-    g_RtnWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWebAppInfoTopic_IOUser_vec.begin();
+        it != g_RtnWebAppInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWebAppInfoTopic_IOUser_vec.end()) {
+        g_RtnWebAppInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnWebAppInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWebAppInfoTopic_mutex);
 
@@ -7779,8 +8520,8 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryServletInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryServletInfo) { 
@@ -7802,7 +8543,14 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryServletInfoTopic_mutex);
-    g_RspQryServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryServletInfoTopic_IOUser_vec.begin();
+        it != g_RspQryServletInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryServletInfoTopic_IOUser_vec.end()) {
+        g_RspQryServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryServletInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryServletInfoTopic_mutex);
 
@@ -7856,7 +8604,14 @@ void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServlet
     }
 
     uv_mutex_lock (&g_RtnServletInfoTopic_mutex);
-    g_RtnServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnServletInfoTopic_IOUser_vec.begin();
+        it != g_RtnServletInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnServletInfoTopic_IOUser_vec.end()) {
+        g_RtnServletInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnServletInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnServletInfoTopic_mutex);
 
@@ -7916,8 +8671,8 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFileInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileInfo) { 
@@ -7936,7 +8691,14 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileInfoTopic_mutex);
-    g_RspQryFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFileInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileInfoTopic_mutex);
 
@@ -7987,7 +8749,14 @@ void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){
     }
 
     uv_mutex_lock (&g_RtnFileInfoTopic_mutex);
-    g_RtnFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileInfoTopic_IOUser_vec.end()) {
+        g_RtnFileInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFileInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileInfoTopic_mutex);
 
@@ -8047,8 +8816,8 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySessionInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySessionInfo) { 
@@ -8069,7 +8838,14 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySessionInfoTopic_mutex);
-    g_RspQrySessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySessionInfoTopic_IOUser_vec.begin();
+        it != g_RspQrySessionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySessionInfoTopic_IOUser_vec.end()) {
+        g_RspQrySessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySessionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySessionInfoTopic_mutex);
 
@@ -8122,7 +8898,14 @@ void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSession
     }
 
     uv_mutex_lock (&g_RtnSessionInfoTopic_mutex);
-    g_RtnSessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSessionInfoTopic_IOUser_vec.begin();
+        it != g_RtnSessionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSessionInfoTopic_IOUser_vec.end()) {
+        g_RtnSessionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSessionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSessionInfoTopic_mutex);
 
@@ -8182,8 +8965,8 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryJDBCInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryJDBCInfo) { 
@@ -8208,7 +8991,14 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryJDBCInfoTopic_mutex);
-    g_RspQryJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryJDBCInfoTopic_IOUser_vec.begin();
+        it != g_RspQryJDBCInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryJDBCInfoTopic_IOUser_vec.end()) {
+        g_RspQryJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryJDBCInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryJDBCInfoTopic_mutex);
 
@@ -8265,7 +9055,14 @@ void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){
     }
 
     uv_mutex_lock (&g_RtnJDBCInfoTopic_mutex);
-    g_RtnJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnJDBCInfoTopic_IOUser_vec.begin();
+        it != g_RtnJDBCInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnJDBCInfoTopic_IOUser_vec.end()) {
+        g_RtnJDBCInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnJDBCInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnJDBCInfoTopic_mutex);
 
@@ -8325,8 +9122,8 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryThreadInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryThreadInfo) { 
@@ -8350,7 +9147,14 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryThreadInfoTopic_mutex);
-    g_RspQryThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryThreadInfoTopic_IOUser_vec.begin();
+        it != g_RspQryThreadInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryThreadInfoTopic_IOUser_vec.end()) {
+        g_RspQryThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryThreadInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryThreadInfoTopic_mutex);
 
@@ -8406,7 +9210,14 @@ void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInf
     }
 
     uv_mutex_lock (&g_RtnThreadInfoTopic_mutex);
-    g_RtnThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnThreadInfoTopic_IOUser_vec.begin();
+        it != g_RtnThreadInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnThreadInfoTopic_IOUser_vec.end()) {
+        g_RtnThreadInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnThreadInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnThreadInfoTopic_mutex);
 
@@ -8466,8 +9277,8 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryVMInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryVMInfo) { 
@@ -8491,7 +9302,14 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryVMInfoTopic_mutex);
-    g_RspQryVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryVMInfoTopic_IOUser_vec.begin();
+        it != g_RspQryVMInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryVMInfoTopic_IOUser_vec.end()) {
+        g_RspQryVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryVMInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryVMInfoTopic_mutex);
 
@@ -8547,7 +9365,14 @@ void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){
     }
 
     uv_mutex_lock (&g_RtnVMInfoTopic_mutex);
-    g_RtnVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnVMInfoTopic_IOUser_vec.begin();
+        it != g_RtnVMInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnVMInfoTopic_IOUser_vec.end()) {
+        g_RtnVMInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnVMInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnVMInfoTopic_mutex);
 
@@ -8607,8 +9432,8 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPropertyInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPropertyInfo) { 
@@ -8626,7 +9451,14 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPropertyInfoTopic_mutex);
-    g_RspQryPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPropertyInfoTopic_IOUser_vec.begin();
+        it != g_RspQryPropertyInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPropertyInfoTopic_IOUser_vec.end()) {
+        g_RspQryPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPropertyInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPropertyInfoTopic_mutex);
 
@@ -8676,7 +9508,14 @@ void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPrope
     }
 
     uv_mutex_lock (&g_RtnPropertyInfoTopic_mutex);
-    g_RtnPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPropertyInfoTopic_IOUser_vec.begin();
+        it != g_RtnPropertyInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPropertyInfoTopic_IOUser_vec.end()) {
+        g_RtnPropertyInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPropertyInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPropertyInfoTopic_mutex);
 
@@ -8736,8 +9575,8 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMemPoolInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemPoolInfo) { 
@@ -8759,7 +9598,14 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemPoolInfoTopic_mutex);
-    g_RspQryMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemPoolInfoTopic_IOUser_vec.begin();
+        it != g_RspQryMemPoolInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemPoolInfoTopic_IOUser_vec.end()) {
+        g_RspQryMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMemPoolInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemPoolInfoTopic_mutex);
 
@@ -8813,7 +9659,14 @@ void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPool
     }
 
     uv_mutex_lock (&g_RtnMemPoolInfoTopic_mutex);
-    g_RtnMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemPoolInfoTopic_IOUser_vec.begin();
+        it != g_RtnMemPoolInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemPoolInfoTopic_IOUser_vec.end()) {
+        g_RtnMemPoolInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMemPoolInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemPoolInfoTopic_mutex);
 
@@ -8873,8 +9726,8 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFileContentInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileContentInfo) { 
@@ -8891,7 +9744,14 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileContentInfoTopic_mutex);
-    g_RspQryFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileContentInfoTopic_IOUser_vec.begin();
+        it != g_RspQryFileContentInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileContentInfoTopic_IOUser_vec.end()) {
+        g_RspQryFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFileContentInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileContentInfoTopic_mutex);
 
@@ -8940,7 +9800,14 @@ void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRt
     }
 
     uv_mutex_lock (&g_RtnFileContentInfoTopic_mutex);
-    g_RtnFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileContentInfoTopic_IOUser_vec.begin();
+        it != g_RtnFileContentInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileContentInfoTopic_IOUser_vec.end()) {
+        g_RtnFileContentInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFileContentInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileContentInfoTopic_mutex);
 
@@ -9000,8 +9867,8 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryConnectionInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryConnectionInfo) { 
@@ -9025,7 +9892,14 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryConnectionInfoTopic_mutex);
-    g_RspQryConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryConnectionInfoTopic_IOUser_vec.begin();
+        it != g_RspQryConnectionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryConnectionInfoTopic_IOUser_vec.end()) {
+        g_RspQryConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryConnectionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryConnectionInfoTopic_mutex);
 
@@ -9081,7 +9955,14 @@ void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnC
     }
 
     uv_mutex_lock (&g_RtnConnectionInfoTopic_mutex);
-    g_RtnConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnConnectionInfoTopic_IOUser_vec.begin();
+        it != g_RtnConnectionInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnConnectionInfoTopic_IOUser_vec.end()) {
+        g_RtnConnectionInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnConnectionInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnConnectionInfoTopic_mutex);
 
@@ -9141,8 +10022,8 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryConnectorInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryConnectorInfo) { 
@@ -9169,7 +10050,14 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryConnectorInfoTopic_mutex);
-    g_RspQryConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryConnectorInfoTopic_IOUser_vec.begin();
+        it != g_RspQryConnectorInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryConnectorInfoTopic_IOUser_vec.end()) {
+        g_RspQryConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryConnectorInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryConnectorInfoTopic_mutex);
 
@@ -9228,7 +10116,14 @@ void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnCon
     }
 
     uv_mutex_lock (&g_RtnConnectorInfoTopic_mutex);
-    g_RtnConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnConnectorInfoTopic_IOUser_vec.begin();
+        it != g_RtnConnectorInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnConnectorInfoTopic_IOUser_vec.end()) {
+        g_RtnConnectorInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnConnectorInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnConnectorInfoTopic_mutex);
 
@@ -9288,8 +10183,8 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryDBQuery;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDBQuery) { 
@@ -9306,7 +10201,14 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDBQueryTopic_mutex);
-    g_RspQryDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDBQueryTopic_IOUser_vec.begin();
+        it != g_RspQryDBQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDBQueryTopic_IOUser_vec.end()) {
+        g_RspQryDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryDBQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDBQueryTopic_mutex);
 
@@ -9355,7 +10257,14 @@ void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){
     }
 
     uv_mutex_lock (&g_RtnDBQueryTopic_mutex);
-    g_RtnDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDBQueryTopic_IOUser_vec.begin();
+        it != g_RtnDBQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDBQueryTopic_IOUser_vec.end()) {
+        g_RtnDBQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnDBQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDBQueryTopic_mutex);
 
@@ -9415,8 +10324,8 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewSysGeneralField;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pSysGeneralField) { 
@@ -9434,7 +10343,14 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGeneralFieldTopic_mutex);
-    g_RspQryGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGeneralFieldTopic_IOUser_vec.begin();
+        it != g_RspQryGeneralFieldTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGeneralFieldTopic_IOUser_vec.end()) {
+        g_RspQryGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryGeneralFieldTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGeneralFieldTopic_mutex);
 
@@ -9484,7 +10400,14 @@ void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGener
     }
 
     uv_mutex_lock (&g_RtnGeneralFieldTopic_mutex);
-    g_RtnGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnGeneralFieldTopic_IOUser_vec.begin();
+        it != g_RtnGeneralFieldTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnGeneralFieldTopic_IOUser_vec.end()) {
+        g_RtnGeneralFieldTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnGeneralFieldTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnGeneralFieldTopic_mutex);
 
@@ -9544,8 +10467,8 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryGetFile;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryGetFile) { 
@@ -9562,7 +10485,14 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGetFileTopic_mutex);
-    g_RspQryGetFileTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGetFileTopic_IOUser_vec.begin();
+        it != g_RspQryGetFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGetFileTopic_IOUser_vec.end()) {
+        g_RspQryGetFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryGetFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGetFileTopic_mutex);
 
@@ -9622,8 +10552,8 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryWarningQuery;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryWarningQuery) { 
@@ -9639,7 +10569,14 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryWarningQueryTopic_mutex);
-    g_RspQryWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryWarningQueryTopic_IOUser_vec.begin();
+        it != g_RspQryWarningQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryWarningQueryTopic_IOUser_vec.end()) {
+        g_RspQryWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryWarningQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryWarningQueryTopic_mutex);
 
@@ -9687,7 +10624,14 @@ void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarni
     }
 
     uv_mutex_lock (&g_RtnWarningQueryTopic_mutex);
-    g_RtnWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnWarningQueryTopic_IOUser_vec.begin();
+        it != g_RtnWarningQueryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnWarningQueryTopic_IOUser_vec.end()) {
+        g_RtnWarningQueryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnWarningQueryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnWarningQueryTopic_mutex);
 
@@ -9737,7 +10681,14 @@ void SysUserSpi::OnRtnHostConfig(CShfeFtdcRtnHostConfigField* pRtnHostConfig){
     }
 
     uv_mutex_lock (&g_RtnHostConfig_mutex);
-    g_RtnHostConfig_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnHostConfig_IOUser_vec.begin();
+        it != g_RtnHostConfig_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnHostConfig_IOUser_vec.end()) {
+        g_RtnHostConfig_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnHostConfig_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnHostConfig_mutex);
 
@@ -9797,8 +10748,8 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryGeneralOperate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryGeneralOperate) { 
@@ -9814,7 +10765,14 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryGeneralOperateTopic_mutex);
-    g_RspQryGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryGeneralOperateTopic_IOUser_vec.begin();
+        it != g_RspQryGeneralOperateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryGeneralOperateTopic_IOUser_vec.end()) {
+        g_RspQryGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryGeneralOperateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryGeneralOperateTopic_mutex);
 
@@ -9862,7 +10820,14 @@ void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnG
     }
 
     uv_mutex_lock (&g_RtnGeneralOperateTopic_mutex);
-    g_RtnGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnGeneralOperateTopic_IOUser_vec.begin();
+        it != g_RtnGeneralOperateTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnGeneralOperateTopic_IOUser_vec.end()) {
+        g_RtnGeneralOperateTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnGeneralOperateTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnGeneralOperateTopic_mutex);
 
@@ -9922,8 +10887,8 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDeviceLinked;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceLinked) { 
@@ -9946,7 +10911,14 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceLinkedTopic_mutex);
-    g_RspQryNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceLinkedTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceLinkedTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceLinkedTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceLinkedTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceLinkedTopic_mutex);
 
@@ -10001,7 +10973,14 @@ void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetDeviceLinkedTopic_mutex);
-    g_RtnNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceLinkedTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceLinkedTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceLinkedTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceLinkedTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDeviceLinkedTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceLinkedTopic_mutex);
 
@@ -10061,8 +11040,8 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeUserLoginStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeUserLoginStat) { 
@@ -10081,7 +11060,14 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeUserLoginStatTopic_mutex);
-    g_RspQryTradeUserLoginStatTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeUserLoginStatTopic_IOUser_vec.begin();
+        it != g_RspQryTradeUserLoginStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeUserLoginStatTopic_IOUser_vec.end()) {
+        g_RspQryTradeUserLoginStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeUserLoginStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeUserLoginStatTopic_mutex);
 
@@ -10141,8 +11127,8 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeFrontOrderRttStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeFrontOrderRttStat) { 
@@ -10163,7 +11149,14 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeFrontOrderRttStatTopic_mutex);
-    g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.begin();
+        it != g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.end()) {
+        g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeFrontOrderRttStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeFrontOrderRttStatTopic_mutex);
 
@@ -10216,7 +11209,14 @@ void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRtt
     }
 
     uv_mutex_lock (&g_RtnTradeFrontOrderRttStatTopic_mutex);
-    g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.begin();
+        it != g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.end()) {
+        g_RtnTradeFrontOrderRttStatTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTradeFrontOrderRttStatTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeFrontOrderRttStatTopic_mutex);
 
@@ -10276,8 +11276,8 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryParticTradeOrderStates;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryParticTradeOrderStates) { 
@@ -10305,7 +11305,14 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryParticTradeOrderStatesTopic_mutex);
-    g_RspQryParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryParticTradeOrderStatesTopic_IOUser_vec.begin();
+        it != g_RspQryParticTradeOrderStatesTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryParticTradeOrderStatesTopic_IOUser_vec.end()) {
+        g_RspQryParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryParticTradeOrderStatesTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryParticTradeOrderStatesTopic_mutex);
 
@@ -10365,7 +11372,14 @@ void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderSt
     }
 
     uv_mutex_lock (&g_RtnParticTradeOrderStatesTopic_mutex);
-    g_RtnParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnParticTradeOrderStatesTopic_IOUser_vec.begin();
+        it != g_RtnParticTradeOrderStatesTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnParticTradeOrderStatesTopic_IOUser_vec.end()) {
+        g_RtnParticTradeOrderStatesTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnParticTradeOrderStatesTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnParticTradeOrderStatesTopic_mutex);
 
@@ -10425,8 +11439,8 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryRouterInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryRouterInfo) { 
@@ -10452,7 +11466,14 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryRouterInfoTopic_mutex);
-    g_RspQryRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryRouterInfoTopic_IOUser_vec.begin();
+        it != g_RspQryRouterInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryRouterInfoTopic_IOUser_vec.end()) {
+        g_RspQryRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryRouterInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryRouterInfoTopic_mutex);
 
@@ -10510,7 +11531,14 @@ void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInf
     }
 
     uv_mutex_lock (&g_RtnRouterInfoTopic_mutex);
-    g_RtnRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnRouterInfoTopic_IOUser_vec.begin();
+        it != g_RtnRouterInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnRouterInfoTopic_IOUser_vec.end()) {
+        g_RtnRouterInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnRouterInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnRouterInfoTopic_mutex);
 
@@ -10570,8 +11598,8 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryDiskIO;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryDiskIO) { 
@@ -10597,7 +11625,14 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryDiskIOTopic_mutex);
-    g_RspQryDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryDiskIOTopic_IOUser_vec.begin();
+        it != g_RspQryDiskIOTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryDiskIOTopic_IOUser_vec.end()) {
+        g_RspQryDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryDiskIOTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryDiskIOTopic_mutex);
 
@@ -10655,7 +11690,14 @@ void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){
     }
 
     uv_mutex_lock (&g_RtnDiskIOTopic_mutex);
-    g_RtnDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnDiskIOTopic_IOUser_vec.begin();
+        it != g_RtnDiskIOTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnDiskIOTopic_IOUser_vec.end()) {
+        g_RtnDiskIOTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnDiskIOTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnDiskIOTopic_mutex);
 
@@ -10715,8 +11757,8 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryStatInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryStatInfo) { 
@@ -10744,7 +11786,14 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryStatInfoTopic_mutex);
-    g_RspQryStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryStatInfoTopic_IOUser_vec.begin();
+        it != g_RspQryStatInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryStatInfoTopic_IOUser_vec.end()) {
+        g_RspQryStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryStatInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryStatInfoTopic_mutex);
 
@@ -10804,7 +11853,14 @@ void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){
     }
 
     uv_mutex_lock (&g_RtnStatInfoTopic_mutex);
-    g_RtnStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnStatInfoTopic_IOUser_vec.begin();
+        it != g_RtnStatInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnStatInfoTopic_IOUser_vec.end()) {
+        g_RtnStatInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnStatInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnStatInfoTopic_mutex);
 
@@ -10864,8 +11920,8 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryTradeOrderRttCutLine;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryTradeOrderRttCutLine) { 
@@ -10882,7 +11938,14 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryTradeOrderRttCutLineTopic_mutex);
-    g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.begin();
+        it != g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.end()) {
+        g_RspQryTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryTradeOrderRttCutLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryTradeOrderRttCutLineTopic_mutex);
 
@@ -10928,7 +11991,14 @@ void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLine
     }
 
     uv_mutex_lock (&g_RtnTradeOrderRttCutLineTopic_mutex);
-    g_RtnTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnTradeOrderRttCutLineTopic_IOUser_vec.begin();
+        it != g_RtnTradeOrderRttCutLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnTradeOrderRttCutLineTopic_IOUser_vec.end()) {
+        g_RtnTradeOrderRttCutLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnTradeOrderRttCutLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnTradeOrderRttCutLineTopic_mutex);
 
@@ -10988,8 +12058,8 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryClientInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryClientInfo) { 
@@ -11009,7 +12079,14 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryClientInfoTopic_mutex);
-    g_RspQryClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryClientInfoTopic_IOUser_vec.begin();
+        it != g_RspQryClientInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryClientInfoTopic_IOUser_vec.end()) {
+        g_RspQryClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryClientInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryClientInfoTopic_mutex);
 
@@ -11061,7 +12138,14 @@ void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInf
     }
 
     uv_mutex_lock (&g_RtnClientInfoTopic_mutex);
-    g_RtnClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnClientInfoTopic_IOUser_vec.begin();
+        it != g_RtnClientInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnClientInfoTopic_IOUser_vec.end()) {
+        g_RtnClientInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnClientInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnClientInfoTopic_mutex);
 
@@ -11121,8 +12205,8 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryEventDescription;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryEventDescription) { 
@@ -11139,7 +12223,14 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryEventDescriptionTopic_mutex);
-    g_RspQryEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryEventDescriptionTopic_IOUser_vec.begin();
+        it != g_RspQryEventDescriptionTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryEventDescriptionTopic_IOUser_vec.end()) {
+        g_RspQryEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryEventDescriptionTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryEventDescriptionTopic_mutex);
 
@@ -11188,7 +12279,14 @@ void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* p
     }
 
     uv_mutex_lock (&g_RtnEventDescriptionTopic_mutex);
-    g_RtnEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnEventDescriptionTopic_IOUser_vec.begin();
+        it != g_RtnEventDescriptionTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnEventDescriptionTopic_IOUser_vec.end()) {
+        g_RtnEventDescriptionTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnEventDescriptionTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnEventDescriptionTopic_mutex);
 
@@ -11248,8 +12346,8 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFrontUniqueID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFrontUniqueID) { 
@@ -11263,7 +12361,14 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFrontUniqueIDTopic_mutex);
-    g_RspQryFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFrontUniqueIDTopic_IOUser_vec.begin();
+        it != g_RspQryFrontUniqueIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFrontUniqueIDTopic_IOUser_vec.end()) {
+        g_RspQryFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFrontUniqueIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFrontUniqueIDTopic_mutex);
 
@@ -11309,7 +12414,14 @@ void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFro
     }
 
     uv_mutex_lock (&g_RtnFrontUniqueIDTopic_mutex);
-    g_RtnFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFrontUniqueIDTopic_IOUser_vec.begin();
+        it != g_RtnFrontUniqueIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFrontUniqueIDTopic_IOUser_vec.end()) {
+        g_RtnFrontUniqueIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFrontUniqueIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFrontUniqueIDTopic_mutex);
 
@@ -11369,8 +12481,8 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPartyLinkAddrChange;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkAddrChange) { 
@@ -11390,7 +12502,14 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkAddrChangeTopic_mutex);
-    g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPartyLinkAddrChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkAddrChangeTopic_mutex);
 
@@ -11442,7 +12561,14 @@ void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrCh
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkAddrChangeTopic_mutex);
-    g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPartyLinkAddrChangeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkAddrChangeTopic_mutex);
 
@@ -11502,8 +12628,8 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDelPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDelPartyLinkInfo) { 
@@ -11544,7 +12670,14 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDelPartyLinkInfoTopic_mutex);
-    g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDelPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDelPartyLinkInfoTopic_mutex);
 
@@ -11617,7 +12750,14 @@ void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoFi
     }
 
     uv_mutex_lock (&g_RtnNetDelPartyLinkInfoTopic_mutex);
-    g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetDelPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDelPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDelPartyLinkInfoTopic_mutex);
 
@@ -11677,8 +12817,8 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryPerformanceTop;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryPerformanceTop) { 
@@ -11701,7 +12841,14 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryPerformanceTopTopic_mutex);
-    g_RspQryPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryPerformanceTopTopic_IOUser_vec.begin();
+        it != g_RspQryPerformanceTopTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryPerformanceTopTopic_IOUser_vec.end()) {
+        g_RspQryPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryPerformanceTopTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryPerformanceTopTopic_mutex);
 
@@ -11756,7 +12903,14 @@ void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnP
     }
 
     uv_mutex_lock (&g_RtnPerformanceTopTopic_mutex);
-    g_RtnPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnPerformanceTopTopic_IOUser_vec.begin();
+        it != g_RtnPerformanceTopTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnPerformanceTopTopic_IOUser_vec.end()) {
+        g_RtnPerformanceTopTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnPerformanceTopTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnPerformanceTopTopic_mutex);
 
@@ -11816,8 +12970,8 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryInstrumentStatus;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryInstrumentStatus) { 
@@ -11836,7 +12990,14 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryInstrumentStatusTopic_mutex);
-    g_RspQryInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryInstrumentStatusTopic_IOUser_vec.begin();
+        it != g_RspQryInstrumentStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryInstrumentStatusTopic_IOUser_vec.end()) {
+        g_RspQryInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryInstrumentStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryInstrumentStatusTopic_mutex);
 
@@ -11887,7 +13048,14 @@ void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* p
     }
 
     uv_mutex_lock (&g_RtnInstrumentStatusTopic_mutex);
-    g_RtnInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnInstrumentStatusTopic_IOUser_vec.begin();
+        it != g_RtnInstrumentStatusTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnInstrumentStatusTopic_IOUser_vec.end()) {
+        g_RtnInstrumentStatusTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnInstrumentStatusTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnInstrumentStatusTopic_mutex);
 
@@ -11947,8 +13115,8 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryCurrTradingSegmentAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryCurrTradingSegmentAttr) { 
@@ -11967,7 +13135,14 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryCurrTradingSegmentAttrTopic_mutex);
-    g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.begin();
+        it != g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.end()) {
+        g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryCurrTradingSegmentAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryCurrTradingSegmentAttrTopic_mutex);
 
@@ -12018,7 +13193,14 @@ void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegment
     }
 
     uv_mutex_lock (&g_RtnCurrTradingSegmentAttrTopic_mutex);
-    g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.begin();
+        it != g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.end()) {
+        g_RtnCurrTradingSegmentAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnCurrTradingSegmentAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnCurrTradingSegmentAttrTopic_mutex);
 
@@ -12078,8 +13260,8 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetArea;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetArea) { 
@@ -12095,7 +13277,14 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetAreaTopic_mutex);
-    g_RspQryNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetAreaTopic_mutex);
 
@@ -12143,7 +13332,14 @@ void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){
     }
 
     uv_mutex_lock (&g_RtnNetAreaTopic_mutex);
-    g_RtnNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetAreaTopic_IOUser_vec.end()) {
+        g_RtnNetAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetAreaTopic_mutex);
 
@@ -12203,8 +13399,8 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetSubArea;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubArea) { 
@@ -12221,7 +13417,14 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubAreaTopic_mutex);
-    g_RspQryNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetSubAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubAreaTopic_mutex);
 
@@ -12270,7 +13473,14 @@ void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubAre
     }
 
     uv_mutex_lock (&g_RtnNetSubAreaTopic_mutex);
-    g_RtnNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetSubAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubAreaTopic_IOUser_vec.end()) {
+        g_RtnNetSubAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetSubAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubAreaTopic_mutex);
 
@@ -12330,8 +13540,8 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetSubAreaIP;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubAreaIP) { 
@@ -12348,7 +13558,14 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubAreaIPTopic_mutex);
-    g_RspQryNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubAreaIPTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubAreaIPTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubAreaIPTopic_IOUser_vec.end()) {
+        g_RspQryNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetSubAreaIPTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubAreaIPTopic_mutex);
 
@@ -12397,7 +13614,14 @@ void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSu
     }
 
     uv_mutex_lock (&g_RtnNetSubAreaIPTopic_mutex);
-    g_RtnNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubAreaIPTopic_IOUser_vec.begin();
+        it != g_RtnNetSubAreaIPTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubAreaIPTopic_IOUser_vec.end()) {
+        g_RtnNetSubAreaIPTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetSubAreaIPTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubAreaIPTopic_mutex);
 
@@ -12457,8 +13681,8 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDevice;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDevice) { 
@@ -12503,7 +13727,14 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceTopic_mutex);
-    g_RspQryNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceTopic_mutex);
 
@@ -12580,7 +13811,14 @@ void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){
     }
 
     uv_mutex_lock (&g_RtnNetDeviceTopic_mutex);
-    g_RtnNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDeviceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceTopic_mutex);
 
@@ -12640,8 +13878,8 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDeviceDetect;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceDetect) { 
@@ -12657,7 +13895,14 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceDetectTopic_mutex);
-    g_RspQryNetDeviceDetectTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceDetectTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceDetectTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceDetectTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceDetectTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceDetectTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceDetectTopic_mutex);
 
@@ -12717,8 +13962,8 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetBuilding;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBuilding) { 
@@ -12734,7 +13979,14 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBuildingTopic_mutex);
-    g_RspQryNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBuildingTopic_IOUser_vec.begin();
+        it != g_RspQryNetBuildingTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBuildingTopic_IOUser_vec.end()) {
+        g_RspQryNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetBuildingTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBuildingTopic_mutex);
 
@@ -12782,7 +14034,14 @@ void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuil
     }
 
     uv_mutex_lock (&g_RtnNetBuildingTopic_mutex);
-    g_RtnNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBuildingTopic_IOUser_vec.begin();
+        it != g_RtnNetBuildingTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBuildingTopic_IOUser_vec.end()) {
+        g_RtnNetBuildingTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetBuildingTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBuildingTopic_mutex);
 
@@ -12842,8 +14101,8 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetRoom;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetRoom) { 
@@ -12860,7 +14119,14 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetRoomTopic_mutex);
-    g_RspQryNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetRoomTopic_IOUser_vec.begin();
+        it != g_RspQryNetRoomTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetRoomTopic_IOUser_vec.end()) {
+        g_RspQryNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetRoomTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetRoomTopic_mutex);
 
@@ -12909,7 +14175,14 @@ void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){
     }
 
     uv_mutex_lock (&g_RtnNetRoomTopic_mutex);
-    g_RtnNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetRoomTopic_IOUser_vec.begin();
+        it != g_RtnNetRoomTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetRoomTopic_IOUser_vec.end()) {
+        g_RtnNetRoomTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetRoomTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetRoomTopic_mutex);
 
@@ -12969,8 +14242,8 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetCabinets;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCabinets) { 
@@ -12989,7 +14262,14 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCabinetsTopic_mutex);
-    g_RspQryNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCabinetsTopic_IOUser_vec.begin();
+        it != g_RspQryNetCabinetsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCabinetsTopic_IOUser_vec.end()) {
+        g_RspQryNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetCabinetsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCabinetsTopic_mutex);
 
@@ -13040,7 +14320,14 @@ void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabi
     }
 
     uv_mutex_lock (&g_RtnNetCabinetsTopic_mutex);
-    g_RtnNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCabinetsTopic_IOUser_vec.begin();
+        it != g_RtnNetCabinetsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCabinetsTopic_IOUser_vec.end()) {
+        g_RtnNetCabinetsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetCabinetsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCabinetsTopic_mutex);
 
@@ -13100,8 +14387,8 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetOID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetOID) { 
@@ -13122,7 +14409,14 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetOIDTopic_mutex);
-    g_RspQryNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetOIDTopic_IOUser_vec.begin();
+        it != g_RspQryNetOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetOIDTopic_IOUser_vec.end()) {
+        g_RspQryNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetOIDTopic_mutex);
 
@@ -13175,7 +14469,14 @@ void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){
     }
 
     uv_mutex_lock (&g_RtnNetOIDTopic_mutex);
-    g_RtnNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetOIDTopic_IOUser_vec.begin();
+        it != g_RtnNetOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetOIDTopic_IOUser_vec.end()) {
+        g_RtnNetOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetOIDTopic_mutex);
 
@@ -13235,8 +14536,8 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetTimePolicy;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetTimePolicy) { 
@@ -13257,7 +14558,14 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetTimePolicyTopic_mutex);
-    g_RspQryNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetTimePolicyTopic_IOUser_vec.begin();
+        it != g_RspQryNetTimePolicyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetTimePolicyTopic_IOUser_vec.end()) {
+        g_RspQryNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetTimePolicyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetTimePolicyTopic_mutex);
 
@@ -13310,7 +14618,14 @@ void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetTimePolicyTopic_mutex);
-    g_RtnNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetTimePolicyTopic_IOUser_vec.begin();
+        it != g_RtnNetTimePolicyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetTimePolicyTopic_IOUser_vec.end()) {
+        g_RtnNetTimePolicyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetTimePolicyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetTimePolicyTopic_mutex);
 
@@ -13370,8 +14685,8 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetGatherTask;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetGatherTask) { 
@@ -13390,7 +14705,14 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetGatherTaskTopic_mutex);
-    g_RspQryNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetGatherTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetGatherTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetGatherTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetGatherTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetGatherTaskTopic_mutex);
 
@@ -13441,7 +14763,14 @@ void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetGatherTaskTopic_mutex);
-    g_RtnNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetGatherTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetGatherTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetGatherTaskTopic_IOUser_vec.end()) {
+        g_RtnNetGatherTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetGatherTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetGatherTaskTopic_mutex);
 
@@ -13501,8 +14830,8 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDeviceChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceChg) { 
@@ -13518,7 +14847,14 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceChgTopic_mutex);
-    g_RspQryNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceChgTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceChgTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceChgTopic_mutex);
 
@@ -13566,7 +14902,14 @@ void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDe
     }
 
     uv_mutex_lock (&g_RtnNetDeviceChgTopic_mutex);
-    g_RtnNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceChgTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceChgTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceChgTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceChgTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDeviceChgTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceChgTopic_mutex);
 
@@ -13626,8 +14969,8 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDeviceType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceType) { 
@@ -13643,7 +14986,14 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceTypeTopic_mutex);
-    g_RspQryNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceTypeTopic_mutex);
 
@@ -13691,7 +15041,14 @@ void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetDeviceTypeTopic_mutex);
-    g_RtnNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceTypeTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDeviceTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceTypeTopic_mutex);
 
@@ -13751,8 +15108,8 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDeviceCategory;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDeviceCategory) { 
@@ -13768,7 +15125,14 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDeviceCategoryTopic_mutex);
-    g_RspQryNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDeviceCategoryTopic_IOUser_vec.begin();
+        it != g_RspQryNetDeviceCategoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDeviceCategoryTopic_IOUser_vec.end()) {
+        g_RspQryNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDeviceCategoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDeviceCategoryTopic_mutex);
 
@@ -13816,7 +15180,14 @@ void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField*
     }
 
     uv_mutex_lock (&g_RtnNetDeviceCategoryTopic_mutex);
-    g_RtnNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDeviceCategoryTopic_IOUser_vec.begin();
+        it != g_RtnNetDeviceCategoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDeviceCategoryTopic_IOUser_vec.end()) {
+        g_RtnNetDeviceCategoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDeviceCategoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDeviceCategoryTopic_mutex);
 
@@ -13876,8 +15247,8 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetManufactory;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetManufactory) { 
@@ -13893,7 +15264,14 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetManufactoryTopic_mutex);
-    g_RspQryNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetManufactoryTopic_IOUser_vec.begin();
+        it != g_RspQryNetManufactoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetManufactoryTopic_IOUser_vec.end()) {
+        g_RspQryNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetManufactoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetManufactoryTopic_mutex);
 
@@ -13941,7 +15319,14 @@ void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetManufactoryTopic_mutex);
-    g_RtnNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetManufactoryTopic_IOUser_vec.begin();
+        it != g_RtnNetManufactoryTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetManufactoryTopic_IOUser_vec.end()) {
+        g_RtnNetManufactoryTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetManufactoryTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetManufactoryTopic_mutex);
 
@@ -14001,8 +15386,8 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetCommunity;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCommunity) { 
@@ -14018,7 +15403,14 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCommunityTopic_mutex);
-    g_RspQryNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCommunityTopic_IOUser_vec.begin();
+        it != g_RspQryNetCommunityTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCommunityTopic_IOUser_vec.end()) {
+        g_RspQryNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetCommunityTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCommunityTopic_mutex);
 
@@ -14066,7 +15458,14 @@ void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCo
     }
 
     uv_mutex_lock (&g_RtnNetCommunityTopic_mutex);
-    g_RtnNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCommunityTopic_IOUser_vec.begin();
+        it != g_RtnNetCommunityTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCommunityTopic_IOUser_vec.end()) {
+        g_RtnNetCommunityTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetCommunityTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCommunityTopic_mutex);
 
@@ -14126,8 +15525,8 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPortType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPortType) { 
@@ -14144,7 +15543,14 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPortTypeTopic_mutex);
-    g_RspQryNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPortTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetPortTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPortTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPortTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPortTypeTopic_mutex);
 
@@ -14193,7 +15599,14 @@ void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPort
     }
 
     uv_mutex_lock (&g_RtnNetPortTypeTopic_mutex);
-    g_RtnNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPortTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetPortTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPortTypeTopic_IOUser_vec.end()) {
+        g_RtnNetPortTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPortTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPortTypeTopic_mutex);
 
@@ -14253,8 +15666,8 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPartAccessSpot;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartAccessSpot) { 
@@ -14270,7 +15683,14 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartAccessSpotTopic_mutex);
-    g_RspQryNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartAccessSpotTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartAccessSpotTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartAccessSpotTopic_IOUser_vec.end()) {
+        g_RspQryNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPartAccessSpotTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartAccessSpotTopic_mutex);
 
@@ -14318,7 +15738,14 @@ void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField*
     }
 
     uv_mutex_lock (&g_RtnNetPartAccessSpotTopic_mutex);
-    g_RtnNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartAccessSpotTopic_IOUser_vec.begin();
+        it != g_RtnNetPartAccessSpotTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartAccessSpotTopic_IOUser_vec.end()) {
+        g_RtnNetPartAccessSpotTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPartAccessSpotTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartAccessSpotTopic_mutex);
 
@@ -14378,8 +15805,8 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetInterface;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetInterface) { 
@@ -14406,7 +15833,14 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetInterfaceTopic_mutex);
-    g_RspQryNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetInterfaceTopic_IOUser_vec.begin();
+        it != g_RspQryNetInterfaceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetInterfaceTopic_IOUser_vec.end()) {
+        g_RspQryNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetInterfaceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetInterfaceTopic_mutex);
 
@@ -14465,7 +15899,14 @@ void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetIn
     }
 
     uv_mutex_lock (&g_RtnNetInterfaceTopic_mutex);
-    g_RtnNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetInterfaceTopic_IOUser_vec.begin();
+        it != g_RtnNetInterfaceTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetInterfaceTopic_IOUser_vec.end()) {
+        g_RtnNetInterfaceTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetInterfaceTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetInterfaceTopic_mutex);
 
@@ -14525,8 +15966,8 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetGeneralOID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetGeneralOID) { 
@@ -14545,7 +15986,14 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetGeneralOIDTopic_mutex);
-    g_RspQryNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetGeneralOIDTopic_IOUser_vec.begin();
+        it != g_RspQryNetGeneralOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetGeneralOIDTopic_IOUser_vec.end()) {
+        g_RspQryNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetGeneralOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetGeneralOIDTopic_mutex);
 
@@ -14596,7 +16044,14 @@ void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetGeneralOIDTopic_mutex);
-    g_RtnNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetGeneralOIDTopic_IOUser_vec.begin();
+        it != g_RtnNetGeneralOIDTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetGeneralOIDTopic_IOUser_vec.end()) {
+        g_RtnNetGeneralOIDTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetGeneralOIDTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetGeneralOIDTopic_mutex);
 
@@ -14656,8 +16111,8 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorType) { 
@@ -14673,7 +16128,14 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTypeTopic_mutex);
-    g_RspQryNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTypeTopic_mutex);
 
@@ -14721,7 +16183,14 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTypeTopic_mutex);
-    g_RtnNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTypeTopic_mutex);
 
@@ -14781,8 +16250,8 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorAttrScope;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorAttrScope) { 
@@ -14799,7 +16268,14 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorAttrScopeTopic_mutex);
-    g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorAttrScopeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorAttrScopeTopic_mutex);
 
@@ -14848,7 +16324,14 @@ void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeFi
     }
 
     uv_mutex_lock (&g_RtnNetMonitorAttrScopeTopic_mutex);
-    g_RtnNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorAttrScopeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorAttrScopeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorAttrScopeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorAttrScopeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorAttrScopeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorAttrScopeTopic_mutex);
 
@@ -14908,8 +16391,8 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorAttrType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorAttrType) { 
@@ -14929,7 +16412,14 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorAttrTypeTopic_mutex);
-    g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorAttrTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorAttrTypeTopic_mutex);
 
@@ -14981,7 +16471,14 @@ void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeFiel
     }
 
     uv_mutex_lock (&g_RtnNetMonitorAttrTypeTopic_mutex);
-    g_RtnNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorAttrTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorAttrTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorAttrTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorAttrTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorAttrTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorAttrTypeTopic_mutex);
 
@@ -15041,8 +16538,8 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorObjectAttr) { 
@@ -15059,7 +16556,14 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorObjectAttrTopic_mutex);
-    g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorObjectAttrTopic_mutex);
 
@@ -15108,7 +16612,14 @@ void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttr
     }
 
     uv_mutex_lock (&g_RtnNetMonitorObjectAttrTopic_mutex);
-    g_RtnNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorObjectAttrTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorObjectAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorObjectAttrTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorObjectAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorObjectAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorObjectAttrTopic_mutex);
 
@@ -15168,8 +16679,8 @@ void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetFuncArea;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetFuncArea) { 
@@ -15186,7 +16697,14 @@ void SysUserSpi::OnRspQryNetFuncAreaTopic(CShfeFtdcRspQryNetFuncAreaField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetFuncAreaTopic_mutex);
-    g_RspQryNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetFuncAreaTopic_IOUser_vec.begin();
+        it != g_RspQryNetFuncAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetFuncAreaTopic_IOUser_vec.end()) {
+        g_RspQryNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetFuncAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetFuncAreaTopic_mutex);
 
@@ -15235,7 +16753,14 @@ void SysUserSpi::OnRtnNetFuncAreaTopic(CShfeFtdcRtnNetFuncAreaField* pRtnNetFunc
     }
 
     uv_mutex_lock (&g_RtnNetFuncAreaTopic_mutex);
-    g_RtnNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetFuncAreaTopic_IOUser_vec.begin();
+        it != g_RtnNetFuncAreaTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetFuncAreaTopic_IOUser_vec.end()) {
+        g_RtnNetFuncAreaTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetFuncAreaTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetFuncAreaTopic_mutex);
 
@@ -15295,8 +16820,8 @@ void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCom
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorCommandType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorCommandType) { 
@@ -15319,7 +16844,14 @@ void SysUserSpi::OnRspQryNetMonitorCommandTypeTopic(CShfeFtdcRspQryNetMonitorCom
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorCommandTypeTopic_mutex);
-    g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorCommandTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorCommandTypeTopic_mutex);
 
@@ -15374,7 +16906,14 @@ void SysUserSpi::OnRtnNetMonitorCommandTypeTopic(CShfeFtdcRtnNetMonitorCommandTy
     }
 
     uv_mutex_lock (&g_RtnNetMonitorCommandTypeTopic_mutex);
-    g_RtnNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorCommandTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorCommandTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorCommandTypeTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorCommandTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorCommandTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorCommandTypeTopic_mutex);
 
@@ -15434,8 +16973,8 @@ void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorAct
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorActionGroup;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorActionGroup) { 
@@ -15453,7 +16992,14 @@ void SysUserSpi::OnRspQryNetMonitorActionGroupTopic(CShfeFtdcRspQryNetMonitorAct
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorActionGroupTopic_mutex);
-    g_RspQryNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorActionGroupTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorActionGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorActionGroupTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorActionGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorActionGroupTopic_mutex);
 
@@ -15503,7 +17049,14 @@ void SysUserSpi::OnRtnNetMonitorActionGroupTopic(CShfeFtdcRtnNetMonitorActionGro
     }
 
     uv_mutex_lock (&g_RtnNetMonitorActionGroupTopic_mutex);
-    g_RtnNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorActionGroupTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorActionGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorActionGroupTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorActionGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorActionGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorActionGroupTopic_mutex);
 
@@ -15563,8 +17116,8 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorDeviceGroup;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorDeviceGroup) { 
@@ -15582,7 +17135,14 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorDeviceGroupTopic_mutex);
-    g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorDeviceGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorDeviceGroupTopic_mutex);
 
@@ -15632,7 +17192,14 @@ void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGro
     }
 
     uv_mutex_lock (&g_RtnNetMonitorDeviceGroupTopic_mutex);
-    g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorDeviceGroupTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorDeviceGroupTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorDeviceGroupTopic_mutex);
 
@@ -15692,8 +17259,8 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorTaskInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskInfo) { 
@@ -15725,7 +17292,14 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskInfoTopic_mutex);
-    g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTaskInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskInfoTopic_mutex);
 
@@ -15789,7 +17363,14 @@ void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoFiel
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskInfoTopic_mutex);
-    g_RtnNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskInfoTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTaskInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskInfoTopic_mutex);
 
@@ -15849,8 +17430,8 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorTaskResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskResult) { 
@@ -15871,7 +17452,14 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskResultTopic_mutex);
-    g_RspQryNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskResultTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTaskResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskResultTopic_mutex);
 
@@ -15924,7 +17512,14 @@ void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResult
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskResultTopic_mutex);
-    g_RtnNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskResultTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskResultTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTaskResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskResultTopic_mutex);
 
@@ -15984,8 +17579,8 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorTaskObjectSet;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskObjectSet) { 
@@ -16002,7 +17597,14 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskObjectSetTopic_mutex);
-    g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTaskObjectSetTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskObjectSetTopic_mutex);
 
@@ -16051,7 +17653,14 @@ void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObj
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskObjectSetTopic_mutex);
-    g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTaskObjectSetTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskObjectSetTopic_mutex);
 
@@ -16111,8 +17720,8 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkInfo) { 
@@ -16153,7 +17762,14 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkInfoTopic_mutex);
-    g_RspQryNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkInfoTopic_mutex);
 
@@ -16226,7 +17842,14 @@ void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* p
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkInfoTopic_mutex);
-    g_RtnNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkInfoTopic_mutex);
 
@@ -16286,8 +17909,8 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorActionAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorActionAttr) { 
@@ -16304,7 +17927,14 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorActionAttrTopic_mutex);
-    g_RspQryNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorActionAttrTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorActionAttrTopic_mutex);
 
@@ -16353,7 +17983,14 @@ void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttr
     }
 
     uv_mutex_lock (&g_RtnNetMonitorActionAttrTopic_mutex);
-    g_RtnNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorActionAttrTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorActionAttrTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorActionAttrTopic_mutex);
 
@@ -16413,8 +18050,8 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetModule;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetModule) { 
@@ -16436,7 +18073,14 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetModuleTopic_mutex);
-    g_RspQryNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetModuleTopic_IOUser_vec.begin();
+        it != g_RspQryNetModuleTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetModuleTopic_IOUser_vec.end()) {
+        g_RspQryNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetModuleTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetModuleTopic_mutex);
 
@@ -16490,7 +18134,14 @@ void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){
     }
 
     uv_mutex_lock (&g_RtnNetModuleTopic_mutex);
-    g_RtnNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetModuleTopic_IOUser_vec.begin();
+        it != g_RtnNetModuleTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetModuleTopic_IOUser_vec.end()) {
+        g_RtnNetModuleTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetModuleTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetModuleTopic_mutex);
 
@@ -16550,8 +18201,8 @@ void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetEventExpr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventExpr) { 
@@ -16577,7 +18228,14 @@ void SysUserSpi::OnRspQryNetEventExprTopic(CShfeFtdcRspQryNetEventExprField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventExprTopic_mutex);
-    g_RspQryNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventExprTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventExprTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventExprTopic_IOUser_vec.end()) {
+        g_RspQryNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetEventExprTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventExprTopic_mutex);
 
@@ -16635,7 +18293,14 @@ void SysUserSpi::OnRtnNetEventExprTopic(CShfeFtdcRtnNetEventExprField* pRtnNetEv
     }
 
     uv_mutex_lock (&g_RtnNetEventExprTopic_mutex);
-    g_RtnNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventExprTopic_IOUser_vec.begin();
+        it != g_RtnNetEventExprTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventExprTopic_IOUser_vec.end()) {
+        g_RtnNetEventExprTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetEventExprTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventExprTopic_mutex);
 
@@ -16695,8 +18360,8 @@ void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRs
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetEventType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventType) { 
@@ -16712,7 +18377,14 @@ void SysUserSpi::OnRspQryNetEventTypeTopic(CShfeFtdcRspQryNetEventTypeField* pRs
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventTypeTopic_mutex);
-    g_RspQryNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventTypeTopic_mutex);
 
@@ -16760,7 +18432,14 @@ void SysUserSpi::OnRtnNetEventTypeTopic(CShfeFtdcRtnNetEventTypeField* pRtnNetEv
     }
 
     uv_mutex_lock (&g_RtnNetEventTypeTopic_mutex);
-    g_RtnNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventTypeTopic_IOUser_vec.end()) {
+        g_RtnNetEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventTypeTopic_mutex);
 
@@ -16820,8 +18499,8 @@ void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetSubEventType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetSubEventType) { 
@@ -16837,7 +18516,14 @@ void SysUserSpi::OnRspQryNetSubEventTypeTopic(CShfeFtdcRspQryNetSubEventTypeFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetSubEventTypeTopic_mutex);
-    g_RspQryNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetSubEventTypeTopic_IOUser_vec.begin();
+        it != g_RspQryNetSubEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetSubEventTypeTopic_IOUser_vec.end()) {
+        g_RspQryNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetSubEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetSubEventTypeTopic_mutex);
 
@@ -16885,7 +18571,14 @@ void SysUserSpi::OnRtnNetSubEventTypeTopic(CShfeFtdcRtnNetSubEventTypeField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetSubEventTypeTopic_mutex);
-    g_RtnNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetSubEventTypeTopic_IOUser_vec.begin();
+        it != g_RtnNetSubEventTypeTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetSubEventTypeTopic_IOUser_vec.end()) {
+        g_RtnNetSubEventTypeTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetSubEventTypeTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetSubEventTypeTopic_mutex);
 
@@ -16945,8 +18638,8 @@ void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* p
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetEventLevel;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetEventLevel) { 
@@ -16963,7 +18656,14 @@ void SysUserSpi::OnRspQryNetEventLevelTopic(CShfeFtdcRspQryNetEventLevelField* p
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetEventLevelTopic_mutex);
-    g_RspQryNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetEventLevelTopic_IOUser_vec.begin();
+        it != g_RspQryNetEventLevelTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetEventLevelTopic_IOUser_vec.end()) {
+        g_RspQryNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetEventLevelTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetEventLevelTopic_mutex);
 
@@ -17012,7 +18712,14 @@ void SysUserSpi::OnRtnNetEventLevelTopic(CShfeFtdcRtnNetEventLevelField* pRtnNet
     }
 
     uv_mutex_lock (&g_RtnNetEventLevelTopic_mutex);
-    g_RtnNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetEventLevelTopic_IOUser_vec.begin();
+        it != g_RtnNetEventLevelTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetEventLevelTopic_IOUser_vec.end()) {
+        g_RtnNetEventLevelTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetEventLevelTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetEventLevelTopic_mutex);
 
@@ -17072,8 +18779,8 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorTaskStatusResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskStatusResult) { 
@@ -17092,7 +18799,14 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskStatusResultTopic_mutex);
-    g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTaskStatusResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskStatusResultTopic_mutex);
 
@@ -17143,7 +18857,14 @@ void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTask
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskStatusResultTopic_mutex);
-    g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskStatusResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTaskStatusResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskStatusResultTopic_mutex);
 
@@ -17203,8 +18924,8 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetCfgFile;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetCfgFile) { 
@@ -17221,7 +18942,14 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetCfgFileTopic_mutex);
-    g_RspQryNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetCfgFileTopic_IOUser_vec.begin();
+        it != g_RspQryNetCfgFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetCfgFileTopic_IOUser_vec.end()) {
+        g_RspQryNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetCfgFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetCfgFileTopic_mutex);
 
@@ -17270,7 +18998,14 @@ void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFil
     }
 
     uv_mutex_lock (&g_RtnNetCfgFileTopic_mutex);
-    g_RtnNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetCfgFileTopic_IOUser_vec.begin();
+        it != g_RtnNetCfgFileTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetCfgFileTopic_IOUser_vec.end()) {
+        g_RtnNetCfgFileTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetCfgFileTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetCfgFileTopic_mutex);
 
@@ -17330,8 +19065,8 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorDeviceTask;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorDeviceTask) { 
@@ -17353,7 +19088,14 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorDeviceTaskTopic_mutex);
-    g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorDeviceTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorDeviceTaskTopic_mutex);
 
@@ -17407,7 +19149,14 @@ void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTask
     }
 
     uv_mutex_lock (&g_RtnNetMonitorDeviceTaskTopic_mutex);
-    g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorDeviceTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorDeviceTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorDeviceTaskTopic_mutex);
 
@@ -17467,8 +19216,8 @@ void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorT
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMonitorTaskInstAttrs;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMonitorTaskInstAttrs) { 
@@ -17488,7 +19237,14 @@ void SysUserSpi::OnRspQryNetMonitorTaskInstAttrsTopic(CShfeFtdcRspQryNetMonitorT
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMonitorTaskInstAttrsTopic_mutex);
-    g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.begin();
+        it != g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.end()) {
+        g_RspQryNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMonitorTaskInstAttrsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMonitorTaskInstAttrsTopic_mutex);
 
@@ -17540,7 +19296,14 @@ void SysUserSpi::OnRtnNetMonitorTaskInstAttrsTopic(CShfeFtdcRtnNetMonitorTaskIns
     }
 
     uv_mutex_lock (&g_RtnNetMonitorTaskInstAttrsTopic_mutex);
-    g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorTaskInstAttrsTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMonitorTaskInstAttrsTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMonitorTaskInstAttrsTopic_mutex);
 
@@ -17600,8 +19363,8 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryFileGeneralOper;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryFileGeneralOper) { 
@@ -17626,7 +19389,14 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryFileGeneralOperTopic_mutex);
-    g_RspQryFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryFileGeneralOperTopic_IOUser_vec.begin();
+        it != g_RspQryFileGeneralOperTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryFileGeneralOperTopic_IOUser_vec.end()) {
+        g_RspQryFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryFileGeneralOperTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryFileGeneralOperTopic_mutex);
 
@@ -17683,7 +19453,14 @@ void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRt
     }
 
     uv_mutex_lock (&g_RtnFileGeneralOperTopic_mutex);
-    g_RtnFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnFileGeneralOperTopic_IOUser_vec.begin();
+        it != g_RtnFileGeneralOperTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnFileGeneralOperTopic_IOUser_vec.end()) {
+        g_RtnFileGeneralOperTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnFileGeneralOperTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnFileGeneralOperTopic_mutex);
 
@@ -17743,8 +19520,8 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetBaseLine;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLine) { 
@@ -17764,7 +19541,14 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineTopic_mutex);
-    g_RspQryNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetBaseLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineTopic_mutex);
 
@@ -17816,7 +19600,14 @@ void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBase
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineTopic_mutex);
-    g_RtnNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetBaseLineTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineTopic_mutex);
 
@@ -17876,8 +19667,8 @@ void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskFiel
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetBaseLineTask;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLineTask) { 
@@ -17898,7 +19689,14 @@ void SysUserSpi::OnRspQryNetBaseLineTaskTopic(CShfeFtdcRspQryNetBaseLineTaskFiel
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineTaskTopic_mutex);
-    g_RspQryNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineTaskTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineTaskTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetBaseLineTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineTaskTopic_mutex);
 
@@ -17951,7 +19749,14 @@ void SysUserSpi::OnRtnNetBaseLineTaskTopic(CShfeFtdcRtnNetBaseLineTaskField* pRt
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineTaskTopic_mutex);
-    g_RtnNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineTaskTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineTaskTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineTaskTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineTaskTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetBaseLineTaskTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineTaskTopic_mutex);
 
@@ -18011,8 +19816,8 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetBaseLineResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetBaseLineResult) { 
@@ -18034,7 +19839,14 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetBaseLineResultTopic_mutex);
-    g_RspQryNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetBaseLineResultTopic_IOUser_vec.begin();
+        it != g_RspQryNetBaseLineResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetBaseLineResultTopic_IOUser_vec.end()) {
+        g_RspQryNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetBaseLineResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetBaseLineResultTopic_mutex);
 
@@ -18088,7 +19900,14 @@ void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField*
     }
 
     uv_mutex_lock (&g_RtnNetBaseLineResultTopic_mutex);
-    g_RtnNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetBaseLineResultTopic_IOUser_vec.begin();
+        it != g_RtnNetBaseLineResultTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetBaseLineResultTopic_IOUser_vec.end()) {
+        g_RtnNetBaseLineResultTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetBaseLineResultTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetBaseLineResultTopic_mutex);
 
@@ -18148,8 +19967,8 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPartyLinkStatusInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartyLinkStatusInfo) { 
@@ -18168,7 +19987,14 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartyLinkStatusInfoTopic_mutex);
-    g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPartyLinkStatusInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartyLinkStatusInfoTopic_mutex);
 
@@ -18219,7 +20045,14 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
     }
 
     uv_mutex_lock (&g_RtnNetPartyLinkStatusInfoTopic_mutex);
-    g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPartyLinkStatusInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartyLinkStatusInfoTopic_mutex);
 
@@ -18279,8 +20112,8 @@ void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetMemberSDHLineInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetMemberSDHLineInfo) { 
@@ -18319,7 +20152,14 @@ void SysUserSpi::OnRspQryNetMemberSDHLineInfoTopic(CShfeFtdcRspQryNetMemberSDHLi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetMemberSDHLineInfoTopic_mutex);
-    g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetMemberSDHLineInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetMemberSDHLineInfoTopic_mutex);
 
@@ -18390,7 +20230,14 @@ void SysUserSpi::OnRtnNetMemberSDHLineInfoTopic(CShfeFtdcRtnNetMemberSDHLineInfo
     }
 
     uv_mutex_lock (&g_RtnNetMemberSDHLineInfoTopic_mutex);
-    g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.end()) {
+        g_RtnNetMemberSDHLineInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetMemberSDHLineInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetMemberSDHLineInfoTopic_mutex);
 
@@ -18450,8 +20297,8 @@ void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetDDNLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetDDNLinkInfo) { 
@@ -18473,7 +20320,14 @@ void SysUserSpi::OnRspQryNetDDNLinkInfoTopic(CShfeFtdcRspQryNetDDNLinkInfoField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetDDNLinkInfoTopic_mutex);
-    g_RspQryNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetDDNLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetDDNLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetDDNLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetDDNLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetDDNLinkInfoTopic_mutex);
 
@@ -18527,7 +20381,14 @@ void SysUserSpi::OnRtnNetDDNLinkInfoTopic(CShfeFtdcRtnNetDDNLinkInfoField* pRtnN
     }
 
     uv_mutex_lock (&g_RtnNetDDNLinkInfoTopic_mutex);
-    g_RtnNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetDDNLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetDDNLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetDDNLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetDDNLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetDDNLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetDDNLinkInfoTopic_mutex);
 
@@ -18587,8 +20448,8 @@ void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemb
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPseudMemberLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPseudMemberLinkInfo) { 
@@ -18618,7 +20479,14 @@ void SysUserSpi::OnRspQryNetPseudMemberLinkInfoTopic(CShfeFtdcRspQryNetPseudMemb
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPseudMemberLinkInfoTopic_mutex);
-    g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPseudMemberLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPseudMemberLinkInfoTopic_mutex);
 
@@ -18680,7 +20548,14 @@ void SysUserSpi::OnRtnNetPseudMemberLinkInfoTopic(CShfeFtdcRtnNetPseudMemberLink
     }
 
     uv_mutex_lock (&g_RtnNetPseudMemberLinkInfoTopic_mutex);
-    g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetPseudMemberLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPseudMemberLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPseudMemberLinkInfoTopic_mutex);
 
@@ -18740,8 +20615,8 @@ void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryOuterDeviceInf;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryOuterDeviceInf) { 
@@ -18758,7 +20633,14 @@ void SysUserSpi::OnRspQryOuterDeviceInfTopic(CShfeFtdcRspQryOuterDeviceInfField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryOuterDeviceInfTopic_mutex);
-    g_RspQryOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryOuterDeviceInfTopic_IOUser_vec.begin();
+        it != g_RspQryOuterDeviceInfTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryOuterDeviceInfTopic_IOUser_vec.end()) {
+        g_RspQryOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryOuterDeviceInfTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryOuterDeviceInfTopic_mutex);
 
@@ -18807,7 +20689,14 @@ void SysUserSpi::OnRtnNetOuterDeviceInfTopic(CShfeFtdcRtnNetOuterDeviceInfField*
     }
 
     uv_mutex_lock (&g_RtnNetOuterDeviceInfTopic_mutex);
-    g_RtnNetOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetOuterDeviceInfTopic_IOUser_vec.begin();
+        it != g_RtnNetOuterDeviceInfTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetOuterDeviceInfTopic_IOUser_vec.end()) {
+        g_RtnNetOuterDeviceInfTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetOuterDeviceInfTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetOuterDeviceInfTopic_mutex);
 
@@ -18867,8 +20756,8 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetLocalPingResultInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetLocalPingResultInfo) { 
@@ -18889,7 +20778,14 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetLocalPingResultInfoTopic_mutex);
-    g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetLocalPingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetLocalPingResultInfoTopic_mutex);
 
@@ -18942,7 +20838,14 @@ void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResult
     }
 
     uv_mutex_lock (&g_RtnNetLocalPingResultInfoTopic_mutex);
-    g_RtnNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetLocalPingResultInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetLocalPingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetLocalPingResultInfoTopic_IOUser_vec.end()) {
+        g_RtnNetLocalPingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetLocalPingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetLocalPingResultInfoTopic_mutex);
 
@@ -19002,8 +20905,8 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetRomotePingResultInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetRomotePingResultInfo) { 
@@ -19027,7 +20930,14 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetRomotePingResultInfoTopic_mutex);
-    g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetRomotePingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetRomotePingResultInfoTopic_mutex);
 
@@ -19083,7 +20993,14 @@ void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResu
     }
 
     uv_mutex_lock (&g_RtnNetRomotePingResultInfoTopic_mutex);
-    g_RtnNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetRomotePingResultInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetRomotePingResultInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetRomotePingResultInfoTopic_IOUser_vec.end()) {
+        g_RtnNetRomotePingResultInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetRomotePingResultInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetRomotePingResultInfoTopic_mutex);
 
@@ -19143,7 +21060,14 @@ void SysUserSpi::OnRtnMonitorTopProcessInfo(CShfeFtdcRtnMonitorTopProcessInfoFie
     }
 
     uv_mutex_lock (&g_RtnMonitorTopProcessInfo_mutex);
-    g_RtnMonitorTopProcessInfo_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMonitorTopProcessInfo_IOUser_vec.begin();
+        it != g_RtnMonitorTopProcessInfo_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMonitorTopProcessInfo_IOUser_vec.end()) {
+        g_RtnMonitorTopProcessInfo_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMonitorTopProcessInfo_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMonitorTopProcessInfo_mutex);
 
@@ -19203,8 +21127,8 @@ void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopo
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQrySysInternalTopology;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQrySysInternalTopology) { 
@@ -19223,7 +21147,14 @@ void SysUserSpi::OnRspQrySysInternalTopologyTopic(CShfeFtdcRspQrySysInternalTopo
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQrySysInternalTopologyTopic_mutex);
-    g_RspQrySysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQrySysInternalTopologyTopic_IOUser_vec.begin();
+        it != g_RspQrySysInternalTopologyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQrySysInternalTopologyTopic_IOUser_vec.end()) {
+        g_RspQrySysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQrySysInternalTopologyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQrySysInternalTopologyTopic_mutex);
 
@@ -19274,7 +21205,14 @@ void SysUserSpi::OnRtnSysInternalTopologyTopic(CShfeFtdcRtnSysInternalTopologyFi
     }
 
     uv_mutex_lock (&g_RtnSysInternalTopologyTopic_mutex);
-    g_RtnSysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnSysInternalTopologyTopic_IOUser_vec.begin();
+        it != g_RtnSysInternalTopologyTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnSysInternalTopologyTopic_IOUser_vec.end()) {
+        g_RtnSysInternalTopologyTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnSysInternalTopologyTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnSysInternalTopologyTopic_mutex);
 
@@ -19334,8 +21272,8 @@ void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField*
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryMemberLinkCost;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryMemberLinkCost) { 
@@ -19358,7 +21296,14 @@ void SysUserSpi::OnRspQryMemberLinkCostTopic(CShfeFtdcRspQryMemberLinkCostField*
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryMemberLinkCostTopic_mutex);
-    g_RspQryMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryMemberLinkCostTopic_IOUser_vec.begin();
+        it != g_RspQryMemberLinkCostTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryMemberLinkCostTopic_IOUser_vec.end()) {
+        g_RspQryMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryMemberLinkCostTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryMemberLinkCostTopic_mutex);
 
@@ -19413,7 +21358,14 @@ void SysUserSpi::OnRtnMemberLinkCostTopic(CShfeFtdcRtnMemberLinkCostField* pRtnM
     }
 
     uv_mutex_lock (&g_RtnMemberLinkCostTopic_mutex);
-    g_RtnMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnMemberLinkCostTopic_IOUser_vec.begin();
+        it != g_RtnMemberLinkCostTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnMemberLinkCostTopic_IOUser_vec.end()) {
+        g_RtnMemberLinkCostTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnMemberLinkCostTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnMemberLinkCostTopic_mutex);
 
@@ -19473,8 +21425,8 @@ void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylin
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetPartylinkMonthlyRent;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetPartylinkMonthlyRent) { 
@@ -19493,7 +21445,14 @@ void SysUserSpi::OnRspQryNetPartylinkMonthlyRentTopic(CShfeFtdcRspQryNetPartylin
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetPartylinkMonthlyRentTopic_mutex);
-    g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.begin();
+        it != g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.end()) {
+        g_RspQryNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetPartylinkMonthlyRentTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetPartylinkMonthlyRentTopic_mutex);
 
@@ -19544,7 +21503,14 @@ void SysUserSpi::OnRtnNetPartylinkMonthlyRentTopic(CShfeFtdcRtnNetPartylinkMonth
     }
 
     uv_mutex_lock (&g_RtnNetPartylinkMonthlyRentTopic_mutex);
-    g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.begin();
+        it != g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.end()) {
+        g_RtnNetPartylinkMonthlyRentTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetPartylinkMonthlyRentTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetPartylinkMonthlyRentTopic_mutex);
 
@@ -19604,8 +21570,8 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
 
     paramArray[0] = (void*)pSpiObj;
     paramArray[1] = (void*)pNewRspQryNetNonPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
+    paramArray[2] = (void*)pRspInfoNew;		
+    paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			
     if (NULL == pRspQryNetNonPartyLinkInfo) { 
@@ -19646,7 +21612,14 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
     uv_mutex_lock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
-    g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RspQryNetNonPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
 
@@ -19719,7 +21692,14 @@ void SysUserSpi::OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoFi
     }
 
     uv_mutex_lock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
-    g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    vector<FRONT_ID>::iterator it ;
+    for(it = g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ ) {
+        if (*it == this->m_frontid) break;     
+    }
+    if (it == g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.end()) {
+        g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.push_back(this->m_frontid);
+    }
     g_RtnNetNonPartyLinkInfoTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
     uv_mutex_unlock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
 

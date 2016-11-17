@@ -30,6 +30,7 @@ using std::cout;
 using std::endl;
  
 extern fstream g_RunningResult_File;
+
 */});
 
 var firstParaDataStructName = "";
@@ -40,7 +41,7 @@ var bHasNoPara = false;
 for (var i = 0; i < FuncCol.length; ++i) {
 	var funcType = FuncCol[i].$.name.substring(0, 3);
     var funcCore = FuncCol[i].field[0].$.name;
-
+    bHasNoPara = false;
     if(funcType === "Rsp" || funcType === "Rtn" || funcType === "Spi") {
         if (funcType === "Spi") {
             funcName = FuncCol[i].field[1].$.name;
@@ -88,7 +89,7 @@ for (var i = 0; i < FuncCol.length; ++i) {
     }           
     memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
           
- */});
+*/});
 
         if (funcType === "Rsp") {  
             fileData += tabSpace[1] + "void** paramArray = new void*[5];\n";              
@@ -112,7 +113,11 @@ for (var i = 0; i < FuncCol.length; ++i) {
             fileData += tabSpace[3] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for " + pNewValueName + "\", g_RunningResult_File);\n";
             fileData += tabSpace[3] + "return;\n";
             fileData += tabSpace[2] + "}\n";
-            fileData += tabSpace[2] + "memcpy ("+pNewValueName+"," + firstParaDataName+", sizeof("+ firstParaDataStructName +"));\n";
+            if (funcType === "Spi") {
+                fileData += tabSpace[2] + "memcpy ("+pNewValueName+", &" + firstParaDataName+", sizeof("+ firstParaDataStructName +"));\n";                
+            } else {
+                fileData += tabSpace[2] + "memcpy ("+pNewValueName+"," + firstParaDataName+", sizeof("+ firstParaDataStructName +"));\n";                
+            }
             fileData += tabSpace[1] + "}\n";
         }                                
 	   
@@ -152,27 +157,33 @@ for (var i = 0; i < FuncCol.length; ++i) {
 		
 		if ("Rsp" == funcType) {
 			fileData += hereDoc(function(){/*
-		paramArray[2] = (void*)pRspInfoNew;		
-		paramArray[3] = (void*)pId;
+	paramArray[2] = (void*)pRspInfoNew;		
+	paramArray[3] = (void*)pId;
     paramArray[4] = (void*)bIsLastNew;			
 			*/});
 		}        		
         
-        if(false === bHasNoPara) {
+        if(bHasNoPara === false) {
             fileData += "\n";
             fileData += tabSpace[1] + "if (NULL == "+ firstParaDataName +") { \n";
             fileData += tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi::"+ firstParaDataName +" is NULL\" , g_RunningResult_File); \n"    
-            fileData += tabSpace[1] + "} else {\n";              
-            for(var j=0;j<jsonContent.FTD.fields.length;j++){
-                if(jsonContent.FTD.fields[0].fieldDefine[j].$.name===funcCore) {
-                    var itemlength=jsonContent.FTD.fields[0].fieldDefine[j].item.length;
-                    for(var k = 0; k<itemlength; k++){
-                        var itemName = jsonContent.FTD.fields[0].fieldDefine[j].item[k].$.name;
-                        fileData += tabSpace[2] + "OutputCallbackMessage(\"" + firstParaDataName+"->"+itemName + ": \", " 
-                                + firstParaDataName + "->" + itemName + ", g_RunningResult_File);\n";
+            fileData += tabSpace[1] + "} else {\n";  
+            if (funcType === "Rsp" || funcType === "Rtn") {
+                for(var j=0;j<jsonContent.FTD.fields[0].fieldDefine.length;j++){
+                    if(jsonContent.FTD.fields[0].fieldDefine[j].$.name===funcCore) {
+                        var itemlength=jsonContent.FTD.fields[0].fieldDefine[j].item.length;
+                        for(var k = 0; k<itemlength; k++){
+                            var itemName = jsonContent.FTD.fields[0].fieldDefine[j].item[k].$.name;
+                            fileData += tabSpace[2] + "OutputCallbackMessage(\"" + firstParaDataName+"->"+itemName + ": \", " 
+                                    + firstParaDataName + "->" + itemName + ", g_RunningResult_File);\n";
+                        }
                     }
-                }
-            } 
+                } 
+            } else {
+                fileData += tabSpace[2] + "OutputCallbackMessage(\"" + firstParaDataName+":\", "
+                          + firstParaDataName + ", g_RunningResult_File);\n";                
+            }    
+
             
             fileData += tabSpace[1] + "}\n";
         }
