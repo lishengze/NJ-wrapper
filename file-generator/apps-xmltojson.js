@@ -17,9 +17,9 @@ function loadXMLDoc(filePath){
 }
 
 // var pathName = '../new file/';
-var pathName = '../spec/';
+var pathName = '../lib/';
 var fileName = 'ApiData.json';
-var xmlPath  = './monitor-data.xml';
+var xmlPath  = '../lib/monitor-data.xml';
 // var xmlPath  = './NewApi-FTD.xml';
 // var xmlPath  = './OriginData.xml';
 // var xmlPath  = './test.xml';

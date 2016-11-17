@@ -2,9 +2,13 @@
  * Created by li.xiankui on 2015/8/21.
  */
 var fs = require('fs');
-function hereDoc(f) {
-    return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
-}
+var hereDoc = require('../lib/tool-function.js').hereDoc;
+var jsonContent = require("../lib/ApiData.json");
+var FuncCol = jsonContent.FTD.packages[0].package;
+
+var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
+
+
 var fileData = hereDoc(function () {
  /*#ifndef _SYSUSERSPI_H_
  #define _SYSUSERSPI_H_
@@ -22,41 +26,37 @@ var fileData = hereDoc(function () {
         
     public:
         virtual ~SysUserSpi() {}
-        
-        virtual void OnFrontConnected();
-        
-        virtual void OnFrontDisConnected(int nReason);
-        
-        virtual void OnHeartBeatWarning(int nTimeLapse);
 
 */});
 
-var jsonContent=require("./package.json");
-var Packagelength=jsonContent.FTD.packages[0].package.length;
-var lengthField=jsonContent.FTD.fields[0].fieldDefine.length;
-var beforeRspQryTopCpuInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
-    beforeRspQryTopCpuInfoTopic++;
-}
-var AfterRtnNetNonPartyLinkInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
-    AfterRtnNetNonPartyLinkInfoTopic++;
-}
-AfterRtnNetNonPartyLinkInfoTopic++;
+var spiFuncName = [];
+for (var i = 0; i < FuncCol.length; ++i) {
+    var funcName = FuncCol[i].$.name;
+	var funcType = funcName.substring(0, 3);
 
-var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
-for(var i=beforeRspQryTopCpuInfoTopic;i<AfterRtnNetNonPartyLinkInfoTopic;i++){
-    var fieldName=jsonContent.FTD.packages[0].package[i].field[0].$.name;
-    if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rsp"){
-        fileData += tabSpace[2] + "virtual void On"+jsonContent.FTD.packages[0].package[i].$.name+"(CShfeFtdc"+
-            fieldName+"Field *p"+fieldName+", CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);\n\n";
+    if (funcType === "Rsp" || funcType === "Rtn") {
+        var funcCore = FuncCol[i].field[0].$.name;
+        var firstParaDataStructName = "CShfeFtdc"+ funcCore + "Field *";
+        var firstParaName = "p" + funcCore;
+        fileData += tabSpace[2] + "virtual void On"+ funcName +"(" + firstParaDataStructName + firstParaName;
+        if (funcType === "Rsp" ) {
+            fileData +=  ", CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast";
+        } 
+        fileData += ");\n\n"
 
+    }
+    if (funcType === "Spi") {
+        var returnValueName = FuncCol[i].field[0].$.name;
+        funcName = FuncCol[i].field[1].$.name;
+        fileData += tabSpace[2] + "virtual " + returnValueName + " On" + funcName + "(";
+        for (var paraIndex = 2; paraIndex < FuncCol[i].field.length; ++paraIndex) {
+            if (paraIndex != 2) {
+                fileData += ", ";
+            }
+            fileData += FuncCol[i].field[paraIndex].$.name + " " + FuncCol[i].field[++paraIndex].$.name;
         }
-
-    if(jsonContent.FTD.packages[0].package[i].$.name.substring(0,3)==="Rtn"){
-        fileData += tabSpace[2] + "virtual void On"+jsonContent.FTD.packages[0].package[i].$.name+"(CShfeFtdc"+
-            fieldName+"Field *p"+fieldName+");\n\n";
-           }
+        fileData += ");\n\n"
+    }
 }
 
 fileData += "}; \n\n";
