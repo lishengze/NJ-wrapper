@@ -38,6 +38,7 @@ var firstParaDataName = "";
 var pNewValueName = "";
 var funcName = "";
 var bHasNoPara = false;
+
 for (var i = 0; i < FuncCol.length; ++i) {
 	var funcType = FuncCol[i].$.name.substring(0, 3);
     var funcCore = FuncCol[i].field[0].$.name;
@@ -47,14 +48,11 @@ for (var i = 0; i < FuncCol.length; ++i) {
             funcName = FuncCol[i].field[1].$.name;
         } else {
             funcName = FuncCol[i].$.name;
-
         }
-
         var queueName  = 'g_' + funcName + '_Data_map';
         var vectorname = 'g_' + funcName + '_IOUser_vec';
         var mutexName  = 'g_' + funcName + '_mutex';
         var asyncName  = 'g_' + funcName + '_async';
-
         if (funcType === "Rsp" || funcType === "Rtn") {
             firstParaDataStructName = "CShfeFtdc" + funcCore + "Field";
             firstParaDataName = "p" + funcCore;
@@ -72,24 +70,19 @@ for (var i = 0; i < FuncCol.length; ++i) {
         if (funcType === "Rsp") {
             fileData += "void SysUserSpi::On" + funcName + "("+ firstParaDataStructName + "* " + firstParaDataName 
                   + ", CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {\n";
-        }else if (funcType === "Rtn"){
+        } else if (funcType === "Rtn"){
             fileData += "void SysUserSpi::On" + funcName + "("+ firstParaDataStructName + "* " + firstParaDataName + "){ \n";
-        }else {
+        } else {
             fileData += "void SysUserSpi::On" + funcName + "("+ firstParaDataStructName + " " + firstParaDataName + "){ \n";
         } 
 
         fileData += tabSpace[1] + "OutputCallbackMessage(\"\\n****** SysUserSpi:: "+ funcName + ": START! ******\", g_RunningResult_File);\n"
-        
-        fileData += hereDoc(function () {/*
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
-*/});
+                  + tabSpace[1] + "Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; \n"
+                  + tabSpace[1] + "if (NULL == pSpiObj) { \n"
+                  + tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for pSpiObj\", g_RunningResult_File);\n"
+                  + tabSpace[2] + "OutputCallbackMessage(\"****** SysUserSpi:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n"
+                  + tabSpace[1] + "}\n"
+                  + tabSpace[1] + "memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); \n\n";
 
         if (funcType === "Rsp") {  
             fileData += tabSpace[1] + "void** paramArray = new void*[5];\n";              
@@ -98,21 +91,20 @@ for (var i = 0; i < FuncCol.length; ++i) {
         } else {
             fileData += tabSpace[1] + "void** paramArray = new void*[1];\n";
         }
-
         fileData += tabSpace[1] + "if (NULL == paramArray) {\n";
-        fileData += tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for paramArray\", g_RunningResult_File);\n";
-        fileData += tabSpace[2] + "OutputCallbackMessage(\"****** SysUserSpi:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
-        fileData += tabSpace[2] + "return; \n";
-        fileData += tabSpace[1] + "} \n\n";
+                  + tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for paramArray\", g_RunningResult_File);\n"
+                  + tabSpace[2] + "OutputCallbackMessage(\"****** SysUserSpi:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n"
+                  + tabSpace[2] + "return; \n"
+                  + tabSpace[1] + "} \n\n"
 
         if (bHasNoPara === false) {
-            fileData += tabSpace[1] + firstParaDataStructName + "* "+ pNewValueName + " = NULL;\n";     
-            fileData += tabSpace[1] + "if (NULL != "+ firstParaDataName +") { \n";
-            fileData += tabSpace[2] + pNewValueName + " = new "+firstParaDataStructName + ";\n";
-            fileData += tabSpace[2] + "if (NULL == "+ pNewValueName+") {\n";
-            fileData += tabSpace[3] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for " + pNewValueName + "\", g_RunningResult_File);\n";
-            fileData += tabSpace[3] + "return;\n";
-            fileData += tabSpace[2] + "}\n";
+            fileData += tabSpace[1] + firstParaDataStructName + "* "+ pNewValueName + " = NULL;\n"    
+                      + tabSpace[1] + "if (NULL != "+ firstParaDataName +") { \n"
+                      + tabSpace[2] + pNewValueName + " = new "+firstParaDataStructName + ";\n"
+                      + tabSpace[2] + "if (NULL == "+ pNewValueName+") {\n"
+                      + tabSpace[3] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for " + pNewValueName + "\", g_RunningResult_File);\n"
+                      + tabSpace[3] + "return;\n"
+                      + tabSpace[2] + "}\n"
             if (funcType === "Spi") {
                 fileData += tabSpace[2] + "memcpy ("+pNewValueName+", &" + firstParaDataName+", sizeof("+ firstParaDataStructName +"));\n";                
             } else {
@@ -122,32 +114,26 @@ for (var i = 0; i < FuncCol.length; ++i) {
         }                                
 	   
 		if ("Rsp" == funcType) {
-			fileData += hereDoc(function(){/*
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
-        if (NULL == pRspInfo) {
-            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
-        return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
-*/
-            });			
-		}
-	   
+            fileData += tabSpace[1] + "CShfeFtdcRspInfoField* pRspInfoNew = NULL; \n"
+                      + tabSpace[1] + "if (NULL != pRspInfo){ \n"
+                      + tabSpace[2] + "pRspInfoNew = new CShfeFtdcRspInfoField;\n"
+                      + tabSpace[2] + "if (NULL == pRspInfo) {\n"
+                      + tabSpace[3] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for pRspInfo\", g_RunningResult_File);\n"
+                      + tabSpace[3] + "return; \n"
+                      + tabSpace[2] + "} \n"
+                      + tabSpace[2] + "memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));\n"
+                      + tabSpace[1] + "} \n\n"
+                      + tabSpace[1] + "int*  pId = new int(nRequestID); \n"
+                      + tabSpace[1] + "if (NULL == pId) { \n"
+                      + tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for pId\", g_RunningResult_File);\n"
+                      + tabSpace[2] + "return;\n"
+                      + tabSpace[1] + "} \n\n"
+                      + tabSpace[1] + "bool* bIsLastNew = new bool(bIsLast); \n"
+                      + tabSpace[1] + "if (NULL == bIsLastNew) { \n"
+                      + tabSpace[2] + "OutputCallbackMessage(\"SysUserSpi:: Faild in allocating memory for bIsLastNew\", g_RunningResult_File); \n"
+                      + tabSpace[2] + "return; \n"
+                      + tabSpace[1] + "} \n"		
+		}	   
 
 		fileData += "\n";	
         fileData += tabSpace[1] + "paramArray[0] = (void*)pSpiObj;\n";
@@ -156,12 +142,10 @@ for (var i = 0; i < FuncCol.length; ++i) {
         }
 		
 		if ("Rsp" == funcType) {
-			fileData += hereDoc(function(){/*
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			*/});
-		}        		
+            fileData += tabSpace[1] + "paramArray[2] = (void*)pRspInfoNew; \n"
+                      + tabSpace[1] + "paramArray[3] = (void*)pId; \n"
+                      + tabSpace[1] + "paramArray[4] = (void*)bIsLastNew; \n\n";	
+        }	
         
         if(bHasNoPara === false) {
             fileData += "\n";
@@ -183,7 +167,6 @@ for (var i = 0; i < FuncCol.length; ++i) {
                 fileData += tabSpace[2] + "OutputCallbackMessage(\"" + firstParaDataName+":\", "
                           + firstParaDataName + ", g_RunningResult_File);\n";                
             }    
-
             
             fileData += tabSpace[1] + "}\n";
         }
@@ -214,7 +197,6 @@ for (var i = 0; i < FuncCol.length; ++i) {
     }
 }
 
-
 fileData += "\n\n";
 var pathName = '../new file/';
 var fileName = 'sysuserspi.cpp';
@@ -226,3 +208,39 @@ fs.writeFile(pathName + fileName, fileData, function (err) {
     }
 
 });
+
+//         fileData += hereDoc(function () {/*
+//     Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
+//     if (NULL == pSpiObj) {
+//         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
+//         OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
+//         return;        
+//     }           
+//     memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
+          
+// */});
+
+// 			fileData += hereDoc(function(){/*
+// 	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
+//     if (NULL != pRspInfo){        
+//         pRspInfoNew = new CShfeFtdcRspInfoField;        
+//         if (NULL == pRspInfo) {
+//             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
+//             return;            
+//         }        
+//         memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
+//     }	
+	
+//     int*  pId = new int(nRequestID);
+//     if (NULL == pId) {
+//         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
+//         return;
+//     }
+    
+//     bool* bIsLastNew = new bool(bIsLast);
+//     if (NULL == bIsLastNew) {
+//         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
+//         return;
+//     }  	
+// */
+//             });	
