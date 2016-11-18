@@ -1,6 +1,4 @@
 build/
 *.con
 .idea/
-*.lib
-*.dll
 binding.gyp

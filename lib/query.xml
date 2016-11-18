@@ -1,0 +1,1255 @@
+	<packages>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" comment="服务器链接相关"/>
+			<field name="Release"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="Release"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="Init"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="int" />
+			<field name="Join"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="const char *" />
+			<field name="GetTradingDay"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="RegisterFront"/>
+			<field name="char *">
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="RegisterSpi"/>
+			<field name="CShfeFtdcSysUserSpi *">
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="SubscribeMarketDataTopic"/>
+			<field name="int ">
+			<field name="TE_RESUME_TYPE ">
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="void" />
+			<field name="SubscribePartAccount"/>
+		</package>
+		<package name="ConnectServer" comment="服务器链接相关">
+			<field name="int" />
+			<field name="ReqUserLogin"/>
+			<field name="CShfeFtdcReqUserLoginField* ">
+			<field name="int ">
+		</package>
+		<package name="ReqQryTopCpuInfoTopic" tid="0x00009001" comment="CPU查询">
+			<field name="ReqQryTopCpuInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTopCpuInfoTopic" tid="0x00009002" comment="CPU应答">
+			<field name="RspQryTopCpuInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTopCpuInfoTopic" tid="0x00009003" comment="CPU应答">
+			<field name="RtnTopCpuInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTopMemInfoTopic" tid="0x00009004" comment="Mem查询">
+			<field name="ReqQryTopMemInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTopMemInfoTopic" tid="0x00009005" comment="Mem应答">
+			<field name="RspQryTopMemInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTopMemInfoTopic" tid="0x00009006" comment="Mem应答">
+			<field name="RtnTopMemInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTopProcessInfoTopic" tid="0x00009007" comment="process查询">
+			<field name="ReqQryTopProcessInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTopProcessInfoTopic" tid="0x00009008" comment="process应答">
+			<field name="RspQryTopProcessInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTopProcessInfoTopic" tid="0x00009009" comment="process应答">
+			<field name="RtnTopProcessInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryFileSystemInfoTopic" tid="0x0000900A" comment="filesystem查询">
+			<field name="ReqQryFileSystemInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFileSystemInfoTopic" tid="0x0000900B" comment="filesystem应答">
+			<field name="RspQryFileSystemInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFileSystemInfoTopic" tid="0x0000900C" comment="filesystem应答">
+			<field name="RtnFileSystemInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetworkInfoTopic" tid="0x0000900D" comment="network查询">
+			<field name="ReqQryNetworkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetworkInfoTopic" tid="0x0000900E" comment="network应答">
+			<field name="RspQryNetworkInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetworkInfoTopic" tid="0x0000900F" comment="network应答">
+			<field name="RtnNetworkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHostEnvTopic" tid="0x00009022" comment="主机环境信息查询">
+			<field name="ReqQryHostEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonitorObjectTopic" tid="0x00009028" comment="获得监控对象信息查询">
+			<field name="ReqQryMonitorObject" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonitorObjectTopic" tid="0x00009029" comment="获得监控对象信息应答">
+			<field name="RspQryMonitorObject" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonitorObjectTopic" tid="0x0000902A" comment="获得监控对象信息应答">
+			<field name="RtnMonitorObject" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryObjectRationalTopic" tid="0x0000902B" comment="获得业务进程和主机的对应关系查询">
+			<field name="ReqQryObjectRational" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryObjectRationalTopic" tid="0x0000902C" comment="获得业务进程和主机的对应关系应答">
+			<field name="RspQryObjectRational" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnObjectRationalTopic" tid="0x0000902D" comment="获得业务进程和主机的对应关系应答">
+			<field name="RtnObjectRational" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySyslogInfoTopic" tid="0x00009034" comment="日志文件内容查询">
+			<field name="ReqQrySyslogInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySyslogInfoTopic" tid="0x00009035" comment="日志文件内容应答">
+			<field name="RspQrySyslogInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSyslogInfoTopic" tid="0x00009036" comment="日志文件内容应答">
+			<field name="RtnSyslogInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySubscriberTopic" tid="0x00009037" comment="监控内容订阅请求">
+			<field name="ReqQrySubscriber" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySubscriberTopic" tid="0x00009038" comment="监控内容订阅应答">
+			<field name="RspQrySubscriber" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryOidRelationTopic" tid="0x00009196" comment="对象关系查询">
+			<field name="ReqQryOidRelation" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryOidRelationTopic" tid="0x00009197" comment="对象关系查询应答">
+			<field name="RspQryOidRelation" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnOidRelationTopic" tid="0x00009198" comment="对象关系查询应答">
+			<field name="RtnOidRelation" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryUserInfoTopic" tid="0x00009212" comment="用户信息查询请求">
+			<field name="ReqQryUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryUserInfoTopic" tid="0x00009213" comment="用户信息查询请求应答">
+			<field name="RspQryUserInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnUserInfoTopic" tid="0x00009214" comment="用户信息查询请求应答">
+			<field name="RtnUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryOnlineUserInfoTopic" tid="0x00009215" comment="在线用户信息查询请求">
+			<field name="ReqQryOnlineUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryOnlineUserInfoTopic" tid="0x00009216" comment="在线用户信息查询请求应答">
+			<field name="RspQryOnlineUserInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnOnlineUserInfoTopic" tid="0x00009217" comment="在线用户信息查询请求应答">
+			<field name="RtnOnlineUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryWarningEventTopic" tid="0x00009221" comment="告警事件查询请求">
+			<field name="ReqQryWarningEvent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryWarningEventTopic" tid="0x00009222" comment="告警事件查询请求应答">
+			<field name="RspQryWarningEvent" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnWarningEventTopic" tid="0x00009223" comment="告警事件查询请求应答">
+			<field name="RtnWarningEvent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryObjectAttrTopic" tid="0x00009236" comment="对象状态指标查询">
+			<field name="ReqQryObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryObjectAttrTopic" tid="0x00009237" comment="对象状态指标查询应答">
+			<field name="RspQryObjectAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnObjectAttrTopic" tid="0x00009238" comment="对象状态指标查询应答">
+			<field name="RtnObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInvalidateOrderTopic" tid="0x00009400" comment="无效报单查询">
+			<field name="ReqQryInvalidateOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInvalidateOrderTopic" tid="0x00009401" comment="无效报单查询应答">
+			<field name="RspQryInvalidateOrder" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInvalidateOrderTopic" tid="0x00009402" comment="无效报单查询应答">
+			<field name="RtnInvalidateOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryOrderStatusTopic" tid="0x00009403" comment="报单状态查询">
+			<field name="ReqQryOrderStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryOrderStatusTopic" tid="0x00009404" comment="报单状态查询应答">
+			<field name="RspQryOrderStatus" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnOrderStatusTopic" tid="0x00009405" comment="报单状态查询应答">
+			<field name="RtnOrderStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryBargainOrderTopic" tid="0x00009406" comment="报单成交查询">
+			<field name="ReqQryBargainOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryBargainOrderTopic" tid="0x00009407" comment="报单成交查询应答">
+			<field name="RspQryBargainOrder" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnBargainOrderTopic" tid="0x00009408" comment="报单成交查询应答">
+			<field name="RtnBargainOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInstPropertyTopic" tid="0x00009409" comment="合约基本属性查询">
+			<field name="ReqQryInstProperty" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInstPropertyTopic" tid="0x00009410" comment="合约基本属性查询应答">
+			<field name="RspQryInstProperty" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInstPropertyTopic" tid="0x00009411" comment="合约基本属性查询应答">
+			<field name="RtnInstProperty" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMarginRateTopic" tid="0x00009412" comment="合约保证金率查询">
+			<field name="ReqQryMarginRate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMarginRateTopic" tid="0x00009413" comment="合约保证金率查询应答">
+			<field name="RspQryMarginRate" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMarginRateTopic" tid="0x00009414" comment="合约保证金率查询应答">
+			<field name="RtnMarginRate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPriceLimitTopic" tid="0x00009415" comment="合约涨跌停板查询">
+			<field name="ReqQryPriceLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPriceLimitTopic" tid="0x00009416" comment="合约涨跌停板查询应答">
+			<field name="RspQryPriceLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPriceLimitTopic" tid="0x00009417" comment="合约涨跌停板查询应答">
+			<field name="RtnPriceLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartPosiLimitTopic" tid="0x00009418" comment="会员限仓查询">
+			<field name="ReqQryPartPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartPosiLimitTopic" tid="0x00009419" comment="会员限仓查询应答">
+			<field name="RspQryPartPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPartPosiLimitTopic" tid="0x00009420" comment="会员限仓查询应答">
+			<field name="RtnPartPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientPosiLimitTopic" tid="0x00009421" comment="客户限仓查询">
+			<field name="ReqQryClientPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientPosiLimitTopic" tid="0x00009422" comment="客户限仓查询应答">
+			<field name="RspQryClientPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientPosiLimitTopic" tid="0x00009423" comment="客户限仓查询应答">
+			<field name="RtnClientPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySpecialPosiLimitTopic" tid="0x00009424" comment="特殊客户限仓查询">
+			<field name="ReqQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySpecialPosiLimitTopic" tid="0x00009425" comment="特殊客户限仓查询应答">
+			<field name="RspQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSpecialPosiLimitTopic" tid="0x00009426" comment="特殊客户限仓查询应答">
+			<field name="RtnSpecialPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTransactionChgTopic" tid="0x00009427" comment="账户出入金查询">
+			<field name="ReqQryTransactionChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTransactionChgTopic" tid="0x00009428" comment="账户出入金查询应答">
+			<field name="RspQryTransactionChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTransactionChgTopic" tid="0x00009429" comment="账户出入金查询应答">
+			<field name="RtnTransactionChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientChgTopic" tid="0x00009430" comment="客户数据变动查询">
+			<field name="ReqQryClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientChgTopic" tid="0x00009431" comment="客户数据变动查询应答">
+			<field name="RspQryClientChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientChgTopic" tid="0x00009432" comment="客户数据变动查询应答">
+			<field name="RtnClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartClientChgTopic" tid="0x00009433" comment="会员客户对照变动查询">
+			<field name="ReqQryPartClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartClientChgTopic" tid="0x00009434" comment="会员客户对照变动查询应答">
+			<field name="RspQryPartClientChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPartClientChgTopic" tid="0x00009435" comment="会员客户对照变动查询应答">
+			<field name="RtnPartClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPosiLimitChgTopic" tid="0x00009436" comment="限仓数据变动查询">
+			<field name="ReqQryPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPosiLimitChgTopic" tid="0x00009437" comment="限仓数据变动查询应答">
+			<field name="RspQryPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPosiLimitChgTopic" tid="0x00009438" comment="限仓数据变动查询应答">
+			<field name="RtnPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHedgeDetailChgTopic" tid="0x00009439" comment="保值额度变动查询">
+			<field name="ReqQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHedgeDetailChgTopic" tid="0x00009440" comment="保值额度变动查询应答">
+			<field name="RspQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnHedgeDetailChgTopic" tid="0x00009441" comment="保值额度变动查询应答">
+			<field name="RtnHedgeDetailChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryParticipantChgTopic" tid="0x00009442" comment="会员变动查询">
+			<field name="ReqQryParticipantChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryParticipantChgTopic" tid="0x00009443" comment="会员变动查询应答">
+			<field name="RspQryParticipantChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnParticipantChgTopic" tid="0x00009444" comment="会员变动查询应答">
+			<field name="RtnParticipantChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMarginRateChgTopic" tid="0x00009445" comment="保证金率变动查询">
+			<field name="ReqQryMarginRateChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMarginRateChgTopic" tid="0x00009446" comment="保证金率变动查询应答">
+			<field name="RspQryMarginRateChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMarginRateChgTopic" tid="0x00009447" comment="保证金率变动查询应答">
+			<field name="RtnMarginRateChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryUserIpChgTopic" tid="0x00009448" comment="IP地址变动查询">
+			<field name="ReqQryUserIpChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryUserIpChgTopic" tid="0x00009449" comment="IP地址变动查询应答">
+			<field name="RspQryUserIpChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnUserIpChgTopic" tid="0x00009450" comment="IP地址变动查询应答">
+			<field name="RtnUserIpChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientPosiLimitChgTopic" tid="0x00009451" comment="限仓数据变动查询">
+			<field name="ReqQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientPosiLimitChgTopic" tid="0x00009452" comment="限仓数据变动查询应答">
+			<field name="RspQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientPosiLimitChgTopic" tid="0x00009453" comment="限仓数据变动查询应答">
+			<field name="RtnClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySpecPosiLimitChgTopic" tid="0x00009454" comment="限仓数据变动查询">
+			<field name="ReqQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySpecPosiLimitChgTopic" tid="0x00009455" comment="限仓数据变动查询应答">
+			<field name="RspQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSpecPosiLimitChgTopic" tid="0x00009456" comment="限仓数据变动查询应答">
+			<field name="RtnSpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHistoryObjectAttrTopic" tid="0x00009457" comment="历史对象状态指标查询">
+			<field name="ReqQryHistoryObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHistoryObjectAttrTopic" tid="0x00009458" comment="历史对象状态指标查询应答">
+			<field name="RspQryHistoryObjectAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnHistoryObjectAttrTopic" tid="0x00009459" comment="历史对象状态指标查询应答">
+			<field name="RtnHistoryObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryFrontInfoTopic" tid="0x00009460" comment="前置响应信息查询">
+			<field name="ReqQryFrontInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFrontInfoTopic" tid="0x00009461" comment="前置响应信息查询应答">
+			<field name="RspQryFrontInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFrontInfoTopic" tid="0x00009462" comment="前置响应信息查询应答">
+			<field name="RtnFrontInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySysUserLoginTopic" tid="0x00009463" comment="用户登录">
+			<field name="ReqQrySysUserLogin" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySysUserLoginTopic" tid="0x00009464" comment="用户登录应答">
+			<field name="RspQrySysUserLogin" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQrySysUserLogoutTopic" tid="0x00009465" comment="用户登出">
+			<field name="ReqQrySysUserLogout" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySysUserLogoutTopic" tid="0x00009466" comment="用户登出应答">
+			<field name="RspQrySysUserLogout" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQrySysUserPasswordUpdateTopic" tid="0x00009467" comment="用户修改密码">
+			<field name="ReqQrySysUserPasswordUpdate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySysUserPasswordUpdateTopic" tid="0x00009468" comment="用户修改密码应答">
+			<field name="RspQrySysUserPasswordUpdate" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQrySysUserRegisterTopic" tid="0x00009469" comment="注册用户">
+			<field name="ReqQrySysUserRegister" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySysUserRegisterTopic" tid="0x00009470" comment="注册用户应答">
+			<field name="RspQrySysUserRegister" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQrySysUserDeleteTopic" tid="0x00009471" comment="删除用户">
+			<field name="ReqQrySysUserDelete" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySysUserDeleteTopic" tid="0x00009472" comment="删除用户应答">
+			<field name="RspQrySysUserDelete" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryTradeLogTopic" tid="0x00009480" comment="交易日志查询">
+			<field name="ReqQryTradeLog" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeLogTopic" tid="0x00009481" comment="交易日志查询应答">
+			<field name="RspQryTradeLog" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradeLogTopic" tid="0x00009482" comment="交易日志查询应答">
+			<field name="RtnTradeLog" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryWarningEventUpdateTopic" tid="0x00009485" comment="告警事件修改">
+			<field name="ReqQryWarningEventUpdate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTradeUserLoginInfoTopic" tid="0x00009486" comment="交易系统登录信息查询">
+			<field name="ReqQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeUserLoginInfoTopic" tid="0x00009487" comment="交易系统登录信息">
+			<field name="RspQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradeUserLoginInfoTopic" tid="0x00009488" comment="交易系统登录信息">
+			<field name="RtnTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartTradeTopic" tid="0x00009489" comment="会员交易查询">
+			<field name="ReqQryPartTrade" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartTradeTopic" tid="0x00009490" comment="会员交易查询应答">
+			<field name="RspQryPartTrade" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryTradepeakTopic" tid="0x00009491" comment="交易峰值查询">
+			<field name="ReqQryTradepeak" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradepeakTopic" tid="0x00009492" comment="交易峰值查询应答">
+			<field name="RspQryTradepeak" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryParticipantInitTopic" tid="0x00009496" comment="管理平台初始化信息查询">
+			<field name="ReqQryParticipantInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryUserInitTopic" tid="0x00009497" comment="管理平台初始化信息查询">
+			<field name="ReqQryUserInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHistoryCpuInfoTopic" tid="0x00009500" comment="">
+			<field name="ReqQryHistoryCpuInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHistoryCpuInfoTopic" tid="0x00009501" comment="">
+			<field name="RspQryHistoryCpuInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryHistoryMemInfoTopic" tid="0x00009502" comment="">
+			<field name="ReqQryHistoryMemInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHistoryMemInfoTopic" tid="0x00009503" comment="">
+			<field name="RspQryHistoryMemInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryHistoryNetworkInfoTopic" tid="0x00009504" comment="">
+			<field name="ReqQryHistoryNetworkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHistoryNetworkInfoTopic" tid="0x00009505" comment="">
+			<field name="RspQryHistoryNetworkInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+
+		<package name="ReqQryMonitorOnlineUser" tid="0x00009507" comment="监控系统在线用户查询">
+			<field name="ReqQryMonitorOnlineUser" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonitorOnlineUser" tid="0x00009508" comment="监控系统在线用户应答">
+			<field name="RspQryMonitorOnlineUser" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryFrontStat" tid="0x00009509" comment="交易系统前置统计查询">
+			<field name="ReqQryFrontStat" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFrontStat" tid="0x00009510" comment="交易系统前置统计应答">
+			<field name="RspQryFrontStat" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSysTimeSyncTopic" tid="0x00009511" comment="监控系统时钟同步">
+			<field name="RtnSysTimeSync" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RtnDataCenterChgTopic" tid="0x00009512" comment="数据中心切换通知">
+			<field name="RtnDataCenterChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHistoryTradePeakTopic" tid="0x00009513" comment="历史峰值查询">
+			<field name="ReqQryHistoryTradePeak" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHistoryTradePeakTopic" tid="0x00009514" comment="历史峰值查询应答">
+			<field name="RspQryHistoryTradePeak" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnHistoryTradePeakTopic" tid="0x00009515" comment="历史峰值查询应答">
+			<field name="RtnHistoryTradePeak" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySyslogEventTopic" tid="0x00009516" comment="日志事件查询">
+			<field name="ReqQrySyslogEvent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySyslogEventTopic" tid="0x00009517" comment="日志事件查询应答">
+			<field name="RspQrySyslogEvent" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSyslogEventTopic" tid="0x00009518" comment="日志事件应答">
+			<field name="RtnSyslogEvent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySyslogEventSubcriberTopic" tid="0x00009519" comment="日志事件订阅请求">
+			<field name="ReqQrySyslogEventSubcriber" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTomcatInfoTopic" tid="0x00009522" comment="tomcat信息查询">
+			<field name="ReqQryTomcatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryWebAppInfoTopic" tid="0x00009523" comment="Web应用信息">
+			<field name="RspQryWebAppInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnWebAppInfoTopic" tid="0x00009524" comment="Web应用信息">
+			<field name="RtnWebAppInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryServletInfoTopic" tid="0x00009525" comment="应用servlet信息">
+			<field name="RspQryServletInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnServletInfoTopic" tid="0x00009526" comment="应用servlet信息">
+			<field name="RtnServletInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFileInfoTopic" tid="0x00009527" comment="文件信息">
+			<field name="RspQryFileInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFileInfoTopic" tid="0x00009528" comment="文件信息">
+			<field name="RtnFileInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySessionInfoTopic" tid="0x00009529" comment="应用会话信息">
+			<field name="RspQrySessionInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSessionInfoTopic" tid="0x00009530" comment="应用会话信息">
+			<field name="RtnSessionInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryJDBCInfoTopic" tid="0x00009531" comment="JDBC信息">
+			<field name="RspQryJDBCInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnJDBCInfoTopic" tid="0x00009532" comment="JDBC信息">
+			<field name="RtnJDBCInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryThreadInfoTopic" tid="0x00009533" comment="线程信息">
+			<field name="RspQryThreadInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnThreadInfoTopic" tid="0x00009534" comment="线程信息">
+			<field name="RtnThreadInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryVMInfoTopic" tid="0x00009536" comment="虚拟机信息">
+			<field name="RspQryVMInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnVMInfoTopic" tid="0x00009537" comment="虚拟机信息">
+			<field name="RtnVMInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPropertyInfoTopic" tid="0x00009539" comment="系统属性信息">
+			<field name="RspQryPropertyInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPropertyInfoTopic" tid="0x00009540" comment="系统属性信息">
+			<field name="RtnPropertyInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMemPoolInfoTopic" tid="0x00009542" comment="系统内存池信息">
+			<field name="RspQryMemPoolInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMemPoolInfoTopic" tid="0x00009543" comment="系统内存池信息">
+			<field name="RtnMemPoolInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFileContentInfoTopic" tid="0x00009545" comment="文件内容信息">
+			<field name="RspQryFileContentInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFileContentInfoTopic" tid="0x00009546" comment="文件内容信息">
+			<field name="RtnFileContentInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryConnectionInfoTopic" tid="0x00009548" comment="连接信息">
+			<field name="RspQryConnectionInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnConnectionInfoTopic" tid="0x00009549" comment="连接信息">
+			<field name="RtnConnectionInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryConnectorInfoTopic" tid="0x00009551" comment="连接器信息">
+			<field name="RspQryConnectorInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnConnectorInfoTopic" tid="0x00009552" comment="连接器信息">
+			<field name="RtnConnectorInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryDBQueryTopic" tid="0x00009553" comment="数据库查询">
+			<field name="ReqQryDBQuery" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryDBQueryTopic" tid="0x00009554" comment="数据库查询应答">
+			<field name="RspQryDBQuery" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnDBQueryTopic" tid="0x00009555" comment="数据库查询应答">
+			<field name="RtnDBQuery" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryGeneralFieldTopic" tid="0x00009556" comment="通用返回应答">
+			<field name="SysGeneralField" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnGeneralFieldTopic" tid="0x00009557" comment="通用返回应答">
+			<field name="SysGeneralField" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryGetFileTopic" tid="0x00009558" comment="文件传输请求">
+			<field name="ReqQryGetFile" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryGetFileTopic" tid="0x00009559" comment="文件传输应答">
+			<field name="RspQryGetFile" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQrySyslogEventUpdateTopic" tid="0x00009560" comment="日志事件修改请求">
+			<field name="ReqQrySyslogEventUpdate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryWarningQueryTopic" tid="0x00009561" comment="告警明细查询">
+			<field name="ReqQryWarningQuery" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryWarningQueryTopic" tid="0x00009562" comment="告警明细">
+			<field name="RspQryWarningQuery" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnWarningQueryTopic" tid="0x00009563" comment="告警明细">
+			<field name="RtnWarningQuery" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryWebVisitTopic" tid="0x00009564" comment="网站访问查询">
+			<field name="ReqQryWebVisit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryWarningActiveChange" tid="0x00009566" comment="告警激活变更">
+			<field name="ReqQryWarningActiveChange" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryWarningActiveChange" tid="0x00009567" comment="告警激活变更">
+			<field name="RspQryWarningActiveChange" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RtnWarningActiveChange" tid="0x00009568" comment="告警激活变更">
+			<field name="RtnWarningActiveChange" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryGeneralOperateTopic" tid="0x00009569" comment="通用操作">
+			<field name="ReqQryGeneralOperate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryGeneralOperateTopic" tid="0x00009570" comment="通用操作">
+			<field name="RspQryGeneralOperate" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnGeneralOperateTopic" tid="0x00009571" comment="通用操作">
+			<field name="RtnGeneralOperate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceLinkedTopic" tid="0x00009572" comment="网络设备连接关系请求">
+			<field name="ReqQryNetDeviceLinked" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceLinkedTopic" tid="0x00009573" comment="网络设备连接关系">
+			<field name="RspQryNetDeviceLinked" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDeviceLinkedTopic" tid="0x00009574" comment="网络设备连接关系">
+			<field name="RtnNetDeviceLinked" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTradeUserLoginStatTopic" tid="0x00009575" comment="交易系统登录信息请求">
+			<field name="ReqQryTradeUserLoginStat" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeUserLoginStatTopic" tid="0x00009576" comment="交易系统登录信息">
+			<field name="RspQryTradeUserLoginStat" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryTradeFrontOrderRttStatTopic" tid="0x00009577" comment="交易系统前置报单响应信息">
+			<field name="ReqQryTradeFrontOrderRttStat" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeFrontOrderRttStatTopic" tid="0x00009578" comment="交易系统前置报单响应信息">
+			<field name="RspQryTradeFrontOrderRttStat" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradeFrontOrderRttStatTopic" tid="0x00009579" comment="交易系统前置报单响应信息">
+			<field name="RtnTradeFrontOrderRttStat" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryParticTradeOrderStatesTopic" tid="0x0000957a" comment="会员席位交易状态">
+			<field name="ReqQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryParticTradeOrderStatesTopic" tid="0x0000957b" comment="会员席位交易状态">
+			<field name="RspQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnParticTradeOrderStatesTopic" tid="0x0000957c" comment="会员席位交易状态">
+			<field name="RtnParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryRouterInfoTopic" tid="0x0000957d" comment="系统路由信息">
+			<field name="ReqQryRouterInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryRouterInfoTopic" tid="0x0000957e" comment="系统路由信息">
+			<field name="RspQryRouterInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnRouterInfoTopic" tid="0x0000957f" comment="系统路由信息">
+			<field name="RtnRouterInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryDiskIOTopic" tid="0x00009580" comment="磁盘I/O信息">
+			<field name="ReqQryDiskIO" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryDiskIOTopic" tid="0x00009581" comment="磁盘I/O信息">
+			<field name="RspQryDiskIO" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnDiskIOTopic" tid="0x00009582" comment="磁盘I/O信息">
+			<field name="RtnDiskIO" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryStatInfoTopic" tid="0x00009583" comment="系统状态信息">
+			<field name="ReqQryStatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryStatInfoTopic" tid="0x00009584" comment="系统状态信息">
+			<field name="RspQryStatInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnStatInfoTopic" tid="0x00009585" comment="系统状态信息">
+			<field name="RtnStatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTradeOrderRttCutLineTopic" tid="0x00009586" comment="交易系统前置报单分布区间">
+			<field name="ReqQryTradeOrderRttCutLine" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeOrderRttCutLineTopic" tid="0x00009587" comment="交易系统前置报单分布区间">
+			<field name="RspQryTradeOrderRttCutLine" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradeOrderRttCutLineTopic" tid="0x00009588" comment="交易系统前置报单分布区间">
+			<field name="RtnTradeOrderRttCutLine" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientInfoTopic" tid="0x00009589" comment="会员客户信息">
+			<field name="ReqQryClientInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientInfoTopic" tid="0x0000958a" comment="会员客户信息">
+			<field name="RspQryClientInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientInfoTopic" tid="0x0000958b" comment="会员客户信息">
+			<field name="RtnClientInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryEventDescriptionTopic" tid="0x0000958c" comment="请求事件描述">
+			<field name="ReqQryEventDescription" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryEventDescriptionTopic" tid="0x0000958d" comment="应答事件描述">
+			<field name="RspQryEventDescription" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnEventDescriptionTopic" tid="0x0000958e" comment="订阅事件描述">
+			<field name="RtnEventDescription" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryFrontUniqueIDTopic" tid="0x0000958f" comment="订阅前置唯一ID信息">
+			<field name="ReqQryFrontUniqueID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFrontUniqueIDTopic" tid="0x00009590" comment="应答前置唯一ID信息">
+			<field name="RspQryFrontUniqueID" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFrontUniqueIDTopic" tid="0x00009591" comment="订阅前置唯一ID信息">
+			<field name="RtnFrontUniqueID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetPartyLinkAddrChangeTopic" tid="0x00009592" comment="会员线路地址变更请求">
+			<field name="ReqQryNetPartyLinkAddrChange" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetPartyLinkAddrChangeTopic" tid="0x00009593" comment="会员线路地址变更回应">
+			<field name="RspQryNetPartyLinkAddrChange" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetPartyLinkAddrChangeTopic" tid="0x00009594" comment="订阅会员线路地址变更信息">
+			<field name="RtnNetPartyLinkAddrChange" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDelPartyLinkInfoTopic" tid="0x00009595" comment="请求已删除会员列表信息">
+			<field name="ReqQryNetDelPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDelPartyLinkInfoTopic" tid="0x00009596" comment="应答已删除会员列表信息">
+			<field name="RspQryNetDelPartyLinkInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDelPartyLinkInfoTopic" tid="0x00009597" comment="订阅已删除会员列表信息">
+			<field name="RtnNetDelPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPerformanceTopTopic" tid="0x00009598" comment="请求网络性能排序">
+			<field name="ReqQryPerformanceTop" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPerformanceTopTopic" tid="0x00009599" comment="返回网络性能排序">
+			<field name="RspQryPerformanceTop" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPerformanceTopTopic" tid="0x0000959a" comment="订阅网络性能排序">
+			<field name="RtnPerformanceTop" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInstrumentStatusTopic" tid="0x0000959b" comment="请求约状态切换数据">
+			<field name="ReqQryInstrumentStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInstrumentStatusTopic" tid="0x0000959c" comment="返回约状态切换数据">
+			<field name="RspQryInstrumentStatus" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInstrumentStatusTopic" tid="0x0000959d" comment="订阅约状态切换数据">
+			<field name="RtnInstrumentStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryCurrTradingSegmentAttrTopic" tid="0x0000959e" comment="请求合约交易节信息">
+			<field name="ReqQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryCurrTradingSegmentAttrTopic" tid="0x0000959f" comment="返回合约交易节信息">
+			<field name="RspQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnCurrTradingSegmentAttrTopic" tid="0x000095a0" comment="订阅合约交易节信息">
+			<field name="RtnCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryRealTimeNetObjectAttrTopic" tid="0x00100003" comment="最新网络指标查询">
+			<field name="ReqQryRealTimeNetObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetAreaTopic" tid="0x00100010" comment="网络大区划分查询">
+			<field name="ReqQryNetArea" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetAreaTopic" tid="0x00100011" comment="网络大区划分应答">
+			<field name="RspQryNetArea" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetAreaTopic" tid="0x00100012" comment="网络大区划分应答">
+			<field name="RtnNetArea" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetSubAreaTopic" tid="0x00100013" comment="网络子区查询">
+			<field name="ReqQryNetSubArea" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetSubAreaTopic" tid="0x00100014" comment="网络子区应答">
+			<field name="RspQryNetSubArea" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetSubAreaTopic" tid="0x00100015" comment="网络子区应答">
+			<field name="RtnNetSubArea" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetSubAreaIPTopic" tid="0x00100016" comment="网络子区IP查询">
+			<field name="ReqQryNetSubAreaIP" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetSubAreaIPTopic" tid="0x00100017" comment="网络子区IP应答">
+			<field name="RspQryNetSubAreaIP" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetSubAreaIPTopic" tid="0x00100018" comment="网络子区IP应答">
+			<field name="RtnNetSubAreaIP" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceDetectTopic" tid="0x00100019" comment="网络设备探测请求">
+			<field name="ReqQryNetDeviceDetect" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceRequestTopic" tid="0x00100020" comment="网络设备查询请求">
+			<field name="ReqQryNetDeviceRequest" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceTopic" tid="0x00100021" comment="网络设备">
+			<field name="RspQryNetDevice" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDeviceTopic" tid="0x00100022" comment="网络设备">
+			<field name="RtnNetDevice" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceDetectTopic" tid="0x00100023" comment="网络设备探测请求应答">
+			<field name="RspQryNetDeviceDetect" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryNetBuildingTopic" tid="0x00100024" comment="大楼查询">
+			<field name="ReqQryNetBuilding" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetBuildingTopic" tid="0x00100025" comment="大楼">
+			<field name="RspQryNetBuilding" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetBuildingTopic" tid="0x00100026" comment="大楼">
+			<field name="RtnNetBuilding" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetRoomTopic" tid="0x00100027" comment="机房查询">
+			<field name="ReqQryNetRoom" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetRoomTopic" tid="0x00100028" comment="机房">
+			<field name="RspQryNetRoom" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetRoomTopic" tid="0x00100029" comment="机房">
+			<field name="RtnNetRoom" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetCabinetsTopic" tid="0x00100030" comment="机柜查询">
+			<field name="ReqQryNetCabinets" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetCabinetsTopic" tid="0x00100031" comment="机柜">
+			<field name="RspQryNetCabinets" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetCabinetsTopic" tid="0x00100032" comment="机柜">
+			<field name="RtnNetCabinets" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetOIDTopic" tid="0x00100033" comment="OID">
+			<field name="ReqQryNetOID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetOIDTopic" tid="0x00100034" comment="OID">
+			<field name="RspQryNetOID" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetOIDTopic" tid="0x00100035" comment="OID">
+			<field name="RtnNetOID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetTimePolicyTopic" tid="0x00100036" comment="时间策略">
+			<field name="ReqQryNetTimePolicy" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetTimePolicyTopic" tid="0x00100037" comment="时间策略">
+			<field name="RspQryNetTimePolicy" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetTimePolicyTopic" tid="0x00100038" comment="时间策略">
+			<field name="RtnNetTimePolicy" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetGatherTaskTopic" tid="0x00100039" comment="采集任务查询">
+			<field name="ReqQryNetGatherTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetGatherTaskTopic" tid="0x00100040" comment="采集任务">
+			<field name="RspQryNetGatherTask" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetGatherTaskTopic" tid="0x00100041" comment="采集任务">
+			<field name="RtnNetGatherTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceChgTopic" tid="0x00100042" comment="设备变更请求">
+			<field name="ReqQryNetDeviceChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceChgTopic" tid="0x00100043" comment="设备变更">
+			<field name="RspQryNetDeviceChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDeviceChgTopic" tid="0x00100044" comment="设备变更">
+			<field name="RtnNetDeviceChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceTypeTopic" tid="0x00100045" comment="常用设备型号请求">
+			<field name="ReqQryNetDeviceType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceTypeTopic" tid="0x00100046" comment="常用设备型号">
+			<field name="RspQryNetDeviceType" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDeviceTypeTopic" tid="0x00100047" comment="常用设备型号">
+			<field name="RtnNetDeviceType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetDeviceCategoryTopic" tid="0x00100048" comment="常用设备类别请求">
+			<field name="ReqQryNetDeviceCategory" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetDeviceCategoryTopic" tid="0x00100049" comment="常用设备类别">
+			<field name="RspQryNetDeviceCategory" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetDeviceCategoryTopic" tid="0x00100050" comment="常用设备类别">
+			<field name="RtnNetDeviceCategory" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetManufactoryTopic" tid="0x00100051" comment="设备厂商请求">
+			<field name="ReqQryNetManufactory" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetManufactoryTopic" tid="0x00100052" comment="设备厂商">
+			<field name="RspQryNetManufactory" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetManufactoryTopic" tid="0x00100053" comment="设备厂商">
+			<field name="RtnNetManufactory" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetCommunityTopic" tid="0x00100054" comment="设备共同体请求">
+			<field name="ReqQryNetCommunity" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetCommunityTopic" tid="0x00100055" comment="设备共同体">
+			<field name="RspQryNetCommunity" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetCommunityTopic" tid="0x00100056" comment="设备共同体">
+			<field name="RtnNetCommunity" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetPortTypeTopic" tid="0x00100057" comment="端口类型请求">
+			<field name="ReqQryNetPortType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetPortTypeTopic" tid="0x00100058" comment="端口类型">
+			<field name="RspQryNetPortType" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetPortTypeTopic" tid="0x00100059" comment="端口类型">
+			<field name="RtnNetPortType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetPartAccessSpotTopic" tid="0x00100060" comment="会员接入地点请求">
+			<field name="ReqQryNetPartAccessSpot" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetPartAccessSpotTopic" tid="0x00100061" comment="会员接入地点">
+			<field name="RspQryNetPartAccessSpot" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetPartAccessSpotTopic" tid="0x00100062" comment="会员接入地点">
+			<field name="RtnNetPartAccessSpot" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetInterfaceTopic" tid="0x00100063" comment="端口请求">
+			<field name="ReqQryNetInterface" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetInterfaceTopic" tid="0x00100064" comment="端口">
+			<field name="RspQryNetInterface" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetInterfaceTopic" tid="0x00100065" comment="端口">
+			<field name="RtnNetInterface" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetGeneralOIDTopic" tid="0x00100066" comment="GeneralOID请求">
+			<field name="ReqQryNetGeneralOID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetGeneralOIDTopic" tid="0x00100067" comment="GeneralOID">
+			<field name="RspQryNetGeneralOID" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetGeneralOIDTopic" tid="0x00100068" comment="GeneralOID">
+			<field name="RtnNetGeneralOID" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorTypeTopic" tid="0x00100069" comment="监控对象类别">
+			<field name="ReqQryNetMonitorType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorTypeTopic" tid="0x00100070" comment="监控对象类别">
+			<field name="RspQryNetMonitorType" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorTypeTopic" tid="0x00100071" comment="监控对象类别">
+			<field name="RtnNetMonitorType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorAttrScopeTopic" tid="0x00100072" comment="指标统表">
+			<field name="ReqQryNetMonitorAttrScope" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorAttrScopeTopic" tid="0x00100073" comment="指标统表">
+			<field name="RspQryNetMonitorAttrScope" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorAttrScopeTopic" tid="0x00100074" comment="指标统表">
+			<field name="RtnNetMonitorAttrScope" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorAttrTypeTopic" tid="0x00100075" comment="监控指标表">
+			<field name="ReqQryNetMonitorAttrType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorAttrTypeTopic" tid="0x00100076" comment="监控指标表">
+			<field name="RspQryNetMonitorAttrType" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorAttrTypeTopic" tid="0x00100077" comment="监控指标表">
+			<field name="RtnNetMonitorAttrType" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorObjectAttrTopic" tid="0x00100078" comment="监控对象指标表">
+			<field name="ReqQryNetMonitorObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorObjectAttrTopic" tid="0x00100079" comment="监控对象指标表">
+			<field name="RspQryNetMonitorObjectAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorObjectAttrTopic" tid="0x00100080" comment="监控对象指标表">
+			<field name="RtnNetMonitorObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorDeviceGroupTopic" tid="0x00100090" comment="设备对象组表">
+			<field name="ReqQryNetMonitorDeviceGroup" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorDeviceGroupTopic" tid="0x00100091" comment="设备对象组表">
+			<field name="RspQryNetMonitorDeviceGroup" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorDeviceGroupTopic" tid="0x00100092" comment="设备对象组表">
+			<field name="RtnNetMonitorDeviceGroup" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorTaskInfoTopic" tid="0x00100093" comment="任务信息表">
+			<field name="ReqQryNetMonitorTaskInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorTaskInfoTopic" tid="0x00100094" comment="任务信息表">
+			<field name="RspQryNetMonitorTaskInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorTaskInfoTopic" tid="0x00100095" comment="任务信息表">
+			<field name="RtnNetMonitorTaskInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorTaskResultTopic" tid="0x00100096" comment="任务结果表">
+			<field name="ReqQryNetMonitorTaskResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorTaskResultTopic" tid="0x00100097" comment="任务结果表">
+			<field name="RspQryNetMonitorTaskResult" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorTaskResultTopic" tid="0x00100098" comment="任务结果表">
+			<field name="RtnNetMonitorTaskResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorTaskObjectSetTopic" tid="0x00100099" comment="任务对象集">
+			<field name="ReqQryNetMonitorTaskObjectSet" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorTaskObjectSetTopic" tid="0x00100100" comment="任务对象集">
+			<field name="RspQryNetMonitorTaskObjectSet" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorTaskObjectSetTopic" tid="0x00100101" comment="任务对象集">
+			<field name="RtnNetMonitorTaskObjectSet" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetPartyLinkInfoTopic" tid="0x00100102" comment="会员链路信息表">
+			<field name="ReqQryNetPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetPartyLinkInfoTopic" tid="0x00100103" comment="会员链路信息表">
+			<field name="RspQryNetPartyLinkInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetPartyLinkInfoTopic" tid="0x00100104" comment="会员链路信息表">
+			<field name="RtnNetPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorActionAttrTopic" tid="0x00100105" comment="监控动作指标对照表">
+			<field name="ReqQryNetMonitorActionAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorActionAttrTopic" tid="0x00100106" comment="监控动作指标对照表">
+			<field name="RspQryNetMonitorActionAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorActionAttrTopic" tid="0x00100107" comment="监控动作指标对照表">
+			<field name="RtnNetMonitorActionAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetModuleTopic" tid="0x00100111" comment="模块">
+			<field name="ReqQryNetModule" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetModuleTopic" tid="0x00100112" comment="模块">
+			<field name="RspQryNetModule" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetModuleTopic" tid="0x00100113" comment="模块">
+			<field name="RtnNetModule" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorTaskStatusResultTopic" tid="0x00100126" comment="任务结果状态表">
+			<field name="ReqQryNetMonitorTaskStatusResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorTaskStatusResultTopic" tid="0x00100127" comment="任务结果状态表">
+			<field name="RspQryNetMonitorTaskStatusResult" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorTaskStatusResultTopic" tid="0x00100128" comment="任务结果状态表">
+			<field name="RtnNetMonitorTaskStatusResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetCfgFileTopic" tid="0x00100151" comment="设备配置表">
+			<field name="ReqQryNetCfgFile" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetCfgFileTopic" tid="0x00100152" comment="设备配置表">
+			<field name="RspQryNetCfgFile" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetCfgFileTopic" tid="0x00100153" comment="设备配置表">
+			<field name="RtnNetCfgFile" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetMonitorDeviceTaskTopic" tid="0x00100154" comment="任务结果规则分析表">
+			<field name="ReqQryNetMonitorDeviceTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetMonitorDeviceTaskTopic" tid="0x00100155" comment="任务结果规则分析表">
+			<field name="RspQryNetMonitorDeviceTask" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetMonitorDeviceTaskTopic" tid="0x00100156" comment="任务结果规则分析表">
+			<field name="RtnNetMonitorDeviceTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryFileGeneralOperTopic" tid="0x00100160" comment="文件通用操作">
+			<field name="ReqQryFileGeneralOper" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFileGeneralOperTopic" tid="0x00100161" comment="文件通用操作">
+			<field name="RspQryFileGeneralOper" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnFileGeneralOperTopic" tid="0x00100162" comment="文件通用操作">
+			<field name="RtnFileGeneralOper" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetBaseLineTopic" tid="0x00100163" comment="基线表">
+			<field name="ReqQryNetBaseLine" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetBaseLineTopic" tid="0x00100164" comment="基线表">
+			<field name="RspQryNetBaseLine" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetBaseLineTopic" tid="0x00100165" comment="基线表">
+			<field name="RtnNetBaseLine" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetBaseLineResultTopic" tid="0x00100169" comment="基线结果表">
+			<field name="ReqQryNetBaseLineResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetBaseLineResultTopic" tid="0x00100170" comment="基线结果表">
+			<field name="RspQryNetBaseLineResult" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetBaseLineResultTopic" tid="0x00100171" comment="基线结果表">
+			<field name="RtnNetBaseLineResult" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetPartyLinkStatusInfoTopic" tid="0x00100172" comment="会员链路状态信息表">
+			<field name="ReqQryNetPartyLinkStatusInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetPartyLinkStatusInfoTopic" tid="0x00100173" comment="会员链路状态信息表">
+			<field name="RspQryNetPartyLinkStatusInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetPartyLinkStatusInfoTopic" tid="0x00100174" comment="会员链路状态信息表">
+			<field name="RtnNetPartyLinkStatusInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetLocalPingResultInfoTopic" tid="0x00100181" comment="本地ping结果">
+			<field name="ReqQryNetLocalPingResultInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetLocalPingResultInfoTopic" tid="0x00100182" comment="本地ping结果">
+			<field name="RspQryNetLocalPingResultInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetLocalPingResultInfoTopic" tid="0x00100183" comment="本地ping结果">
+			<field name="RtnNetLocalPingResultInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryNetRomotePingResultInfoTopic" tid="0x00100184" comment="远程ping结果">
+			<field name="ReqQryNetRomotePingResultInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetRomotePingResultInfoTopic" tid="0x00100185" comment="远程ping结果">
+			<field name="RspQryNetRomotePingResultInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetRomotePingResultInfoTopic" tid="0x00100186" comment="远程ping结果">
+			<field name="RtnNetRomotePingResultInfo" minOccur="1" maxOccur="*"/>
+		</package>
+
+		<package name="ReqQryNetNonPartyLinkInfoTopic" tid="0x00100197" comment="请求非会员链路表信息">
+			<field name="ReqQryNetNonPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryNetNonPartyLinkInfoTopic" tid="0x00100198" comment="返回非会员链路表信息">
+			<field name="RspQryNetNonPartyLinkInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnNetNonPartyLinkInfoTopic" tid="0x00100199" comment="订阅非会员链路表信息">
+			<field name="RtnNetNonPartyLinkInfo" minOccur="1" maxOccur="*"/>
+		</package>
+	</packages>

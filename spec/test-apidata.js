@@ -17,7 +17,8 @@ console.log ('dataType.numb:   ' + jsonContent.FTD.types.length)
 var ReqFuncNumb = 0;
 var RspFuncNumb = 0;
 var RtnFuncNumb = 0;
-var ConFuncNumb = 0;
+var ApiConFuncNumb = 0;
+var SpiConFuncNumb = 0;
 var FuncCol = jsonContent.FTD.packages[0].package;
 
 for (var i = 0; i < FuncCol.length; ++i) {
@@ -26,15 +27,18 @@ for (var i = 0; i < FuncCol.length; ++i) {
 		case "Req": ++ReqFuncNumb; break;
 		case "Rsp": ++RspFuncNumb; break;
 		case "Rtn": ++RtnFuncNumb; break;
-		default: ++ConFuncNumb; break;
+		case "Api": ++ApiConFuncNumb;break;
+		case "Spi": ++SpiConFuncNumb;break;
+		default:  break;
 	}
 }
 
-console.log ("ReqFuncNumb: " + ReqFuncNumb);
-console.log ("RspFuncNumb: " + RspFuncNumb);
-console.log ("RtnFuncNumb: " + RtnFuncNumb);
-console.log ("ConFuncNumb: " + ConFuncNumb);
-console.log ("FuncNumb:    " + (ReqFuncNumb + RspFuncNumb + RtnFuncNumb + ConFuncNumb));
+console.log ("ReqFuncNumb:    " + ReqFuncNumb);
+console.log ("RspFuncNumb:    " + RspFuncNumb);
+console.log ("RtnFuncNumb:    " + RtnFuncNumb);
+console.log ("ApiConFuncNumb: " + ApiConFuncNumb);
+console.log ("SpiConFuncNumb: " + SpiConFuncNumb);
+console.log ("FuncNumb:       " + (ReqFuncNumb + RspFuncNumb + RtnFuncNumb + ApiConFuncNumb + SpiConFuncNumb));
 
 
 // var beforeRspQryTopCpuInfoTopic=0;

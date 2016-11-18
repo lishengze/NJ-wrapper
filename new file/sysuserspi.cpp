@@ -22,22 +22,15 @@ extern fstream g_RunningResult_File;
 
 void SysUserSpi::OnFrontConnected( ){ 
     OutputCallbackMessage("\n****** SysUserSpi:: FrontConnected: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: FrontConnected: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[1];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: FrontConnected: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
 
     paramArray[0] = (void*)pSpiObj;
 
@@ -57,24 +50,17 @@ void SysUserSpi::OnFrontConnected( ){
     OutputCallbackMessage("****** SysUserSpi:: FrontConnected: END! ******\n", g_RunningResult_File);
 }
 
-void SysUserSpi::OnFrontDisConnected(int nReason){ 
-    OutputCallbackMessage("\n****** SysUserSpi:: FrontDisConnected: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+void SysUserSpi::OnFrontDisconnected(int nReason){ 
+    OutputCallbackMessage("\n****** SysUserSpi:: FrontDisconnected: START! ******", g_RunningResult_File);
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: FrontDisconnected: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: FrontDisConnected: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     int* pNewnReason = NULL;
     if (NULL != nReason) { 
         pNewnReason = new int;
@@ -93,56 +79,49 @@ void SysUserSpi::OnFrontDisConnected(int nReason){
         OutputCallbackMessage("nReason:", nReason, g_RunningResult_File);
     }
 
-    uv_mutex_lock (&g_FrontDisConnected_mutex);
+    uv_mutex_lock (&g_FrontDisconnected_mutex);
     vector<FRONT_ID>::iterator it ;
-    for(it = g_FrontDisConnected_IOUser_vec.begin();
-        it != g_FrontDisConnected_IOUser_vec.end(); it++ ) {
+    for(it = g_FrontDisconnected_IOUser_vec.begin();
+        it != g_FrontDisconnected_IOUser_vec.end(); it++ ) {
         if (*it == this->m_frontid) break;     
     }
-    if (it == g_FrontDisConnected_IOUser_vec.end()) {
-        g_FrontDisConnected_IOUser_vec.push_back(this->m_frontid);
+    if (it == g_FrontDisconnected_IOUser_vec.end()) {
+        g_FrontDisconnected_IOUser_vec.push_back(this->m_frontid);
     }
-    g_FrontDisConnected_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
-    uv_mutex_unlock (&g_FrontDisConnected_mutex);
+    g_FrontDisconnected_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
+    uv_mutex_unlock (&g_FrontDisconnected_mutex);
 
-    uv_async_send(&g_FrontDisConnected_async);
-    OutputCallbackMessage("****** SysUserSpi:: FrontDisConnected: END! ******\n", g_RunningResult_File);
+    uv_async_send(&g_FrontDisconnected_async);
+    OutputCallbackMessage("****** SysUserSpi:: FrontDisconnected: END! ******\n", g_RunningResult_File);
 }
 
-void SysUserSpi::OnHeartBeatWarning(int nTimeLapse ){ 
+void SysUserSpi::OnHeartBeatWarning(int nTimeLapse){ 
     OutputCallbackMessage("\n****** SysUserSpi:: HeartBeatWarning: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: HeartBeatWarning: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: HeartBeatWarning: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
-    int* pNewnTimeLapse  = NULL;
-    if (NULL != nTimeLapse ) { 
-        pNewnTimeLapse  = new int;
-        if (NULL == pNewnTimeLapse ) {
-            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pNewnTimeLapse ", g_RunningResult_File);
+    int* pNewnTimeLapse = NULL;
+    if (NULL != nTimeLapse) { 
+        pNewnTimeLapse = new int;
+        if (NULL == pNewnTimeLapse) {
+            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pNewnTimeLapse", g_RunningResult_File);
             return;
         }
-        memcpy (pNewnTimeLapse , &nTimeLapse , sizeof(int));
+        memcpy (pNewnTimeLapse, &nTimeLapse, sizeof(int));
     }
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewnTimeLapse ;
-    if (NULL == nTimeLapse ) { 
-        OutputCallbackMessage("SysUserSpi::nTimeLapse  is NULL" , g_RunningResult_File); 
+    paramArray[1] = (void*)pNewnTimeLapse;
+    if (NULL == nTimeLapse) { 
+        OutputCallbackMessage("SysUserSpi::nTimeLapse is NULL" , g_RunningResult_File); 
     } else {
-        OutputCallbackMessage("nTimeLapse :", nTimeLapse , g_RunningResult_File);
+        OutputCallbackMessage("nTimeLapse:", nTimeLapse, g_RunningResult_File);
     }
 
     uv_mutex_lock (&g_HeartBeatWarning_mutex);
@@ -163,22 +142,15 @@ void SysUserSpi::OnHeartBeatWarning(int nTimeLapse ){
 
 void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQryTopCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopCpuInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTopCpuInfoField* pNewRspQryTopCpuInfo = NULL;
     if (NULL != pRspQryTopCpuInfo) { 
         pNewRspQryTopCpuInfo = new CShfeFtdcRspQryTopCpuInfoField;
@@ -188,35 +160,34 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
         }
         memcpy (pNewRspQryTopCpuInfo,pRspQryTopCpuInfo, sizeof(CShfeFtdcRspQryTopCpuInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTopCpuInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTopCpuInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTopCpuInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopCpuInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -256,22 +227,15 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
 
 void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopCpuInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTopCpuInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTopCpuInfoField* pNewRtnTopCpuInfo = NULL;
     if (NULL != pRtnTopCpuInfo) { 
         pNewRtnTopCpuInfo = new CShfeFtdcRtnTopCpuInfoField;
@@ -320,22 +284,15 @@ void SysUserSpi::OnRtnTopCpuInfoTopic(CShfeFtdcRtnTopCpuInfoField* pRtnTopCpuInf
 
 void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQryTopMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopMemInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTopMemInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTopMemInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTopMemInfoField* pNewRspQryTopMemInfo = NULL;
     if (NULL != pRspQryTopMemInfo) { 
         pNewRspQryTopMemInfo = new CShfeFtdcRspQryTopMemInfoField;
@@ -345,35 +302,34 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
         }
         memcpy (pNewRspQryTopMemInfo,pRspQryTopMemInfo, sizeof(CShfeFtdcRspQryTopMemInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTopMemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTopMemInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTopMemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopMemInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -408,22 +364,15 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
 
 void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopMemInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTopMemInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTopMemInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTopMemInfoField* pNewRtnTopMemInfo = NULL;
     if (NULL != pRtnTopMemInfo) { 
         pNewRtnTopMemInfo = new CShfeFtdcRtnTopMemInfoField;
@@ -467,22 +416,15 @@ void SysUserSpi::OnRtnTopMemInfoTopic(CShfeFtdcRtnTopMemInfoField* pRtnTopMemInf
 
 void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField* pRspQryTopProcessInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTopProcessInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTopProcessInfoField* pNewRspQryTopProcessInfo = NULL;
     if (NULL != pRspQryTopProcessInfo) { 
         pNewRspQryTopProcessInfo = new CShfeFtdcRspQryTopProcessInfoField;
@@ -492,35 +434,34 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
         }
         memcpy (pNewRspQryTopProcessInfo,pRspQryTopProcessInfo, sizeof(CShfeFtdcRspQryTopProcessInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTopProcessInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTopProcessInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTopProcessInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTopProcessInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -563,22 +504,15 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
 
 void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnTopProcessInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTopProcessInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTopProcessInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTopProcessInfoField* pNewRtnTopProcessInfo = NULL;
     if (NULL != pRtnTopProcessInfo) { 
         pNewRtnTopProcessInfo = new CShfeFtdcRtnTopProcessInfoField;
@@ -630,22 +564,15 @@ void SysUserSpi::OnRtnTopProcessInfoTopic(CShfeFtdcRtnTopProcessInfoField* pRtnT
 
 void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField* pRspQryFileSystemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileSystemInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFileSystemInfoField* pNewRspQryFileSystemInfo = NULL;
     if (NULL != pRspQryFileSystemInfo) { 
         pNewRspQryFileSystemInfo = new CShfeFtdcRspQryFileSystemInfoField;
@@ -655,35 +582,34 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
         }
         memcpy (pNewRspQryFileSystemInfo,pRspQryFileSystemInfo, sizeof(CShfeFtdcRspQryFileSystemInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFileSystemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFileSystemInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFileSystemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileSystemInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -723,22 +649,15 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
 
 void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnFileSystemInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileSystemInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFileSystemInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFileSystemInfoField* pNewRtnFileSystemInfo = NULL;
     if (NULL != pRtnFileSystemInfo) { 
         pNewRtnFileSystemInfo = new CShfeFtdcRtnFileSystemInfoField;
@@ -787,22 +706,15 @@ void SysUserSpi::OnRtnFileSystemInfoTopic(CShfeFtdcRtnFileSystemInfoField* pRtnF
 
 void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetworkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetworkInfoField* pNewRspQryNetworkInfo = NULL;
     if (NULL != pRspQryNetworkInfo) { 
         pNewRspQryNetworkInfo = new CShfeFtdcRspQryNetworkInfoField;
@@ -812,35 +724,34 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
         }
         memcpy (pNewRspQryNetworkInfo,pRspQryNetworkInfo, sizeof(CShfeFtdcRspQryNetworkInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetworkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetworkInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetworkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetworkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -881,22 +792,15 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
 
 void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetworkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetworkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetworkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetworkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetworkInfoField* pNewRtnNetworkInfo = NULL;
     if (NULL != pRtnNetworkInfo) { 
         pNewRtnNetworkInfo = new CShfeFtdcRtnNetworkInfoField;
@@ -946,22 +850,15 @@ void SysUserSpi::OnRtnNetworkInfoTopic(CShfeFtdcRtnNetworkInfoField* pRtnNetwork
 
 void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* pRspQryMonitorObject, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorObjectTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorObjectTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorObjectTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryMonitorObjectField* pNewRspQryMonitorObject = NULL;
     if (NULL != pRspQryMonitorObject) { 
         pNewRspQryMonitorObject = new CShfeFtdcRspQryMonitorObjectField;
@@ -971,35 +868,34 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
         }
         memcpy (pNewRspQryMonitorObject,pRspQryMonitorObject, sizeof(CShfeFtdcRspQryMonitorObjectField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryMonitorObject;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryMonitorObject;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryMonitorObject) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMonitorObject is NULL" , g_RunningResult_File); 
     } else {
@@ -1029,22 +925,15 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
 
 void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMonitorObject){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMonitorObjectTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnMonitorObjectTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnMonitorObjectTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnMonitorObjectField* pNewRtnMonitorObject = NULL;
     if (NULL != pRtnMonitorObject) { 
         pNewRtnMonitorObject = new CShfeFtdcRtnMonitorObjectField;
@@ -1083,22 +972,15 @@ void SysUserSpi::OnRtnMonitorObjectTopic(CShfeFtdcRtnMonitorObjectField* pRtnMon
 
 void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField* pRspQryObjectRational, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryObjectRationalTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryObjectRationalTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryObjectRationalTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryObjectRationalField* pNewRspQryObjectRational = NULL;
     if (NULL != pRspQryObjectRational) { 
         pNewRspQryObjectRational = new CShfeFtdcRspQryObjectRationalField;
@@ -1108,35 +990,34 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
         }
         memcpy (pNewRspQryObjectRational,pRspQryObjectRational, sizeof(CShfeFtdcRspQryObjectRationalField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryObjectRational;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryObjectRational;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryObjectRational) { 
         OutputCallbackMessage("SysUserSpi::pRspQryObjectRational is NULL" , g_RunningResult_File); 
     } else {
@@ -1165,22 +1046,15 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
 
 void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnObjectRational){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnObjectRationalTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnObjectRationalTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnObjectRationalTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnObjectRationalField* pNewRtnObjectRational = NULL;
     if (NULL != pRtnObjectRational) { 
         pNewRtnObjectRational = new CShfeFtdcRtnObjectRationalField;
@@ -1218,22 +1092,15 @@ void SysUserSpi::OnRtnObjectRationalTopic(CShfeFtdcRtnObjectRationalField* pRtnO
 
 void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQrySyslogInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySyslogInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySyslogInfoField* pNewRspQrySyslogInfo = NULL;
     if (NULL != pRspQrySyslogInfo) { 
         pNewRspQrySyslogInfo = new CShfeFtdcRspQrySyslogInfoField;
@@ -1243,35 +1110,34 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
         }
         memcpy (pNewRspQrySyslogInfo,pRspQrySyslogInfo, sizeof(CShfeFtdcRspQrySyslogInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySyslogInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySyslogInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySyslogInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySyslogInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1304,22 +1170,15 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
 
 void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSyslogInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSyslogInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSyslogInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSyslogInfoField* pNewRtnSyslogInfo = NULL;
     if (NULL != pRtnSyslogInfo) { 
         pNewRtnSyslogInfo = new CShfeFtdcRtnSyslogInfoField;
@@ -1361,22 +1220,15 @@ void SysUserSpi::OnRtnSyslogInfoTopic(CShfeFtdcRtnSyslogInfoField* pRtnSyslogInf
 
 void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQrySubscriber, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySubscriberTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySubscriberTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySubscriberTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySubscriberField* pNewRspQrySubscriber = NULL;
     if (NULL != pRspQrySubscriber) { 
         pNewRspQrySubscriber = new CShfeFtdcRspQrySubscriberField;
@@ -1386,35 +1238,34 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
         }
         memcpy (pNewRspQrySubscriber,pRspQrySubscriber, sizeof(CShfeFtdcRspQrySubscriberField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySubscriber;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySubscriber;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySubscriber) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySubscriber is NULL" , g_RunningResult_File); 
     } else {
@@ -1444,22 +1295,15 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
 
 void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQryOidRelation, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOidRelationTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryOidRelationTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryOidRelationTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryOidRelationField* pNewRspQryOidRelation = NULL;
     if (NULL != pRspQryOidRelation) { 
         pNewRspQryOidRelation = new CShfeFtdcRspQryOidRelationField;
@@ -1469,35 +1313,34 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
         }
         memcpy (pNewRspQryOidRelation,pRspQryOidRelation, sizeof(CShfeFtdcRspQryOidRelationField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryOidRelation;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryOidRelation;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryOidRelation) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOidRelation is NULL" , g_RunningResult_File); 
     } else {
@@ -1526,22 +1369,15 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
 
 void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRelation){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOidRelationTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnOidRelationTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnOidRelationTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnOidRelationField* pNewRtnOidRelation = NULL;
     if (NULL != pRtnOidRelation) { 
         pNewRtnOidRelation = new CShfeFtdcRtnOidRelationField;
@@ -1579,22 +1415,15 @@ void SysUserSpi::OnRtnOidRelationTopic(CShfeFtdcRtnOidRelationField* pRtnOidRela
 
 void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryUserInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryUserInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryUserInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryUserInfoField* pNewRspQryUserInfo = NULL;
     if (NULL != pRspQryUserInfo) { 
         pNewRspQryUserInfo = new CShfeFtdcRspQryUserInfoField;
@@ -1604,35 +1433,34 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
         }
         memcpy (pNewRspQryUserInfo,pRspQryUserInfo, sizeof(CShfeFtdcRspQryUserInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryUserInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryUserInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryUserInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1668,22 +1496,15 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
 
 void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUserInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnUserInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnUserInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnUserInfoField* pNewRtnUserInfo = NULL;
     if (NULL != pRtnUserInfo) { 
         pNewRtnUserInfo = new CShfeFtdcRtnUserInfoField;
@@ -1728,22 +1549,15 @@ void SysUserSpi::OnRtnUserInfoTopic(CShfeFtdcRtnUserInfoField* pRtnUserInfo){
 
 void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField* pRspQryOnlineUserInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOnlineUserInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryOnlineUserInfoField* pNewRspQryOnlineUserInfo = NULL;
     if (NULL != pRspQryOnlineUserInfo) { 
         pNewRspQryOnlineUserInfo = new CShfeFtdcRspQryOnlineUserInfoField;
@@ -1753,35 +1567,34 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
         }
         memcpy (pNewRspQryOnlineUserInfo,pRspQryOnlineUserInfo, sizeof(CShfeFtdcRspQryOnlineUserInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryOnlineUserInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryOnlineUserInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryOnlineUserInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOnlineUserInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -1817,22 +1630,15 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
 
 void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnOnlineUserInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOnlineUserInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnOnlineUserInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnOnlineUserInfoField* pNewRtnOnlineUserInfo = NULL;
     if (NULL != pRtnOnlineUserInfo) { 
         pNewRtnOnlineUserInfo = new CShfeFtdcRtnOnlineUserInfoField;
@@ -1877,22 +1683,15 @@ void SysUserSpi::OnRtnOnlineUserInfoTopic(CShfeFtdcRtnOnlineUserInfoField* pRtnO
 
 void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRspQryWarningEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWarningEventTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryWarningEventTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryWarningEventTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryWarningEventField* pNewRspQryWarningEvent = NULL;
     if (NULL != pRspQryWarningEvent) { 
         pNewRspQryWarningEvent = new CShfeFtdcRspQryWarningEventField;
@@ -1902,35 +1701,34 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
         }
         memcpy (pNewRspQryWarningEvent,pRspQryWarningEvent, sizeof(CShfeFtdcRspQryWarningEventField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryWarningEvent;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryWarningEvent;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryWarningEvent) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWarningEvent is NULL" , g_RunningResult_File); 
     } else {
@@ -1972,22 +1770,15 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
 
 void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarningEvent){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWarningEventTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnWarningEventTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnWarningEventTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnWarningEventField* pNewRtnWarningEvent = NULL;
     if (NULL != pRtnWarningEvent) { 
         pNewRtnWarningEvent = new CShfeFtdcRtnWarningEventField;
@@ -2039,22 +1830,15 @@ void SysUserSpi::OnRtnWarningEventTopic(CShfeFtdcRtnWarningEventField* pRtnWarni
 
 void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryObjectAttrField* pNewRspQryObjectAttr = NULL;
     if (NULL != pRspQryObjectAttr) { 
         pNewRspQryObjectAttr = new CShfeFtdcRspQryObjectAttrField;
@@ -2064,35 +1848,34 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
         }
         memcpy (pNewRspQryObjectAttr,pRspQryObjectAttr, sizeof(CShfeFtdcRspQryObjectAttrField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryObjectAttr;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -2125,22 +1908,15 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
 
 void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnObjectAttrField* pNewRtnObjectAttr = NULL;
     if (NULL != pRtnObjectAttr) { 
         pNewRtnObjectAttr = new CShfeFtdcRtnObjectAttrField;
@@ -2182,22 +1958,15 @@ void SysUserSpi::OnRtnObjectAttrTopic(CShfeFtdcRtnObjectAttrField* pRtnObjectAtt
 
 void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderField* pRspQryInvalidateOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInvalidateOrderTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryInvalidateOrderField* pNewRspQryInvalidateOrder = NULL;
     if (NULL != pRspQryInvalidateOrder) { 
         pNewRspQryInvalidateOrder = new CShfeFtdcRspQryInvalidateOrderField;
@@ -2207,35 +1976,34 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
         }
         memcpy (pNewRspQryInvalidateOrder,pRspQryInvalidateOrder, sizeof(CShfeFtdcRspQryInvalidateOrderField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryInvalidateOrder;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryInvalidateOrder;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryInvalidateOrder) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInvalidateOrder is NULL" , g_RunningResult_File); 
     } else {
@@ -2279,22 +2047,15 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
 
 void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRtnInvalidateOrder){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInvalidateOrderTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnInvalidateOrderTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnInvalidateOrderField* pNewRtnInvalidateOrder = NULL;
     if (NULL != pRtnInvalidateOrder) { 
         pNewRtnInvalidateOrder = new CShfeFtdcRtnInvalidateOrderField;
@@ -2347,22 +2108,15 @@ void SysUserSpi::OnRtnInvalidateOrderTopic(CShfeFtdcRtnInvalidateOrderField* pRt
 
 void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQryOrderStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryOrderStatusTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryOrderStatusTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryOrderStatusTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryOrderStatusField* pNewRspQryOrderStatus = NULL;
     if (NULL != pRspQryOrderStatus) { 
         pNewRspQryOrderStatus = new CShfeFtdcRspQryOrderStatusField;
@@ -2372,35 +2126,34 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
         }
         memcpy (pNewRspQryOrderStatus,pRspQryOrderStatus, sizeof(CShfeFtdcRspQryOrderStatusField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryOrderStatus;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryOrderStatus;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryOrderStatus) { 
         OutputCallbackMessage("SysUserSpi::pRspQryOrderStatus is NULL" , g_RunningResult_File); 
     } else {
@@ -2446,22 +2199,15 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
 
 void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderStatus){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnOrderStatusTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnOrderStatusTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnOrderStatusTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnOrderStatusField* pNewRtnOrderStatus = NULL;
     if (NULL != pRtnOrderStatus) { 
         pNewRtnOrderStatus = new CShfeFtdcRtnOrderStatusField;
@@ -2516,22 +2262,15 @@ void SysUserSpi::OnRtnOrderStatusTopic(CShfeFtdcRtnOrderStatusField* pRtnOrderSt
 
 void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRspQryBargainOrder, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryBargainOrderTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryBargainOrderTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryBargainOrderTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryBargainOrderField* pNewRspQryBargainOrder = NULL;
     if (NULL != pRspQryBargainOrder) { 
         pNewRspQryBargainOrder = new CShfeFtdcRspQryBargainOrderField;
@@ -2541,35 +2280,34 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
         }
         memcpy (pNewRspQryBargainOrder,pRspQryBargainOrder, sizeof(CShfeFtdcRspQryBargainOrderField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryBargainOrder;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryBargainOrder;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryBargainOrder) { 
         OutputCallbackMessage("SysUserSpi::pRspQryBargainOrder is NULL" , g_RunningResult_File); 
     } else {
@@ -2606,22 +2344,15 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
 
 void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBargainOrder){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnBargainOrderTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnBargainOrderTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnBargainOrderTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnBargainOrderField* pNewRtnBargainOrder = NULL;
     if (NULL != pRtnBargainOrder) { 
         pNewRtnBargainOrder = new CShfeFtdcRtnBargainOrderField;
@@ -2667,22 +2398,15 @@ void SysUserSpi::OnRtnBargainOrderTopic(CShfeFtdcRtnBargainOrderField* pRtnBarga
 
 void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRspQryInstProperty, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInstPropertyTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryInstPropertyTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryInstPropertyTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryInstPropertyField* pNewRspQryInstProperty = NULL;
     if (NULL != pRspQryInstProperty) { 
         pNewRspQryInstProperty = new CShfeFtdcRspQryInstPropertyField;
@@ -2692,35 +2416,34 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
         }
         memcpy (pNewRspQryInstProperty,pRspQryInstProperty, sizeof(CShfeFtdcRspQryInstPropertyField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryInstProperty;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryInstProperty;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryInstProperty) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInstProperty is NULL" , g_RunningResult_File); 
     } else {
@@ -2768,22 +2491,15 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
 
 void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstProperty){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInstPropertyTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnInstPropertyTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnInstPropertyTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnInstPropertyField* pNewRtnInstProperty = NULL;
     if (NULL != pRtnInstProperty) { 
         pNewRtnInstProperty = new CShfeFtdcRtnInstPropertyField;
@@ -2840,22 +2556,15 @@ void SysUserSpi::OnRtnInstPropertyTopic(CShfeFtdcRtnInstPropertyField* pRtnInstP
 
 void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQryMarginRate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMarginRateTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryMarginRateField* pNewRspQryMarginRate = NULL;
     if (NULL != pRspQryMarginRate) { 
         pNewRspQryMarginRate = new CShfeFtdcRspQryMarginRateField;
@@ -2865,35 +2574,34 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
         }
         memcpy (pNewRspQryMarginRate,pRspQryMarginRate, sizeof(CShfeFtdcRspQryMarginRateField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryMarginRate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryMarginRate;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryMarginRate) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMarginRate is NULL" , g_RunningResult_File); 
     } else {
@@ -2929,22 +2637,15 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
 
 void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRate){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMarginRateTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnMarginRateField* pNewRtnMarginRate = NULL;
     if (NULL != pRtnMarginRate) { 
         pNewRtnMarginRate = new CShfeFtdcRtnMarginRateField;
@@ -2989,22 +2690,15 @@ void SysUserSpi::OnRtnMarginRateTopic(CShfeFtdcRtnMarginRateField* pRtnMarginRat
 
 void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQryPriceLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPriceLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPriceLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPriceLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPriceLimitField* pNewRspQryPriceLimit = NULL;
     if (NULL != pRspQryPriceLimit) { 
         pNewRspQryPriceLimit = new CShfeFtdcRspQryPriceLimitField;
@@ -3014,35 +2708,34 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
         }
         memcpy (pNewRspQryPriceLimit,pRspQryPriceLimit, sizeof(CShfeFtdcRspQryPriceLimitField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPriceLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPriceLimit;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPriceLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPriceLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3076,22 +2769,15 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
 
 void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPriceLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPriceLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPriceLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPriceLimitField* pNewRtnPriceLimit = NULL;
     if (NULL != pRtnPriceLimit) { 
         pNewRtnPriceLimit = new CShfeFtdcRtnPriceLimitField;
@@ -3134,22 +2820,15 @@ void SysUserSpi::OnRtnPriceLimitTopic(CShfeFtdcRtnPriceLimitField* pRtnPriceLimi
 
 void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* pRspQryPartPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPartPosiLimitField* pNewRspQryPartPosiLimit = NULL;
     if (NULL != pRspQryPartPosiLimit) { 
         pNewRspQryPartPosiLimit = new CShfeFtdcRspQryPartPosiLimitField;
@@ -3159,35 +2838,34 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
         }
         memcpy (pNewRspQryPartPosiLimit,pRspQryPartPosiLimit, sizeof(CShfeFtdcRspQryPartPosiLimitField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPartPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPartPosiLimit;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPartPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3225,22 +2903,15 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
 
 void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPartPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPartPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPartPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPartPosiLimitField* pNewRtnPartPosiLimit = NULL;
     if (NULL != pRtnPartPosiLimit) { 
         pNewRtnPartPosiLimit = new CShfeFtdcRtnPartPosiLimitField;
@@ -3287,22 +2958,15 @@ void SysUserSpi::OnRtnPartPosiLimitTopic(CShfeFtdcRtnPartPosiLimitField* pRtnPar
 
 void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitField* pRspQryClientPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryClientPosiLimitField* pNewRspQryClientPosiLimit = NULL;
     if (NULL != pRspQryClientPosiLimit) { 
         pNewRspQryClientPosiLimit = new CShfeFtdcRspQryClientPosiLimitField;
@@ -3312,35 +2976,34 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
         }
         memcpy (pNewRspQryClientPosiLimit,pRspQryClientPosiLimit, sizeof(CShfeFtdcRspQryClientPosiLimitField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryClientPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryClientPosiLimit;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryClientPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3378,22 +3041,15 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
 
 void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRtnClientPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnClientPosiLimitField* pNewRtnClientPosiLimit = NULL;
     if (NULL != pRtnClientPosiLimit) { 
         pNewRtnClientPosiLimit = new CShfeFtdcRtnClientPosiLimitField;
@@ -3440,22 +3096,15 @@ void SysUserSpi::OnRtnClientPosiLimitTopic(CShfeFtdcRtnClientPosiLimitField* pRt
 
 void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitField* pRspQrySpecialPosiLimit, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySpecialPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySpecialPosiLimitField* pNewRspQrySpecialPosiLimit = NULL;
     if (NULL != pRspQrySpecialPosiLimit) { 
         pNewRspQrySpecialPosiLimit = new CShfeFtdcRspQrySpecialPosiLimitField;
@@ -3465,35 +3114,34 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
         }
         memcpy (pNewRspQrySpecialPosiLimit,pRspQrySpecialPosiLimit, sizeof(CShfeFtdcRspQrySpecialPosiLimitField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySpecialPosiLimit;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySpecialPosiLimit;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySpecialPosiLimit) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySpecialPosiLimit is NULL" , g_RunningResult_File); 
     } else {
@@ -3531,22 +3179,15 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
 
 void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* pRtnSpecialPosiLimit){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSpecialPosiLimitTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSpecialPosiLimitTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSpecialPosiLimitField* pNewRtnSpecialPosiLimit = NULL;
     if (NULL != pRtnSpecialPosiLimit) { 
         pNewRtnSpecialPosiLimit = new CShfeFtdcRtnSpecialPosiLimitField;
@@ -3593,22 +3234,15 @@ void SysUserSpi::OnRtnSpecialPosiLimitTopic(CShfeFtdcRtnSpecialPosiLimitField* p
 
 void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField* pRspQryTransactionChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTransactionChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTransactionChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTransactionChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTransactionChgField* pNewRspQryTransactionChg = NULL;
     if (NULL != pRspQryTransactionChg) { 
         pNewRspQryTransactionChg = new CShfeFtdcRspQryTransactionChgField;
@@ -3618,35 +3252,34 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
         }
         memcpy (pNewRspQryTransactionChg,pRspQryTransactionChg, sizeof(CShfeFtdcRspQryTransactionChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTransactionChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTransactionChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTransactionChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTransactionChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3679,22 +3312,15 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
 
 void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnTransactionChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTransactionChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTransactionChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTransactionChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTransactionChgField* pNewRtnTransactionChg = NULL;
     if (NULL != pRtnTransactionChg) { 
         pNewRtnTransactionChg = new CShfeFtdcRtnTransactionChgField;
@@ -3736,22 +3362,15 @@ void SysUserSpi::OnRtnTransactionChgTopic(CShfeFtdcRtnTransactionChgField* pRtnT
 
 void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryClientChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryClientChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryClientChgField* pNewRspQryClientChg = NULL;
     if (NULL != pRspQryClientChg) { 
         pNewRspQryClientChg = new CShfeFtdcRspQryClientChgField;
@@ -3761,35 +3380,34 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
         }
         memcpy (pNewRspQryClientChg,pRspQryClientChg, sizeof(CShfeFtdcRspQryClientChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryClientChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryClientChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3825,22 +3443,15 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
 
 void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnClientChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnClientChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnClientChgField* pNewRtnClientChg = NULL;
     if (NULL != pRtnClientChg) { 
         pNewRtnClientChg = new CShfeFtdcRtnClientChgField;
@@ -3885,22 +3496,15 @@ void SysUserSpi::OnRtnClientChgTopic(CShfeFtdcRtnClientChgField* pRtnClientChg){
 
 void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* pRspQryPartClientChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartClientChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPartClientChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPartClientChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPartClientChgField* pNewRspQryPartClientChg = NULL;
     if (NULL != pRspQryPartClientChg) { 
         pNewRspQryPartClientChg = new CShfeFtdcRspQryPartClientChgField;
@@ -3910,35 +3514,34 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
         }
         memcpy (pNewRspQryPartClientChg,pRspQryPartClientChg, sizeof(CShfeFtdcRspQryPartClientChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPartClientChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPartClientChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPartClientChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartClientChg is NULL" , g_RunningResult_File); 
     } else {
@@ -3970,22 +3573,15 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
 
 void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPartClientChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPartClientChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPartClientChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPartClientChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPartClientChgField* pNewRtnPartClientChg = NULL;
     if (NULL != pRtnPartClientChg) { 
         pNewRtnPartClientChg = new CShfeFtdcRtnPartClientChgField;
@@ -4026,22 +3622,15 @@ void SysUserSpi::OnRtnPartClientChgTopic(CShfeFtdcRtnPartClientChgField* pRtnPar
 
 void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRspQryPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPosiLimitChgField* pNewRspQryPosiLimitChg = NULL;
     if (NULL != pRspQryPosiLimitChg) { 
         pNewRspQryPosiLimitChg = new CShfeFtdcRspQryPosiLimitChgField;
@@ -4051,35 +3640,34 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
         }
         memcpy (pNewRspQryPosiLimitChg,pRspQryPosiLimitChg, sizeof(CShfeFtdcRspQryPosiLimitChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPosiLimitChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4116,22 +3704,15 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
 
 void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPosiLimitChgField* pNewRtnPosiLimitChg = NULL;
     if (NULL != pRtnPosiLimitChg) { 
         pNewRtnPosiLimitChg = new CShfeFtdcRtnPosiLimitChgField;
@@ -4177,22 +3758,15 @@ void SysUserSpi::OnRtnPosiLimitChgTopic(CShfeFtdcRtnPosiLimitChgField* pRtnPosiL
 
 void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField* pRspQryHedgeDetailChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHedgeDetailChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHedgeDetailChgField* pNewRspQryHedgeDetailChg = NULL;
     if (NULL != pRspQryHedgeDetailChg) { 
         pNewRspQryHedgeDetailChg = new CShfeFtdcRspQryHedgeDetailChgField;
@@ -4202,35 +3776,34 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
         }
         memcpy (pNewRspQryHedgeDetailChg,pRspQryHedgeDetailChg, sizeof(CShfeFtdcRspQryHedgeDetailChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHedgeDetailChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHedgeDetailChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHedgeDetailChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHedgeDetailChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4268,22 +3841,15 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
 
 void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnHedgeDetailChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHedgeDetailChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnHedgeDetailChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnHedgeDetailChgField* pNewRtnHedgeDetailChg = NULL;
     if (NULL != pRtnHedgeDetailChg) { 
         pNewRtnHedgeDetailChg = new CShfeFtdcRtnHedgeDetailChgField;
@@ -4330,22 +3896,15 @@ void SysUserSpi::OnRtnHedgeDetailChgTopic(CShfeFtdcRtnHedgeDetailChgField* pRtnH
 
 void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField* pRspQryParticipantChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryParticipantChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryParticipantChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryParticipantChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryParticipantChgField* pNewRspQryParticipantChg = NULL;
     if (NULL != pRspQryParticipantChg) { 
         pNewRspQryParticipantChg = new CShfeFtdcRspQryParticipantChgField;
@@ -4355,35 +3914,34 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
         }
         memcpy (pNewRspQryParticipantChg,pRspQryParticipantChg, sizeof(CShfeFtdcRspQryParticipantChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryParticipantChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryParticipantChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryParticipantChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryParticipantChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4418,22 +3976,15 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
 
 void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnParticipantChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnParticipantChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnParticipantChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnParticipantChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnParticipantChgField* pNewRtnParticipantChg = NULL;
     if (NULL != pRtnParticipantChg) { 
         pNewRtnParticipantChg = new CShfeFtdcRtnParticipantChgField;
@@ -4477,22 +4028,15 @@ void SysUserSpi::OnRtnParticipantChgTopic(CShfeFtdcRtnParticipantChgField* pRtnP
 
 void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* pRspQryMarginRateChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMarginRateChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryMarginRateChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryMarginRateChgField* pNewRspQryMarginRateChg = NULL;
     if (NULL != pRspQryMarginRateChg) { 
         pNewRspQryMarginRateChg = new CShfeFtdcRspQryMarginRateChgField;
@@ -4502,35 +4046,34 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
         }
         memcpy (pNewRspQryMarginRateChg,pRspQryMarginRateChg, sizeof(CShfeFtdcRspQryMarginRateChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryMarginRateChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryMarginRateChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryMarginRateChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMarginRateChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4567,22 +4110,15 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
 
 void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMarginRateChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMarginRateChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnMarginRateChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnMarginRateChgField* pNewRtnMarginRateChg = NULL;
     if (NULL != pRtnMarginRateChg) { 
         pNewRtnMarginRateChg = new CShfeFtdcRtnMarginRateChgField;
@@ -4628,22 +4164,15 @@ void SysUserSpi::OnRtnMarginRateChgTopic(CShfeFtdcRtnMarginRateChgField* pRtnMar
 
 void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUserIpChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryUserIpChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryUserIpChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryUserIpChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryUserIpChgField* pNewRspQryUserIpChg = NULL;
     if (NULL != pRspQryUserIpChg) { 
         pNewRspQryUserIpChg = new CShfeFtdcRspQryUserIpChgField;
@@ -4653,35 +4182,34 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
         }
         memcpy (pNewRspQryUserIpChg,pRspQryUserIpChg, sizeof(CShfeFtdcRspQryUserIpChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryUserIpChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryUserIpChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryUserIpChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryUserIpChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4714,22 +4242,15 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
 
 void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnUserIpChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnUserIpChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnUserIpChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnUserIpChgField* pNewRtnUserIpChg = NULL;
     if (NULL != pRtnUserIpChg) { 
         pNewRtnUserIpChg = new CShfeFtdcRtnUserIpChgField;
@@ -4771,22 +4292,15 @@ void SysUserSpi::OnRtnUserIpChgTopic(CShfeFtdcRtnUserIpChgField* pRtnUserIpChg){
 
 void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitChgField* pRspQryClientPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryClientPosiLimitChgField* pNewRspQryClientPosiLimitChg = NULL;
     if (NULL != pRspQryClientPosiLimitChg) { 
         pNewRspQryClientPosiLimitChg = new CShfeFtdcRspQryClientPosiLimitChgField;
@@ -4796,35 +4310,34 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
         }
         memcpy (pNewRspQryClientPosiLimitChg,pRspQryClientPosiLimitChg, sizeof(CShfeFtdcRspQryClientPosiLimitChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryClientPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryClientPosiLimitChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryClientPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -4861,22 +4374,15 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
 
 void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgField* pRtnClientPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnClientPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnClientPosiLimitChgField* pNewRtnClientPosiLimitChg = NULL;
     if (NULL != pRtnClientPosiLimitChg) { 
         pNewRtnClientPosiLimitChg = new CShfeFtdcRtnClientPosiLimitChgField;
@@ -4922,22 +4428,15 @@ void SysUserSpi::OnRtnClientPosiLimitChgTopic(CShfeFtdcRtnClientPosiLimitChgFiel
 
 void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgField* pRspQrySpecPosiLimitChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySpecPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySpecPosiLimitChgField* pNewRspQrySpecPosiLimitChg = NULL;
     if (NULL != pRspQrySpecPosiLimitChg) { 
         pNewRspQrySpecPosiLimitChg = new CShfeFtdcRspQrySpecPosiLimitChgField;
@@ -4947,35 +4446,34 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
         }
         memcpy (pNewRspQrySpecPosiLimitChg,pRspQrySpecPosiLimitChg, sizeof(CShfeFtdcRspQrySpecPosiLimitChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySpecPosiLimitChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySpecPosiLimitChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySpecPosiLimitChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySpecPosiLimitChg is NULL" , g_RunningResult_File); 
     } else {
@@ -5012,22 +4510,15 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
 
 void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* pRtnSpecPosiLimitChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSpecPosiLimitChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSpecPosiLimitChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSpecPosiLimitChgField* pNewRtnSpecPosiLimitChg = NULL;
     if (NULL != pRtnSpecPosiLimitChg) { 
         pNewRtnSpecPosiLimitChg = new CShfeFtdcRtnSpecPosiLimitChgField;
@@ -5073,22 +4564,15 @@ void SysUserSpi::OnRtnSpecPosiLimitChgTopic(CShfeFtdcRtnSpecPosiLimitChgField* p
 
 void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttrField* pRspQryHistoryObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHistoryObjectAttrField* pNewRspQryHistoryObjectAttr = NULL;
     if (NULL != pRspQryHistoryObjectAttr) { 
         pNewRspQryHistoryObjectAttr = new CShfeFtdcRspQryHistoryObjectAttrField;
@@ -5098,35 +4582,34 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
         }
         memcpy (pNewRspQryHistoryObjectAttr,pRspQryHistoryObjectAttr, sizeof(CShfeFtdcRspQryHistoryObjectAttrField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHistoryObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHistoryObjectAttr;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHistoryObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -5165,22 +4648,15 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
 
 void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField* pRtnHistoryObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHistoryObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnHistoryObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnHistoryObjectAttrField* pNewRtnHistoryObjectAttr = NULL;
     if (NULL != pRtnHistoryObjectAttr) { 
         pNewRtnHistoryObjectAttr = new CShfeFtdcRtnHistoryObjectAttrField;
@@ -5228,22 +4704,15 @@ void SysUserSpi::OnRtnHistoryObjectAttrTopic(CShfeFtdcRtnHistoryObjectAttrField*
 
 void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFrontInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFrontInfoField* pNewRspQryFrontInfo = NULL;
     if (NULL != pRspQryFrontInfo) { 
         pNewRspQryFrontInfo = new CShfeFtdcRspQryFrontInfoField;
@@ -5253,35 +4722,34 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
         }
         memcpy (pNewRspQryFrontInfo,pRspQryFrontInfo, sizeof(CShfeFtdcRspQryFrontInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFrontInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFrontInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFrontInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -5314,22 +4782,15 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
 
 void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFrontInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFrontInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFrontInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFrontInfoField* pNewRtnFrontInfo = NULL;
     if (NULL != pRtnFrontInfo) { 
         pNewRtnFrontInfo = new CShfeFtdcRtnFrontInfoField;
@@ -5371,22 +4832,15 @@ void SysUserSpi::OnRtnFrontInfoTopic(CShfeFtdcRtnFrontInfoField* pRtnFrontInfo){
 
 void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRspQrySysUserLogin, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserLoginTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLoginTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLoginTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySysUserLoginField* pNewRspQrySysUserLogin = NULL;
     if (NULL != pRspQrySysUserLogin) { 
         pNewRspQrySysUserLogin = new CShfeFtdcRspQrySysUserLoginField;
@@ -5396,35 +4850,34 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
         }
         memcpy (pNewRspQrySysUserLogin,pRspQrySysUserLogin, sizeof(CShfeFtdcRspQrySysUserLoginField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySysUserLogin;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySysUserLogin;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySysUserLogin) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserLogin is NULL" , g_RunningResult_File); 
     } else {
@@ -5456,22 +4909,15 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
 
 void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* pRspQrySysUserLogout, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserLogoutTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLogoutTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserLogoutTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySysUserLogoutField* pNewRspQrySysUserLogout = NULL;
     if (NULL != pRspQrySysUserLogout) { 
         pNewRspQrySysUserLogout = new CShfeFtdcRspQrySysUserLogoutField;
@@ -5481,35 +4927,34 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
         }
         memcpy (pNewRspQrySysUserLogout,pRspQrySysUserLogout, sizeof(CShfeFtdcRspQrySysUserLogoutField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySysUserLogout;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySysUserLogout;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySysUserLogout) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserLogout is NULL" , g_RunningResult_File); 
     } else {
@@ -5537,22 +4982,15 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
 
 void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswordUpdateField* pRspQrySysUserPasswordUpdate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserPasswordUpdateTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserPasswordUpdateTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserPasswordUpdateTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySysUserPasswordUpdateField* pNewRspQrySysUserPasswordUpdate = NULL;
     if (NULL != pRspQrySysUserPasswordUpdate) { 
         pNewRspQrySysUserPasswordUpdate = new CShfeFtdcRspQrySysUserPasswordUpdateField;
@@ -5562,35 +5000,34 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
         }
         memcpy (pNewRspQrySysUserPasswordUpdate,pRspQrySysUserPasswordUpdate, sizeof(CShfeFtdcRspQrySysUserPasswordUpdateField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySysUserPasswordUpdate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySysUserPasswordUpdate;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySysUserPasswordUpdate) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserPasswordUpdate is NULL" , g_RunningResult_File); 
     } else {
@@ -5619,22 +5056,15 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
 
 void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterField* pRspQrySysUserRegister, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserRegisterTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserRegisterTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserRegisterTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySysUserRegisterField* pNewRspQrySysUserRegister = NULL;
     if (NULL != pRspQrySysUserRegister) { 
         pNewRspQrySysUserRegister = new CShfeFtdcRspQrySysUserRegisterField;
@@ -5644,35 +5074,34 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
         }
         memcpy (pNewRspQrySysUserRegister,pRspQrySysUserRegister, sizeof(CShfeFtdcRspQrySysUserRegisterField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySysUserRegister;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySysUserRegister;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySysUserRegister) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserRegister is NULL" , g_RunningResult_File); 
     } else {
@@ -5701,22 +5130,15 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
 
 void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* pRspQrySysUserDelete, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySysUserDeleteTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserDeleteTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySysUserDeleteTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySysUserDeleteField* pNewRspQrySysUserDelete = NULL;
     if (NULL != pRspQrySysUserDelete) { 
         pNewRspQrySysUserDelete = new CShfeFtdcRspQrySysUserDeleteField;
@@ -5726,35 +5148,34 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
         }
         memcpy (pNewRspQrySysUserDelete,pRspQrySysUserDelete, sizeof(CShfeFtdcRspQrySysUserDeleteField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySysUserDelete;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySysUserDelete;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySysUserDelete) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySysUserDelete is NULL" , g_RunningResult_File); 
     } else {
@@ -5782,22 +5203,15 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
 
 void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTradeLog, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeLogTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeLogTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeLogTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradeLogField* pNewRspQryTradeLog = NULL;
     if (NULL != pRspQryTradeLog) { 
         pNewRspQryTradeLog = new CShfeFtdcRspQryTradeLogField;
@@ -5807,35 +5221,34 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
         }
         memcpy (pNewRspQryTradeLog,pRspQryTradeLog, sizeof(CShfeFtdcRspQryTradeLogField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradeLog;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradeLog;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradeLog) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeLog is NULL" , g_RunningResult_File); 
     } else {
@@ -5864,22 +5277,15 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
 
 void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeLogTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTradeLogTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTradeLogTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTradeLogField* pNewRtnTradeLog = NULL;
     if (NULL != pRtnTradeLog) { 
         pNewRtnTradeLog = new CShfeFtdcRtnTradeLogField;
@@ -5917,22 +5323,15 @@ void SysUserSpi::OnRtnTradeLogTopic(CShfeFtdcRtnTradeLogField* pRtnTradeLog){
 
 void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginInfoField* pRspQryTradeUserLoginInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeUserLoginInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradeUserLoginInfoField* pNewRspQryTradeUserLoginInfo = NULL;
     if (NULL != pRspQryTradeUserLoginInfo) { 
         pNewRspQryTradeUserLoginInfo = new CShfeFtdcRspQryTradeUserLoginInfoField;
@@ -5942,35 +5341,34 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
         }
         memcpy (pNewRspQryTradeUserLoginInfo,pRspQryTradeUserLoginInfo, sizeof(CShfeFtdcRspQryTradeUserLoginInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradeUserLoginInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradeUserLoginInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradeUserLoginInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeUserLoginInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6009,22 +5407,15 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
 
 void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoField* pRtnTradeUserLoginInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeUserLoginInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTradeUserLoginInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTradeUserLoginInfoField* pNewRtnTradeUserLoginInfo = NULL;
     if (NULL != pRtnTradeUserLoginInfo) { 
         pNewRtnTradeUserLoginInfo = new CShfeFtdcRtnTradeUserLoginInfoField;
@@ -6072,22 +5463,15 @@ void SysUserSpi::OnRtnTradeUserLoginInfoTopic(CShfeFtdcRtnTradeUserLoginInfoFiel
 
 void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPartTrade, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPartTradeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPartTradeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPartTradeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPartTradeField* pNewRspQryPartTrade = NULL;
     if (NULL != pRspQryPartTrade) { 
         pNewRspQryPartTrade = new CShfeFtdcRspQryPartTradeField;
@@ -6097,35 +5481,34 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
         }
         memcpy (pNewRspQryPartTrade,pRspQryPartTrade, sizeof(CShfeFtdcRspQryPartTradeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPartTrade;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPartTrade;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPartTrade) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPartTrade is NULL" , g_RunningResult_File); 
     } else {
@@ -6163,22 +5546,15 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
 
 void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTradepeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradepeakTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradepeakTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradepeakTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradepeakField* pNewRspQryTradepeak = NULL;
     if (NULL != pRspQryTradepeak) { 
         pNewRspQryTradepeak = new CShfeFtdcRspQryTradepeakField;
@@ -6188,35 +5564,34 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
         }
         memcpy (pNewRspQryTradepeak,pRspQryTradepeak, sizeof(CShfeFtdcRspQryTradepeakField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradepeak;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradepeak;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradepeak) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradepeak is NULL" , g_RunningResult_File); 
     } else {
@@ -6251,22 +5626,15 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
 
 void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField* pRspQryHistoryCpuInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryCpuInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryCpuInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryCpuInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHistoryCpuInfoField* pNewRspQryHistoryCpuInfo = NULL;
     if (NULL != pRspQryHistoryCpuInfo) { 
         pNewRspQryHistoryCpuInfo = new CShfeFtdcRspQryHistoryCpuInfoField;
@@ -6276,35 +5644,34 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
         }
         memcpy (pNewRspQryHistoryCpuInfo,pRspQryHistoryCpuInfo, sizeof(CShfeFtdcRspQryHistoryCpuInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHistoryCpuInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHistoryCpuInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHistoryCpuInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryCpuInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6344,22 +5711,15 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
 
 void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField* pRspQryHistoryMemInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryMemInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryMemInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryMemInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHistoryMemInfoField* pNewRspQryHistoryMemInfo = NULL;
     if (NULL != pRspQryHistoryMemInfo) { 
         pNewRspQryHistoryMemInfo = new CShfeFtdcRspQryHistoryMemInfoField;
@@ -6369,35 +5729,34 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
         }
         memcpy (pNewRspQryHistoryMemInfo,pRspQryHistoryMemInfo, sizeof(CShfeFtdcRspQryHistoryMemInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHistoryMemInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHistoryMemInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHistoryMemInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryMemInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6432,22 +5791,15 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
 
 void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkInfoField* pRspQryHistoryNetworkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryNetworkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryNetworkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHistoryNetworkInfoField* pNewRspQryHistoryNetworkInfo = NULL;
     if (NULL != pRspQryHistoryNetworkInfo) { 
         pNewRspQryHistoryNetworkInfo = new CShfeFtdcRspQryHistoryNetworkInfoField;
@@ -6457,35 +5809,34 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
         }
         memcpy (pNewRspQryHistoryNetworkInfo,pRspQryHistoryNetworkInfo, sizeof(CShfeFtdcRspQryHistoryNetworkInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHistoryNetworkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHistoryNetworkInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHistoryNetworkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryNetworkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -6526,22 +5877,15 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
 
 void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField* pRspQryMonitorOnlineUser, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMonitorOnlineUser: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorOnlineUser: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryMonitorOnlineUser: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryMonitorOnlineUserField* pNewRspQryMonitorOnlineUser = NULL;
     if (NULL != pRspQryMonitorOnlineUser) { 
         pNewRspQryMonitorOnlineUser = new CShfeFtdcRspQryMonitorOnlineUserField;
@@ -6551,35 +5895,34 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
         }
         memcpy (pNewRspQryMonitorOnlineUser,pRspQryMonitorOnlineUser, sizeof(CShfeFtdcRspQryMonitorOnlineUserField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryMonitorOnlineUser;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryMonitorOnlineUser;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryMonitorOnlineUser) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMonitorOnlineUser is NULL" , g_RunningResult_File); 
     } else {
@@ -6608,22 +5951,15 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
 
 void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontStat: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontStat: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontStat: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFrontStatField* pNewRspQryFrontStat = NULL;
     if (NULL != pRspQryFrontStat) { 
         pNewRspQryFrontStat = new CShfeFtdcRspQryFrontStatField;
@@ -6633,35 +5969,34 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
         }
         memcpy (pNewRspQryFrontStat,pRspQryFrontStat, sizeof(CShfeFtdcRspQryFrontStatField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFrontStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFrontStat;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFrontStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontStat is NULL" , g_RunningResult_File); 
     } else {
@@ -6695,22 +6030,15 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
 
 void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTimeSync){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSysTimeSyncTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSysTimeSyncTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSysTimeSyncTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSysTimeSyncField* pNewRtnSysTimeSync = NULL;
     if (NULL != pRtnSysTimeSync) { 
         pNewRtnSysTimeSync = new CShfeFtdcRtnSysTimeSyncField;
@@ -6748,22 +6076,15 @@ void SysUserSpi::OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField* pRtnSysTime
 
 void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDataCenterChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDataCenterChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnDataCenterChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnDataCenterChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnDataCenterChgField* pNewRtnDataCenterChg = NULL;
     if (NULL != pRtnDataCenterChg) { 
         pNewRtnDataCenterChg = new CShfeFtdcRtnDataCenterChgField;
@@ -6800,22 +6121,15 @@ void SysUserSpi::OnRtnDataCenterChgTopic(CShfeFtdcRtnDataCenterChgField* pRtnDat
 
 void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakField* pRspQryHistoryTradePeak, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryHistoryTradePeakTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryHistoryTradePeakField* pNewRspQryHistoryTradePeak = NULL;
     if (NULL != pRspQryHistoryTradePeak) { 
         pNewRspQryHistoryTradePeak = new CShfeFtdcRspQryHistoryTradePeakField;
@@ -6825,35 +6139,34 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
         }
         memcpy (pNewRspQryHistoryTradePeak,pRspQryHistoryTradePeak, sizeof(CShfeFtdcRspQryHistoryTradePeakField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryHistoryTradePeak;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryHistoryTradePeak;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryHistoryTradePeak) { 
         OutputCallbackMessage("SysUserSpi::pRspQryHistoryTradePeak is NULL" , g_RunningResult_File); 
     } else {
@@ -6895,22 +6208,15 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
 
 void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* pRtnHistoryTradePeak){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnHistoryTradePeakTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnHistoryTradePeakTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnHistoryTradePeakField* pNewRtnHistoryTradePeak = NULL;
     if (NULL != pRtnHistoryTradePeak) { 
         pNewRtnHistoryTradePeak = new CShfeFtdcRtnHistoryTradePeakField;
@@ -6961,22 +6267,15 @@ void SysUserSpi::OnRtnHistoryTradePeakTopic(CShfeFtdcRtnHistoryTradePeakField* p
 
 void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQrySyslogEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySyslogEventTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogEventTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySyslogEventTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySyslogEventField* pNewRspQrySyslogEvent = NULL;
     if (NULL != pRspQrySyslogEvent) { 
         pNewRspQrySyslogEvent = new CShfeFtdcRspQrySyslogEventField;
@@ -6986,35 +6285,34 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
         }
         memcpy (pNewRspQrySyslogEvent,pRspQrySyslogEvent, sizeof(CShfeFtdcRspQrySyslogEventField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySyslogEvent;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySyslogEvent;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySyslogEvent) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySyslogEvent is NULL" , g_RunningResult_File); 
     } else {
@@ -7057,22 +6355,15 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
 
 void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogEvent){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSyslogEventTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSyslogEventTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSyslogEventTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSyslogEventField* pNewRtnSyslogEvent = NULL;
     if (NULL != pRtnSyslogEvent) { 
         pNewRtnSyslogEvent = new CShfeFtdcRtnSyslogEventField;
@@ -7123,22 +6414,15 @@ void SysUserSpi::OnRtnSyslogEventTopic(CShfeFtdcRtnSyslogEventField* pRtnSyslogE
 
 void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQryWebAppInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWebAppInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryWebAppInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryWebAppInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryWebAppInfoField* pNewRspQryWebAppInfo = NULL;
     if (NULL != pRspQryWebAppInfo) { 
         pNewRspQryWebAppInfo = new CShfeFtdcRspQryWebAppInfoField;
@@ -7148,35 +6432,34 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
         }
         memcpy (pNewRspQryWebAppInfo,pRspQryWebAppInfo, sizeof(CShfeFtdcRspQryWebAppInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryWebAppInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryWebAppInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryWebAppInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWebAppInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7218,22 +6501,15 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
 
 void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWebAppInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnWebAppInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnWebAppInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnWebAppInfoField* pNewRtnWebAppInfo = NULL;
     if (NULL != pRtnWebAppInfo) { 
         pNewRtnWebAppInfo = new CShfeFtdcRtnWebAppInfoField;
@@ -7284,22 +6560,15 @@ void SysUserSpi::OnRtnWebAppInfoTopic(CShfeFtdcRtnWebAppInfoField* pRtnWebAppInf
 
 void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQryServletInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryServletInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryServletInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryServletInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryServletInfoField* pNewRspQryServletInfo = NULL;
     if (NULL != pRspQryServletInfo) { 
         pNewRspQryServletInfo = new CShfeFtdcRspQryServletInfoField;
@@ -7309,35 +6578,34 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
         }
         memcpy (pNewRspQryServletInfo,pRspQryServletInfo, sizeof(CShfeFtdcRspQryServletInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryServletInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryServletInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryServletInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryServletInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7374,22 +6642,15 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
 
 void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServletInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnServletInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnServletInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnServletInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnServletInfoField* pNewRtnServletInfo = NULL;
     if (NULL != pRtnServletInfo) { 
         pNewRtnServletInfo = new CShfeFtdcRtnServletInfoField;
@@ -7435,22 +6696,15 @@ void SysUserSpi::OnRtnServletInfoTopic(CShfeFtdcRtnServletInfoField* pRtnServlet
 
 void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFileInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFileInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFileInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFileInfoField* pNewRspQryFileInfo = NULL;
     if (NULL != pRspQryFileInfo) { 
         pNewRspQryFileInfo = new CShfeFtdcRspQryFileInfoField;
@@ -7460,35 +6714,34 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
         }
         memcpy (pNewRspQryFileInfo,pRspQryFileInfo, sizeof(CShfeFtdcRspQryFileInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFileInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFileInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFileInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7522,22 +6775,15 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
 
 void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFileInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFileInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFileInfoField* pNewRtnFileInfo = NULL;
     if (NULL != pRtnFileInfo) { 
         pNewRtnFileInfo = new CShfeFtdcRtnFileInfoField;
@@ -7580,22 +6826,15 @@ void SysUserSpi::OnRtnFileInfoTopic(CShfeFtdcRtnFileInfoField* pRtnFileInfo){
 
 void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQrySessionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQrySessionInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQrySessionInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQrySessionInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQrySessionInfoField* pNewRspQrySessionInfo = NULL;
     if (NULL != pRspQrySessionInfo) { 
         pNewRspQrySessionInfo = new CShfeFtdcRspQrySessionInfoField;
@@ -7605,35 +6844,34 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
         }
         memcpy (pNewRspQrySessionInfo,pRspQrySessionInfo, sizeof(CShfeFtdcRspQrySessionInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQrySessionInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQrySessionInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQrySessionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQrySessionInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7669,22 +6907,15 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
 
 void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSessionInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnSessionInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnSessionInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnSessionInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnSessionInfoField* pNewRtnSessionInfo = NULL;
     if (NULL != pRtnSessionInfo) { 
         pNewRtnSessionInfo = new CShfeFtdcRtnSessionInfoField;
@@ -7729,22 +6960,15 @@ void SysUserSpi::OnRtnSessionInfoTopic(CShfeFtdcRtnSessionInfoField* pRtnSession
 
 void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBCInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryJDBCInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryJDBCInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryJDBCInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryJDBCInfoField* pNewRspQryJDBCInfo = NULL;
     if (NULL != pRspQryJDBCInfo) { 
         pNewRspQryJDBCInfo = new CShfeFtdcRspQryJDBCInfoField;
@@ -7754,35 +6978,34 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
         }
         memcpy (pNewRspQryJDBCInfo,pRspQryJDBCInfo, sizeof(CShfeFtdcRspQryJDBCInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryJDBCInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryJDBCInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryJDBCInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryJDBCInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7822,22 +7045,15 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
 
 void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnJDBCInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnJDBCInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnJDBCInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnJDBCInfoField* pNewRtnJDBCInfo = NULL;
     if (NULL != pRtnJDBCInfo) { 
         pNewRtnJDBCInfo = new CShfeFtdcRtnJDBCInfoField;
@@ -7886,22 +7102,15 @@ void SysUserSpi::OnRtnJDBCInfoTopic(CShfeFtdcRtnJDBCInfoField* pRtnJDBCInfo){
 
 void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQryThreadInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryThreadInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryThreadInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryThreadInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryThreadInfoField* pNewRspQryThreadInfo = NULL;
     if (NULL != pRspQryThreadInfo) { 
         pNewRspQryThreadInfo = new CShfeFtdcRspQryThreadInfoField;
@@ -7911,35 +7120,34 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
         }
         memcpy (pNewRspQryThreadInfo,pRspQryThreadInfo, sizeof(CShfeFtdcRspQryThreadInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryThreadInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryThreadInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryThreadInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryThreadInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -7978,22 +7186,15 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
 
 void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnThreadInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnThreadInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnThreadInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnThreadInfoField* pNewRtnThreadInfo = NULL;
     if (NULL != pRtnThreadInfo) { 
         pNewRtnThreadInfo = new CShfeFtdcRtnThreadInfoField;
@@ -8041,22 +7242,15 @@ void SysUserSpi::OnRtnThreadInfoTopic(CShfeFtdcRtnThreadInfoField* pRtnThreadInf
 
 void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryVMInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryVMInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryVMInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryVMInfoField* pNewRspQryVMInfo = NULL;
     if (NULL != pRspQryVMInfo) { 
         pNewRspQryVMInfo = new CShfeFtdcRspQryVMInfoField;
@@ -8066,35 +7260,34 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
         }
         memcpy (pNewRspQryVMInfo,pRspQryVMInfo, sizeof(CShfeFtdcRspQryVMInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryVMInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryVMInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryVMInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryVMInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8133,22 +7326,15 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
 
 void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnVMInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnVMInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnVMInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnVMInfoField* pNewRtnVMInfo = NULL;
     if (NULL != pRtnVMInfo) { 
         pNewRtnVMInfo = new CShfeFtdcRtnVMInfoField;
@@ -8196,22 +7382,15 @@ void SysUserSpi::OnRtnVMInfoTopic(CShfeFtdcRtnVMInfoField* pRtnVMInfo){
 
 void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRspQryPropertyInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPropertyInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPropertyInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPropertyInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPropertyInfoField* pNewRspQryPropertyInfo = NULL;
     if (NULL != pRspQryPropertyInfo) { 
         pNewRspQryPropertyInfo = new CShfeFtdcRspQryPropertyInfoField;
@@ -8221,35 +7400,34 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
         }
         memcpy (pNewRspQryPropertyInfo,pRspQryPropertyInfo, sizeof(CShfeFtdcRspQryPropertyInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPropertyInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPropertyInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPropertyInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPropertyInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8282,22 +7460,15 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
 
 void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPropertyInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPropertyInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPropertyInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPropertyInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPropertyInfoField* pNewRtnPropertyInfo = NULL;
     if (NULL != pRtnPropertyInfo) { 
         pNewRtnPropertyInfo = new CShfeFtdcRtnPropertyInfoField;
@@ -8339,22 +7510,15 @@ void SysUserSpi::OnRtnPropertyInfoTopic(CShfeFtdcRtnPropertyInfoField* pRtnPrope
 
 void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQryMemPoolInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryMemPoolInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryMemPoolInfoField* pNewRspQryMemPoolInfo = NULL;
     if (NULL != pRspQryMemPoolInfo) { 
         pNewRspQryMemPoolInfo = new CShfeFtdcRspQryMemPoolInfoField;
@@ -8364,35 +7528,34 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
         }
         memcpy (pNewRspQryMemPoolInfo,pRspQryMemPoolInfo, sizeof(CShfeFtdcRspQryMemPoolInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryMemPoolInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryMemPoolInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryMemPoolInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryMemPoolInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8429,22 +7592,15 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
 
 void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPoolInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnMemPoolInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnMemPoolInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnMemPoolInfoField* pNewRtnMemPoolInfo = NULL;
     if (NULL != pRtnMemPoolInfo) { 
         pNewRtnMemPoolInfo = new CShfeFtdcRtnMemPoolInfoField;
@@ -8490,22 +7646,15 @@ void SysUserSpi::OnRtnMemPoolInfoTopic(CShfeFtdcRtnMemPoolInfoField* pRtnMemPool
 
 void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoField* pRspQryFileContentInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileContentInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFileContentInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFileContentInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFileContentInfoField* pNewRspQryFileContentInfo = NULL;
     if (NULL != pRspQryFileContentInfo) { 
         pNewRspQryFileContentInfo = new CShfeFtdcRspQryFileContentInfoField;
@@ -8515,35 +7664,34 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
         }
         memcpy (pNewRspQryFileContentInfo,pRspQryFileContentInfo, sizeof(CShfeFtdcRspQryFileContentInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFileContentInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFileContentInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFileContentInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileContentInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8575,22 +7723,15 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
 
 void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRtnFileContentInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileContentInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFileContentInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFileContentInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFileContentInfoField* pNewRtnFileContentInfo = NULL;
     if (NULL != pRtnFileContentInfo) { 
         pNewRtnFileContentInfo = new CShfeFtdcRtnFileContentInfoField;
@@ -8631,22 +7772,15 @@ void SysUserSpi::OnRtnFileContentInfoTopic(CShfeFtdcRtnFileContentInfoField* pRt
 
 void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField* pRspQryConnectionInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryConnectionInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryConnectionInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryConnectionInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryConnectionInfoField* pNewRspQryConnectionInfo = NULL;
     if (NULL != pRspQryConnectionInfo) { 
         pNewRspQryConnectionInfo = new CShfeFtdcRspQryConnectionInfoField;
@@ -8656,35 +7790,34 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
         }
         memcpy (pNewRspQryConnectionInfo,pRspQryConnectionInfo, sizeof(CShfeFtdcRspQryConnectionInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryConnectionInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryConnectionInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryConnectionInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryConnectionInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8723,22 +7856,15 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
 
 void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnConnectionInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnConnectionInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnConnectionInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnConnectionInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnConnectionInfoField* pNewRtnConnectionInfo = NULL;
     if (NULL != pRtnConnectionInfo) { 
         pNewRtnConnectionInfo = new CShfeFtdcRtnConnectionInfoField;
@@ -8786,22 +7912,15 @@ void SysUserSpi::OnRtnConnectionInfoTopic(CShfeFtdcRtnConnectionInfoField* pRtnC
 
 void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* pRspQryConnectorInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryConnectorInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryConnectorInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryConnectorInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryConnectorInfoField* pNewRspQryConnectorInfo = NULL;
     if (NULL != pRspQryConnectorInfo) { 
         pNewRspQryConnectorInfo = new CShfeFtdcRspQryConnectorInfoField;
@@ -8811,35 +7930,34 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
         }
         memcpy (pNewRspQryConnectorInfo,pRspQryConnectorInfo, sizeof(CShfeFtdcRspQryConnectorInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryConnectorInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryConnectorInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryConnectorInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryConnectorInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -8881,22 +7999,15 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
 
 void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnConnectorInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnConnectorInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnConnectorInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnConnectorInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnConnectorInfoField* pNewRtnConnectorInfo = NULL;
     if (NULL != pRtnConnectorInfo) { 
         pNewRtnConnectorInfo = new CShfeFtdcRtnConnectorInfoField;
@@ -8947,22 +8058,15 @@ void SysUserSpi::OnRtnConnectorInfoTopic(CShfeFtdcRtnConnectorInfoField* pRtnCon
 
 void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryDBQueryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryDBQueryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryDBQueryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryDBQueryField* pNewRspQryDBQuery = NULL;
     if (NULL != pRspQryDBQuery) { 
         pNewRspQryDBQuery = new CShfeFtdcRspQryDBQueryField;
@@ -8972,35 +8076,34 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
         }
         memcpy (pNewRspQryDBQuery,pRspQryDBQuery, sizeof(CShfeFtdcRspQryDBQueryField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryDBQuery;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryDBQuery;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryDBQuery) { 
         OutputCallbackMessage("SysUserSpi::pRspQryDBQuery is NULL" , g_RunningResult_File); 
     } else {
@@ -9032,22 +8135,15 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
 
 void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDBQueryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnDBQueryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnDBQueryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnDBQueryField* pNewRtnDBQuery = NULL;
     if (NULL != pRtnDBQuery) { 
         pNewRtnDBQuery = new CShfeFtdcRtnDBQueryField;
@@ -9088,22 +8184,15 @@ void SysUserSpi::OnRtnDBQueryTopic(CShfeFtdcRtnDBQueryField* pRtnDBQuery){
 
 void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGeneralField, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGeneralFieldTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralFieldTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralFieldTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcSysGeneralFieldField* pNewSysGeneralField = NULL;
     if (NULL != pSysGeneralField) { 
         pNewSysGeneralField = new CShfeFtdcSysGeneralFieldField;
@@ -9113,35 +8202,34 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
         }
         memcpy (pNewSysGeneralField,pSysGeneralField, sizeof(CShfeFtdcSysGeneralFieldField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewSysGeneralField;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewSysGeneralField;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pSysGeneralField) { 
         OutputCallbackMessage("SysUserSpi::pSysGeneralField is NULL" , g_RunningResult_File); 
     } else {
@@ -9174,22 +8262,15 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
 
 void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGeneralField){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnGeneralFieldTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnGeneralFieldTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnGeneralFieldTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcSysGeneralFieldField* pNewSysGeneralField = NULL;
     if (NULL != pSysGeneralField) { 
         pNewSysGeneralField = new CShfeFtdcSysGeneralFieldField;
@@ -9231,22 +8312,15 @@ void SysUserSpi::OnRtnGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGener
 
 void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGetFileTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryGetFileTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryGetFileTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryGetFileField* pNewRspQryGetFile = NULL;
     if (NULL != pRspQryGetFile) { 
         pNewRspQryGetFile = new CShfeFtdcRspQryGetFileField;
@@ -9256,35 +8330,34 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
         }
         memcpy (pNewRspQryGetFile,pRspQryGetFile, sizeof(CShfeFtdcRspQryGetFileField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryGetFile;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryGetFile;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryGetFile) { 
         OutputCallbackMessage("SysUserSpi::pRspQryGetFile is NULL" , g_RunningResult_File); 
     } else {
@@ -9316,22 +8389,15 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
 
 void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRspQryWarningQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryWarningQueryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryWarningQueryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryWarningQueryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryWarningQueryField* pNewRspQryWarningQuery = NULL;
     if (NULL != pRspQryWarningQuery) { 
         pNewRspQryWarningQuery = new CShfeFtdcRspQryWarningQueryField;
@@ -9341,35 +8407,34 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
         }
         memcpy (pNewRspQryWarningQuery,pRspQryWarningQuery, sizeof(CShfeFtdcRspQryWarningQueryField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryWarningQuery;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryWarningQuery;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryWarningQuery) { 
         OutputCallbackMessage("SysUserSpi::pRspQryWarningQuery is NULL" , g_RunningResult_File); 
     } else {
@@ -9400,22 +8465,15 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
 
 void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarningQuery){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWarningQueryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnWarningQueryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnWarningQueryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnWarningQueryField* pNewRtnWarningQuery = NULL;
     if (NULL != pRtnWarningQuery) { 
         pNewRtnWarningQuery = new CShfeFtdcRtnWarningQueryField;
@@ -9455,22 +8513,15 @@ void SysUserSpi::OnRtnWarningQueryTopic(CShfeFtdcRtnWarningQueryField* pRtnWarni
 
 void SysUserSpi::OnRtnWarningActiveChange(CShfeFtdcRtnWarningActiveChangeField* pRtnWarningActiveChange){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnWarningActiveChange: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnWarningActiveChange: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnWarningActiveChange: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnWarningActiveChangeField* pNewRtnWarningActiveChange = NULL;
     if (NULL != pRtnWarningActiveChange) { 
         pNewRtnWarningActiveChange = new CShfeFtdcRtnWarningActiveChangeField;
@@ -9510,22 +8561,15 @@ void SysUserSpi::OnRtnWarningActiveChange(CShfeFtdcRtnWarningActiveChangeField* 
 
 void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField* pRspQryGeneralOperate, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryGeneralOperateTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralOperateTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryGeneralOperateTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryGeneralOperateField* pNewRspQryGeneralOperate = NULL;
     if (NULL != pRspQryGeneralOperate) { 
         pNewRspQryGeneralOperate = new CShfeFtdcRspQryGeneralOperateField;
@@ -9535,35 +8579,34 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
         }
         memcpy (pNewRspQryGeneralOperate,pRspQryGeneralOperate, sizeof(CShfeFtdcRspQryGeneralOperateField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryGeneralOperate;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryGeneralOperate;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryGeneralOperate) { 
         OutputCallbackMessage("SysUserSpi::pRspQryGeneralOperate is NULL" , g_RunningResult_File); 
     } else {
@@ -9594,22 +8637,15 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
 
 void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnGeneralOperate){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnGeneralOperateTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnGeneralOperateTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnGeneralOperateTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnGeneralOperateField* pNewRtnGeneralOperate = NULL;
     if (NULL != pRtnGeneralOperate) { 
         pNewRtnGeneralOperate = new CShfeFtdcRtnGeneralOperateField;
@@ -9649,22 +8685,15 @@ void SysUserSpi::OnRtnGeneralOperateTopic(CShfeFtdcRtnGeneralOperateField* pRtnG
 
 void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedField* pRspQryNetDeviceLinked, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceLinkedTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceLinkedField* pNewRspQryNetDeviceLinked = NULL;
     if (NULL != pRspQryNetDeviceLinked) { 
         pNewRspQryNetDeviceLinked = new CShfeFtdcRspQryNetDeviceLinkedField;
@@ -9674,35 +8703,34 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
         }
         memcpy (pNewRspQryNetDeviceLinked,pRspQryNetDeviceLinked, sizeof(CShfeFtdcRspQryNetDeviceLinkedField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDeviceLinked;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDeviceLinked;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDeviceLinked) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceLinked is NULL" , g_RunningResult_File); 
     } else {
@@ -9740,22 +8768,15 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
 
 void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRtnNetDeviceLinked){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceLinkedTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceLinkedTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDeviceLinkedField* pNewRtnNetDeviceLinked = NULL;
     if (NULL != pRtnNetDeviceLinked) { 
         pNewRtnNetDeviceLinked = new CShfeFtdcRtnNetDeviceLinkedField;
@@ -9802,22 +8823,15 @@ void SysUserSpi::OnRtnNetDeviceLinkedTopic(CShfeFtdcRtnNetDeviceLinkedField* pRt
 
 void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginStatField* pRspQryTradeUserLoginStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeUserLoginStatTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginStatTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeUserLoginStatTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradeUserLoginStatField* pNewRspQryTradeUserLoginStat = NULL;
     if (NULL != pRspQryTradeUserLoginStat) { 
         pNewRspQryTradeUserLoginStat = new CShfeFtdcRspQryTradeUserLoginStatField;
@@ -9827,35 +8841,34 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
         }
         memcpy (pNewRspQryTradeUserLoginStat,pRspQryTradeUserLoginStat, sizeof(CShfeFtdcRspQryTradeUserLoginStatField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradeUserLoginStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradeUserLoginStat;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradeUserLoginStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeUserLoginStat is NULL" , g_RunningResult_File); 
     } else {
@@ -9889,22 +8902,15 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
 
 void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOrderRttStatField* pRspQryTradeFrontOrderRttStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeFrontOrderRttStatTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradeFrontOrderRttStatField* pNewRspQryTradeFrontOrderRttStat = NULL;
     if (NULL != pRspQryTradeFrontOrderRttStat) { 
         pNewRspQryTradeFrontOrderRttStat = new CShfeFtdcRspQryTradeFrontOrderRttStatField;
@@ -9914,35 +8920,34 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
         }
         memcpy (pNewRspQryTradeFrontOrderRttStat,pRspQryTradeFrontOrderRttStat, sizeof(CShfeFtdcRspQryTradeFrontOrderRttStatField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradeFrontOrderRttStat;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradeFrontOrderRttStat;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradeFrontOrderRttStat) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeFrontOrderRttStat is NULL" , g_RunningResult_File); 
     } else {
@@ -9978,22 +8983,15 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
 
 void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRttStatField* pRtnTradeFrontOrderRttStat){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeFrontOrderRttStatTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTradeFrontOrderRttStatTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTradeFrontOrderRttStatField* pNewRtnTradeFrontOrderRttStat = NULL;
     if (NULL != pRtnTradeFrontOrderRttStat) { 
         pNewRtnTradeFrontOrderRttStat = new CShfeFtdcRtnTradeFrontOrderRttStatField;
@@ -10038,22 +9036,15 @@ void SysUserSpi::OnRtnTradeFrontOrderRttStatTopic(CShfeFtdcRtnTradeFrontOrderRtt
 
 void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeOrderStatesField* pRspQryParticTradeOrderStates, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryParticTradeOrderStatesTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryParticTradeOrderStatesField* pNewRspQryParticTradeOrderStates = NULL;
     if (NULL != pRspQryParticTradeOrderStates) { 
         pNewRspQryParticTradeOrderStates = new CShfeFtdcRspQryParticTradeOrderStatesField;
@@ -10063,35 +9054,34 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
         }
         memcpy (pNewRspQryParticTradeOrderStates,pRspQryParticTradeOrderStates, sizeof(CShfeFtdcRspQryParticTradeOrderStatesField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryParticTradeOrderStates;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryParticTradeOrderStates;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryParticTradeOrderStates) { 
         OutputCallbackMessage("SysUserSpi::pRspQryParticTradeOrderStates is NULL" , g_RunningResult_File); 
     } else {
@@ -10134,22 +9124,15 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
 
 void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderStatesField* pRtnParticTradeOrderStates){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnParticTradeOrderStatesTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnParticTradeOrderStatesTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnParticTradeOrderStatesField* pNewRtnParticTradeOrderStates = NULL;
     if (NULL != pRtnParticTradeOrderStates) { 
         pNewRtnParticTradeOrderStates = new CShfeFtdcRtnParticTradeOrderStatesField;
@@ -10201,22 +9184,15 @@ void SysUserSpi::OnRtnParticTradeOrderStatesTopic(CShfeFtdcRtnParticTradeOrderSt
 
 void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQryRouterInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryRouterInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryRouterInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryRouterInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryRouterInfoField* pNewRspQryRouterInfo = NULL;
     if (NULL != pRspQryRouterInfo) { 
         pNewRspQryRouterInfo = new CShfeFtdcRspQryRouterInfoField;
@@ -10226,35 +9202,34 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
         }
         memcpy (pNewRspQryRouterInfo,pRspQryRouterInfo, sizeof(CShfeFtdcRspQryRouterInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryRouterInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryRouterInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryRouterInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryRouterInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -10295,22 +9270,15 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
 
 void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnRouterInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnRouterInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnRouterInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnRouterInfoField* pNewRtnRouterInfo = NULL;
     if (NULL != pRtnRouterInfo) { 
         pNewRtnRouterInfo = new CShfeFtdcRtnRouterInfoField;
@@ -10360,22 +9328,15 @@ void SysUserSpi::OnRtnRouterInfoTopic(CShfeFtdcRtnRouterInfoField* pRtnRouterInf
 
 void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryDiskIOTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryDiskIOTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryDiskIOTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryDiskIOField* pNewRspQryDiskIO = NULL;
     if (NULL != pRspQryDiskIO) { 
         pNewRspQryDiskIO = new CShfeFtdcRspQryDiskIOField;
@@ -10385,35 +9346,34 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
         }
         memcpy (pNewRspQryDiskIO,pRspQryDiskIO, sizeof(CShfeFtdcRspQryDiskIOField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryDiskIO;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryDiskIO;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryDiskIO) { 
         OutputCallbackMessage("SysUserSpi::pRspQryDiskIO is NULL" , g_RunningResult_File); 
     } else {
@@ -10454,22 +9414,15 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
 
 void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnDiskIOTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnDiskIOTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnDiskIOTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnDiskIOField* pNewRtnDiskIO = NULL;
     if (NULL != pRtnDiskIO) { 
         pNewRtnDiskIO = new CShfeFtdcRtnDiskIOField;
@@ -10519,22 +9472,15 @@ void SysUserSpi::OnRtnDiskIOTopic(CShfeFtdcRtnDiskIOField* pRtnDiskIO){
 
 void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStatInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryStatInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryStatInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryStatInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryStatInfoField* pNewRspQryStatInfo = NULL;
     if (NULL != pRspQryStatInfo) { 
         pNewRspQryStatInfo = new CShfeFtdcRspQryStatInfoField;
@@ -10544,35 +9490,34 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
         }
         memcpy (pNewRspQryStatInfo,pRspQryStatInfo, sizeof(CShfeFtdcRspQryStatInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryStatInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryStatInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryStatInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryStatInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -10615,22 +9560,15 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
 
 void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnStatInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnStatInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnStatInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnStatInfoField* pNewRtnStatInfo = NULL;
     if (NULL != pRtnStatInfo) { 
         pNewRtnStatInfo = new CShfeFtdcRtnStatInfoField;
@@ -10682,22 +9620,15 @@ void SysUserSpi::OnRtnStatInfoTopic(CShfeFtdcRtnStatInfoField* pRtnStatInfo){
 
 void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttCutLineField* pRspQryTradeOrderRttCutLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryTradeOrderRttCutLineTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryTradeOrderRttCutLineField* pNewRspQryTradeOrderRttCutLine = NULL;
     if (NULL != pRspQryTradeOrderRttCutLine) { 
         pNewRspQryTradeOrderRttCutLine = new CShfeFtdcRspQryTradeOrderRttCutLineField;
@@ -10707,35 +9638,34 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
         }
         memcpy (pNewRspQryTradeOrderRttCutLine,pRspQryTradeOrderRttCutLine, sizeof(CShfeFtdcRspQryTradeOrderRttCutLineField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryTradeOrderRttCutLine;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryTradeOrderRttCutLine;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryTradeOrderRttCutLine) { 
         OutputCallbackMessage("SysUserSpi::pRspQryTradeOrderRttCutLine is NULL" , g_RunningResult_File); 
     } else {
@@ -10767,22 +9697,15 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
 
 void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLineField* pRtnTradeOrderRttCutLine){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnTradeOrderRttCutLineTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnTradeOrderRttCutLineTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnTradeOrderRttCutLineField* pNewRtnTradeOrderRttCutLine = NULL;
     if (NULL != pRtnTradeOrderRttCutLine) { 
         pNewRtnTradeOrderRttCutLine = new CShfeFtdcRtnTradeOrderRttCutLineField;
@@ -10820,22 +9743,15 @@ void SysUserSpi::OnRtnTradeOrderRttCutLineTopic(CShfeFtdcRtnTradeOrderRttCutLine
 
 void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQryClientInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryClientInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryClientInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryClientInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryClientInfoField* pNewRspQryClientInfo = NULL;
     if (NULL != pRspQryClientInfo) { 
         pNewRspQryClientInfo = new CShfeFtdcRspQryClientInfoField;
@@ -10845,35 +9761,34 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
         }
         memcpy (pNewRspQryClientInfo,pRspQryClientInfo, sizeof(CShfeFtdcRspQryClientInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryClientInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryClientInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryClientInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryClientInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -10908,22 +9823,15 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
 
 void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnClientInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnClientInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnClientInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnClientInfoField* pNewRtnClientInfo = NULL;
     if (NULL != pRtnClientInfo) { 
         pNewRtnClientInfo = new CShfeFtdcRtnClientInfoField;
@@ -10967,22 +9875,15 @@ void SysUserSpi::OnRtnClientInfoTopic(CShfeFtdcRtnClientInfoField* pRtnClientInf
 
 void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionField* pRspQryEventDescription, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryEventDescriptionTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryEventDescriptionTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryEventDescriptionTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryEventDescriptionField* pNewRspQryEventDescription = NULL;
     if (NULL != pRspQryEventDescription) { 
         pNewRspQryEventDescription = new CShfeFtdcRspQryEventDescriptionField;
@@ -10992,35 +9893,34 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
         }
         memcpy (pNewRspQryEventDescription,pRspQryEventDescription, sizeof(CShfeFtdcRspQryEventDescriptionField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryEventDescription;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryEventDescription;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryEventDescription) { 
         OutputCallbackMessage("SysUserSpi::pRspQryEventDescription is NULL" , g_RunningResult_File); 
     } else {
@@ -11052,22 +9952,15 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
 
 void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* pRtnEventDescription){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnEventDescriptionTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnEventDescriptionTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnEventDescriptionTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnEventDescriptionField* pNewRtnEventDescription = NULL;
     if (NULL != pRtnEventDescription) { 
         pNewRtnEventDescription = new CShfeFtdcRtnEventDescriptionField;
@@ -11108,22 +10001,15 @@ void SysUserSpi::OnRtnEventDescriptionTopic(CShfeFtdcRtnEventDescriptionField* p
 
 void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* pRspQryFrontUniqueID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFrontUniqueIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFrontUniqueIDField* pNewRspQryFrontUniqueID = NULL;
     if (NULL != pRspQryFrontUniqueID) { 
         pNewRspQryFrontUniqueID = new CShfeFtdcRspQryFrontUniqueIDField;
@@ -11133,35 +10019,34 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
         }
         memcpy (pNewRspQryFrontUniqueID,pRspQryFrontUniqueID, sizeof(CShfeFtdcRspQryFrontUniqueIDField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFrontUniqueID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFrontUniqueID;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFrontUniqueID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFrontUniqueID is NULL" , g_RunningResult_File); 
     } else {
@@ -11190,22 +10075,15 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
 
 void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFrontUniqueID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFrontUniqueIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFrontUniqueIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFrontUniqueIDField* pNewRtnFrontUniqueID = NULL;
     if (NULL != pRtnFrontUniqueID) { 
         pNewRtnFrontUniqueID = new CShfeFtdcRtnFrontUniqueIDField;
@@ -11243,22 +10121,15 @@ void SysUserSpi::OnRtnFrontUniqueIDTopic(CShfeFtdcRtnFrontUniqueIDField* pRtnFro
 
 void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLinkAddrChangeField* pRspQryNetPartyLinkAddrChange, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkAddrChangeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetPartyLinkAddrChangeField* pNewRspQryNetPartyLinkAddrChange = NULL;
     if (NULL != pRspQryNetPartyLinkAddrChange) { 
         pNewRspQryNetPartyLinkAddrChange = new CShfeFtdcRspQryNetPartyLinkAddrChangeField;
@@ -11268,35 +10139,34 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
         }
         memcpy (pNewRspQryNetPartyLinkAddrChange,pRspQryNetPartyLinkAddrChange, sizeof(CShfeFtdcRspQryNetPartyLinkAddrChangeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetPartyLinkAddrChange;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkAddrChange;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetPartyLinkAddrChange) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkAddrChange is NULL" , g_RunningResult_File); 
     } else {
@@ -11331,22 +10201,15 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
 
 void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrChangeField* pRtnNetPartyLinkAddrChange){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkAddrChangeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkAddrChangeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetPartyLinkAddrChangeField* pNewRtnNetPartyLinkAddrChange = NULL;
     if (NULL != pRtnNetPartyLinkAddrChange) { 
         pNewRtnNetPartyLinkAddrChange = new CShfeFtdcRtnNetPartyLinkAddrChangeField;
@@ -11390,22 +10253,15 @@ void SysUserSpi::OnRtnNetPartyLinkAddrChangeTopic(CShfeFtdcRtnNetPartyLinkAddrCh
 
 void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLinkInfoField* pRspQryNetDelPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDelPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDelPartyLinkInfoField* pNewRspQryNetDelPartyLinkInfo = NULL;
     if (NULL != pRspQryNetDelPartyLinkInfo) { 
         pNewRspQryNetDelPartyLinkInfo = new CShfeFtdcRspQryNetDelPartyLinkInfoField;
@@ -11415,35 +10271,34 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
         }
         memcpy (pNewRspQryNetDelPartyLinkInfo,pRspQryNetDelPartyLinkInfo, sizeof(CShfeFtdcRspQryNetDelPartyLinkInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDelPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDelPartyLinkInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDelPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDelPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -11499,22 +10354,15 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
 
 void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoField* pRtnNetDelPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDelPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDelPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDelPartyLinkInfoField* pNewRtnNetDelPartyLinkInfo = NULL;
     if (NULL != pRtnNetDelPartyLinkInfo) { 
         pNewRtnNetDelPartyLinkInfo = new CShfeFtdcRtnNetDelPartyLinkInfoField;
@@ -11579,22 +10427,15 @@ void SysUserSpi::OnRtnNetDelPartyLinkInfoTopic(CShfeFtdcRtnNetDelPartyLinkInfoFi
 
 void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField* pRspQryPerformanceTop, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryPerformanceTopTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryPerformanceTopTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryPerformanceTopTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryPerformanceTopField* pNewRspQryPerformanceTop = NULL;
     if (NULL != pRspQryPerformanceTop) { 
         pNewRspQryPerformanceTop = new CShfeFtdcRspQryPerformanceTopField;
@@ -11604,35 +10445,34 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
         }
         memcpy (pNewRspQryPerformanceTop,pRspQryPerformanceTop, sizeof(CShfeFtdcRspQryPerformanceTopField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryPerformanceTop;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryPerformanceTop;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryPerformanceTop) { 
         OutputCallbackMessage("SysUserSpi::pRspQryPerformanceTop is NULL" , g_RunningResult_File); 
     } else {
@@ -11670,22 +10510,15 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
 
 void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnPerformanceTop){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnPerformanceTopTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnPerformanceTopTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnPerformanceTopTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnPerformanceTopField* pNewRtnPerformanceTop = NULL;
     if (NULL != pRtnPerformanceTop) { 
         pNewRtnPerformanceTop = new CShfeFtdcRtnPerformanceTopField;
@@ -11732,22 +10565,15 @@ void SysUserSpi::OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField* pRtnP
 
 void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusField* pRspQryInstrumentStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryInstrumentStatusTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryInstrumentStatusField* pNewRspQryInstrumentStatus = NULL;
     if (NULL != pRspQryInstrumentStatus) { 
         pNewRspQryInstrumentStatus = new CShfeFtdcRspQryInstrumentStatusField;
@@ -11757,35 +10583,34 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
         }
         memcpy (pNewRspQryInstrumentStatus,pRspQryInstrumentStatus, sizeof(CShfeFtdcRspQryInstrumentStatusField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryInstrumentStatus;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryInstrumentStatus;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryInstrumentStatus) { 
         OutputCallbackMessage("SysUserSpi::pRspQryInstrumentStatus is NULL" , g_RunningResult_File); 
     } else {
@@ -11819,22 +10644,15 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
 
 void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* pRtnInstrumentStatus){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnInstrumentStatusTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnInstrumentStatusTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnInstrumentStatusField* pNewRtnInstrumentStatus = NULL;
     if (NULL != pRtnInstrumentStatus) { 
         pNewRtnInstrumentStatus = new CShfeFtdcRtnInstrumentStatusField;
@@ -11877,22 +10695,15 @@ void SysUserSpi::OnRtnInstrumentStatusTopic(CShfeFtdcRtnInstrumentStatusField* p
 
 void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingSegmentAttrField* pRspQryCurrTradingSegmentAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryCurrTradingSegmentAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryCurrTradingSegmentAttrField* pNewRspQryCurrTradingSegmentAttr = NULL;
     if (NULL != pRspQryCurrTradingSegmentAttr) { 
         pNewRspQryCurrTradingSegmentAttr = new CShfeFtdcRspQryCurrTradingSegmentAttrField;
@@ -11902,35 +10713,34 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
         }
         memcpy (pNewRspQryCurrTradingSegmentAttr,pRspQryCurrTradingSegmentAttr, sizeof(CShfeFtdcRspQryCurrTradingSegmentAttrField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryCurrTradingSegmentAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryCurrTradingSegmentAttr;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryCurrTradingSegmentAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryCurrTradingSegmentAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -11964,22 +10774,15 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
 
 void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegmentAttrField* pRtnCurrTradingSegmentAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnCurrTradingSegmentAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnCurrTradingSegmentAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnCurrTradingSegmentAttrField* pNewRtnCurrTradingSegmentAttr = NULL;
     if (NULL != pRtnCurrTradingSegmentAttr) { 
         pNewRtnCurrTradingSegmentAttr = new CShfeFtdcRtnCurrTradingSegmentAttrField;
@@ -12022,22 +10825,15 @@ void SysUserSpi::OnRtnCurrTradingSegmentAttrTopic(CShfeFtdcRtnCurrTradingSegment
 
 void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetAreaTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetAreaTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetAreaTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetAreaField* pNewRspQryNetArea = NULL;
     if (NULL != pRspQryNetArea) { 
         pNewRspQryNetArea = new CShfeFtdcRspQryNetAreaField;
@@ -12047,35 +10843,34 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
         }
         memcpy (pNewRspQryNetArea,pRspQryNetArea, sizeof(CShfeFtdcRspQryNetAreaField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetArea;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetArea;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetArea) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetArea is NULL" , g_RunningResult_File); 
     } else {
@@ -12106,22 +10901,15 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
 
 void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetAreaTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetAreaTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetAreaTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetAreaField* pNewRtnNetArea = NULL;
     if (NULL != pRtnNetArea) { 
         pNewRtnNetArea = new CShfeFtdcRtnNetAreaField;
@@ -12161,22 +10949,15 @@ void SysUserSpi::OnRtnNetAreaTopic(CShfeFtdcRtnNetAreaField* pRtnNetArea){
 
 void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQryNetSubArea, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetSubAreaTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetSubAreaField* pNewRspQryNetSubArea = NULL;
     if (NULL != pRspQryNetSubArea) { 
         pNewRspQryNetSubArea = new CShfeFtdcRspQryNetSubAreaField;
@@ -12186,35 +10967,34 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
         }
         memcpy (pNewRspQryNetSubArea,pRspQryNetSubArea, sizeof(CShfeFtdcRspQryNetSubAreaField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetSubArea;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetSubArea;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetSubArea) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetSubArea is NULL" , g_RunningResult_File); 
     } else {
@@ -12246,22 +11026,15 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
 
 void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubArea){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetSubAreaTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetSubAreaField* pNewRtnNetSubArea = NULL;
     if (NULL != pRtnNetSubArea) { 
         pNewRtnNetSubArea = new CShfeFtdcRtnNetSubAreaField;
@@ -12302,22 +11075,15 @@ void SysUserSpi::OnRtnNetSubAreaTopic(CShfeFtdcRtnNetSubAreaField* pRtnNetSubAre
 
 void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRspQryNetSubAreaIP, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetSubAreaIPTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetSubAreaIPField* pNewRspQryNetSubAreaIP = NULL;
     if (NULL != pRspQryNetSubAreaIP) { 
         pNewRspQryNetSubAreaIP = new CShfeFtdcRspQryNetSubAreaIPField;
@@ -12327,35 +11093,34 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
         }
         memcpy (pNewRspQryNetSubAreaIP,pRspQryNetSubAreaIP, sizeof(CShfeFtdcRspQryNetSubAreaIPField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetSubAreaIP;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetSubAreaIP;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetSubAreaIP) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetSubAreaIP is NULL" , g_RunningResult_File); 
     } else {
@@ -12387,22 +11152,15 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
 
 void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSubAreaIP){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetSubAreaIPTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetSubAreaIPTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetSubAreaIPField* pNewRtnNetSubAreaIP = NULL;
     if (NULL != pRtnNetSubAreaIP) { 
         pNewRtnNetSubAreaIP = new CShfeFtdcRtnNetSubAreaIPField;
@@ -12443,22 +11201,15 @@ void SysUserSpi::OnRtnNetSubAreaIPTopic(CShfeFtdcRtnNetSubAreaIPField* pRtnNetSu
 
 void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNetDevice, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceField* pNewRspQryNetDevice = NULL;
     if (NULL != pRspQryNetDevice) { 
         pNewRspQryNetDevice = new CShfeFtdcRspQryNetDeviceField;
@@ -12468,35 +11219,34 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
         }
         memcpy (pNewRspQryNetDevice,pRspQryNetDevice, sizeof(CShfeFtdcRspQryNetDeviceField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDevice;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDevice;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDevice) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDevice is NULL" , g_RunningResult_File); 
     } else {
@@ -12556,22 +11306,15 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
 
 void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDeviceField* pNewRtnNetDevice = NULL;
     if (NULL != pRtnNetDevice) { 
         pNewRtnNetDevice = new CShfeFtdcRtnNetDeviceField;
@@ -12640,22 +11383,15 @@ void SysUserSpi::OnRtnNetDeviceTopic(CShfeFtdcRtnNetDeviceField* pRtnNetDevice){
 
 void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectField* pRspQryNetDeviceDetect, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceDetectTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceDetectTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceDetectTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceDetectField* pNewRspQryNetDeviceDetect = NULL;
     if (NULL != pRspQryNetDeviceDetect) { 
         pNewRspQryNetDeviceDetect = new CShfeFtdcRspQryNetDeviceDetectField;
@@ -12665,35 +11401,34 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
         }
         memcpy (pNewRspQryNetDeviceDetect,pRspQryNetDeviceDetect, sizeof(CShfeFtdcRspQryNetDeviceDetectField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDeviceDetect;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDeviceDetect;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDeviceDetect) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceDetect is NULL" , g_RunningResult_File); 
     } else {
@@ -12724,22 +11459,15 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
 
 void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQryNetBuilding, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBuildingTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBuildingTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBuildingTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetBuildingField* pNewRspQryNetBuilding = NULL;
     if (NULL != pRspQryNetBuilding) { 
         pNewRspQryNetBuilding = new CShfeFtdcRspQryNetBuildingField;
@@ -12749,35 +11477,34 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
         }
         memcpy (pNewRspQryNetBuilding,pRspQryNetBuilding, sizeof(CShfeFtdcRspQryNetBuildingField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetBuilding;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetBuilding;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetBuilding) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBuilding is NULL" , g_RunningResult_File); 
     } else {
@@ -12808,22 +11535,15 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
 
 void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuilding){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBuildingTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetBuildingTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetBuildingTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetBuildingField* pNewRtnNetBuilding = NULL;
     if (NULL != pRtnNetBuilding) { 
         pNewRtnNetBuilding = new CShfeFtdcRtnNetBuildingField;
@@ -12863,22 +11583,15 @@ void SysUserSpi::OnRtnNetBuildingTopic(CShfeFtdcRtnNetBuildingField* pRtnNetBuil
 
 void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoom, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetRoomTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetRoomTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetRoomTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetRoomField* pNewRspQryNetRoom = NULL;
     if (NULL != pRspQryNetRoom) { 
         pNewRspQryNetRoom = new CShfeFtdcRspQryNetRoomField;
@@ -12888,35 +11601,34 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
         }
         memcpy (pNewRspQryNetRoom,pRspQryNetRoom, sizeof(CShfeFtdcRspQryNetRoomField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetRoom;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetRoom;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetRoom) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetRoom is NULL" , g_RunningResult_File); 
     } else {
@@ -12948,22 +11660,15 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
 
 void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetRoomTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetRoomTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetRoomTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetRoomField* pNewRtnNetRoom = NULL;
     if (NULL != pRtnNetRoom) { 
         pNewRtnNetRoom = new CShfeFtdcRtnNetRoomField;
@@ -13004,22 +11709,15 @@ void SysUserSpi::OnRtnNetRoomTopic(CShfeFtdcRtnNetRoomField* pRtnNetRoom){
 
 void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQryNetCabinets, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCabinetsTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCabinetsTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCabinetsTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetCabinetsField* pNewRspQryNetCabinets = NULL;
     if (NULL != pRspQryNetCabinets) { 
         pNewRspQryNetCabinets = new CShfeFtdcRspQryNetCabinetsField;
@@ -13029,35 +11727,34 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
         }
         memcpy (pNewRspQryNetCabinets,pRspQryNetCabinets, sizeof(CShfeFtdcRspQryNetCabinetsField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetCabinets;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetCabinets;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetCabinets) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCabinets is NULL" , g_RunningResult_File); 
     } else {
@@ -13091,22 +11788,15 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
 
 void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabinets){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCabinetsTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetCabinetsTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetCabinetsTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetCabinetsField* pNewRtnNetCabinets = NULL;
     if (NULL != pRtnNetCabinets) { 
         pNewRtnNetCabinets = new CShfeFtdcRtnNetCabinetsField;
@@ -13149,22 +11839,15 @@ void SysUserSpi::OnRtnNetCabinetsTopic(CShfeFtdcRtnNetCabinetsField* pRtnNetCabi
 
 void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetOIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetOIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetOIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetOIDField* pNewRspQryNetOID = NULL;
     if (NULL != pRspQryNetOID) { 
         pNewRspQryNetOID = new CShfeFtdcRspQryNetOIDField;
@@ -13174,35 +11857,34 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
         }
         memcpy (pNewRspQryNetOID,pRspQryNetOID, sizeof(CShfeFtdcRspQryNetOIDField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetOID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetOID;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetOID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetOID is NULL" , g_RunningResult_File); 
     } else {
@@ -13238,22 +11920,15 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
 
 void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetOIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetOIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetOIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetOIDField* pNewRtnNetOID = NULL;
     if (NULL != pRtnNetOID) { 
         pNewRtnNetOID = new CShfeFtdcRtnNetOIDField;
@@ -13298,22 +11973,15 @@ void SysUserSpi::OnRtnNetOIDTopic(CShfeFtdcRtnNetOIDField* pRtnNetOID){
 
 void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* pRspQryNetTimePolicy, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetTimePolicyTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetTimePolicyField* pNewRspQryNetTimePolicy = NULL;
     if (NULL != pRspQryNetTimePolicy) { 
         pNewRspQryNetTimePolicy = new CShfeFtdcRspQryNetTimePolicyField;
@@ -13323,35 +11991,34 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
         }
         memcpy (pNewRspQryNetTimePolicy,pRspQryNetTimePolicy, sizeof(CShfeFtdcRspQryNetTimePolicyField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetTimePolicy;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetTimePolicy;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetTimePolicy) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetTimePolicy is NULL" , g_RunningResult_File); 
     } else {
@@ -13387,22 +12054,15 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
 
 void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNetTimePolicy){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetTimePolicyTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetTimePolicyTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetTimePolicyField* pNewRtnNetTimePolicy = NULL;
     if (NULL != pRtnNetTimePolicy) { 
         pNewRtnNetTimePolicy = new CShfeFtdcRtnNetTimePolicyField;
@@ -13447,22 +12107,15 @@ void SysUserSpi::OnRtnNetTimePolicyTopic(CShfeFtdcRtnNetTimePolicyField* pRtnNet
 
 void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* pRspQryNetGatherTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetGatherTaskTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetGatherTaskField* pNewRspQryNetGatherTask = NULL;
     if (NULL != pRspQryNetGatherTask) { 
         pNewRspQryNetGatherTask = new CShfeFtdcRspQryNetGatherTaskField;
@@ -13472,35 +12125,34 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
         }
         memcpy (pNewRspQryNetGatherTask,pRspQryNetGatherTask, sizeof(CShfeFtdcRspQryNetGatherTaskField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetGatherTask;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetGatherTask;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetGatherTask) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetGatherTask is NULL" , g_RunningResult_File); 
     } else {
@@ -13534,22 +12186,15 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
 
 void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNetGatherTask){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetGatherTaskTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetGatherTaskTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetGatherTaskField* pNewRtnNetGatherTask = NULL;
     if (NULL != pRtnNetGatherTask) { 
         pNewRtnNetGatherTask = new CShfeFtdcRtnNetGatherTaskField;
@@ -13592,22 +12237,15 @@ void SysUserSpi::OnRtnNetGatherTaskTopic(CShfeFtdcRtnNetGatherTaskField* pRtnNet
 
 void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRspQryNetDeviceChg, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceChgField* pNewRspQryNetDeviceChg = NULL;
     if (NULL != pRspQryNetDeviceChg) { 
         pNewRspQryNetDeviceChg = new CShfeFtdcRspQryNetDeviceChgField;
@@ -13617,35 +12255,34 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
         }
         memcpy (pNewRspQryNetDeviceChg,pRspQryNetDeviceChg, sizeof(CShfeFtdcRspQryNetDeviceChgField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDeviceChg;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDeviceChg;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDeviceChg) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceChg is NULL" , g_RunningResult_File); 
     } else {
@@ -13676,22 +12313,15 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
 
 void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDeviceChg){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceChgTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceChgTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDeviceChgField* pNewRtnNetDeviceChg = NULL;
     if (NULL != pRtnNetDeviceChg) { 
         pNewRtnNetDeviceChg = new CShfeFtdcRtnNetDeviceChgField;
@@ -13731,22 +12361,15 @@ void SysUserSpi::OnRtnNetDeviceChgTopic(CShfeFtdcRtnNetDeviceChgField* pRtnNetDe
 
 void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* pRspQryNetDeviceType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceTypeField* pNewRspQryNetDeviceType = NULL;
     if (NULL != pRspQryNetDeviceType) { 
         pNewRspQryNetDeviceType = new CShfeFtdcRspQryNetDeviceTypeField;
@@ -13756,35 +12379,34 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
         }
         memcpy (pNewRspQryNetDeviceType,pRspQryNetDeviceType, sizeof(CShfeFtdcRspQryNetDeviceTypeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDeviceType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDeviceType;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDeviceType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceType is NULL" , g_RunningResult_File); 
     } else {
@@ -13815,22 +12437,15 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
 
 void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNetDeviceType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDeviceTypeField* pNewRtnNetDeviceType = NULL;
     if (NULL != pRtnNetDeviceType) { 
         pNewRtnNetDeviceType = new CShfeFtdcRtnNetDeviceTypeField;
@@ -13870,22 +12485,15 @@ void SysUserSpi::OnRtnNetDeviceTypeTopic(CShfeFtdcRtnNetDeviceTypeField* pRtnNet
 
 void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategoryField* pRspQryNetDeviceCategory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetDeviceCategoryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetDeviceCategoryField* pNewRspQryNetDeviceCategory = NULL;
     if (NULL != pRspQryNetDeviceCategory) { 
         pNewRspQryNetDeviceCategory = new CShfeFtdcRspQryNetDeviceCategoryField;
@@ -13895,35 +12503,34 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
         }
         memcpy (pNewRspQryNetDeviceCategory,pRspQryNetDeviceCategory, sizeof(CShfeFtdcRspQryNetDeviceCategoryField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetDeviceCategory;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetDeviceCategory;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetDeviceCategory) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetDeviceCategory is NULL" , g_RunningResult_File); 
     } else {
@@ -13954,22 +12561,15 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
 
 void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField* pRtnNetDeviceCategory){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetDeviceCategoryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetDeviceCategoryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetDeviceCategoryField* pNewRtnNetDeviceCategory = NULL;
     if (NULL != pRtnNetDeviceCategory) { 
         pNewRtnNetDeviceCategory = new CShfeFtdcRtnNetDeviceCategoryField;
@@ -14009,22 +12609,15 @@ void SysUserSpi::OnRtnNetDeviceCategoryTopic(CShfeFtdcRtnNetDeviceCategoryField*
 
 void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField* pRspQryNetManufactory, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetManufactoryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetManufactoryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetManufactoryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetManufactoryField* pNewRspQryNetManufactory = NULL;
     if (NULL != pRspQryNetManufactory) { 
         pNewRspQryNetManufactory = new CShfeFtdcRspQryNetManufactoryField;
@@ -14034,35 +12627,34 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
         }
         memcpy (pNewRspQryNetManufactory,pRspQryNetManufactory, sizeof(CShfeFtdcRspQryNetManufactoryField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetManufactory;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetManufactory;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetManufactory) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetManufactory is NULL" , g_RunningResult_File); 
     } else {
@@ -14093,22 +12685,15 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
 
 void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnNetManufactory){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetManufactoryTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetManufactoryTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetManufactoryTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetManufactoryField* pNewRtnNetManufactory = NULL;
     if (NULL != pRtnNetManufactory) { 
         pNewRtnNetManufactory = new CShfeFtdcRtnNetManufactoryField;
@@ -14148,22 +12733,15 @@ void SysUserSpi::OnRtnNetManufactoryTopic(CShfeFtdcRtnNetManufactoryField* pRtnN
 
 void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRspQryNetCommunity, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCommunityTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCommunityTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCommunityTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetCommunityField* pNewRspQryNetCommunity = NULL;
     if (NULL != pRspQryNetCommunity) { 
         pNewRspQryNetCommunity = new CShfeFtdcRspQryNetCommunityField;
@@ -14173,35 +12751,34 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
         }
         memcpy (pNewRspQryNetCommunity,pRspQryNetCommunity, sizeof(CShfeFtdcRspQryNetCommunityField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetCommunity;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetCommunity;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetCommunity) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCommunity is NULL" , g_RunningResult_File); 
     } else {
@@ -14232,22 +12809,15 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
 
 void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCommunity){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCommunityTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetCommunityTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetCommunityTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetCommunityField* pNewRtnNetCommunity = NULL;
     if (NULL != pRtnNetCommunity) { 
         pNewRtnNetCommunity = new CShfeFtdcRtnNetCommunityField;
@@ -14287,22 +12857,15 @@ void SysUserSpi::OnRtnNetCommunityTopic(CShfeFtdcRtnNetCommunityField* pRtnNetCo
 
 void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQryNetPortType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPortTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPortTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPortTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetPortTypeField* pNewRspQryNetPortType = NULL;
     if (NULL != pRspQryNetPortType) { 
         pNewRspQryNetPortType = new CShfeFtdcRspQryNetPortTypeField;
@@ -14312,35 +12875,34 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
         }
         memcpy (pNewRspQryNetPortType,pRspQryNetPortType, sizeof(CShfeFtdcRspQryNetPortTypeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetPortType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetPortType;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetPortType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPortType is NULL" , g_RunningResult_File); 
     } else {
@@ -14372,22 +12934,15 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
 
 void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPortType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPortTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetPortTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetPortTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetPortTypeField* pNewRtnNetPortType = NULL;
     if (NULL != pRtnNetPortType) { 
         pNewRtnNetPortType = new CShfeFtdcRtnNetPortTypeField;
@@ -14428,22 +12983,15 @@ void SysUserSpi::OnRtnNetPortTypeTopic(CShfeFtdcRtnNetPortTypeField* pRtnNetPort
 
 void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpotField* pRspQryNetPartAccessSpot, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartAccessSpotTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetPartAccessSpotField* pNewRspQryNetPartAccessSpot = NULL;
     if (NULL != pRspQryNetPartAccessSpot) { 
         pNewRspQryNetPartAccessSpot = new CShfeFtdcRspQryNetPartAccessSpotField;
@@ -14453,35 +13001,34 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
         }
         memcpy (pNewRspQryNetPartAccessSpot,pRspQryNetPartAccessSpot, sizeof(CShfeFtdcRspQryNetPartAccessSpotField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetPartAccessSpot;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetPartAccessSpot;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetPartAccessSpot) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartAccessSpot is NULL" , g_RunningResult_File); 
     } else {
@@ -14512,22 +13059,15 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
 
 void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField* pRtnNetPartAccessSpot){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartAccessSpotTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartAccessSpotTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetPartAccessSpotField* pNewRtnNetPartAccessSpot = NULL;
     if (NULL != pRtnNetPartAccessSpot) { 
         pNewRtnNetPartAccessSpot = new CShfeFtdcRtnNetPartAccessSpotField;
@@ -14567,22 +13107,15 @@ void SysUserSpi::OnRtnNetPartAccessSpotTopic(CShfeFtdcRtnNetPartAccessSpotField*
 
 void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRspQryNetInterface, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetInterfaceTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetInterfaceTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetInterfaceTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetInterfaceField* pNewRspQryNetInterface = NULL;
     if (NULL != pRspQryNetInterface) { 
         pNewRspQryNetInterface = new CShfeFtdcRspQryNetInterfaceField;
@@ -14592,35 +13125,34 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
         }
         memcpy (pNewRspQryNetInterface,pRspQryNetInterface, sizeof(CShfeFtdcRspQryNetInterfaceField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetInterface;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetInterface;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetInterface) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetInterface is NULL" , g_RunningResult_File); 
     } else {
@@ -14662,22 +13194,15 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
 
 void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetInterface){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetInterfaceTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetInterfaceTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetInterfaceTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetInterfaceField* pNewRtnNetInterface = NULL;
     if (NULL != pRtnNetInterface) { 
         pNewRtnNetInterface = new CShfeFtdcRtnNetInterfaceField;
@@ -14728,22 +13253,15 @@ void SysUserSpi::OnRtnNetInterfaceTopic(CShfeFtdcRtnNetInterfaceField* pRtnNetIn
 
 void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* pRspQryNetGeneralOID, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetGeneralOIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetGeneralOIDField* pNewRspQryNetGeneralOID = NULL;
     if (NULL != pRspQryNetGeneralOID) { 
         pNewRspQryNetGeneralOID = new CShfeFtdcRspQryNetGeneralOIDField;
@@ -14753,35 +13271,34 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
         }
         memcpy (pNewRspQryNetGeneralOID,pRspQryNetGeneralOID, sizeof(CShfeFtdcRspQryNetGeneralOIDField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetGeneralOID;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetGeneralOID;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetGeneralOID) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetGeneralOID is NULL" , g_RunningResult_File); 
     } else {
@@ -14815,22 +13332,15 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
 
 void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNetGeneralOID){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetGeneralOIDTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetGeneralOIDTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetGeneralOIDField* pNewRtnNetGeneralOID = NULL;
     if (NULL != pRtnNetGeneralOID) { 
         pNewRtnNetGeneralOID = new CShfeFtdcRtnNetGeneralOIDField;
@@ -14873,22 +13383,15 @@ void SysUserSpi::OnRtnNetGeneralOIDTopic(CShfeFtdcRtnNetGeneralOIDField* pRtnNet
 
 void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField* pRspQryNetMonitorType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorTypeField* pNewRspQryNetMonitorType = NULL;
     if (NULL != pRspQryNetMonitorType) { 
         pNewRspQryNetMonitorType = new CShfeFtdcRspQryNetMonitorTypeField;
@@ -14898,35 +13401,34 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
         }
         memcpy (pNewRspQryNetMonitorType,pRspQryNetMonitorType, sizeof(CShfeFtdcRspQryNetMonitorTypeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorType;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorType is NULL" , g_RunningResult_File); 
     } else {
@@ -14957,22 +13459,15 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
 
 void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnNetMonitorType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorTypeField* pNewRtnNetMonitorType = NULL;
     if (NULL != pRtnNetMonitorType) { 
         pNewRtnNetMonitorType = new CShfeFtdcRtnNetMonitorTypeField;
@@ -15012,22 +13507,15 @@ void SysUserSpi::OnRtnNetMonitorTypeTopic(CShfeFtdcRtnNetMonitorTypeField* pRtnN
 
 void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrScopeField* pRspQryNetMonitorAttrScope, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorAttrScopeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorAttrScopeField* pNewRspQryNetMonitorAttrScope = NULL;
     if (NULL != pRspQryNetMonitorAttrScope) { 
         pNewRspQryNetMonitorAttrScope = new CShfeFtdcRspQryNetMonitorAttrScopeField;
@@ -15037,35 +13525,34 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
         }
         memcpy (pNewRspQryNetMonitorAttrScope,pRspQryNetMonitorAttrScope, sizeof(CShfeFtdcRspQryNetMonitorAttrScopeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorAttrScope;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorAttrScope;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorAttrScope) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorAttrScope is NULL" , g_RunningResult_File); 
     } else {
@@ -15097,22 +13584,15 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
 
 void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeField* pRtnNetMonitorAttrScope){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorAttrScopeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrScopeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorAttrScopeField* pNewRtnNetMonitorAttrScope = NULL;
     if (NULL != pRtnNetMonitorAttrScope) { 
         pNewRtnNetMonitorAttrScope = new CShfeFtdcRtnNetMonitorAttrScopeField;
@@ -15153,22 +13633,15 @@ void SysUserSpi::OnRtnNetMonitorAttrScopeTopic(CShfeFtdcRtnNetMonitorAttrScopeFi
 
 void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTypeField* pRspQryNetMonitorAttrType, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorAttrTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorAttrTypeField* pNewRspQryNetMonitorAttrType = NULL;
     if (NULL != pRspQryNetMonitorAttrType) { 
         pNewRspQryNetMonitorAttrType = new CShfeFtdcRspQryNetMonitorAttrTypeField;
@@ -15178,35 +13651,34 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
         }
         memcpy (pNewRspQryNetMonitorAttrType,pRspQryNetMonitorAttrType, sizeof(CShfeFtdcRspQryNetMonitorAttrTypeField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorAttrType;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorAttrType;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorAttrType) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorAttrType is NULL" , g_RunningResult_File); 
     } else {
@@ -15241,22 +13713,15 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
 
 void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeField* pRtnNetMonitorAttrType){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorAttrTypeTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorAttrTypeTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorAttrTypeField* pNewRtnNetMonitorAttrType = NULL;
     if (NULL != pRtnNetMonitorAttrType) { 
         pNewRtnNetMonitorAttrType = new CShfeFtdcRtnNetMonitorAttrTypeField;
@@ -15300,22 +13765,15 @@ void SysUserSpi::OnRtnNetMonitorAttrTypeTopic(CShfeFtdcRtnNetMonitorAttrTypeFiel
 
 void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObjectAttrField* pRspQryNetMonitorObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorObjectAttrField* pNewRspQryNetMonitorObjectAttr = NULL;
     if (NULL != pRspQryNetMonitorObjectAttr) { 
         pNewRspQryNetMonitorObjectAttr = new CShfeFtdcRspQryNetMonitorObjectAttrField;
@@ -15325,35 +13783,34 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
         }
         memcpy (pNewRspQryNetMonitorObjectAttr,pRspQryNetMonitorObjectAttr, sizeof(CShfeFtdcRspQryNetMonitorObjectAttrField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorObjectAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorObjectAttr;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorObjectAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorObjectAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -15385,22 +13842,15 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
 
 void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttrField* pRtnNetMonitorObjectAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorObjectAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorObjectAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorObjectAttrField* pNewRtnNetMonitorObjectAttr = NULL;
     if (NULL != pRtnNetMonitorObjectAttr) { 
         pNewRtnNetMonitorObjectAttr = new CShfeFtdcRtnNetMonitorObjectAttrField;
@@ -15441,22 +13891,15 @@ void SysUserSpi::OnRtnNetMonitorObjectAttrTopic(CShfeFtdcRtnNetMonitorObjectAttr
 
 void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDeviceGroupField* pRspQryNetMonitorDeviceGroup, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorDeviceGroupTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorDeviceGroupField* pNewRspQryNetMonitorDeviceGroup = NULL;
     if (NULL != pRspQryNetMonitorDeviceGroup) { 
         pNewRspQryNetMonitorDeviceGroup = new CShfeFtdcRspQryNetMonitorDeviceGroupField;
@@ -15466,35 +13909,34 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
         }
         memcpy (pNewRspQryNetMonitorDeviceGroup,pRspQryNetMonitorDeviceGroup, sizeof(CShfeFtdcRspQryNetMonitorDeviceGroupField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceGroup;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceGroup;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorDeviceGroup) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorDeviceGroup is NULL" , g_RunningResult_File); 
     } else {
@@ -15527,22 +13969,15 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
 
 void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGroupField* pRtnNetMonitorDeviceGroup){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorDeviceGroupTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceGroupTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorDeviceGroupField* pNewRtnNetMonitorDeviceGroup = NULL;
     if (NULL != pRtnNetMonitorDeviceGroup) { 
         pNewRtnNetMonitorDeviceGroup = new CShfeFtdcRtnNetMonitorDeviceGroupField;
@@ -15584,22 +14019,15 @@ void SysUserSpi::OnRtnNetMonitorDeviceGroupTopic(CShfeFtdcRtnNetMonitorDeviceGro
 
 void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskInfoField* pRspQryNetMonitorTaskInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorTaskInfoField* pNewRspQryNetMonitorTaskInfo = NULL;
     if (NULL != pRspQryNetMonitorTaskInfo) { 
         pNewRspQryNetMonitorTaskInfo = new CShfeFtdcRspQryNetMonitorTaskInfoField;
@@ -15609,35 +14037,34 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
         }
         memcpy (pNewRspQryNetMonitorTaskInfo,pRspQryNetMonitorTaskInfo, sizeof(CShfeFtdcRspQryNetMonitorTaskInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorTaskInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorTaskInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -15684,22 +14111,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
 
 void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoField* pRtnNetMonitorTaskInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorTaskInfoField* pNewRtnNetMonitorTaskInfo = NULL;
     if (NULL != pRtnNetMonitorTaskInfo) { 
         pNewRtnNetMonitorTaskInfo = new CShfeFtdcRtnNetMonitorTaskInfoField;
@@ -15755,22 +14175,15 @@ void SysUserSpi::OnRtnNetMonitorTaskInfoTopic(CShfeFtdcRtnNetMonitorTaskInfoFiel
 
 void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTaskResultField* pRspQryNetMonitorTaskResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorTaskResultField* pNewRspQryNetMonitorTaskResult = NULL;
     if (NULL != pRspQryNetMonitorTaskResult) { 
         pNewRspQryNetMonitorTaskResult = new CShfeFtdcRspQryNetMonitorTaskResultField;
@@ -15780,35 +14193,34 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
         }
         memcpy (pNewRspQryNetMonitorTaskResult,pRspQryNetMonitorTaskResult, sizeof(CShfeFtdcRspQryNetMonitorTaskResultField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorTaskResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskResult;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorTaskResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskResult is NULL" , g_RunningResult_File); 
     } else {
@@ -15844,22 +14256,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
 
 void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResultField* pRtnNetMonitorTaskResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorTaskResultField* pNewRtnNetMonitorTaskResult = NULL;
     if (NULL != pRtnNetMonitorTaskResult) { 
         pNewRtnNetMonitorTaskResult = new CShfeFtdcRtnNetMonitorTaskResultField;
@@ -15904,22 +14309,15 @@ void SysUserSpi::OnRtnNetMonitorTaskResultTopic(CShfeFtdcRtnNetMonitorTaskResult
 
 void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorTaskObjectSetField* pRspQryNetMonitorTaskObjectSet, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskObjectSetTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorTaskObjectSetField* pNewRspQryNetMonitorTaskObjectSet = NULL;
     if (NULL != pRspQryNetMonitorTaskObjectSet) { 
         pNewRspQryNetMonitorTaskObjectSet = new CShfeFtdcRspQryNetMonitorTaskObjectSetField;
@@ -15929,35 +14327,34 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
         }
         memcpy (pNewRspQryNetMonitorTaskObjectSet,pRspQryNetMonitorTaskObjectSet, sizeof(CShfeFtdcRspQryNetMonitorTaskObjectSetField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorTaskObjectSet;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskObjectSet;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorTaskObjectSet) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskObjectSet is NULL" , g_RunningResult_File); 
     } else {
@@ -15989,22 +14386,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
 
 void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObjectSetField* pRtnNetMonitorTaskObjectSet){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskObjectSetTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskObjectSetTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorTaskObjectSetField* pNewRtnNetMonitorTaskObjectSet = NULL;
     if (NULL != pRtnNetMonitorTaskObjectSet) { 
         pNewRtnNetMonitorTaskObjectSet = new CShfeFtdcRtnNetMonitorTaskObjectSetField;
@@ -16045,22 +14435,15 @@ void SysUserSpi::OnRtnNetMonitorTaskObjectSetTopic(CShfeFtdcRtnNetMonitorTaskObj
 
 void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoField* pRspQryNetPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetPartyLinkInfoField* pNewRspQryNetPartyLinkInfo = NULL;
     if (NULL != pRspQryNetPartyLinkInfo) { 
         pNewRspQryNetPartyLinkInfo = new CShfeFtdcRspQryNetPartyLinkInfoField;
@@ -16070,35 +14453,34 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
         }
         memcpy (pNewRspQryNetPartyLinkInfo,pRspQryNetPartyLinkInfo, sizeof(CShfeFtdcRspQryNetPartyLinkInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -16154,22 +14536,15 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
 
 void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* pRtnNetPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetPartyLinkInfoField* pNewRtnNetPartyLinkInfo = NULL;
     if (NULL != pRtnNetPartyLinkInfo) { 
         pNewRtnNetPartyLinkInfo = new CShfeFtdcRtnNetPartyLinkInfoField;
@@ -16234,22 +14609,15 @@ void SysUserSpi::OnRtnNetPartyLinkInfoTopic(CShfeFtdcRtnNetPartyLinkInfoField* p
 
 void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActionAttrField* pRspQryNetMonitorActionAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorActionAttrField* pNewRspQryNetMonitorActionAttr = NULL;
     if (NULL != pRspQryNetMonitorActionAttr) { 
         pNewRspQryNetMonitorActionAttr = new CShfeFtdcRspQryNetMonitorActionAttrField;
@@ -16259,35 +14627,34 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
         }
         memcpy (pNewRspQryNetMonitorActionAttr,pRspQryNetMonitorActionAttr, sizeof(CShfeFtdcRspQryNetMonitorActionAttrField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorActionAttr;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorActionAttr;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorActionAttr) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorActionAttr is NULL" , g_RunningResult_File); 
     } else {
@@ -16319,22 +14686,15 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
 
 void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttrField* pRtnNetMonitorActionAttr){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorActionAttrField* pNewRtnNetMonitorActionAttr = NULL;
     if (NULL != pRtnNetMonitorActionAttr) { 
         pNewRtnNetMonitorActionAttr = new CShfeFtdcRtnNetMonitorActionAttrField;
@@ -16375,22 +14735,15 @@ void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttr
 
 void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNetModule, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetModuleTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetModuleTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetModuleTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetModuleField* pNewRspQryNetModule = NULL;
     if (NULL != pRspQryNetModule) { 
         pNewRspQryNetModule = new CShfeFtdcRspQryNetModuleField;
@@ -16400,35 +14753,34 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
         }
         memcpy (pNewRspQryNetModule,pRspQryNetModule, sizeof(CShfeFtdcRspQryNetModuleField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetModule;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetModule;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetModule) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetModule is NULL" , g_RunningResult_File); 
     } else {
@@ -16465,22 +14817,15 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
 
 void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetModuleTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetModuleTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetModuleTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetModuleField* pNewRtnNetModule = NULL;
     if (NULL != pRtnNetModule) { 
         pNewRtnNetModule = new CShfeFtdcRtnNetModuleField;
@@ -16526,22 +14871,15 @@ void SysUserSpi::OnRtnNetModuleTopic(CShfeFtdcRtnNetModuleField* pRtnNetModule){
 
 void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonitorTaskStatusResultField* pRspQryNetMonitorTaskStatusResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorTaskStatusResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorTaskStatusResultField* pNewRspQryNetMonitorTaskStatusResult = NULL;
     if (NULL != pRspQryNetMonitorTaskStatusResult) { 
         pNewRspQryNetMonitorTaskStatusResult = new CShfeFtdcRspQryNetMonitorTaskStatusResultField;
@@ -16551,35 +14889,34 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
         }
         memcpy (pNewRspQryNetMonitorTaskStatusResult,pRspQryNetMonitorTaskStatusResult, sizeof(CShfeFtdcRspQryNetMonitorTaskStatusResultField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorTaskStatusResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorTaskStatusResult;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorTaskStatusResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorTaskStatusResult is NULL" , g_RunningResult_File); 
     } else {
@@ -16613,22 +14950,15 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
 
 void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTaskStatusResultField* pRtnNetMonitorTaskStatusResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorTaskStatusResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorTaskStatusResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorTaskStatusResultField* pNewRtnNetMonitorTaskStatusResult = NULL;
     if (NULL != pRtnNetMonitorTaskStatusResult) { 
         pNewRtnNetMonitorTaskStatusResult = new CShfeFtdcRtnNetMonitorTaskStatusResultField;
@@ -16671,22 +15001,15 @@ void SysUserSpi::OnRtnNetMonitorTaskStatusResultTopic(CShfeFtdcRtnNetMonitorTask
 
 void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQryNetCfgFile, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetCfgFileTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCfgFileTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetCfgFileTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetCfgFileField* pNewRspQryNetCfgFile = NULL;
     if (NULL != pRspQryNetCfgFile) { 
         pNewRspQryNetCfgFile = new CShfeFtdcRspQryNetCfgFileField;
@@ -16696,35 +15019,34 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
         }
         memcpy (pNewRspQryNetCfgFile,pRspQryNetCfgFile, sizeof(CShfeFtdcRspQryNetCfgFileField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetCfgFile;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetCfgFile;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetCfgFile) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetCfgFile is NULL" , g_RunningResult_File); 
     } else {
@@ -16756,22 +15078,15 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
 
 void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFile){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetCfgFileTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetCfgFileTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetCfgFileTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetCfgFileField* pNewRtnNetCfgFile = NULL;
     if (NULL != pRtnNetCfgFile) { 
         pNewRtnNetCfgFile = new CShfeFtdcRtnNetCfgFileField;
@@ -16812,22 +15127,15 @@ void SysUserSpi::OnRtnNetCfgFileTopic(CShfeFtdcRtnNetCfgFileField* pRtnNetCfgFil
 
 void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDeviceTaskField* pRspQryNetMonitorDeviceTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorDeviceTaskTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetMonitorDeviceTaskField* pNewRspQryNetMonitorDeviceTask = NULL;
     if (NULL != pRspQryNetMonitorDeviceTask) { 
         pNewRspQryNetMonitorDeviceTask = new CShfeFtdcRspQryNetMonitorDeviceTaskField;
@@ -16837,35 +15145,34 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
         }
         memcpy (pNewRspQryNetMonitorDeviceTask,pRspQryNetMonitorDeviceTask, sizeof(CShfeFtdcRspQryNetMonitorDeviceTaskField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceTask;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetMonitorDeviceTask;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetMonitorDeviceTask) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorDeviceTask is NULL" , g_RunningResult_File); 
     } else {
@@ -16902,22 +15209,15 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
 
 void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTaskField* pRtnNetMonitorDeviceTask){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorDeviceTaskTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorDeviceTaskTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetMonitorDeviceTaskField* pNewRtnNetMonitorDeviceTask = NULL;
     if (NULL != pRtnNetMonitorDeviceTask) { 
         pNewRtnNetMonitorDeviceTask = new CShfeFtdcRtnNetMonitorDeviceTaskField;
@@ -16963,22 +15263,15 @@ void SysUserSpi::OnRtnNetMonitorDeviceTaskTopic(CShfeFtdcRtnNetMonitorDeviceTask
 
 void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperField* pRspQryFileGeneralOper, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryFileGeneralOperTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryFileGeneralOperField* pNewRspQryFileGeneralOper = NULL;
     if (NULL != pRspQryFileGeneralOper) { 
         pNewRspQryFileGeneralOper = new CShfeFtdcRspQryFileGeneralOperField;
@@ -16988,35 +15281,34 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
         }
         memcpy (pNewRspQryFileGeneralOper,pRspQryFileGeneralOper, sizeof(CShfeFtdcRspQryFileGeneralOperField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryFileGeneralOper;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryFileGeneralOper;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryFileGeneralOper) { 
         OutputCallbackMessage("SysUserSpi::pRspQryFileGeneralOper is NULL" , g_RunningResult_File); 
     } else {
@@ -17056,22 +15348,15 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
 
 void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRtnFileGeneralOper){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnFileGeneralOperTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnFileGeneralOperTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnFileGeneralOperField* pNewRtnFileGeneralOper = NULL;
     if (NULL != pRtnFileGeneralOper) { 
         pNewRtnFileGeneralOper = new CShfeFtdcRtnFileGeneralOperField;
@@ -17120,22 +15405,15 @@ void SysUserSpi::OnRtnFileGeneralOperTopic(CShfeFtdcRtnFileGeneralOperField* pRt
 
 void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQryNetBaseLine, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBaseLineTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetBaseLineField* pNewRspQryNetBaseLine = NULL;
     if (NULL != pRspQryNetBaseLine) { 
         pNewRspQryNetBaseLine = new CShfeFtdcRspQryNetBaseLineField;
@@ -17145,35 +15423,34 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
         }
         memcpy (pNewRspQryNetBaseLine,pRspQryNetBaseLine, sizeof(CShfeFtdcRspQryNetBaseLineField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetBaseLine;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetBaseLine;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetBaseLine) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBaseLine is NULL" , g_RunningResult_File); 
     } else {
@@ -17208,22 +15485,15 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
 
 void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBaseLine){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBaseLineTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetBaseLineField* pNewRtnNetBaseLine = NULL;
     if (NULL != pRtnNetBaseLine) { 
         pNewRtnNetBaseLine = new CShfeFtdcRtnNetBaseLineField;
@@ -17267,22 +15537,15 @@ void SysUserSpi::OnRtnNetBaseLineTopic(CShfeFtdcRtnNetBaseLineField* pRtnNetBase
 
 void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResultField* pRspQryNetBaseLineResult, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetBaseLineResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetBaseLineResultField* pNewRspQryNetBaseLineResult = NULL;
     if (NULL != pRspQryNetBaseLineResult) { 
         pNewRspQryNetBaseLineResult = new CShfeFtdcRspQryNetBaseLineResultField;
@@ -17292,35 +15555,34 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
         }
         memcpy (pNewRspQryNetBaseLineResult,pRspQryNetBaseLineResult, sizeof(CShfeFtdcRspQryNetBaseLineResultField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetBaseLineResult;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetBaseLineResult;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetBaseLineResult) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetBaseLineResult is NULL" , g_RunningResult_File); 
     } else {
@@ -17357,22 +15619,15 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
 
 void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField* pRtnNetBaseLineResult){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetBaseLineResultTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetBaseLineResultTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetBaseLineResultField* pNewRtnNetBaseLineResult = NULL;
     if (NULL != pRtnNetBaseLineResult) { 
         pNewRtnNetBaseLineResult = new CShfeFtdcRtnNetBaseLineResultField;
@@ -17418,22 +15673,15 @@ void SysUserSpi::OnRtnNetBaseLineResultTopic(CShfeFtdcRtnNetBaseLineResultField*
 
 void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLinkStatusInfoField* pRspQryNetPartyLinkStatusInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetPartyLinkStatusInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetPartyLinkStatusInfoField* pNewRspQryNetPartyLinkStatusInfo = NULL;
     if (NULL != pRspQryNetPartyLinkStatusInfo) { 
         pNewRspQryNetPartyLinkStatusInfo = new CShfeFtdcRspQryNetPartyLinkStatusInfoField;
@@ -17443,35 +15691,34 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
         }
         memcpy (pNewRspQryNetPartyLinkStatusInfo,pRspQryNetPartyLinkStatusInfo, sizeof(CShfeFtdcRspQryNetPartyLinkStatusInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetPartyLinkStatusInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetPartyLinkStatusInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetPartyLinkStatusInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetPartyLinkStatusInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -17505,22 +15752,15 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
 
 void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatusInfoField* pRtnNetPartyLinkStatusInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetPartyLinkStatusInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetPartyLinkStatusInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetPartyLinkStatusInfoField* pNewRtnNetPartyLinkStatusInfo = NULL;
     if (NULL != pRtnNetPartyLinkStatusInfo) { 
         pNewRtnNetPartyLinkStatusInfo = new CShfeFtdcRtnNetPartyLinkStatusInfoField;
@@ -17563,22 +15803,15 @@ void SysUserSpi::OnRtnNetPartyLinkStatusInfoTopic(CShfeFtdcRtnNetPartyLinkStatus
 
 void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPingResultInfoField* pRspQryNetLocalPingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetLocalPingResultInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetLocalPingResultInfoField* pNewRspQryNetLocalPingResultInfo = NULL;
     if (NULL != pRspQryNetLocalPingResultInfo) { 
         pNewRspQryNetLocalPingResultInfo = new CShfeFtdcRspQryNetLocalPingResultInfoField;
@@ -17588,35 +15821,34 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
         }
         memcpy (pNewRspQryNetLocalPingResultInfo,pRspQryNetLocalPingResultInfo, sizeof(CShfeFtdcRspQryNetLocalPingResultInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetLocalPingResultInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetLocalPingResultInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetLocalPingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetLocalPingResultInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -17652,22 +15884,15 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
 
 void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResultInfoField* pRtnNetLocalPingResultInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetLocalPingResultInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetLocalPingResultInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetLocalPingResultInfoField* pNewRtnNetLocalPingResultInfo = NULL;
     if (NULL != pRtnNetLocalPingResultInfo) { 
         pNewRtnNetLocalPingResultInfo = new CShfeFtdcRtnNetLocalPingResultInfoField;
@@ -17712,22 +15937,15 @@ void SysUserSpi::OnRtnNetLocalPingResultInfoTopic(CShfeFtdcRtnNetLocalPingResult
 
 void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePingResultInfoField* pRspQryNetRomotePingResultInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetRomotePingResultInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetRomotePingResultInfoField* pNewRspQryNetRomotePingResultInfo = NULL;
     if (NULL != pRspQryNetRomotePingResultInfo) { 
         pNewRspQryNetRomotePingResultInfo = new CShfeFtdcRspQryNetRomotePingResultInfoField;
@@ -17737,35 +15955,34 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
         }
         memcpy (pNewRspQryNetRomotePingResultInfo,pRspQryNetRomotePingResultInfo, sizeof(CShfeFtdcRspQryNetRomotePingResultInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetRomotePingResultInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetRomotePingResultInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetRomotePingResultInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetRomotePingResultInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -17804,22 +16021,15 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
 
 void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResultInfoField* pRtnNetRomotePingResultInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetRomotePingResultInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetRomotePingResultInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetRomotePingResultInfoField* pNewRtnNetRomotePingResultInfo = NULL;
     if (NULL != pRtnNetRomotePingResultInfo) { 
         pNewRtnNetRomotePingResultInfo = new CShfeFtdcRtnNetRomotePingResultInfoField;
@@ -17867,22 +16077,15 @@ void SysUserSpi::OnRtnNetRomotePingResultInfoTopic(CShfeFtdcRtnNetRomotePingResu
 
 void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLinkInfoField* pRspQryNetNonPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
     OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RspQryNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[5];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRspQryNetNonPartyLinkInfoField* pNewRspQryNetNonPartyLinkInfo = NULL;
     if (NULL != pRspQryNetNonPartyLinkInfo) { 
         pNewRspQryNetNonPartyLinkInfo = new CShfeFtdcRspQryNetNonPartyLinkInfoField;
@@ -17892,35 +16095,34 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
         }
         memcpy (pNewRspQryNetNonPartyLinkInfo,pRspQryNetNonPartyLinkInfo, sizeof(CShfeFtdcRspQryNetNonPartyLinkInfoField));
     }
-
-	CShfeFtdcRspInfoField* pRspInfoNew = NULL;
-    if (NULL != pRspInfo){        
-        pRspInfoNew = new CShfeFtdcRspInfoField;        
+    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
+    if (NULL != pRspInfo){ 
+        pRspInfoNew = new CShfeFtdcRspInfoField;
         if (NULL == pRspInfo) {
             OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return;            
-        }        
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));        
-    }	
-	
-    int*  pId = new int(nRequestID);
-    if (NULL == pId) {
+            return; 
+        } 
+        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
+    } 
+
+    int*  pId = new int(nRequestID); 
+    if (NULL == pId) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
         return;
-    }
-    
-    bool* bIsLastNew = new bool(bIsLast);
-    if (NULL == bIsLastNew) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File);
-        return;
-    }  	
+    } 
+
+    bool* bIsLastNew = new bool(bIsLast); 
+    if (NULL == bIsLastNew) { 
+        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
+        return; 
+    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetNonPartyLinkInfo;
-	paramArray[2] = (void*)pRspInfoNew;		
-	paramArray[3] = (void*)pId;
-    paramArray[4] = (void*)bIsLastNew;			
-			
+    paramArray[1] = (void*)pNewRspQryNetNonPartyLinkInfo;    paramArray[2] = (void*)pRspInfoNew; 
+    paramArray[3] = (void*)pId; 
+    paramArray[4] = (void*)bIsLastNew; 
+
+
     if (NULL == pRspQryNetNonPartyLinkInfo) { 
         OutputCallbackMessage("SysUserSpi::pRspQryNetNonPartyLinkInfo is NULL" , g_RunningResult_File); 
     } else {
@@ -17976,22 +16178,15 @@ void SysUserSpi::OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLink
 
 void SysUserSpi::OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoField* pRtnNetNonPartyLinkInfo){ 
     OutputCallbackMessage("\n****** SysUserSpi:: RtnNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
-
-    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>;
-    if (NULL == pSpiObj) {
+    Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
+    if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: OnFrontConnected: END! ******\n", g_RunningResult_File);
-        return;        
-    }           
-    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>));
-          
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+    }
+    memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
+
     void** paramArray = new void*[2];
     if (NULL == paramArray) {
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RtnNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
-        return; 
-    } 
-
     CShfeFtdcRtnNetNonPartyLinkInfoField* pNewRtnNetNonPartyLinkInfo = NULL;
     if (NULL != pRtnNetNonPartyLinkInfo) { 
         pNewRtnNetNonPartyLinkInfo = new CShfeFtdcRtnNetNonPartyLinkInfoField;
