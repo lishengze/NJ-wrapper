@@ -16,16 +16,14 @@ function loadXMLDoc(filePath){
 		}
 }
 
-// var pathName = '../new file/';
+var fileName = 'FTD';
 var pathName = '../lib/';
-var fileName = 'ApiData.json';
-var xmlPath  = '../lib/monitor-data.xml';
-// var xmlPath  = './NewApi-FTD.xml';
-// var xmlPath  = './OriginData.xml';
-// var xmlPath  = './test.xml';
-var fileData = loadXMLDoc(xmlPath);//后面可直接调用rawJSON
+var xmlFileName  = pathName + fileName + ".xml";
+var jsonFileName = pathName + fileName + ".json";
 
-fs.writeFile(pathName + fileName, fileData, function (err) {
+var fileData = loadXMLDoc(xmlFileName);
+
+fs.writeFile(jsonFileName, fileData, function (err) {
     if (err) {
         console.log(err);
     } else {

@@ -1,24 +1,10 @@
-/**
- * Created by li.shengze on 2015/1/28.
- */
 var fs = require('fs');
-function hereDoc(f) {
-    return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
-}
+var hereDoc = require('../lib/tool-function.js').hereDoc;
+var ftdContent = require("../lib/FTD.json");
+var sysContent = require("../lib/sysuserapi.json");
 
-var jsonContent = require("./package.json");
-var Packagelength = jsonContent.FTD.packages[0].package.length;
-var beforeRspQryTopCpuInfoTopic = 0;
-var AfterRtnNetNonPartyLinkInfoTopic = 0;
-
-while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
-    beforeRspQryTopCpuInfoTopic++;
-}
-
-while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
-    AfterRtnNetNonPartyLinkInfoTopic++;
-}
-AfterRtnNetNonPartyLinkInfoTopic++;
+var ftdFuncs = ftdContent.FTD.packages[0].package;
+var sysFuncs = sysContent.sysuserapi.ftdpackage;
 var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
 
 var fileData = hereDoc(function () {
@@ -58,20 +44,6 @@ using namespace v8;
 
 extern fstream g_RunningResult_File;
 */});
-
-var fieldLength = jsonContent.FTD.fields[0].fieldDefine.length;
-var beforeRspQryTopCpuInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[beforeRspQryTopCpuInfoTopic].$.name!=="RspQryTopCpuInfoTopic"){
-    beforeRspQryTopCpuInfoTopic++;
-}
-var AfterRtnNetNonPartyLinkInfoTopic=0;
-while(jsonContent.FTD.packages[0].package[AfterRtnNetNonPartyLinkInfoTopic].$.name!=="RtnNetNonPartyLinkInfoTopic"){
-    AfterRtnNetNonPartyLinkInfoTopic++;
-}
-AfterRtnNetNonPartyLinkInfoTopic++;
-
-var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
-
 
 fileData += hereDoc(function(){/*
 void OnFrontConnected(uv_async_t *handle)
@@ -323,12 +295,6 @@ void OnHeartBeatWarning(uv_async_t *handle)
 
 */});
 
-
-
-/*
-extern vector<FRONT_ID>   g_FrontConnected_IOUser_vec;
-extern map<FRONT_ID, queue<void**>>   g_FrontConnected_Data_map;
-*/
 
 for(var i = beforeRspQryTopCpuInfoTopic; i<AfterRtnNetNonPartyLinkInfoTopic; i++) {
     var fieldName = jsonContent.FTD.packages[0].package[i].field[0].$.name;

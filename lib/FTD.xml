@@ -8,7 +8,7 @@
 		<flow name="QUERY" seqseries="4" comment="查询"/>
 		<flow name="USER" seqseries="5" comment="交易员私有流"/>
 	</flows>
-	<packages
+	<packages>
 		<package name="RspError" tid="0x00000001" comment="错误应答">
 			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
