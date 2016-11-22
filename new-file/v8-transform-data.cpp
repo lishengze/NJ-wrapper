@@ -51,12 +51,6 @@ void InitV8Transformdata () {
     uv_async_init (uv_default_loop(), &g_RtnNetworkInfoTopic_async, OnRtnNetworkInfoTopic);
     uv_mutex_init (&g_RtnNetworkInfoTopic_mutex);
 
-    uv_async_init (uv_default_loop(), &g_RspQryHostEnvTopic_async, OnRspQryHostEnvTopic);
-    uv_mutex_init (&g_RspQryHostEnvTopic_mutex);
-
-    uv_async_init (uv_default_loop(), &g_RtnHostEnvTopic_async, OnRtnHostEnvTopic);
-    uv_mutex_init (&g_RtnHostEnvTopic_mutex);
-
     uv_async_init (uv_default_loop(), &g_RspQryMonitorObjectTopic_async, OnRspQryMonitorObjectTopic);
     uv_mutex_init (&g_RspQryMonitorObjectTopic_mutex);
 
@@ -375,9 +369,6 @@ void InitV8Transformdata () {
     uv_async_init (uv_default_loop(), &g_RtnConnectorInfoTopic_async, OnRtnConnectorInfoTopic);
     uv_mutex_init (&g_RtnConnectorInfoTopic_mutex);
 
-    uv_async_init (uv_default_loop(), &g_RtnTomcatInfoTopic_async, OnRtnTomcatInfoTopic);
-    uv_mutex_init (&g_RtnTomcatInfoTopic_mutex);
-
     uv_async_init (uv_default_loop(), &g_RtnJDBCInfoTopic_async, OnRtnJDBCInfoTopic);
     uv_mutex_init (&g_RtnJDBCInfoTopic_mutex);
 
@@ -606,14 +597,8 @@ void InitV8Transformdata () {
     uv_async_init (uv_default_loop(), &g_RspQryNetMonitorActionAttrTopic_async, OnRspQryNetMonitorActionAttrTopic);
     uv_mutex_init (&g_RspQryNetMonitorActionAttrTopic_mutex);
 
-    uv_async_init (uv_default_loop(), &g_RspQryNetMonitorActionAttrTopic_async, OnRspQryNetMonitorActionAttrTopic);
-    uv_mutex_init (&g_RspQryNetMonitorActionAttrTopic_mutex);
-
-    uv_async_init (uv_default_loop(), &g_RspQryHistoryNetObjectAttrTopic_async, OnRspQryHistoryNetObjectAttrTopic);
-    uv_mutex_init (&g_RspQryHistoryNetObjectAttrTopic_mutex);
-
-    uv_async_init (uv_default_loop(), &g_RtnHistoryNetObjectAttrTopic_async, OnRtnHistoryNetObjectAttrTopic);
-    uv_mutex_init (&g_RtnHistoryNetObjectAttrTopic_mutex);
+    uv_async_init (uv_default_loop(), &g_RtnNetMonitorActionAttrTopic_async, OnRtnNetMonitorActionAttrTopic);
+    uv_mutex_init (&g_RtnNetMonitorActionAttrTopic_mutex);
 
     uv_async_init (uv_default_loop(), &g_RspQryNetModuleTopic_async, OnRspQryNetModuleTopic);
     uv_mutex_init (&g_RspQryNetModuleTopic_mutex);
@@ -662,12 +647,6 @@ void InitV8Transformdata () {
 
     uv_async_init (uv_default_loop(), &g_RtnNetMonitorDeviceTaskTopic_async, OnRtnNetMonitorDeviceTaskTopic);
     uv_mutex_init (&g_RtnNetMonitorDeviceTaskTopic_mutex);
-
-    uv_async_init (uv_default_loop(), &g_RspQryOuterDeviceInfoTopic_async, OnRspQryOuterDeviceInfoTopic);
-    uv_mutex_init (&g_RspQryOuterDeviceInfoTopic_mutex);
-
-    uv_async_init (uv_default_loop(), &g_RtnOuterDeviceInfoTopic_async, OnRtnOuterDeviceInfoTopic);
-    uv_mutex_init (&g_RtnOuterDeviceInfoTopic_mutex);
 
     uv_async_init (uv_default_loop(), &g_RspQryNetLocalPingResultInfoTopic_async, OnRspQryNetLocalPingResultInfoTopic);
     uv_mutex_init (&g_RspQryNetLocalPingResultInfoTopic_mutex);
@@ -794,10 +773,6 @@ void DeInitV8Transformdata () {
     uv_close ((uv_handle_t*) &g_RspQryNetworkInfoTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RtnNetworkInfoTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RspQryHostEnvTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RtnHostEnvTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RspQryMonitorObjectTopic_async,NULL);
 
@@ -1011,8 +986,6 @@ void DeInitV8Transformdata () {
 
     uv_close ((uv_handle_t*) &g_RtnConnectorInfoTopic_async,NULL);
 
-    uv_close ((uv_handle_t*) &g_RtnTomcatInfoTopic_async,NULL);
-
     uv_close ((uv_handle_t*) &g_RtnJDBCInfoTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RtnThreadInfoTopic_async,NULL);
@@ -1165,11 +1138,7 @@ void DeInitV8Transformdata () {
 
     uv_close ((uv_handle_t*) &g_RspQryNetMonitorActionAttrTopic_async,NULL);
 
-    uv_close ((uv_handle_t*) &g_RspQryNetMonitorActionAttrTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RspQryHistoryNetObjectAttrTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RtnHistoryNetObjectAttrTopic_async,NULL);
+    uv_close ((uv_handle_t*) &g_RtnNetMonitorActionAttrTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RspQryNetModuleTopic_async,NULL);
 
@@ -1202,10 +1171,6 @@ void DeInitV8Transformdata () {
     uv_close ((uv_handle_t*) &g_RspQryNetMonitorDeviceTaskTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RtnNetMonitorDeviceTaskTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RspQryOuterDeviceInfoTopic_async,NULL);
-
-    uv_close ((uv_handle_t*) &g_RtnOuterDeviceInfoTopic_async,NULL);
 
     uv_close ((uv_handle_t*) &g_RspQryNetLocalPingResultInfoTopic_async,NULL);
 
@@ -1337,16 +1302,6 @@ uv_mutex_t   g_RtnNetworkInfoTopic_mutex;
 uv_async_t   g_RtnNetworkInfoTopic_async;
 vector<FRONT_ID>    g_RtnNetworkInfoTopic_IOUser_vec;
 map<FRONT_ID, queue<void**> >   g_RtnNetworkInfoTopic_Data_map;
-
-uv_mutex_t   g_RspQryHostEnvTopic_mutex;
-uv_async_t   g_RspQryHostEnvTopic_async;
-vector<FRONT_ID>    g_RspQryHostEnvTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RspQryHostEnvTopic_Data_map;
-
-uv_mutex_t   g_RtnHostEnvTopic_mutex;
-uv_async_t   g_RtnHostEnvTopic_async;
-vector<FRONT_ID>    g_RtnHostEnvTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RtnHostEnvTopic_Data_map;
 
 uv_mutex_t   g_RspQryMonitorObjectTopic_mutex;
 uv_async_t   g_RspQryMonitorObjectTopic_async;
@@ -1878,11 +1833,6 @@ uv_async_t   g_RtnConnectorInfoTopic_async;
 vector<FRONT_ID>    g_RtnConnectorInfoTopic_IOUser_vec;
 map<FRONT_ID, queue<void**> >   g_RtnConnectorInfoTopic_Data_map;
 
-uv_mutex_t   g_RtnTomcatInfoTopic_mutex;
-uv_async_t   g_RtnTomcatInfoTopic_async;
-vector<FRONT_ID>    g_RtnTomcatInfoTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RtnTomcatInfoTopic_Data_map;
-
 uv_mutex_t   g_RtnJDBCInfoTopic_mutex;
 uv_async_t   g_RtnJDBCInfoTopic_async;
 vector<FRONT_ID>    g_RtnJDBCInfoTopic_IOUser_vec;
@@ -2263,20 +2213,10 @@ uv_async_t   g_RspQryNetMonitorActionAttrTopic_async;
 vector<FRONT_ID>    g_RspQryNetMonitorActionAttrTopic_IOUser_vec;
 map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorActionAttrTopic_Data_map;
 
-uv_mutex_t   g_RspQryNetMonitorActionAttrTopic_mutex;
-uv_async_t   g_RspQryNetMonitorActionAttrTopic_async;
-vector<FRONT_ID>    g_RspQryNetMonitorActionAttrTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorActionAttrTopic_Data_map;
-
-uv_mutex_t   g_RspQryHistoryNetObjectAttrTopic_mutex;
-uv_async_t   g_RspQryHistoryNetObjectAttrTopic_async;
-vector<FRONT_ID>    g_RspQryHistoryNetObjectAttrTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RspQryHistoryNetObjectAttrTopic_Data_map;
-
-uv_mutex_t   g_RtnHistoryNetObjectAttrTopic_mutex;
-uv_async_t   g_RtnHistoryNetObjectAttrTopic_async;
-vector<FRONT_ID>    g_RtnHistoryNetObjectAttrTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RtnHistoryNetObjectAttrTopic_Data_map;
+uv_mutex_t   g_RtnNetMonitorActionAttrTopic_mutex;
+uv_async_t   g_RtnNetMonitorActionAttrTopic_async;
+vector<FRONT_ID>    g_RtnNetMonitorActionAttrTopic_IOUser_vec;
+map<FRONT_ID, queue<void**> >   g_RtnNetMonitorActionAttrTopic_Data_map;
 
 uv_mutex_t   g_RspQryNetModuleTopic_mutex;
 uv_async_t   g_RspQryNetModuleTopic_async;
@@ -2357,16 +2297,6 @@ uv_mutex_t   g_RtnNetMonitorDeviceTaskTopic_mutex;
 uv_async_t   g_RtnNetMonitorDeviceTaskTopic_async;
 vector<FRONT_ID>    g_RtnNetMonitorDeviceTaskTopic_IOUser_vec;
 map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceTaskTopic_Data_map;
-
-uv_mutex_t   g_RspQryOuterDeviceInfoTopic_mutex;
-uv_async_t   g_RspQryOuterDeviceInfoTopic_async;
-vector<FRONT_ID>    g_RspQryOuterDeviceInfoTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RspQryOuterDeviceInfoTopic_Data_map;
-
-uv_mutex_t   g_RtnOuterDeviceInfoTopic_mutex;
-uv_async_t   g_RtnOuterDeviceInfoTopic_async;
-vector<FRONT_ID>    g_RtnOuterDeviceInfoTopic_IOUser_vec;
-map<FRONT_ID, queue<void**> >   g_RtnOuterDeviceInfoTopic_Data_map;
 
 uv_mutex_t   g_RspQryNetLocalPingResultInfoTopic_mutex;
 uv_async_t   g_RspQryNetLocalPingResultInfoTopic_async;

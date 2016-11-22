@@ -3,8 +3,11 @@
 
 typedef int FRONT_ID;
 
+void InitFrontIDQueue ();
+
 FRONT_ID GetFrontID();
 
 void ReAllocateID(FRONT_ID&);
+
 
 #endif

@@ -122,7 +122,6 @@ void SysUserSpi::OnFrontDisConnected (int nReason) {
     OutputCallbackMessage("************SysUserSpi::OnFrontDisConnected() END! ************\n", g_RunningResult_File);
 }
     
- 
 void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) { 
     OutputCallbackMessage("\n************SysUserSpi::OnHeartBeatWarning() START! ************", g_RunningResult_File);
 
@@ -277,7 +276,10 @@ for (var i = 0; i < sysFuncs.length; ++i) {
                 fileData += tabSpace[1] + "}\n";
             
                 if (funcType === "Rsp") {
-                    fileData += tabSpace[1] + "OutputCallbackMessage(\"pRspInfo:\", pRspInfo, g_RunningResult_File);\n"
+                    fileData += tabSpace[1] + "if (NULL != pRspInfo) { \n"
+                              + tabSpace[2] + "OutputCallbackMessage(\"pRspInfo->ErrorID:\", pRspInfo->ErrorID, g_RunningResult_File);\n"
+                              + tabSpace[2] + "OutputCallbackMessage(\"pRspInfo->ErrorMsg:\", pRspInfo->ErrorMsg, g_RunningResult_File);\n"
+                              + tabSpace[1] + "}\n"
                               + tabSpace[1] + "OutputCallbackMessage(\"nRequestID:\", nRequestID, g_RunningResult_File);\n"
                               + tabSpace[1] + "OutputCallbackMessage(\"bIsLast:\", bIsLast, g_RunningResult_File);\n"      
                 }      

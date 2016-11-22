@@ -107,7 +107,6 @@ void SysUserSpi::OnFrontDisConnected (int nReason) {
     OutputCallbackMessage("************SysUserSpi::OnFrontDisConnected() END! ************\n", g_RunningResult_File);
 }
     
- 
 void SysUserSpi::OnHeartBeatWarning (int nTimeLapse) { 
     OutputCallbackMessage("\n************SysUserSpi::OnHeartBeatWarning() START! ************", g_RunningResult_File);
 
@@ -230,7 +229,10 @@ void SysUserSpi::OnRspQryTopCpuInfoTopic(CShfeFtdcRspQryTopCpuInfoField* pRspQry
         OutputCallbackMessage("pRspQryTopCpuInfo->INTR: ", pRspQryTopCpuInfo->INTR, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTopCpuInfo->SSYS: ", pRspQryTopCpuInfo->SSYS, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -385,7 +387,10 @@ void SysUserSpi::OnRspQryTopMemInfoTopic(CShfeFtdcRspQryTopMemInfoField* pRspQry
         OutputCallbackMessage("pRspQryTopMemInfo->ACTIVEVIRTUAL: ", pRspQryTopMemInfo->ACTIVEVIRTUAL, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTopMemInfo->FREE: ", pRspQryTopMemInfo->FREE, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -543,7 +548,10 @@ void SysUserSpi::OnRspQryTopProcessInfoTopic(CShfeFtdcRspQryTopProcessInfoField*
         OutputCallbackMessage("pRspQryTopProcessInfo->pCPU: ", pRspQryTopProcessInfo->pCPU, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTopProcessInfo->COMMAND: ", pRspQryTopProcessInfo->COMMAND, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -706,7 +714,10 @@ void SysUserSpi::OnRspQryFileSystemInfoTopic(CShfeFtdcRspQryFileSystemInfoField*
         OutputCallbackMessage("pRspQryFileSystemInfo->pIUSED: ", pRspQryFileSystemInfo->pIUSED, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFileSystemInfo->MountedOn: ", pRspQryFileSystemInfo->MountedOn, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -867,7 +878,10 @@ void SysUserSpi::OnRspQryNetworkInfoTopic(CShfeFtdcRspQryNetworkInfoField* pRspQ
         OutputCallbackMessage("pRspQryNetworkInfo->SENDERRORPACKETS: ", pRspQryNetworkInfo->SENDERRORPACKETS, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetworkInfo->SENDDROPPACKETS: ", pRspQryNetworkInfo->SENDDROPPACKETS, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1018,7 +1032,10 @@ void SysUserSpi::OnRspQryMonitorObjectTopic(CShfeFtdcRspQryMonitorObjectField* p
         OutputCallbackMessage("pRspQryMonitorObject->ObjectName: ", pRspQryMonitorObject->ObjectName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryMonitorObject->WarningActive: ", pRspQryMonitorObject->WarningActive, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1157,7 +1174,10 @@ void SysUserSpi::OnRspQryObjectRationalTopic(CShfeFtdcRspQryObjectRationalField*
         OutputCallbackMessage("pRspQryObjectRational->ObjectID: ", pRspQryObjectRational->ObjectID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryObjectRational->HostObjectID: ", pRspQryObjectRational->HostObjectID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1299,7 +1319,10 @@ void SysUserSpi::OnRspQrySyslogInfoTopic(CShfeFtdcRspQrySyslogInfoField* pRspQry
         OutputCallbackMessage("pRspQrySyslogInfo->ContLen: ", pRspQrySyslogInfo->ContLen, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySyslogInfo->FileContent: ", pRspQrySyslogInfo->FileContent, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1442,7 +1465,10 @@ void SysUserSpi::OnRspQrySubscriberTopic(CShfeFtdcRspQrySubscriberField* pRspQry
         OutputCallbackMessage("pRspQrySubscriber->ErrorMsg: ", pRspQrySubscriber->ErrorMsg, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySubscriber->ObjectID: ", pRspQrySubscriber->ObjectID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1525,7 +1551,10 @@ void SysUserSpi::OnRspQryOidRelationTopic(CShfeFtdcRspQryOidRelationField* pRspQ
         OutputCallbackMessage("pRspQryOidRelation->ObjectID: ", pRspQryOidRelation->ObjectID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryOidRelation->HoldObjectID: ", pRspQryOidRelation->HoldObjectID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1670,7 +1699,10 @@ void SysUserSpi::OnRspQryUserInfoTopic(CShfeFtdcRspQryUserInfoField* pRspQryUser
         OutputCallbackMessage("pRspQryUserInfo->MonTime: ", pRspQryUserInfo->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryUserInfo->MonDate: ", pRspQryUserInfo->MonDate, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1822,7 +1854,10 @@ void SysUserSpi::OnRspQryOnlineUserInfoTopic(CShfeFtdcRspQryOnlineUserInfoField*
         OutputCallbackMessage("pRspQryOnlineUserInfo->MonTime: ", pRspQryOnlineUserInfo->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryOnlineUserInfo->MonDate: ", pRspQryOnlineUserInfo->MonDate, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -1980,7 +2015,10 @@ void SysUserSpi::OnRspQryWarningEventTopic(CShfeFtdcRspQryWarningEventField* pRs
         OutputCallbackMessage("pRspQryWarningEvent->EventDealDes: ", pRspQryWarningEvent->EventDealDes, g_RunningResult_File);
         OutputCallbackMessage("pRspQryWarningEvent->FullEventName: ", pRspQryWarningEvent->FullEventName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2146,7 +2184,10 @@ void SysUserSpi::OnRspQrySyslogEventTopic(CShfeFtdcRspQrySyslogEventField* pRspQ
         OutputCallbackMessage("pRspQrySyslogEvent->FullEventName: ", pRspQrySyslogEvent->FullEventName, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySyslogEvent->EventCount: ", pRspQrySyslogEvent->EventCount, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2301,7 +2342,10 @@ void SysUserSpi::OnRspQryObjectAttrTopic(CShfeFtdcRspQryObjectAttrField* pRspQry
         OutputCallbackMessage("pRspQryObjectAttr->ValueType: ", pRspQryObjectAttr->ValueType, g_RunningResult_File);
         OutputCallbackMessage("pRspQryObjectAttr->AttrValue: ", pRspQryObjectAttr->AttrValue, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2458,7 +2502,10 @@ void SysUserSpi::OnRspQryInvalidateOrderTopic(CShfeFtdcRspQryInvalidateOrderFiel
         OutputCallbackMessage("pRspQryInvalidateOrder->VolumeCondition: ", pRspQryInvalidateOrder->VolumeCondition, g_RunningResult_File);
         OutputCallbackMessage("pRspQryInvalidateOrder->MinVolume: ", pRspQryInvalidateOrder->MinVolume, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2628,7 +2675,10 @@ void SysUserSpi::OnRspQryOrderStatusTopic(CShfeFtdcRspQryOrderStatusField* pRspQ
         OutputCallbackMessage("pRspQryOrderStatus->VolumeCondition: ", pRspQryOrderStatus->VolumeCondition, g_RunningResult_File);
         OutputCallbackMessage("pRspQryOrderStatus->MinVolume: ", pRspQryOrderStatus->MinVolume, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2791,7 +2841,10 @@ void SysUserSpi::OnRspQryBargainOrderTopic(CShfeFtdcRspQryBargainOrderField* pRs
         OutputCallbackMessage("pRspQryBargainOrder->UserID: ", pRspQryBargainOrder->UserID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryBargainOrder->ClientID: ", pRspQryBargainOrder->ClientID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -2956,7 +3009,10 @@ void SysUserSpi::OnRspQryInstPropertyTopic(CShfeFtdcRspQryInstPropertyField* pRs
         OutputCallbackMessage("pRspQryInstProperty->PriceTick: ", pRspQryInstProperty->PriceTick, g_RunningResult_File);
         OutputCallbackMessage("pRspQryInstProperty->AllowDelivPersonOpen: ", pRspQryInstProperty->AllowDelivPersonOpen, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3120,7 +3176,10 @@ void SysUserSpi::OnRspQryMarginRateTopic(CShfeFtdcRspQryMarginRateField* pRspQry
         OutputCallbackMessage("pRspQryMarginRate->LongMarginRatio: ", pRspQryMarginRate->LongMarginRatio, g_RunningResult_File);
         OutputCallbackMessage("pRspQryMarginRate->ShortMarginRatio: ", pRspQryMarginRate->ShortMarginRatio, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3270,7 +3329,10 @@ void SysUserSpi::OnRspQryPriceLimitTopic(CShfeFtdcRspQryPriceLimitField* pRspQry
         OutputCallbackMessage("pRspQryPriceLimit->UpperLimitPrice: ", pRspQryPriceLimit->UpperLimitPrice, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPriceLimit->LowerLimitPrice: ", pRspQryPriceLimit->LowerLimitPrice, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3422,7 +3484,10 @@ void SysUserSpi::OnRspQryPartPosiLimitTopic(CShfeFtdcRspQryPartPosiLimitField* p
         OutputCallbackMessage("pRspQryPartPosiLimit->UpperLimitPrice: ", pRspQryPartPosiLimit->UpperLimitPrice, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPartPosiLimit->LowerLimitPrice: ", pRspQryPartPosiLimit->LowerLimitPrice, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3578,7 +3643,10 @@ void SysUserSpi::OnRspQryClientPosiLimitTopic(CShfeFtdcRspQryClientPosiLimitFiel
         OutputCallbackMessage("pRspQryClientPosiLimit->UpperLimitPrice: ", pRspQryClientPosiLimit->UpperLimitPrice, g_RunningResult_File);
         OutputCallbackMessage("pRspQryClientPosiLimit->LowerLimitPrice: ", pRspQryClientPosiLimit->LowerLimitPrice, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3734,7 +3802,10 @@ void SysUserSpi::OnRspQrySpecialPosiLimitTopic(CShfeFtdcRspQrySpecialPosiLimitFi
         OutputCallbackMessage("pRspQrySpecialPosiLimit->UpperLimitPrice: ", pRspQrySpecialPosiLimit->UpperLimitPrice, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySpecialPosiLimit->LowerLimitPrice: ", pRspQrySpecialPosiLimit->LowerLimitPrice, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -3885,7 +3956,10 @@ void SysUserSpi::OnRspQryTransactionChgTopic(CShfeFtdcRspQryTransactionChgField*
         OutputCallbackMessage("pRspQryTransactionChg->ParticipantID: ", pRspQryTransactionChg->ParticipantID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTransactionChg->Amount: ", pRspQryTransactionChg->Amount, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4034,7 +4108,10 @@ void SysUserSpi::OnRspQryClientChgTopic(CShfeFtdcRspQryClientChgField* pRspQryCl
         OutputCallbackMessage("pRspQryClientChg->IdentifiedCardNo: ", pRspQryClientChg->IdentifiedCardNo, g_RunningResult_File);
         OutputCallbackMessage("pRspQryClientChg->OperationType: ", pRspQryClientChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4182,7 +4259,10 @@ void SysUserSpi::OnRspQryPartClientChgTopic(CShfeFtdcRspQryPartClientChgField* p
         OutputCallbackMessage("pRspQryPartClientChg->ParticipantID: ", pRspQryPartClientChg->ParticipantID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPartClientChg->OperationType: ", pRspQryPartClientChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4331,7 +4411,10 @@ void SysUserSpi::OnRspQryPosiLimitChgTopic(CShfeFtdcRspQryPosiLimitChgField* pRs
         OutputCallbackMessage("pRspQryPosiLimitChg->ShortPosLimit: ", pRspQryPosiLimitChg->ShortPosLimit, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPosiLimitChg->OperationType: ", pRspQryPosiLimitChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4485,7 +4568,10 @@ void SysUserSpi::OnRspQryClientPosiLimitChgTopic(CShfeFtdcRspQryClientPosiLimitC
         OutputCallbackMessage("pRspQryClientPosiLimitChg->ShortPosLimit: ", pRspQryClientPosiLimitChg->ShortPosLimit, g_RunningResult_File);
         OutputCallbackMessage("pRspQryClientPosiLimitChg->OperationType: ", pRspQryClientPosiLimitChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4639,7 +4725,10 @@ void SysUserSpi::OnRspQrySpecPosiLimitChgTopic(CShfeFtdcRspQrySpecPosiLimitChgFi
         OutputCallbackMessage("pRspQrySpecPosiLimitChg->ShortPosLimit: ", pRspQrySpecPosiLimitChg->ShortPosLimit, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySpecPosiLimitChg->OperationType: ", pRspQrySpecPosiLimitChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4794,7 +4883,10 @@ void SysUserSpi::OnRspQryHedgeDetailChgTopic(CShfeFtdcRspQryHedgeDetailChgField*
         OutputCallbackMessage("pRspQryHedgeDetailChg->HedgeQuota: ", pRspQryHedgeDetailChg->HedgeQuota, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHedgeDetailChg->OperationType: ", pRspQryHedgeDetailChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -4947,7 +5039,10 @@ void SysUserSpi::OnRspQryParticipantChgTopic(CShfeFtdcRspQryParticipantChgField*
         OutputCallbackMessage("pRspQryParticipantChg->IsActive: ", pRspQryParticipantChg->IsActive, g_RunningResult_File);
         OutputCallbackMessage("pRspQryParticipantChg->OperationType: ", pRspQryParticipantChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5099,7 +5194,10 @@ void SysUserSpi::OnRspQryMarginRateChgTopic(CShfeFtdcRspQryMarginRateChgField* p
         OutputCallbackMessage("pRspQryMarginRateChg->ShortMarginRatio: ", pRspQryMarginRateChg->ShortMarginRatio, g_RunningResult_File);
         OutputCallbackMessage("pRspQryMarginRateChg->OperationType: ", pRspQryMarginRateChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5249,7 +5347,10 @@ void SysUserSpi::OnRspQryUserIpChgTopic(CShfeFtdcRspQryUserIpChgField* pRspQryUs
         OutputCallbackMessage("pRspQryUserIpChg->IPMask: ", pRspQryUserIpChg->IPMask, g_RunningResult_File);
         OutputCallbackMessage("pRspQryUserIpChg->OperationType: ", pRspQryUserIpChg->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5401,7 +5502,10 @@ void SysUserSpi::OnRspQryHistoryObjectAttrTopic(CShfeFtdcRspQryHistoryObjectAttr
         OutputCallbackMessage("pRspQryHistoryObjectAttr->MaxValue: ", pRspQryHistoryObjectAttr->MaxValue, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHistoryObjectAttr->ValueCount: ", pRspQryHistoryObjectAttr->ValueCount, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5553,7 +5657,10 @@ void SysUserSpi::OnRspQryFrontInfoTopic(CShfeFtdcRspQryFrontInfoField* pRspQryFr
         OutputCallbackMessage("pRspQryFrontInfo->ReqCount: ", pRspQryFrontInfo->ReqCount, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFrontInfo->ReqRate: ", pRspQryFrontInfo->ReqRate, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5698,7 +5805,10 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
         OutputCallbackMessage("pRspQrySysUserLogin->Privilege: ", pRspQrySysUserLogin->Privilege, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySysUserLogin->VersionFlag: ", pRspQrySysUserLogin->VersionFlag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5780,7 +5890,10 @@ void SysUserSpi::OnRspQrySysUserLogoutTopic(CShfeFtdcRspQrySysUserLogoutField* p
     } else {
         OutputCallbackMessage("pRspQrySysUserLogout->UserID: ", pRspQrySysUserLogout->UserID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5863,7 +5976,10 @@ void SysUserSpi::OnRspQrySysUserPasswordUpdateTopic(CShfeFtdcRspQrySysUserPasswo
         OutputCallbackMessage("pRspQrySysUserPasswordUpdate->UserID: ", pRspQrySysUserPasswordUpdate->UserID, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySysUserPasswordUpdate->PasswordChgMsg: ", pRspQrySysUserPasswordUpdate->PasswordChgMsg, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -5946,7 +6062,10 @@ void SysUserSpi::OnRspQrySysUserRegisterTopic(CShfeFtdcRspQrySysUserRegisterFiel
         OutputCallbackMessage("pRspQrySysUserRegister->UserID: ", pRspQrySysUserRegister->UserID, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySysUserRegister->Privilege: ", pRspQrySysUserRegister->Privilege, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6028,7 +6147,10 @@ void SysUserSpi::OnRspQrySysUserDeleteTopic(CShfeFtdcRspQrySysUserDeleteField* p
     } else {
         OutputCallbackMessage("pRspQrySysUserDelete->UserID: ", pRspQrySysUserDelete->UserID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6111,7 +6233,10 @@ void SysUserSpi::OnRspQryTradeLogTopic(CShfeFtdcRspQryTradeLogField* pRspQryTrad
         OutputCallbackMessage("pRspQryTradeLog->bFlag: ", pRspQryTradeLog->bFlag, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradeLog->TradeLogStr: ", pRspQryTradeLog->TradeLogStr, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6253,7 +6378,10 @@ void SysUserSpi::OnRspQryParticipantInitTopic(CShfeFtdcRspQryParticipantInitFiel
         OutputCallbackMessage("pRspQryParticipantInit->IsActive: ", pRspQryParticipantInit->IsActive, g_RunningResult_File);
         OutputCallbackMessage("pRspQryParticipantInit->OperationType: ", pRspQryParticipantInit->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6399,7 +6527,10 @@ void SysUserSpi::OnRspQryUserInitTopic(CShfeFtdcRspQryUserInitField* pRspQryUser
         OutputCallbackMessage("pRspQryUserInit->IsActive: ", pRspQryUserInit->IsActive, g_RunningResult_File);
         OutputCallbackMessage("pRspQryUserInit->OperationType: ", pRspQryUserInit->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6547,7 +6678,10 @@ void SysUserSpi::OnRspQryClientInitTopic(CShfeFtdcRspQryClientInitField* pRspQry
         OutputCallbackMessage("pRspQryClientInit->IsActive: ", pRspQryClientInit->IsActive, g_RunningResult_File);
         OutputCallbackMessage("pRspQryClientInit->OperationType: ", pRspQryClientInit->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6701,7 +6835,10 @@ void SysUserSpi::OnRspQryTradeUserLoginInfoTopic(CShfeFtdcRspQryTradeUserLoginIn
         OutputCallbackMessage("pRspQryTradeUserLoginInfo->ActionFlag: ", pRspQryTradeUserLoginInfo->ActionFlag, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradeUserLoginInfo->DataCenter: ", pRspQryTradeUserLoginInfo->DataCenter, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6858,7 +6995,10 @@ void SysUserSpi::OnRspQryPartTradeTopic(CShfeFtdcRspQryPartTradeField* pRspQryPa
         OutputCallbackMessage("pRspQryPartTrade->TotalNegativePosi: ", pRspQryPartTrade->TotalNegativePosi, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPartTrade->OperationType: ", pRspQryPartTrade->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -6947,7 +7087,10 @@ void SysUserSpi::OnRspQryTradepeakTopic(CShfeFtdcRspQryTradepeakField* pRspQryTr
         OutputCallbackMessage("pRspQryTradepeak->TradeCount: ", pRspQryTradepeak->TradeCount, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradepeak->TotalCount: ", pRspQryTradepeak->TotalCount, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7162,7 +7305,10 @@ void SysUserSpi::OnRspQryHistoryCpuInfoTopic(CShfeFtdcRspQryHistoryCpuInfoField*
         OutputCallbackMessage("pRspQryHistoryCpuInfo->INTR: ", pRspQryHistoryCpuInfo->INTR, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHistoryCpuInfo->SSYS: ", pRspQryHistoryCpuInfo->SSYS, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7251,7 +7397,10 @@ void SysUserSpi::OnRspQryHistoryMemInfoTopic(CShfeFtdcRspQryHistoryMemInfoField*
         OutputCallbackMessage("pRspQryHistoryMemInfo->ACTIVEVIRTUAL: ", pRspQryHistoryMemInfo->ACTIVEVIRTUAL, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHistoryMemInfo->FREE: ", pRspQryHistoryMemInfo->FREE, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7346,7 +7495,10 @@ void SysUserSpi::OnRspQryHistoryNetworkInfoTopic(CShfeFtdcRspQryHistoryNetworkIn
         OutputCallbackMessage("pRspQryHistoryNetworkInfo->SENDERRORPACKETS: ", pRspQryHistoryNetworkInfo->SENDERRORPACKETS, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHistoryNetworkInfo->SENDDROPPACKETS: ", pRspQryHistoryNetworkInfo->SENDDROPPACKETS, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7429,7 +7581,10 @@ void SysUserSpi::OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField
         OutputCallbackMessage("pRspQryMonitorOnlineUser->UserID: ", pRspQryMonitorOnlineUser->UserID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryMonitorOnlineUser->IPAddress: ", pRspQryMonitorOnlineUser->IPAddress, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7517,7 +7672,10 @@ void SysUserSpi::OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField* pRspQryFrontSt
         OutputCallbackMessage("pRspQryFrontStat->OrderAction: ", pRspQryFrontStat->OrderAction, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFrontStat->TotalOrderAction: ", pRspQryFrontStat->TotalOrderAction, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7722,7 +7880,10 @@ void SysUserSpi::OnRspQryHistoryTradePeakTopic(CShfeFtdcRspQryHistoryTradePeakFi
         OutputCallbackMessage("pRspQryHistoryTradePeak->OldAttrValue: ", pRspQryHistoryTradePeak->OldAttrValue, g_RunningResult_File);
         OutputCallbackMessage("pRspQryHistoryTradePeak->OldRltAttrValue: ", pRspQryHistoryTradePeak->OldRltAttrValue, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7816,7 +7977,10 @@ void SysUserSpi::OnRspQryJDBCInfoTopic(CShfeFtdcRspQryJDBCInfoField* pRspQryJDBC
         OutputCallbackMessage("pRspQryJDBCInfo->Type: ", pRspQryJDBCInfo->Type, g_RunningResult_File);
         OutputCallbackMessage("pRspQryJDBCInfo->URL: ", pRspQryJDBCInfo->URL, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7909,7 +8073,10 @@ void SysUserSpi::OnRspQryThreadInfoTopic(CShfeFtdcRspQryThreadInfoField* pRspQry
         OutputCallbackMessage("pRspQryThreadInfo->CpuTime: ", pRspQryThreadInfo->CpuTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryThreadInfo->UserTime: ", pRspQryThreadInfo->UserTime, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -7999,7 +8166,10 @@ void SysUserSpi::OnRspQrySessionInfoTopic(CShfeFtdcRspQrySessionInfoField* pRspQ
         OutputCallbackMessage("pRspQrySessionInfo->LatestTime: ", pRspQrySessionInfo->LatestTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySessionInfo->MaxIdleTime: ", pRspQrySessionInfo->MaxIdleTime, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8090,7 +8260,10 @@ void SysUserSpi::OnRspQryServletInfoTopic(CShfeFtdcRspQryServletInfoField* pRspQ
         OutputCallbackMessage("pRspQryServletInfo->MixTime: ", pRspQryServletInfo->MixTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryServletInfo->MaxTime: ", pRspQryServletInfo->MaxTime, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8178,7 +8351,10 @@ void SysUserSpi::OnRspQryFileInfoTopic(CShfeFtdcRspQryFileInfoField* pRspQryFile
         OutputCallbackMessage("pRspQryFileInfo->LastModDate: ", pRspQryFileInfo->LastModDate, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFileInfo->FileType: ", pRspQryFileInfo->FileType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8274,7 +8450,10 @@ void SysUserSpi::OnRspQryWebAppInfoTopic(CShfeFtdcRspQryWebAppInfoField* pRspQry
         OutputCallbackMessage("pRspQryWebAppInfo->JDBCUsage: ", pRspQryWebAppInfo->JDBCUsage, g_RunningResult_File);
         OutputCallbackMessage("pRspQryWebAppInfo->JSPNum: ", pRspQryWebAppInfo->JSPNum, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8367,7 +8546,10 @@ void SysUserSpi::OnRspQryVMInfoTopic(CShfeFtdcRspQryVMInfoField* pRspQryVMInfo, 
         OutputCallbackMessage("pRspQryVMInfo->LibraryPath: ", pRspQryVMInfo->LibraryPath, g_RunningResult_File);
         OutputCallbackMessage("pRspQryVMInfo->Arguments: ", pRspQryVMInfo->Arguments, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8454,7 +8636,10 @@ void SysUserSpi::OnRspQryPropertyInfoTopic(CShfeFtdcRspQryPropertyInfoField* pRs
         OutputCallbackMessage("pRspQryPropertyInfo->ClipFlag: ", pRspQryPropertyInfo->ClipFlag, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPropertyInfo->Value: ", pRspQryPropertyInfo->Value, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8545,7 +8730,10 @@ void SysUserSpi::OnRspQryMemPoolInfoTopic(CShfeFtdcRspQryMemPoolInfoField* pRspQ
         OutputCallbackMessage("pRspQryMemPoolInfo->usedbytes: ", pRspQryMemPoolInfo->usedbytes, g_RunningResult_File);
         OutputCallbackMessage("pRspQryMemPoolInfo->Type: ", pRspQryMemPoolInfo->Type, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8631,7 +8819,10 @@ void SysUserSpi::OnRspQryFileContentInfoTopic(CShfeFtdcRspQryFileContentInfoFiel
         OutputCallbackMessage("pRspQryFileContentInfo->FileName: ", pRspQryFileContentInfo->FileName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFileContentInfo->FileContent: ", pRspQryFileContentInfo->FileContent, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8724,7 +8915,10 @@ void SysUserSpi::OnRspQryConnectionInfoTopic(CShfeFtdcRspQryConnectionInfoField*
         OutputCallbackMessage("pRspQryConnectionInfo->RemoteIP: ", pRspQryConnectionInfo->RemoteIP, g_RunningResult_File);
         OutputCallbackMessage("pRspQryConnectionInfo->MaxAccessURI: ", pRspQryConnectionInfo->MaxAccessURI, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -8820,7 +9014,10 @@ void SysUserSpi::OnRspQryConnectorInfoTopic(CShfeFtdcRspQryConnectorInfoField* p
         OutputCallbackMessage("pRspQryConnectorInfo->BytesReceived: ", pRspQryConnectorInfo->BytesReceived, g_RunningResult_File);
         OutputCallbackMessage("pRspQryConnectorInfo->BytesSent: ", pRspQryConnectorInfo->BytesSent, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -9668,7 +9865,10 @@ void SysUserSpi::OnRspQryDBQueryTopic(CShfeFtdcRspQryDBQueryField* pRspQryDBQuer
         OutputCallbackMessage("pRspQryDBQuery->MonTime: ", pRspQryDBQuery->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryDBQuery->DBQueryResult: ", pRspQryDBQuery->DBQueryResult, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -9813,7 +10013,10 @@ void SysUserSpi::OnRspQryGeneralFieldTopic(CShfeFtdcSysGeneralFieldField* pSysGe
         OutputCallbackMessage("pSysGeneralField->AttrType: ", pSysGeneralField->AttrType, g_RunningResult_File);
         OutputCallbackMessage("pSysGeneralField->Content: ", pSysGeneralField->Content, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -9958,7 +10161,10 @@ void SysUserSpi::OnRspQryGetFileTopic(CShfeFtdcRspQryGetFileField* pRspQryGetFil
         OutputCallbackMessage("pRspQryGetFile->Length: ", pRspQryGetFile->Length, g_RunningResult_File);
         OutputCallbackMessage("pRspQryGetFile->Comment: ", pRspQryGetFile->Comment, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10043,7 +10249,10 @@ void SysUserSpi::OnRspQryWarningQueryTopic(CShfeFtdcRspQryWarningQueryField* pRs
         OutputCallbackMessage("pRspQryWarningQuery->EvendID: ", pRspQryWarningQuery->EvendID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryWarningQuery->DBQueryResult: ", pRspQryWarningQuery->DBQueryResult, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10188,7 +10397,10 @@ void SysUserSpi::OnRspQryTradeUserLoginStatTopic(CShfeFtdcRspQryTradeUserLoginSt
         OutputCallbackMessage("pRspQryTradeUserLoginStat->UserID: ", pRspQryTradeUserLoginStat->UserID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradeUserLoginStat->FrontId: ", pRspQryTradeUserLoginStat->FrontId, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10273,7 +10485,10 @@ void SysUserSpi::OnRspQryGeneralOperateTopic(CShfeFtdcRspQryGeneralOperateField*
         OutputCallbackMessage("pRspQryGeneralOperate->GeneralOperateOption: ", pRspQryGeneralOperate->GeneralOperateOption, g_RunningResult_File);
         OutputCallbackMessage("pRspQryGeneralOperate->GeneralOperateSet: ", pRspQryGeneralOperate->GeneralOperateSet, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10422,7 +10637,10 @@ void SysUserSpi::OnRspQryNetDeviceLinkedTopic(CShfeFtdcRspQryNetDeviceLinkedFiel
         OutputCallbackMessage("pRspQryNetDeviceLinked->LinkNetPortType: ", pRspQryNetDeviceLinked->LinkNetPortType, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDeviceLinked->LinkSource: ", pRspQryNetDeviceLinked->LinkSource, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10571,7 +10789,10 @@ void SysUserSpi::OnRspQryNetAreaTopic(CShfeFtdcRspQryNetAreaField* pRspQryNetAre
         OutputCallbackMessage("pRspQryNetArea->CName: ", pRspQryNetArea->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetArea->EName: ", pRspQryNetArea->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10714,7 +10935,10 @@ void SysUserSpi::OnRspQryNetSubAreaTopic(CShfeFtdcRspQryNetSubAreaField* pRspQry
         OutputCallbackMessage("pRspQryNetSubArea->CName: ", pRspQryNetSubArea->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetSubArea->EName: ", pRspQryNetSubArea->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -10858,7 +11082,10 @@ void SysUserSpi::OnRspQryNetSubAreaIPTopic(CShfeFtdcRspQryNetSubAreaIPField* pRs
         OutputCallbackMessage("pRspQryNetSubAreaIP->IP: ", pRspQryNetSubAreaIP->IP, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetSubAreaIP->Mask: ", pRspQryNetSubAreaIP->Mask, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11001,7 +11228,10 @@ void SysUserSpi::OnRspQryNetDeviceDetectTopic(CShfeFtdcRspQryNetDeviceDetectFiel
         OutputCallbackMessage("pRspQryNetDeviceDetect->IP: ", pRspQryNetDeviceDetect->IP, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDeviceDetect->Mask: ", pRspQryNetDeviceDetect->Mask, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11201,7 +11431,10 @@ void SysUserSpi::OnRspQryNetDeviceTopic(CShfeFtdcRspQryNetDeviceField* pRspQryNe
         OutputCallbackMessage("pRspQryNetDevice->IFNUM: ", pRspQryNetDevice->IFNUM, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDevice->APPLICATION_ID: ", pRspQryNetDevice->APPLICATION_ID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11286,7 +11519,10 @@ void SysUserSpi::OnRspQryNetBuildingTopic(CShfeFtdcRspQryNetBuildingField* pRspQ
         OutputCallbackMessage("pRspQryNetBuilding->CName: ", pRspQryNetBuilding->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetBuilding->EName: ", pRspQryNetBuilding->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11429,7 +11665,10 @@ void SysUserSpi::OnRspQryNetRoomTopic(CShfeFtdcRspQryNetRoomField* pRspQryNetRoo
         OutputCallbackMessage("pRspQryNetRoom->CName: ", pRspQryNetRoom->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetRoom->EName: ", pRspQryNetRoom->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11575,7 +11814,10 @@ void SysUserSpi::OnRspQryNetCabinetsTopic(CShfeFtdcRspQryNetCabinetsField* pRspQ
         OutputCallbackMessage("pRspQryNetCabinets->EName: ", pRspQryNetCabinets->EName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetCabinets->CabinetsType: ", pRspQryNetCabinets->CabinetsType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11725,7 +11967,10 @@ void SysUserSpi::OnRspQryNetOIDTopic(CShfeFtdcRspQryNetOIDField* pRspQryNetOID, 
         OutputCallbackMessage("pRspQryNetOID->Unit: ", pRspQryNetOID->Unit, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetOID->isTheTable: ", pRspQryNetOID->isTheTable, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -11877,7 +12122,10 @@ void SysUserSpi::OnRspQryNetTimePolicyTopic(CShfeFtdcRspQryNetTimePolicyField* p
         OutputCallbackMessage("pRspQryNetTimePolicy->Description: ", pRspQryNetTimePolicy->Description, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetTimePolicy->Operation: ", pRspQryNetTimePolicy->Operation, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12027,7 +12275,10 @@ void SysUserSpi::OnRspQryNetGatherTaskTopic(CShfeFtdcRspQryNetGatherTaskField* p
         OutputCallbackMessage("pRspQryNetGatherTask->DataType: ", pRspQryNetGatherTask->DataType, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetGatherTask->TypeFlag: ", pRspQryNetGatherTask->TypeFlag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12172,7 +12423,10 @@ void SysUserSpi::OnRspQryNetDeviceChgTopic(CShfeFtdcRspQryNetDeviceChgField* pRs
         OutputCallbackMessage("pRspQryNetDeviceChg->OldObjectID: ", pRspQryNetDeviceChg->OldObjectID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDeviceChg->NewObjectID: ", pRspQryNetDeviceChg->NewObjectID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12314,7 +12568,10 @@ void SysUserSpi::OnRspQryNetDeviceTypeTopic(CShfeFtdcRspQryNetDeviceTypeField* p
         OutputCallbackMessage("pRspQryNetDeviceType->Manufactory: ", pRspQryNetDeviceType->Manufactory, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDeviceType->DeviceType: ", pRspQryNetDeviceType->DeviceType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12456,7 +12713,10 @@ void SysUserSpi::OnRspQryNetDeviceCategoryTopic(CShfeFtdcRspQryNetDeviceCategory
         OutputCallbackMessage("pRspQryNetDeviceCategory->CName: ", pRspQryNetDeviceCategory->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDeviceCategory->EName: ", pRspQryNetDeviceCategory->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12598,7 +12858,10 @@ void SysUserSpi::OnRspQryNetManufactoryTopic(CShfeFtdcRspQryNetManufactoryField*
         OutputCallbackMessage("pRspQryNetManufactory->CName: ", pRspQryNetManufactory->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetManufactory->EName: ", pRspQryNetManufactory->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12740,7 +13003,10 @@ void SysUserSpi::OnRspQryNetCommunityTopic(CShfeFtdcRspQryNetCommunityField* pRs
         OutputCallbackMessage("pRspQryNetCommunity->IPADDR: ", pRspQryNetCommunity->IPADDR, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetCommunity->COMMUNITY: ", pRspQryNetCommunity->COMMUNITY, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -12883,7 +13149,10 @@ void SysUserSpi::OnRspQryNetPortTypeTopic(CShfeFtdcRspQryNetPortTypeField* pRspQ
         OutputCallbackMessage("pRspQryNetPortType->EName: ", pRspQryNetPortType->EName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetPortType->Description: ", pRspQryNetPortType->Description, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13026,7 +13295,10 @@ void SysUserSpi::OnRspQryNetPartAccessSpotTopic(CShfeFtdcRspQryNetPartAccessSpot
         OutputCallbackMessage("pRspQryNetPartAccessSpot->CName: ", pRspQryNetPartAccessSpot->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetPartAccessSpot->EName: ", pRspQryNetPartAccessSpot->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13179,7 +13451,10 @@ void SysUserSpi::OnRspQryNetInterfaceTopic(CShfeFtdcRspQryNetInterfaceField* pRs
         OutputCallbackMessage("pRspQryNetInterface->isPolling: ", pRspQryNetInterface->isPolling, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetInterface->Description: ", pRspQryNetInterface->Description, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13335,7 +13610,10 @@ void SysUserSpi::OnRspQryNetGeneralOIDTopic(CShfeFtdcRspQryNetGeneralOIDField* p
         OutputCallbackMessage("pRspQryNetGeneralOID->Unit: ", pRspQryNetGeneralOID->Unit, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetGeneralOID->isTheTable: ", pRspQryNetGeneralOID->isTheTable, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13480,7 +13758,10 @@ void SysUserSpi::OnRspQryNetMonitorTypeTopic(CShfeFtdcRspQryNetMonitorTypeField*
         OutputCallbackMessage("pRspQryNetMonitorType->CName: ", pRspQryNetMonitorType->CName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorType->EName: ", pRspQryNetMonitorType->EName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13623,7 +13904,10 @@ void SysUserSpi::OnRspQryNetMonitorAttrScopeTopic(CShfeFtdcRspQryNetMonitorAttrS
         OutputCallbackMessage("pRspQryNetMonitorAttrScope->EName: ", pRspQryNetMonitorAttrScope->EName, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorAttrScope->Comments: ", pRspQryNetMonitorAttrScope->Comments, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13770,7 +14054,10 @@ void SysUserSpi::OnRspQryNetMonitorAttrTypeTopic(CShfeFtdcRspQryNetMonitorAttrTy
         OutputCallbackMessage("pRspQryNetMonitorAttrType->MonitorType: ", pRspQryNetMonitorAttrType->MonitorType, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorAttrType->AttrType: ", pRspQryNetMonitorAttrType->AttrType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -13917,7 +14204,10 @@ void SysUserSpi::OnRspQryNetMonitorObjectAttrTopic(CShfeFtdcRspQryNetMonitorObje
         OutputCallbackMessage("pRspQryNetMonitorObjectAttr->AttrType: ", pRspQryNetMonitorObjectAttr->AttrType, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorObjectAttr->PolicyTypeID: ", pRspQryNetMonitorObjectAttr->PolicyTypeID, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14065,7 +14355,10 @@ void SysUserSpi::OnRspQryNetMonitorTaskResultTopic(CShfeFtdcRspQryNetMonitorTask
         OutputCallbackMessage("pRspQryNetMonitorTaskResult->ResultChain: ", pRspQryNetMonitorTaskResult->ResultChain, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorTaskResult->Flag: ", pRspQryNetMonitorTaskResult->Flag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14214,7 +14507,10 @@ void SysUserSpi::OnRspQryNetMonitorDeviceGroupTopic(CShfeFtdcRspQryNetMonitorDev
         OutputCallbackMessage("pRspQryNetMonitorDeviceGroup->Condition: ", pRspQryNetMonitorDeviceGroup->Condition, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorDeviceGroup->Comments: ", pRspQryNetMonitorDeviceGroup->Comments, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14359,7 +14655,10 @@ void SysUserSpi::OnRspQryNetMonitorTaskObjectSetTopic(CShfeFtdcRspQryNetMonitorT
         OutputCallbackMessage("pRspQryNetMonitorTaskObjectSet->Device_ID: ", pRspQryNetMonitorTaskObjectSet->Device_ID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorTaskObjectSet->DataCenter: ", pRspQryNetMonitorTaskObjectSet->DataCenter, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14518,7 +14817,10 @@ void SysUserSpi::OnRspQryNetMonitorTaskInfoTopic(CShfeFtdcRspQryNetMonitorTaskIn
         OutputCallbackMessage("pRspQryNetMonitorTaskInfo->TaskStatus: ", pRspQryNetMonitorTaskInfo->TaskStatus, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorTaskInfo->Comments: ", pRspQryNetMonitorTaskInfo->Comments, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14701,7 +15003,10 @@ void SysUserSpi::OnRspQryNetPartyLinkInfoTopic(CShfeFtdcRspQryNetPartyLinkInfoFi
         OutputCallbackMessage("pRspQryNetPartyLinkInfo->SEAT_NO: ", pRspQryNetPartyLinkInfo->SEAT_NO, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetPartyLinkInfo->PRO: ", pRspQryNetPartyLinkInfo->PRO, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14869,7 +15174,10 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
         OutputCallbackMessage("pRspQryNetMonitorActionAttr->MonitorAttr_ID: ", pRspQryNetMonitorActionAttr->MonitorAttr_ID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorActionAttr->MonitorAttrName: ", pRspQryNetMonitorActionAttr->MonitorAttrName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -14890,90 +15198,62 @@ void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActi
     OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
 }
 
-void SysUserSpi::OnRspQryNetMonitorActionAttrTopic(CShfeFtdcRspQryNetMonitorActionAttrField* pRspQryNetMonitorActionAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-    OutputCallbackMessage("\n****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
+void SysUserSpi::OnRtnNetMonitorActionAttrTopic(CShfeFtdcRtnNetMonitorActionAttrField* pRtnNetMonitorActionAttr){ 
+    OutputCallbackMessage("\n****** SysUserSpi:: RtnNetMonitorActionAttrTopic: START! ******", g_RunningResult_File);
 
-    void** paramArray = new void*[5];
+    void** paramArray = new void*[2];
     if (NULL == paramArray) {
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for paramArray", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
         return; 
     } 
 
     Nan::Persistent<v8::Object>* pSpiObj = new Nan::Persistent<v8::Object>; 
     if (NULL == pSpiObj) { 
         OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pSpiObj", g_RunningResult_File);
-        OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
+        OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
         return; 
     }
     memcpy(pSpiObj, &(this->m_spiobj), sizeof(Nan::Persistent<v8::Object>)); 
 
-    CShfeFtdcRspQryNetMonitorActionAttrField* pNewRspQryNetMonitorActionAttr = NULL;
-    if (NULL != pRspQryNetMonitorActionAttr) { 
-        pNewRspQryNetMonitorActionAttr = new CShfeFtdcRspQryNetMonitorActionAttrField;
-        if (NULL == pNewRspQryNetMonitorActionAttr) {
-            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pNewRspQryNetMonitorActionAttr", g_RunningResult_File);
+    CShfeFtdcRtnNetMonitorActionAttrField* pNewRtnNetMonitorActionAttr = NULL;
+    if (NULL != pRtnNetMonitorActionAttr) { 
+        pNewRtnNetMonitorActionAttr = new CShfeFtdcRtnNetMonitorActionAttrField;
+        if (NULL == pNewRtnNetMonitorActionAttr) {
+            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pNewRtnNetMonitorActionAttr", g_RunningResult_File);
             return;
         }
-        memcpy (pNewRspQryNetMonitorActionAttr,pRspQryNetMonitorActionAttr, sizeof(CShfeFtdcRspQryNetMonitorActionAttrField));
+        memcpy (pNewRtnNetMonitorActionAttr,pRtnNetMonitorActionAttr, sizeof(CShfeFtdcRtnNetMonitorActionAttrField));
     }
-
-    CShfeFtdcRspInfoField* pRspInfoNew = NULL; 
-    if (NULL != pRspInfo){ 
-        pRspInfoNew = new CShfeFtdcRspInfoField;
-        if (NULL == pRspInfo) {
-            OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pRspInfo", g_RunningResult_File);
-            return; 
-        } 
-        memcpy(pRspInfoNew,pRspInfo,sizeof(CShfeFtdcRspInfoField));
-    } 
-
-    int*  pId = new int(nRequestID); 
-    if (NULL == pId) { 
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for pId", g_RunningResult_File);
-        return;
-    } 
-
-    bool* bIsLastNew = new bool(bIsLast); 
-    if (NULL == bIsLastNew) { 
-        OutputCallbackMessage("SysUserSpi:: Faild in allocating memory for bIsLastNew", g_RunningResult_File); 
-        return; 
-    } 
 
     paramArray[0] = (void*)pSpiObj;
-    paramArray[1] = (void*)pNewRspQryNetMonitorActionAttr;
-    paramArray[2] = (void*)pRspInfoNew; 
-    paramArray[3] = (void*)pId; 
-    paramArray[4] = (void*)bIsLastNew; 
+    paramArray[1] = (void*)pNewRtnNetMonitorActionAttr;
 
-    if (NULL == pRspQryNetMonitorActionAttr) { 
-        OutputCallbackMessage("SysUserSpi::pRspQryNetMonitorActionAttr is NULL" , g_RunningResult_File); 
+    if (NULL == pRtnNetMonitorActionAttr) { 
+        OutputCallbackMessage("SysUserSpi::pRtnNetMonitorActionAttr is NULL" , g_RunningResult_File); 
     } else {
-        OutputCallbackMessage("pRspQryNetMonitorActionAttr->OperationType: ", pRspQryNetMonitorActionAttr->OperationType, g_RunningResult_File);
-        OutputCallbackMessage("pRspQryNetMonitorActionAttr->ID: ", pRspQryNetMonitorActionAttr->ID, g_RunningResult_File);
-        OutputCallbackMessage("pRspQryNetMonitorActionAttr->ActionGroup_ID: ", pRspQryNetMonitorActionAttr->ActionGroup_ID, g_RunningResult_File);
-        OutputCallbackMessage("pRspQryNetMonitorActionAttr->MonitorAttr_ID: ", pRspQryNetMonitorActionAttr->MonitorAttr_ID, g_RunningResult_File);
-        OutputCallbackMessage("pRspQryNetMonitorActionAttr->MonitorAttrName: ", pRspQryNetMonitorActionAttr->MonitorAttrName, g_RunningResult_File);
+        OutputCallbackMessage("pRtnNetMonitorActionAttr->OperationType: ", pRtnNetMonitorActionAttr->OperationType, g_RunningResult_File);
+        OutputCallbackMessage("pRtnNetMonitorActionAttr->ID: ", pRtnNetMonitorActionAttr->ID, g_RunningResult_File);
+        OutputCallbackMessage("pRtnNetMonitorActionAttr->ActionGroup_ID: ", pRtnNetMonitorActionAttr->ActionGroup_ID, g_RunningResult_File);
+        OutputCallbackMessage("pRtnNetMonitorActionAttr->MonitorAttr_ID: ", pRtnNetMonitorActionAttr->MonitorAttr_ID, g_RunningResult_File);
+        OutputCallbackMessage("pRtnNetMonitorActionAttr->MonitorAttrName: ", pRtnNetMonitorActionAttr->MonitorAttrName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
-    OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
-    OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
-    uv_mutex_lock (&g_RspQryNetMonitorActionAttrTopic_mutex);
+    uv_mutex_lock (&g_RtnNetMonitorActionAttrTopic_mutex);
     vector<FRONT_ID>::iterator it ;
-    for(it = g_RspQryNetMonitorActionAttrTopic_IOUser_vec.begin();
-        it != g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
+    for(it = g_RtnNetMonitorActionAttrTopic_IOUser_vec.begin();
+        it != g_RtnNetMonitorActionAttrTopic_IOUser_vec.end(); it++ ) {
         if (*it == this->m_frontid) break;     
     }
-    if (it == g_RspQryNetMonitorActionAttrTopic_IOUser_vec.end()) {
-        g_RspQryNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
+    if (it == g_RtnNetMonitorActionAttrTopic_IOUser_vec.end()) {
+        g_RtnNetMonitorActionAttrTopic_IOUser_vec.push_back(this->m_frontid);
     }
-    g_RspQryNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
-    uv_mutex_unlock (&g_RspQryNetMonitorActionAttrTopic_mutex);
+    g_RtnNetMonitorActionAttrTopic_Data_map[this->m_frontid].push ((void**)&paramArray[0]);
+    uv_mutex_unlock (&g_RtnNetMonitorActionAttrTopic_mutex);
 
-    uv_async_send(&g_RspQryNetMonitorActionAttrTopic_async);
+    uv_async_send(&g_RtnNetMonitorActionAttrTopic_async);
 
-    OutputCallbackMessage("****** SysUserSpi:: RspQryNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
+    OutputCallbackMessage("****** SysUserSpi:: RtnNetMonitorActionAttrTopic: END! ******\n", g_RunningResult_File);
 }
 
 void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNetModule, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -15046,7 +15326,10 @@ void SysUserSpi::OnRspQryNetModuleTopic(CShfeFtdcRspQryNetModuleField* pRspQryNe
         OutputCallbackMessage("pRspQryNetModule->ModuleIndex: ", pRspQryNetModule->ModuleIndex, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetModule->EntPhyIndex: ", pRspQryNetModule->EntPhyIndex, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15197,7 +15480,10 @@ void SysUserSpi::OnRspQryNetMonitorTaskStatusResultTopic(CShfeFtdcRspQryNetMonit
         OutputCallbackMessage("pRspQryNetMonitorTaskStatusResult->MonTime: ", pRspQryNetMonitorTaskStatusResult->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorTaskStatusResult->Flag: ", pRspQryNetMonitorTaskStatusResult->Flag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15343,7 +15629,10 @@ void SysUserSpi::OnRspQryNetCfgFileTopic(CShfeFtdcRspQryNetCfgFileField* pRspQry
         OutputCallbackMessage("pRspQryNetCfgFile->MonTime: ", pRspQryNetCfgFile->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetCfgFile->CfgFileName: ", pRspQryNetCfgFile->CfgFileName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15495,7 +15784,10 @@ void SysUserSpi::OnRspQryFileGeneralOperTopic(CShfeFtdcRspQryFileGeneralOperFiel
         OutputCallbackMessage("pRspQryFileGeneralOper->Length: ", pRspQryFileGeneralOper->Length, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFileGeneralOper->FileContent: ", pRspQryFileGeneralOper->FileContent, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15649,7 +15941,10 @@ void SysUserSpi::OnRspQryNetPartyLinkStatusInfoTopic(CShfeFtdcRspQryNetPartyLink
         OutputCallbackMessage("pRspQryNetPartyLinkStatusInfo->Interface: ", pRspQryNetPartyLinkStatusInfo->Interface, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetPartyLinkStatusInfo->status: ", pRspQryNetPartyLinkStatusInfo->status, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15798,7 +16093,10 @@ void SysUserSpi::OnRspQryNetBaseLineTopic(CShfeFtdcRspQryNetBaseLineField* pRspQ
         OutputCallbackMessage("pRspQryNetBaseLine->memo: ", pRspQryNetBaseLine->memo, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetBaseLine->Flag: ", pRspQryNetBaseLine->Flag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -15950,7 +16248,10 @@ void SysUserSpi::OnRspQryNetBaseLineResultTopic(CShfeFtdcRspQryNetBaseLineResult
         OutputCallbackMessage("pRspQryNetBaseLineResult->GenUser: ", pRspQryNetBaseLineResult->GenUser, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetBaseLineResult->Flag: ", pRspQryNetBaseLineResult->Flag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16104,7 +16405,10 @@ void SysUserSpi::OnRspQryNetMonitorDeviceTaskTopic(CShfeFtdcRspQryNetMonitorDevi
         OutputCallbackMessage("pRspQryNetMonitorDeviceTask->DefParamChain: ", pRspQryNetMonitorDeviceTask->DefParamChain, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetMonitorDeviceTask->Flag: ", pRspQryNetMonitorDeviceTask->Flag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16257,7 +16561,10 @@ void SysUserSpi::OnRspQryNetLocalPingResultInfoTopic(CShfeFtdcRspQryNetLocalPing
         OutputCallbackMessage("pRspQryNetLocalPingResultInfo->PTimeSta: ", pRspQryNetLocalPingResultInfo->PTimeSta, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetLocalPingResultInfo->ConnRate: ", pRspQryNetLocalPingResultInfo->ConnRate, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16412,7 +16719,10 @@ void SysUserSpi::OnRspQryNetRomotePingResultInfoTopic(CShfeFtdcRspQryNetRomotePi
         OutputCallbackMessage("pRspQryNetRomotePingResultInfo->TimeDlyMax: ", pRspQryNetRomotePingResultInfo->TimeDlyMax, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetRomotePingResultInfo->TimeDlyAvg: ", pRspQryNetRomotePingResultInfo->TimeDlyAvg, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16567,7 +16877,10 @@ void SysUserSpi::OnRspQryTradeFrontOrderRttStatTopic(CShfeFtdcRspQryTradeFrontOr
         OutputCallbackMessage("pRspQryTradeFrontOrderRttStat->OrderRttSqu: ", pRspQryTradeFrontOrderRttStat->OrderRttSqu, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradeFrontOrderRttStat->OrderRttCutDistrib: ", pRspQryTradeFrontOrderRttStat->OrderRttCutDistrib, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16724,7 +17037,10 @@ void SysUserSpi::OnRspQryDiskIOTopic(CShfeFtdcRspQryDiskIOField* pRspQryDiskIO, 
         OutputCallbackMessage("pRspQryDiskIO->Svc_t: ", pRspQryDiskIO->Svc_t, g_RunningResult_File);
         OutputCallbackMessage("pRspQryDiskIO->Busy: ", pRspQryDiskIO->Busy, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -16886,7 +17202,10 @@ void SysUserSpi::OnRspQryRouterInfoTopic(CShfeFtdcRspQryRouterInfoField* pRspQry
         OutputCallbackMessage("pRspQryRouterInfo->Win: ", pRspQryRouterInfo->Win, g_RunningResult_File);
         OutputCallbackMessage("pRspQryRouterInfo->Rtt: ", pRspQryRouterInfo->Rtt, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17050,7 +17369,10 @@ void SysUserSpi::OnRspQryStatInfoTopic(CShfeFtdcRspQryStatInfoField* pRspQryStat
         OutputCallbackMessage("pRspQryStatInfo->CPUIOWait: ", pRspQryStatInfo->CPUIOWait, g_RunningResult_File);
         OutputCallbackMessage("pRspQryStatInfo->CPUSteal: ", pRspQryStatInfo->CPUSteal, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17208,7 +17530,10 @@ void SysUserSpi::OnRspQryClientInfoTopic(CShfeFtdcRspQryClientInfoField* pRspQry
         OutputCallbackMessage("pRspQryClientInfo->IsActive: ", pRspQryClientInfo->IsActive, g_RunningResult_File);
         OutputCallbackMessage("pRspQryClientInfo->OperationType: ", pRspQryClientInfo->OperationType, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17366,7 +17691,10 @@ void SysUserSpi::OnRspQryParticTradeOrderStatesTopic(CShfeFtdcRspQryParticTradeO
         OutputCallbackMessage("pRspQryParticTradeOrderStates->TradeCntMax: ", pRspQryParticTradeOrderStates->TradeCntMax, g_RunningResult_File);
         OutputCallbackMessage("pRspQryParticTradeOrderStates->TradeMoneyMax: ", pRspQryParticTradeOrderStates->TradeMoneyMax, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17521,7 +17849,10 @@ void SysUserSpi::OnRspQryTradeOrderRttCutLineTopic(CShfeFtdcRspQryTradeOrderRttC
         OutputCallbackMessage("pRspQryTradeOrderRttCutLine->OrderRttCutLine: ", pRspQryTradeOrderRttCutLine->OrderRttCutLine, g_RunningResult_File);
         OutputCallbackMessage("pRspQryTradeOrderRttCutLine->OrderRttWidth: ", pRspQryTradeOrderRttCutLine->OrderRttWidth, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17662,7 +17993,10 @@ void SysUserSpi::OnRspQryEventDescriptionTopic(CShfeFtdcRspQryEventDescriptionFi
         OutputCallbackMessage("pRspQryEventDescription->MonTime: ", pRspQryEventDescription->MonTime, g_RunningResult_File);
         OutputCallbackMessage("pRspQryEventDescription->EventDes: ", pRspQryEventDescription->EventDes, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17803,7 +18137,10 @@ void SysUserSpi::OnRspQryFrontUniqueIDTopic(CShfeFtdcRspQryFrontUniqueIDField* p
         OutputCallbackMessage("pRspQryFrontUniqueID->FrontID: ", pRspQryFrontUniqueID->FrontID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryFrontUniqueID->FrontName: ", pRspQryFrontUniqueID->FrontName, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -17947,7 +18284,10 @@ void SysUserSpi::OnRspQryNetPartyLinkAddrChangeTopic(CShfeFtdcRspQryNetPartyLink
         OutputCallbackMessage("pRspQryNetPartyLinkAddrChange->MonDate: ", pRspQryNetPartyLinkAddrChange->MonDate, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetPartyLinkAddrChange->MonTime: ", pRspQryNetPartyLinkAddrChange->MonTime, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -18118,7 +18458,10 @@ void SysUserSpi::OnRspQryNetDelPartyLinkInfoTopic(CShfeFtdcRspQryNetDelPartyLink
         OutputCallbackMessage("pRspQryNetDelPartyLinkInfo->SEAT_NO: ", pRspQryNetDelPartyLinkInfo->SEAT_NO, g_RunningResult_File);
         OutputCallbackMessage("pRspQryNetDelPartyLinkInfo->PRO: ", pRspQryNetDelPartyLinkInfo->PRO, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -18288,7 +18631,10 @@ void SysUserSpi::OnRspQryInstrumentStatusTopic(CShfeFtdcRspQryInstrumentStatusFi
         OutputCallbackMessage("pRspQryInstrumentStatus->EnterReason: ", pRspQryInstrumentStatus->EnterReason, g_RunningResult_File);
         OutputCallbackMessage("pRspQryInstrumentStatus->EnterDate: ", pRspQryInstrumentStatus->EnterDate, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -18436,7 +18782,10 @@ void SysUserSpi::OnRspQryCurrTradingSegmentAttrTopic(CShfeFtdcRspQryCurrTradingS
         OutputCallbackMessage("pRspQryCurrTradingSegmentAttr->InstrumentID: ", pRspQryCurrTradingSegmentAttr->InstrumentID, g_RunningResult_File);
         OutputCallbackMessage("pRspQryCurrTradingSegmentAttr->AdvanceDays: ", pRspQryCurrTradingSegmentAttr->AdvanceDays, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 
@@ -18588,7 +18937,10 @@ void SysUserSpi::OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField*
         OutputCallbackMessage("pRspQryPerformanceTop->TopN: ", pRspQryPerformanceTop->TopN, g_RunningResult_File);
         OutputCallbackMessage("pRspQryPerformanceTop->TopResult: ", pRspQryPerformanceTop->TopResult, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 

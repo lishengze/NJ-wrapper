@@ -5,9 +5,8 @@
  *             
 */
 var fs = require('fs');
-function hereDoc(f) {
-    return f.toString().replace(/^[^\/]+\/\*!?\s?/, '').replace(/\*\/[^\/]+$/, '');
-}
+var hereDoc = require('../lib/tool-function.js').hereDoc;
+
 var fileData = hereDoc(function () {
 /*// 作者: 李晟泽
 // 日期：2016.11.17;
@@ -34,10 +33,8 @@ void InitAll(Handle<Object> exports) {
     if (!g_RunningResult_File) {
         OutputCallbackMessage("Failed to open running-message.txt", g_RunningResult_File);
         g_RunningResult_File.close();
-    }
-    
-    
- } 
+    }        
+} 
  
 NODE_MODULE (addon, InitAll);
  
@@ -45,13 +42,13 @@ NODE_MODULE (addon, InitAll);
 });
 
 var fileName = 'addon.cpp';
-var pathName = '../new file/';
+var pathName = '../new-file/';
 
-    fs.writeFile(pathName + fileName, fileData, function (err) {
-        if (err) {
-            console.log(err);
-        } else {            
-            console.log('Succeed in saving ' + pathName + fileName);
-        }
-    
-    });    
+fs.writeFile(pathName + fileName, fileData, function (err) {
+    if (err) {
+        console.log(err);
+    } else {            
+        console.log('Succeed in saving ' + pathName + fileName);
+    }
+
+});    

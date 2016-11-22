@@ -16,7 +16,7 @@ function loadXMLDoc(filePath){
 		}
 }
 
-var fileName = 'FTD';
+var fileName = 'sysuserapi';
 var pathName = '../lib/';
 var xmlFileName  = pathName + fileName + ".xml";
 var jsonFileName = pathName + fileName + ".json";
@@ -27,7 +27,7 @@ fs.writeFile(jsonFileName, fileData, function (err) {
     if (err) {
         console.log(err);
     } else {
-        console.log('Succeed in saving ' + pathName + fileName);
+        console.log('Succeed in saving ' + pathName + jsonFileName);
     }
 
 });

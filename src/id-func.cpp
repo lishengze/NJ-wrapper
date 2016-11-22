@@ -32,7 +32,6 @@ void ResizeFrontIDQueue() {
 
 FRONT_ID GetFrontID() {	
 	FRONT_ID tmpID;
-		
 	uv_mutex_lock(&g_QueueIDSet_mutex);	
 	if (true == g_QueueIDSet.empty()) {
 		ResizeFrontIDQueue();
@@ -40,7 +39,6 @@ FRONT_ID GetFrontID() {
 	tmpID = g_QueueIDSet.front();
 	g_QueueIDSet.pop();
 	uv_mutex_unlock(&g_QueueIDSet_mutex);
-	
 	return tmpID;	
 }
 

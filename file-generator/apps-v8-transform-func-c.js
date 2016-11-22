@@ -580,11 +580,11 @@ for (var sysFuncsIndex = 0; sysFuncsIndex < sysFuncs.length; ++sysFuncsIndex) {
                 
                     fileData += tabSpace[1] + "OutputCallbackMessage(\"****** v8-transform-func:: "+ funcName + ": END! ******\\n\", g_RunningResult_File);\n";
                     fileData += "}\n\n";
-                }  // end if ("Rsp" || "Rtn")
+                }  
             }
         }
     }
-} // end for
+} 
 
 
 var pathName = '../new-file/';

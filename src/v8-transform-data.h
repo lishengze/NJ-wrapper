@@ -21,19 +21,19 @@ void DeInitV8Transformdata ();
 
 extern uv_mutex_t   g_FrontConnected_mutex;
 extern uv_async_t   g_FrontConnected_async;
-extern vector<FRONT_ID>    g_FrontConnected_IOUser_vec;
+extern vector<FRONT_ID>   g_FrontConnected_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_FrontConnected_Data_map;
 
-extern uv_mutex_t   g_FrontDisConnected_mutex;
-extern uv_async_t   g_FrontDisConnected_async;
-extern vector<FRONT_ID>    g_FrontDisConnected_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_FrontDisConnected_Data_map;
+extern uv_mutex_t   g_FrontDisconnected_mutex;
+extern uv_async_t   g_FrontDisconnected_async;
+extern vector<FRONT_ID>   g_FrontDisconnected_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_FrontDisconnected_Data_map;
 
 extern uv_mutex_t   g_HeartBeatWarning_mutex;
 extern uv_async_t   g_HeartBeatWarning_async;
-extern vector<FRONT_ID>    g_HeartBeatWarning_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_HeartBeatWarning_Data_map;
-
+extern vector<FRONT_ID>   g_HeartBeatWarning_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >  g_HeartBeatWarning_Data_map;
+                
 extern uv_mutex_t   g_RspQryTopCpuInfoTopic_mutex;
 extern uv_async_t   g_RspQryTopCpuInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryTopCpuInfoTopic_IOUser_vec;
@@ -158,6 +158,16 @@ extern uv_mutex_t   g_RtnWarningEventTopic_mutex;
 extern uv_async_t   g_RtnWarningEventTopic_async;
 extern vector<FRONT_ID>    g_RtnWarningEventTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnWarningEventTopic_Data_map;
+
+extern uv_mutex_t   g_RspQrySyslogEventTopic_mutex;
+extern uv_async_t   g_RspQrySyslogEventTopic_async;
+extern vector<FRONT_ID>    g_RspQrySyslogEventTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQrySyslogEventTopic_Data_map;
+
+extern uv_mutex_t   g_RtnSyslogEventTopic_mutex;
+extern uv_async_t   g_RtnSyslogEventTopic_async;
+extern vector<FRONT_ID>    g_RtnSyslogEventTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnSyslogEventTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryObjectAttrTopic_mutex;
 extern uv_async_t   g_RspQryObjectAttrTopic_async;
@@ -299,6 +309,26 @@ extern uv_async_t   g_RtnPosiLimitChgTopic_async;
 extern vector<FRONT_ID>    g_RtnPosiLimitChgTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnPosiLimitChgTopic_Data_map;
 
+extern uv_mutex_t   g_RspQryClientPosiLimitChgTopic_mutex;
+extern uv_async_t   g_RspQryClientPosiLimitChgTopic_async;
+extern vector<FRONT_ID>    g_RspQryClientPosiLimitChgTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryClientPosiLimitChgTopic_Data_map;
+
+extern uv_mutex_t   g_RtnClientPosiLimitChgTopic_mutex;
+extern uv_async_t   g_RtnClientPosiLimitChgTopic_async;
+extern vector<FRONT_ID>    g_RtnClientPosiLimitChgTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnClientPosiLimitChgTopic_Data_map;
+
+extern uv_mutex_t   g_RspQrySpecPosiLimitChgTopic_mutex;
+extern uv_async_t   g_RspQrySpecPosiLimitChgTopic_async;
+extern vector<FRONT_ID>    g_RspQrySpecPosiLimitChgTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQrySpecPosiLimitChgTopic_Data_map;
+
+extern uv_mutex_t   g_RtnSpecPosiLimitChgTopic_mutex;
+extern uv_async_t   g_RtnSpecPosiLimitChgTopic_async;
+extern vector<FRONT_ID>    g_RtnSpecPosiLimitChgTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnSpecPosiLimitChgTopic_Data_map;
+
 extern uv_mutex_t   g_RspQryHedgeDetailChgTopic_mutex;
 extern uv_async_t   g_RspQryHedgeDetailChgTopic_async;
 extern vector<FRONT_ID>    g_RspQryHedgeDetailChgTopic_IOUser_vec;
@@ -338,26 +368,6 @@ extern uv_mutex_t   g_RtnUserIpChgTopic_mutex;
 extern uv_async_t   g_RtnUserIpChgTopic_async;
 extern vector<FRONT_ID>    g_RtnUserIpChgTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnUserIpChgTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryClientPosiLimitChgTopic_mutex;
-extern uv_async_t   g_RspQryClientPosiLimitChgTopic_async;
-extern vector<FRONT_ID>    g_RspQryClientPosiLimitChgTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryClientPosiLimitChgTopic_Data_map;
-
-extern uv_mutex_t   g_RtnClientPosiLimitChgTopic_mutex;
-extern uv_async_t   g_RtnClientPosiLimitChgTopic_async;
-extern vector<FRONT_ID>    g_RtnClientPosiLimitChgTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnClientPosiLimitChgTopic_Data_map;
-
-extern uv_mutex_t   g_RspQrySpecPosiLimitChgTopic_mutex;
-extern uv_async_t   g_RspQrySpecPosiLimitChgTopic_async;
-extern vector<FRONT_ID>    g_RspQrySpecPosiLimitChgTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQrySpecPosiLimitChgTopic_Data_map;
-
-extern uv_mutex_t   g_RtnSpecPosiLimitChgTopic_mutex;
-extern uv_async_t   g_RtnSpecPosiLimitChgTopic_async;
-extern vector<FRONT_ID>    g_RtnSpecPosiLimitChgTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnSpecPosiLimitChgTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryHistoryObjectAttrTopic_mutex;
 extern uv_async_t   g_RspQryHistoryObjectAttrTopic_async;
@@ -414,6 +424,36 @@ extern uv_async_t   g_RtnTradeLogTopic_async;
 extern vector<FRONT_ID>    g_RtnTradeLogTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnTradeLogTopic_Data_map;
 
+extern uv_mutex_t   g_RspQryParticipantInitTopic_mutex;
+extern uv_async_t   g_RspQryParticipantInitTopic_async;
+extern vector<FRONT_ID>    g_RspQryParticipantInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryParticipantInitTopic_Data_map;
+
+extern uv_mutex_t   g_RtnParticipantInitTopic_mutex;
+extern uv_async_t   g_RtnParticipantInitTopic_async;
+extern vector<FRONT_ID>    g_RtnParticipantInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnParticipantInitTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryUserInitTopic_mutex;
+extern uv_async_t   g_RspQryUserInitTopic_async;
+extern vector<FRONT_ID>    g_RspQryUserInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryUserInitTopic_Data_map;
+
+extern uv_mutex_t   g_RtnUserInitTopic_mutex;
+extern uv_async_t   g_RtnUserInitTopic_async;
+extern vector<FRONT_ID>    g_RtnUserInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnUserInitTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryClientInitTopic_mutex;
+extern uv_async_t   g_RspQryClientInitTopic_async;
+extern vector<FRONT_ID>    g_RspQryClientInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryClientInitTopic_Data_map;
+
+extern uv_mutex_t   g_RtnClientInitTopic_mutex;
+extern uv_async_t   g_RtnClientInitTopic_async;
+extern vector<FRONT_ID>    g_RtnClientInitTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnClientInitTopic_Data_map;
+
 extern uv_mutex_t   g_RspQryTradeUserLoginInfoTopic_mutex;
 extern uv_async_t   g_RspQryTradeUserLoginInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryTradeUserLoginInfoTopic_IOUser_vec;
@@ -433,6 +473,16 @@ extern uv_mutex_t   g_RspQryTradepeakTopic_mutex;
 extern uv_async_t   g_RspQryTradepeakTopic_async;
 extern vector<FRONT_ID>    g_RspQryTradepeakTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryTradepeakTopic_Data_map;
+
+extern uv_mutex_t   g_RtnUpdateSysConfigTopic_mutex;
+extern uv_async_t   g_RtnUpdateSysConfigTopic_async;
+extern vector<FRONT_ID>    g_RtnUpdateSysConfigTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnUpdateSysConfigTopic_Data_map;
+
+extern uv_mutex_t   g_RtnSysUser_mutex;
+extern uv_async_t   g_RtnSysUser_async;
+extern vector<FRONT_ID>    g_RtnSysUser_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnSysUser_Data_map;
 
 extern uv_mutex_t   g_RspQryHistoryCpuInfoTopic_mutex;
 extern uv_async_t   g_RspQryHistoryCpuInfoTopic_async;
@@ -474,140 +524,125 @@ extern uv_async_t   g_RspQryHistoryTradePeakTopic_async;
 extern vector<FRONT_ID>    g_RspQryHistoryTradePeakTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryHistoryTradePeakTopic_Data_map;
 
-extern uv_mutex_t   g_RtnHistoryTradePeakTopic_mutex;
-extern uv_async_t   g_RtnHistoryTradePeakTopic_async;
-extern vector<FRONT_ID>    g_RtnHistoryTradePeakTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnHistoryTradePeakTopic_Data_map;
-
-extern uv_mutex_t   g_RspQrySyslogEventTopic_mutex;
-extern uv_async_t   g_RspQrySyslogEventTopic_async;
-extern vector<FRONT_ID>    g_RspQrySyslogEventTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQrySyslogEventTopic_Data_map;
-
-extern uv_mutex_t   g_RtnSyslogEventTopic_mutex;
-extern uv_async_t   g_RtnSyslogEventTopic_async;
-extern vector<FRONT_ID>    g_RtnSyslogEventTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnSyslogEventTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryWebAppInfoTopic_mutex;
-extern uv_async_t   g_RspQryWebAppInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryWebAppInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryWebAppInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnWebAppInfoTopic_mutex;
-extern uv_async_t   g_RtnWebAppInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnWebAppInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnWebAppInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryServletInfoTopic_mutex;
-extern uv_async_t   g_RspQryServletInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryServletInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryServletInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnServletInfoTopic_mutex;
-extern uv_async_t   g_RtnServletInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnServletInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnServletInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryFileInfoTopic_mutex;
-extern uv_async_t   g_RspQryFileInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryFileInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryFileInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnFileInfoTopic_mutex;
-extern uv_async_t   g_RtnFileInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnFileInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnFileInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQrySessionInfoTopic_mutex;
-extern uv_async_t   g_RspQrySessionInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQrySessionInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQrySessionInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnSessionInfoTopic_mutex;
-extern uv_async_t   g_RtnSessionInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnSessionInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnSessionInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryJDBCInfoTopic_mutex;
 extern uv_async_t   g_RspQryJDBCInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryJDBCInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryJDBCInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnJDBCInfoTopic_mutex;
-extern uv_async_t   g_RtnJDBCInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnJDBCInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnJDBCInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryThreadInfoTopic_mutex;
 extern uv_async_t   g_RspQryThreadInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryThreadInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryThreadInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RtnThreadInfoTopic_mutex;
-extern uv_async_t   g_RtnThreadInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnThreadInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnThreadInfoTopic_Data_map;
+extern uv_mutex_t   g_RspQrySessionInfoTopic_mutex;
+extern uv_async_t   g_RspQrySessionInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQrySessionInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQrySessionInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryServletInfoTopic_mutex;
+extern uv_async_t   g_RspQryServletInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryServletInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryServletInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryFileInfoTopic_mutex;
+extern uv_async_t   g_RspQryFileInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryFileInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryFileInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryWebAppInfoTopic_mutex;
+extern uv_async_t   g_RspQryWebAppInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryWebAppInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryWebAppInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryVMInfoTopic_mutex;
 extern uv_async_t   g_RspQryVMInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryVMInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryVMInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RtnVMInfoTopic_mutex;
-extern uv_async_t   g_RtnVMInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnVMInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnVMInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryPropertyInfoTopic_mutex;
 extern uv_async_t   g_RspQryPropertyInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryPropertyInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryPropertyInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnPropertyInfoTopic_mutex;
-extern uv_async_t   g_RtnPropertyInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnPropertyInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnPropertyInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryMemPoolInfoTopic_mutex;
 extern uv_async_t   g_RspQryMemPoolInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryMemPoolInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryMemPoolInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RtnMemPoolInfoTopic_mutex;
-extern uv_async_t   g_RtnMemPoolInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnMemPoolInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnMemPoolInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryFileContentInfoTopic_mutex;
 extern uv_async_t   g_RspQryFileContentInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryFileContentInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryFileContentInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnFileContentInfoTopic_mutex;
-extern uv_async_t   g_RtnFileContentInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnFileContentInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnFileContentInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryConnectionInfoTopic_mutex;
 extern uv_async_t   g_RspQryConnectionInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryConnectionInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryConnectionInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RtnConnectionInfoTopic_mutex;
-extern uv_async_t   g_RtnConnectionInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnConnectionInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnConnectionInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryConnectorInfoTopic_mutex;
 extern uv_async_t   g_RspQryConnectorInfoTopic_async;
 extern vector<FRONT_ID>    g_RspQryConnectorInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryConnectorInfoTopic_Data_map;
 
+extern uv_mutex_t   g_RtnVMInfoTopic_mutex;
+extern uv_async_t   g_RtnVMInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnVMInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnVMInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnPropertyInfoTopic_mutex;
+extern uv_async_t   g_RtnPropertyInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnPropertyInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnPropertyInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnMemPoolInfoTopic_mutex;
+extern uv_async_t   g_RtnMemPoolInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnMemPoolInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnMemPoolInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnFileContentInfoTopic_mutex;
+extern uv_async_t   g_RtnFileContentInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnFileContentInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnFileContentInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnConnectionInfoTopic_mutex;
+extern uv_async_t   g_RtnConnectionInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnConnectionInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnConnectionInfoTopic_Data_map;
+
 extern uv_mutex_t   g_RtnConnectorInfoTopic_mutex;
 extern uv_async_t   g_RtnConnectorInfoTopic_async;
 extern vector<FRONT_ID>    g_RtnConnectorInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnConnectorInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnJDBCInfoTopic_mutex;
+extern uv_async_t   g_RtnJDBCInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnJDBCInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnJDBCInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnThreadInfoTopic_mutex;
+extern uv_async_t   g_RtnThreadInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnThreadInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnThreadInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnSessionInfoTopic_mutex;
+extern uv_async_t   g_RtnSessionInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnSessionInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnSessionInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnServletInfoTopic_mutex;
+extern uv_async_t   g_RtnServletInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnServletInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnServletInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnFileInfoTopic_mutex;
+extern uv_async_t   g_RtnFileInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnFileInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnFileInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnWebAppInfoTopic_mutex;
+extern uv_async_t   g_RtnWebAppInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnWebAppInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnWebAppInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryDBQueryTopic_mutex;
 extern uv_async_t   g_RspQryDBQueryTopic_async;
@@ -639,15 +674,15 @@ extern uv_async_t   g_RspQryWarningQueryTopic_async;
 extern vector<FRONT_ID>    g_RspQryWarningQueryTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryWarningQueryTopic_Data_map;
 
-extern uv_mutex_t   g_RtnWarningQueryTopic_mutex;
-extern uv_async_t   g_RtnWarningQueryTopic_async;
-extern vector<FRONT_ID>    g_RtnWarningQueryTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnWarningQueryTopic_Data_map;
-
 extern uv_mutex_t   g_RtnWarningActiveChange_mutex;
 extern uv_async_t   g_RtnWarningActiveChange_async;
 extern vector<FRONT_ID>    g_RtnWarningActiveChange_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnWarningActiveChange_Data_map;
+
+extern uv_mutex_t   g_RspQryTradeUserLoginStatTopic_mutex;
+extern uv_async_t   g_RspQryTradeUserLoginStatTopic_async;
+extern vector<FRONT_ID>    g_RspQryTradeUserLoginStatTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryTradeUserLoginStatTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryGeneralOperateTopic_mutex;
 extern uv_async_t   g_RspQryGeneralOperateTopic_async;
@@ -668,151 +703,6 @@ extern uv_mutex_t   g_RtnNetDeviceLinkedTopic_mutex;
 extern uv_async_t   g_RtnNetDeviceLinkedTopic_async;
 extern vector<FRONT_ID>    g_RtnNetDeviceLinkedTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetDeviceLinkedTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryTradeUserLoginStatTopic_mutex;
-extern uv_async_t   g_RspQryTradeUserLoginStatTopic_async;
-extern vector<FRONT_ID>    g_RspQryTradeUserLoginStatTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryTradeUserLoginStatTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryTradeFrontOrderRttStatTopic_mutex;
-extern uv_async_t   g_RspQryTradeFrontOrderRttStatTopic_async;
-extern vector<FRONT_ID>    g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryTradeFrontOrderRttStatTopic_Data_map;
-
-extern uv_mutex_t   g_RtnTradeFrontOrderRttStatTopic_mutex;
-extern uv_async_t   g_RtnTradeFrontOrderRttStatTopic_async;
-extern vector<FRONT_ID>    g_RtnTradeFrontOrderRttStatTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnTradeFrontOrderRttStatTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryParticTradeOrderStatesTopic_mutex;
-extern uv_async_t   g_RspQryParticTradeOrderStatesTopic_async;
-extern vector<FRONT_ID>    g_RspQryParticTradeOrderStatesTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryParticTradeOrderStatesTopic_Data_map;
-
-extern uv_mutex_t   g_RtnParticTradeOrderStatesTopic_mutex;
-extern uv_async_t   g_RtnParticTradeOrderStatesTopic_async;
-extern vector<FRONT_ID>    g_RtnParticTradeOrderStatesTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnParticTradeOrderStatesTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryRouterInfoTopic_mutex;
-extern uv_async_t   g_RspQryRouterInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryRouterInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryRouterInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnRouterInfoTopic_mutex;
-extern uv_async_t   g_RtnRouterInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnRouterInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnRouterInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryDiskIOTopic_mutex;
-extern uv_async_t   g_RspQryDiskIOTopic_async;
-extern vector<FRONT_ID>    g_RspQryDiskIOTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryDiskIOTopic_Data_map;
-
-extern uv_mutex_t   g_RtnDiskIOTopic_mutex;
-extern uv_async_t   g_RtnDiskIOTopic_async;
-extern vector<FRONT_ID>    g_RtnDiskIOTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnDiskIOTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryStatInfoTopic_mutex;
-extern uv_async_t   g_RspQryStatInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryStatInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryStatInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnStatInfoTopic_mutex;
-extern uv_async_t   g_RtnStatInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnStatInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnStatInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryTradeOrderRttCutLineTopic_mutex;
-extern uv_async_t   g_RspQryTradeOrderRttCutLineTopic_async;
-extern vector<FRONT_ID>    g_RspQryTradeOrderRttCutLineTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryTradeOrderRttCutLineTopic_Data_map;
-
-extern uv_mutex_t   g_RtnTradeOrderRttCutLineTopic_mutex;
-extern uv_async_t   g_RtnTradeOrderRttCutLineTopic_async;
-extern vector<FRONT_ID>    g_RtnTradeOrderRttCutLineTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnTradeOrderRttCutLineTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryClientInfoTopic_mutex;
-extern uv_async_t   g_RspQryClientInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryClientInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryClientInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnClientInfoTopic_mutex;
-extern uv_async_t   g_RtnClientInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnClientInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnClientInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryEventDescriptionTopic_mutex;
-extern uv_async_t   g_RspQryEventDescriptionTopic_async;
-extern vector<FRONT_ID>    g_RspQryEventDescriptionTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryEventDescriptionTopic_Data_map;
-
-extern uv_mutex_t   g_RtnEventDescriptionTopic_mutex;
-extern uv_async_t   g_RtnEventDescriptionTopic_async;
-extern vector<FRONT_ID>    g_RtnEventDescriptionTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnEventDescriptionTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryFrontUniqueIDTopic_mutex;
-extern uv_async_t   g_RspQryFrontUniqueIDTopic_async;
-extern vector<FRONT_ID>    g_RspQryFrontUniqueIDTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryFrontUniqueIDTopic_Data_map;
-
-extern uv_mutex_t   g_RtnFrontUniqueIDTopic_mutex;
-extern uv_async_t   g_RtnFrontUniqueIDTopic_async;
-extern vector<FRONT_ID>    g_RtnFrontUniqueIDTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnFrontUniqueIDTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryNetPartyLinkAddrChangeTopic_mutex;
-extern uv_async_t   g_RspQryNetPartyLinkAddrChangeTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetPartyLinkAddrChangeTopic_Data_map;
-
-extern uv_mutex_t   g_RtnNetPartyLinkAddrChangeTopic_mutex;
-extern uv_async_t   g_RtnNetPartyLinkAddrChangeTopic_async;
-extern vector<FRONT_ID>    g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetPartyLinkAddrChangeTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryNetDelPartyLinkInfoTopic_mutex;
-extern uv_async_t   g_RspQryNetDelPartyLinkInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetDelPartyLinkInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnNetDelPartyLinkInfoTopic_mutex;
-extern uv_async_t   g_RtnNetDelPartyLinkInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnNetDelPartyLinkInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetDelPartyLinkInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryPerformanceTopTopic_mutex;
-extern uv_async_t   g_RspQryPerformanceTopTopic_async;
-extern vector<FRONT_ID>    g_RspQryPerformanceTopTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryPerformanceTopTopic_Data_map;
-
-extern uv_mutex_t   g_RtnPerformanceTopTopic_mutex;
-extern uv_async_t   g_RtnPerformanceTopTopic_async;
-extern vector<FRONT_ID>    g_RtnPerformanceTopTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnPerformanceTopTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryInstrumentStatusTopic_mutex;
-extern uv_async_t   g_RspQryInstrumentStatusTopic_async;
-extern vector<FRONT_ID>    g_RspQryInstrumentStatusTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryInstrumentStatusTopic_Data_map;
-
-extern uv_mutex_t   g_RtnInstrumentStatusTopic_mutex;
-extern uv_async_t   g_RtnInstrumentStatusTopic_async;
-extern vector<FRONT_ID>    g_RtnInstrumentStatusTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnInstrumentStatusTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryCurrTradingSegmentAttrTopic_mutex;
-extern uv_async_t   g_RspQryCurrTradingSegmentAttrTopic_async;
-extern vector<FRONT_ID>    g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryCurrTradingSegmentAttrTopic_Data_map;
-
-extern uv_mutex_t   g_RtnCurrTradingSegmentAttrTopic_mutex;
-extern uv_async_t   g_RtnCurrTradingSegmentAttrTopic_async;
-extern vector<FRONT_ID>    g_RtnCurrTradingSegmentAttrTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnCurrTradingSegmentAttrTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetAreaTopic_mutex;
 extern uv_async_t   g_RspQryNetAreaTopic_async;
@@ -844,20 +734,20 @@ extern uv_async_t   g_RtnNetSubAreaIPTopic_async;
 extern vector<FRONT_ID>    g_RtnNetSubAreaIPTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetSubAreaIPTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetDeviceTopic_mutex;
-extern uv_async_t   g_RspQryNetDeviceTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetDeviceTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetDeviceTopic_Data_map;
+extern uv_mutex_t   g_RspQryNetDeviceDetectTopic_mutex;
+extern uv_async_t   g_RspQryNetDeviceDetectTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetDeviceDetectTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetDeviceDetectTopic_Data_map;
 
 extern uv_mutex_t   g_RtnNetDeviceTopic_mutex;
 extern uv_async_t   g_RtnNetDeviceTopic_async;
 extern vector<FRONT_ID>    g_RtnNetDeviceTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetDeviceTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetDeviceDetectTopic_mutex;
-extern uv_async_t   g_RspQryNetDeviceDetectTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetDeviceDetectTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetDeviceDetectTopic_Data_map;
+extern uv_mutex_t   g_RspQryNetDeviceTopic_mutex;
+extern uv_async_t   g_RspQryNetDeviceTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetDeviceTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetDeviceTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetBuildingTopic_mutex;
 extern uv_async_t   g_RspQryNetBuildingTopic_async;
@@ -1049,26 +939,6 @@ extern uv_async_t   g_RtnNetMonitorObjectAttrTopic_async;
 extern vector<FRONT_ID>    g_RtnNetMonitorObjectAttrTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorObjectAttrTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetMonitorDeviceGroupTopic_mutex;
-extern uv_async_t   g_RspQryNetMonitorDeviceGroupTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorDeviceGroupTopic_Data_map;
-
-extern uv_mutex_t   g_RtnNetMonitorDeviceGroupTopic_mutex;
-extern uv_async_t   g_RtnNetMonitorDeviceGroupTopic_async;
-extern vector<FRONT_ID>    g_RtnNetMonitorDeviceGroupTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceGroupTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryNetMonitorTaskInfoTopic_mutex;
-extern uv_async_t   g_RspQryNetMonitorTaskInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetMonitorTaskInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorTaskInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnNetMonitorTaskInfoTopic_mutex;
-extern uv_async_t   g_RtnNetMonitorTaskInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnNetMonitorTaskInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorTaskInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryNetMonitorTaskResultTopic_mutex;
 extern uv_async_t   g_RspQryNetMonitorTaskResultTopic_async;
 extern vector<FRONT_ID>    g_RspQryNetMonitorTaskResultTopic_IOUser_vec;
@@ -1079,6 +949,16 @@ extern uv_async_t   g_RtnNetMonitorTaskResultTopic_async;
 extern vector<FRONT_ID>    g_RtnNetMonitorTaskResultTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorTaskResultTopic_Data_map;
 
+extern uv_mutex_t   g_RspQryNetMonitorDeviceGroupTopic_mutex;
+extern uv_async_t   g_RspQryNetMonitorDeviceGroupTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetMonitorDeviceGroupTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorDeviceGroupTopic_Data_map;
+
+extern uv_mutex_t   g_RtnNetMonitorDeviceGroupTopic_mutex;
+extern uv_async_t   g_RtnNetMonitorDeviceGroupTopic_async;
+extern vector<FRONT_ID>    g_RtnNetMonitorDeviceGroupTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceGroupTopic_Data_map;
+
 extern uv_mutex_t   g_RspQryNetMonitorTaskObjectSetTopic_mutex;
 extern uv_async_t   g_RspQryNetMonitorTaskObjectSetTopic_async;
 extern vector<FRONT_ID>    g_RspQryNetMonitorTaskObjectSetTopic_IOUser_vec;
@@ -1088,6 +968,16 @@ extern uv_mutex_t   g_RtnNetMonitorTaskObjectSetTopic_mutex;
 extern uv_async_t   g_RtnNetMonitorTaskObjectSetTopic_async;
 extern vector<FRONT_ID>    g_RtnNetMonitorTaskObjectSetTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorTaskObjectSetTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryNetMonitorTaskInfoTopic_mutex;
+extern uv_async_t   g_RspQryNetMonitorTaskInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetMonitorTaskInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorTaskInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnNetMonitorTaskInfoTopic_mutex;
+extern uv_async_t   g_RtnNetMonitorTaskInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnNetMonitorTaskInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorTaskInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetPartyLinkInfoTopic_mutex;
 extern uv_async_t   g_RspQryNetPartyLinkInfoTopic_async;
@@ -1139,16 +1029,6 @@ extern uv_async_t   g_RtnNetCfgFileTopic_async;
 extern vector<FRONT_ID>    g_RtnNetCfgFileTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetCfgFileTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetMonitorDeviceTaskTopic_mutex;
-extern uv_async_t   g_RspQryNetMonitorDeviceTaskTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorDeviceTaskTopic_Data_map;
-
-extern uv_mutex_t   g_RtnNetMonitorDeviceTaskTopic_mutex;
-extern uv_async_t   g_RtnNetMonitorDeviceTaskTopic_async;
-extern vector<FRONT_ID>    g_RtnNetMonitorDeviceTaskTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceTaskTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryFileGeneralOperTopic_mutex;
 extern uv_async_t   g_RspQryFileGeneralOperTopic_async;
 extern vector<FRONT_ID>    g_RspQryFileGeneralOperTopic_IOUser_vec;
@@ -1158,6 +1038,16 @@ extern uv_mutex_t   g_RtnFileGeneralOperTopic_mutex;
 extern uv_async_t   g_RtnFileGeneralOperTopic_async;
 extern vector<FRONT_ID>    g_RtnFileGeneralOperTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnFileGeneralOperTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryNetPartyLinkStatusInfoTopic_mutex;
+extern uv_async_t   g_RspQryNetPartyLinkStatusInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetPartyLinkStatusInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnNetPartyLinkStatusInfoTopic_mutex;
+extern uv_async_t   g_RtnNetPartyLinkStatusInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetPartyLinkStatusInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetBaseLineTopic_mutex;
 extern uv_async_t   g_RspQryNetBaseLineTopic_async;
@@ -1179,15 +1069,15 @@ extern uv_async_t   g_RtnNetBaseLineResultTopic_async;
 extern vector<FRONT_ID>    g_RtnNetBaseLineResultTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetBaseLineResultTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetPartyLinkStatusInfoTopic_mutex;
-extern uv_async_t   g_RspQryNetPartyLinkStatusInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetPartyLinkStatusInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetPartyLinkStatusInfoTopic_Data_map;
+extern uv_mutex_t   g_RspQryNetMonitorDeviceTaskTopic_mutex;
+extern uv_async_t   g_RspQryNetMonitorDeviceTaskTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetMonitorDeviceTaskTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorDeviceTaskTopic_Data_map;
 
-extern uv_mutex_t   g_RtnNetPartyLinkStatusInfoTopic_mutex;
-extern uv_async_t   g_RtnNetPartyLinkStatusInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnNetPartyLinkStatusInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetPartyLinkStatusInfoTopic_Data_map;
+extern uv_mutex_t   g_RtnNetMonitorDeviceTaskTopic_mutex;
+extern uv_async_t   g_RtnNetMonitorDeviceTaskTopic_async;
+extern vector<FRONT_ID>    g_RtnNetMonitorDeviceTaskTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceTaskTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetLocalPingResultInfoTopic_mutex;
 extern uv_async_t   g_RspQryNetLocalPingResultInfoTopic_async;
@@ -1209,15 +1099,145 @@ extern uv_async_t   g_RtnNetRomotePingResultInfoTopic_async;
 extern vector<FRONT_ID>    g_RtnNetRomotePingResultInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetRomotePingResultInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetNonPartyLinkInfoTopic_mutex;
-extern uv_async_t   g_RspQryNetNonPartyLinkInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetNonPartyLinkInfoTopic_Data_map;
+extern uv_mutex_t   g_RspQryTradeFrontOrderRttStatTopic_mutex;
+extern uv_async_t   g_RspQryTradeFrontOrderRttStatTopic_async;
+extern vector<FRONT_ID>    g_RspQryTradeFrontOrderRttStatTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryTradeFrontOrderRttStatTopic_Data_map;
 
-extern uv_mutex_t   g_RtnNetNonPartyLinkInfoTopic_mutex;
-extern uv_async_t   g_RtnNetNonPartyLinkInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnNetNonPartyLinkInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnNetNonPartyLinkInfoTopic_Data_map;
+extern uv_mutex_t   g_RtnTradeFrontOrderRttStatTopic_mutex;
+extern uv_async_t   g_RtnTradeFrontOrderRttStatTopic_async;
+extern vector<FRONT_ID>    g_RtnTradeFrontOrderRttStatTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnTradeFrontOrderRttStatTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryDiskIOTopic_mutex;
+extern uv_async_t   g_RspQryDiskIOTopic_async;
+extern vector<FRONT_ID>    g_RspQryDiskIOTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryDiskIOTopic_Data_map;
+
+extern uv_mutex_t   g_RtnDiskIOTopic_mutex;
+extern uv_async_t   g_RtnDiskIOTopic_async;
+extern vector<FRONT_ID>    g_RtnDiskIOTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnDiskIOTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryRouterInfoTopic_mutex;
+extern uv_async_t   g_RspQryRouterInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryRouterInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryRouterInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnRouterInfoTopic_mutex;
+extern uv_async_t   g_RtnRouterInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnRouterInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnRouterInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryStatInfoTopic_mutex;
+extern uv_async_t   g_RspQryStatInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryStatInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryStatInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnStatInfoTopic_mutex;
+extern uv_async_t   g_RtnStatInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnStatInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnStatInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryClientInfoTopic_mutex;
+extern uv_async_t   g_RspQryClientInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryClientInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryClientInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnClientInfoTopic_mutex;
+extern uv_async_t   g_RtnClientInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnClientInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnClientInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryParticTradeOrderStatesTopic_mutex;
+extern uv_async_t   g_RspQryParticTradeOrderStatesTopic_async;
+extern vector<FRONT_ID>    g_RspQryParticTradeOrderStatesTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryParticTradeOrderStatesTopic_Data_map;
+
+extern uv_mutex_t   g_RtnParticTradeOrderStatesTopic_mutex;
+extern uv_async_t   g_RtnParticTradeOrderStatesTopic_async;
+extern vector<FRONT_ID>    g_RtnParticTradeOrderStatesTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnParticTradeOrderStatesTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryTradeOrderRttCutLineTopic_mutex;
+extern uv_async_t   g_RspQryTradeOrderRttCutLineTopic_async;
+extern vector<FRONT_ID>    g_RspQryTradeOrderRttCutLineTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryTradeOrderRttCutLineTopic_Data_map;
+
+extern uv_mutex_t   g_RtnTradeOrderRttCutLineTopic_mutex;
+extern uv_async_t   g_RtnTradeOrderRttCutLineTopic_async;
+extern vector<FRONT_ID>    g_RtnTradeOrderRttCutLineTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnTradeOrderRttCutLineTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryEventDescriptionTopic_mutex;
+extern uv_async_t   g_RspQryEventDescriptionTopic_async;
+extern vector<FRONT_ID>    g_RspQryEventDescriptionTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryEventDescriptionTopic_Data_map;
+
+extern uv_mutex_t   g_RtnEventDescriptionTopic_mutex;
+extern uv_async_t   g_RtnEventDescriptionTopic_async;
+extern vector<FRONT_ID>    g_RtnEventDescriptionTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnEventDescriptionTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryFrontUniqueIDTopic_mutex;
+extern uv_async_t   g_RspQryFrontUniqueIDTopic_async;
+extern vector<FRONT_ID>    g_RspQryFrontUniqueIDTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryFrontUniqueIDTopic_Data_map;
+
+extern uv_mutex_t   g_RtnFrontUniqueIDTopic_mutex;
+extern uv_async_t   g_RtnFrontUniqueIDTopic_async;
+extern vector<FRONT_ID>    g_RtnFrontUniqueIDTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnFrontUniqueIDTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryNetPartyLinkAddrChangeTopic_mutex;
+extern uv_async_t   g_RspQryNetPartyLinkAddrChangeTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetPartyLinkAddrChangeTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetPartyLinkAddrChangeTopic_Data_map;
+
+extern uv_mutex_t   g_RtnNetPartyLinkAddrChangeTopic_mutex;
+extern uv_async_t   g_RtnNetPartyLinkAddrChangeTopic_async;
+extern vector<FRONT_ID>    g_RtnNetPartyLinkAddrChangeTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetPartyLinkAddrChangeTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryNetDelPartyLinkInfoTopic_mutex;
+extern uv_async_t   g_RspQryNetDelPartyLinkInfoTopic_async;
+extern vector<FRONT_ID>    g_RspQryNetDelPartyLinkInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryNetDelPartyLinkInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RtnNetDelPartyLinkInfoTopic_mutex;
+extern uv_async_t   g_RtnNetDelPartyLinkInfoTopic_async;
+extern vector<FRONT_ID>    g_RtnNetDelPartyLinkInfoTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetDelPartyLinkInfoTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryInstrumentStatusTopic_mutex;
+extern uv_async_t   g_RspQryInstrumentStatusTopic_async;
+extern vector<FRONT_ID>    g_RspQryInstrumentStatusTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryInstrumentStatusTopic_Data_map;
+
+extern uv_mutex_t   g_RtnInstrumentStatusTopic_mutex;
+extern uv_async_t   g_RtnInstrumentStatusTopic_async;
+extern vector<FRONT_ID>    g_RtnInstrumentStatusTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnInstrumentStatusTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryCurrTradingSegmentAttrTopic_mutex;
+extern uv_async_t   g_RspQryCurrTradingSegmentAttrTopic_async;
+extern vector<FRONT_ID>    g_RspQryCurrTradingSegmentAttrTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryCurrTradingSegmentAttrTopic_Data_map;
+
+extern uv_mutex_t   g_RtnCurrTradingSegmentAttrTopic_mutex;
+extern uv_async_t   g_RtnCurrTradingSegmentAttrTopic_async;
+extern vector<FRONT_ID>    g_RtnCurrTradingSegmentAttrTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnCurrTradingSegmentAttrTopic_Data_map;
+
+extern uv_mutex_t   g_RspQryPerformanceTopTopic_mutex;
+extern uv_async_t   g_RspQryPerformanceTopTopic_async;
+extern vector<FRONT_ID>    g_RspQryPerformanceTopTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RspQryPerformanceTopTopic_Data_map;
+
+extern uv_mutex_t   g_RtnPerformanceTopTopic_mutex;
+extern uv_async_t   g_RtnPerformanceTopTopic_async;
+extern vector<FRONT_ID>    g_RtnPerformanceTopTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnPerformanceTopTopic_Data_map;
 
 #endif
 

@@ -84,16 +84,6 @@ extern uv_async_t   g_RtnNetworkInfoTopic_async;
 extern vector<FRONT_ID>    g_RtnNetworkInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetworkInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryHostEnvTopic_mutex;
-extern uv_async_t   g_RspQryHostEnvTopic_async;
-extern vector<FRONT_ID>    g_RspQryHostEnvTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryHostEnvTopic_Data_map;
-
-extern uv_mutex_t   g_RtnHostEnvTopic_mutex;
-extern uv_async_t   g_RtnHostEnvTopic_async;
-extern vector<FRONT_ID>    g_RtnHostEnvTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnHostEnvTopic_Data_map;
-
 extern uv_mutex_t   g_RspQryMonitorObjectTopic_mutex;
 extern uv_async_t   g_RspQryMonitorObjectTopic_async;
 extern vector<FRONT_ID>    g_RspQryMonitorObjectTopic_IOUser_vec;
@@ -624,11 +614,6 @@ extern uv_async_t   g_RtnConnectorInfoTopic_async;
 extern vector<FRONT_ID>    g_RtnConnectorInfoTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnConnectorInfoTopic_Data_map;
 
-extern uv_mutex_t   g_RtnTomcatInfoTopic_mutex;
-extern uv_async_t   g_RtnTomcatInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnTomcatInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnTomcatInfoTopic_Data_map;
-
 extern uv_mutex_t   g_RtnJDBCInfoTopic_mutex;
 extern uv_async_t   g_RtnJDBCInfoTopic_async;
 extern vector<FRONT_ID>    g_RtnJDBCInfoTopic_IOUser_vec;
@@ -1009,20 +994,10 @@ extern uv_async_t   g_RspQryNetMonitorActionAttrTopic_async;
 extern vector<FRONT_ID>    g_RspQryNetMonitorActionAttrTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorActionAttrTopic_Data_map;
 
-extern uv_mutex_t   g_RspQryNetMonitorActionAttrTopic_mutex;
-extern uv_async_t   g_RspQryNetMonitorActionAttrTopic_async;
-extern vector<FRONT_ID>    g_RspQryNetMonitorActionAttrTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryNetMonitorActionAttrTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryHistoryNetObjectAttrTopic_mutex;
-extern uv_async_t   g_RspQryHistoryNetObjectAttrTopic_async;
-extern vector<FRONT_ID>    g_RspQryHistoryNetObjectAttrTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryHistoryNetObjectAttrTopic_Data_map;
-
-extern uv_mutex_t   g_RtnHistoryNetObjectAttrTopic_mutex;
-extern uv_async_t   g_RtnHistoryNetObjectAttrTopic_async;
-extern vector<FRONT_ID>    g_RtnHistoryNetObjectAttrTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnHistoryNetObjectAttrTopic_Data_map;
+extern uv_mutex_t   g_RtnNetMonitorActionAttrTopic_mutex;
+extern uv_async_t   g_RtnNetMonitorActionAttrTopic_async;
+extern vector<FRONT_ID>    g_RtnNetMonitorActionAttrTopic_IOUser_vec;
+extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorActionAttrTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetModuleTopic_mutex;
 extern uv_async_t   g_RspQryNetModuleTopic_async;
@@ -1103,16 +1078,6 @@ extern uv_mutex_t   g_RtnNetMonitorDeviceTaskTopic_mutex;
 extern uv_async_t   g_RtnNetMonitorDeviceTaskTopic_async;
 extern vector<FRONT_ID>    g_RtnNetMonitorDeviceTaskTopic_IOUser_vec;
 extern map<FRONT_ID, queue<void**> >   g_RtnNetMonitorDeviceTaskTopic_Data_map;
-
-extern uv_mutex_t   g_RspQryOuterDeviceInfoTopic_mutex;
-extern uv_async_t   g_RspQryOuterDeviceInfoTopic_async;
-extern vector<FRONT_ID>    g_RspQryOuterDeviceInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RspQryOuterDeviceInfoTopic_Data_map;
-
-extern uv_mutex_t   g_RtnOuterDeviceInfoTopic_mutex;
-extern uv_async_t   g_RtnOuterDeviceInfoTopic_async;
-extern vector<FRONT_ID>    g_RtnOuterDeviceInfoTopic_IOUser_vec;
-extern map<FRONT_ID, queue<void**> >   g_RtnOuterDeviceInfoTopic_Data_map;
 
 extern uv_mutex_t   g_RspQryNetLocalPingResultInfoTopic_mutex;
 extern uv_async_t   g_RspQryNetLocalPingResultInfoTopic_async;

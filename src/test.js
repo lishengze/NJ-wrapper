@@ -1,9 +1,10 @@
 var spi      = require("./test-spi.js");
-var addon    = require("./addon.node");
+var addon    = require("./build/Release/addon.node");
 var SysUserApiStruct    = require("./SysUserApiStruct.js");
 
-var realTimeSystemPath  = "tcp://172.1.128.172:19943";
-// var realTimeSystemPath  = "tcp://172.1.128.165:18841";
+// var realTimeSystemPath  = "tcp://172.1.128.172:19943";
+var realTimeSystemPath  = "tcp://172.1.128.165:18841";
+// var realTimeSystemPath = "tcp://192.168.100.1:19943";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
 var user = {};
 
@@ -25,11 +26,13 @@ var userWorkDirName = 'usr/' + loginField.UserID;
 var spawn = require('child_process').spawn('mkdir', [userWorkDirName]);
 userWorkDirName += "/";
 
-user.userApi = new addon.FtdcSysUserApi_Wrapper(userWorkDirName);
+// console.log (userWorkDirName)
+
+user.userApi = new addon.FtdcSysUserApi_Wrapper("");
 user.loginReqNumbers                   = 0;
 user.monitorObjectReqNumbers           = 0;
 user.ReqQrySysUserRegisterTopicNumbers = 0;
-user.ReqQrySubscriberNumbers           = 1;
+user.ReqQrySubscriberNumbers           = 0;
 
 user.loginField           = loginField;
 user.monitorObjectField   = monitorObjectField;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="GB2312"?>
-<sysuserapi author="zhoujianjun" version="1.0" comment="sysuserapi中用到的各种FTD报文">
+<sysuserapi author="zhoujianjun" version="1.0" comment="sysuserapi锟斤拷锟矫碉拷锟侥革拷锟斤拷FTD锟斤拷锟斤拷">
 	<ftdpackage name="ReqQryTopCpuInfoTopic"/>
 	<ftdpackage name="RspQryTopCpuInfoTopic"/>
 	<ftdpackage name="RtnTopCpuInfoTopic" sysTag="2"/>
@@ -15,9 +15,6 @@
 	<ftdpackage name="ReqQryNetworkInfoTopic"/>
 	<ftdpackage name="RspQryNetworkInfoTopic"/>
 	<ftdpackage name="RtnNetworkInfoTopic" sysTag="2"/>
-	<ftdpackage name="ReqQryHostEnvTopic"/>
-	<ftdpackage name="RspQryHostEnvTopic"/>
-	<ftdpackage name="RtnHostEnvTopic" sysTag="2"/>
 
 	<ftdpackage name="ReqQryMonitorObjectTopic"/>
 	<ftdpackage name="RspQryMonitorObjectTopic"/>
@@ -196,7 +193,6 @@
 	<ftdpackage name="RtnConnectionInfoTopic" sysTag="1"/>
 	<ftdpackage name="RtnConnectorInfoTopic" sysTag="1"/>
 	
-	<ftdpackage name="RtnTomcatInfoTopic" sysTag="1"/>
 	<ftdpackage name="RtnJDBCInfoTopic" sysTag="1"/>
 	<ftdpackage name="RtnThreadInfoTopic" sysTag="1"/>
 	<ftdpackage name="RtnSessionInfoTopic" sysTag="1"/>
@@ -341,10 +337,8 @@
 	<ftdpackage name="RtnNetPartyLinkInfoTopic" sysTag="4"/>
 	<ftdpackage name="ReqQryNetMonitorActionAttrTopic"/>
 	<ftdpackage name="RspQryNetMonitorActionAttrTopic"/>
-	<ftdpackage name="RspQryNetMonitorActionAttrTopic" sysTag="4"/>
-	<ftdpackage name="ReqQryHistoryNetObjectAttrTopic"/>
-	<ftdpackage name="RspQryHistoryNetObjectAttrTopic"/>
-	<ftdpackage name="RtnHistoryNetObjectAttrTopic" sysTag="4"/>
+	<ftdpackage name="RtnNetMonitorActionAttrTopic" sysTag="4"/>
+
 	<ftdpackage name="ReqQryNetModuleTopic"/>
 	<ftdpackage name="RspQryNetModuleTopic"/>
 	<ftdpackage name="RtnNetModuleTopic" sysTag="4"/>
@@ -373,10 +367,6 @@
 	<ftdpackage name="ReqQryNetMonitorDeviceTaskTopic"/>
 	<ftdpackage name="RspQryNetMonitorDeviceTaskTopic"/>
 	<ftdpackage name="RtnNetMonitorDeviceTaskTopic" sysTag="4"/>
-	
-	<ftdpackage name="ReqQryOuterDeviceInfoTopic"/>
-	<ftdpackage name="RspQryOuterDeviceInfoTopic"/>
-	<ftdpackage name="RtnOuterDeviceInfoTopic" sysTag="4"/>
 	
 	<ftdpackage name="ReqQryNetLocalPingResultInfoTopic"/>
 	<ftdpackage name="RspQryNetLocalPingResultInfoTopic"/>
