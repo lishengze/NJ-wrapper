@@ -89,6 +89,7 @@ fileData += tabSpace[1] + "constructor.Reset(tpl->GetFunction());\n"
 fileData += hereDoc(function(){
 /*
 NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: New: START! ******", g_RunningResult_File);
     if (info.IsConstructCall()) {
         // Invoked as constructor: `new FtdcSysUserApi_Wrapper(...)`
         Local<String> fileData= info[0]->IsUndefined() ? Nan::EmptyString()  : info[0]->ToString();
@@ -103,6 +104,7 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::New) {
         Local<Function> cons = Nan::New<Function>(constructor);
         info.GetReturnValue().Set(cons->NewInstance(argc, argv));
     }
+    OutputCallbackMessage("\n****** FtdApi-wrapper: New: END! ******", g_RunningResult_File);
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::Release) {
@@ -112,9 +114,11 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::Release) {
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::Init) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: Init: START! ******", g_RunningResult_File);
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     obj->m_userApi->Init();
     info.GetReturnValue().SetUndefined();
+    OutputCallbackMessage("\n****** FtdApi-wrapper: Init: END! ******", g_RunningResult_File);
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::Join) {
@@ -142,7 +146,7 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterFront) {
 
 int g_idnumb = 0;
 NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterSpi) {
-    std::cout<<"RegisterSpi Called!"<<std::endl;
+    OutputCallbackMessage("\n****** FtdApi-wrapper: RegisterSpi: START! ******", g_RunningResult_File);
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(info[0]->IsObject())
     {
@@ -154,6 +158,7 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::RegisterSpi) {
         obj->m_userApi->RegisterSpi(obj->m_spi);
     }
     info.GetReturnValue().SetUndefined();
+    OutputCallbackMessage("\n****** FtdApi-wrapper: RegisterSpi: END! ******", g_RunningResult_File);
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::ReqUserLogin) {

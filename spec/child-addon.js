@@ -1,0 +1,1 @@
+var addon  = require("./build/Release/addon.node");
