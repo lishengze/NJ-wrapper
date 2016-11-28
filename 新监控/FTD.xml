@@ -411,10 +411,6 @@
 			<field name="RspExchangeRate" minOccur="1" maxOccur="*"/>
 			<field name="RspInfo" minOccur="1" maxOccur="*"/>
 		</package>
-		<package name="IntlLoopMeasureData" tid="0x0000608B" comment="回路度量">
-			<field name="LoopMeasure" minOccur="1" maxOccur="1"/>
-			<field name="NodeMeasure" minOccur="0" maxOccur="*"/>
-		</package>
 		<package name="ReqQryTopCpuInfoTopic" tid="0x00009001" comment="CPU查询">
 			<field name="ReqQryTopCpuInfo" minOccur="1" maxOccur="*"/>
 		</package>
@@ -467,26 +463,6 @@
 		</package>
 		<package name="ReqQryHostEnvTopic" tid="0x00009022" comment="主机环境信息查询">
 			<field name="ReqQryHostEnv" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryHostEnvTopic" tid="0x00009023" comment="主机环境信息应答">
-			<field name="RspQryHostEnvCommon" minOccur="1" maxOccur="*"/>
-			<field name="RspQryHostEnvLan" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvStorage" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvIO" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvFS" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvSwap" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvLanCfg" minOccur="0" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnHostEnvTopic" tid="0x00009024" comment="主机环境信息应答">
-			<field name="RspQryHostEnvCommon" minOccur="1" maxOccur="*"/>
-			<field name="RspQryHostEnvLan" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvStorage" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvIO" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvFS" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvSwap" minOccur="0" maxOccur="*"/>
-			<field name="RspQryHostEnvLanCfg" minOccur="0" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="ReqQryClientLoginTopic" tid="0x00009025" comment="客户端登录查询">
 			<field name="ReqQryClientLogin" minOccur="1" maxOccur="*"/>
@@ -624,196 +600,6 @@
 		<package name="ReqQryHostConfigTopic" tid="0x00009242" comment="HostConfig查询请求">
 			<field name="ReqQryHostConfig" minOccur="1" maxOccur="*"/>
 		</package>
-		<package name="ReqQryInvalidateOrderTopic" tid="0x00009400" comment="无效报单查询">
-			<field name="ReqQryInvalidateOrder" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryInvalidateOrderTopic" tid="0x00009401" comment="无效报单查询应答">
-			<field name="RspQryInvalidateOrder" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnInvalidateOrderTopic" tid="0x00009402" comment="无效报单查询应答">
-			<field name="RtnInvalidateOrder" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryOrderStatusTopic" tid="0x00009403" comment="报单状态查询">
-			<field name="ReqQryOrderStatus" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryOrderStatusTopic" tid="0x00009404" comment="报单状态查询应答">
-			<field name="RspQryOrderStatus" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnOrderStatusTopic" tid="0x00009405" comment="报单状态查询应答">
-			<field name="RtnOrderStatus" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryBargainOrderTopic" tid="0x00009406" comment="报单成交查询">
-			<field name="ReqQryBargainOrder" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryBargainOrderTopic" tid="0x00009407" comment="报单成交查询应答">
-			<field name="RspQryBargainOrder" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnBargainOrderTopic" tid="0x00009408" comment="报单成交查询应答">
-			<field name="RtnBargainOrder" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryInstPropertyTopic" tid="0x00009409" comment="合约基本属性查询">
-			<field name="ReqQryInstProperty" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryInstPropertyTopic" tid="0x00009410" comment="合约基本属性查询应答">
-			<field name="RspQryInstProperty" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnInstPropertyTopic" tid="0x00009411" comment="合约基本属性查询应答">
-			<field name="RtnInstProperty" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryMarginRateTopic" tid="0x00009412" comment="合约保证金率查询">
-			<field name="ReqQryMarginRate" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryMarginRateTopic" tid="0x00009413" comment="合约保证金率查询应答">
-			<field name="RspQryMarginRate" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnMarginRateTopic" tid="0x00009414" comment="合约保证金率查询应答">
-			<field name="RtnMarginRate" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryPriceLimitTopic" tid="0x00009415" comment="合约涨跌停板查询">
-			<field name="ReqQryPriceLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryPriceLimitTopic" tid="0x00009416" comment="合约涨跌停板查询应答">
-			<field name="RspQryPriceLimit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnPriceLimitTopic" tid="0x00009417" comment="合约涨跌停板查询应答">
-			<field name="RtnPriceLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryPartPosiLimitTopic" tid="0x00009418" comment="会员限仓查询">
-			<field name="ReqQryPartPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryPartPosiLimitTopic" tid="0x00009419" comment="会员限仓查询应答">
-			<field name="RspQryPartPosiLimit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnPartPosiLimitTopic" tid="0x00009420" comment="会员限仓查询应答">
-			<field name="RtnPartPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryClientPosiLimitTopic" tid="0x00009421" comment="客户限仓查询">
-			<field name="ReqQryClientPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryClientPosiLimitTopic" tid="0x00009422" comment="客户限仓查询应答">
-			<field name="RspQryClientPosiLimit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnClientPosiLimitTopic" tid="0x00009423" comment="客户限仓查询应答">
-			<field name="RtnClientPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQrySpecialPosiLimitTopic" tid="0x00009424" comment="特殊客户限仓查询">
-			<field name="ReqQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQrySpecialPosiLimitTopic" tid="0x00009425" comment="特殊客户限仓查询应答">
-			<field name="RspQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnSpecialPosiLimitTopic" tid="0x00009426" comment="特殊客户限仓查询应答">
-			<field name="RtnSpecialPosiLimit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryTransactionChgTopic" tid="0x00009427" comment="账户出入金查询">
-			<field name="ReqQryTransactionChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryTransactionChgTopic" tid="0x00009428" comment="账户出入金查询应答">
-			<field name="RspQryTransactionChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnTransactionChgTopic" tid="0x00009429" comment="账户出入金查询应答">
-			<field name="RtnTransactionChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryClientChgTopic" tid="0x00009430" comment="客户数据变动查询">
-			<field name="ReqQryClientChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryClientChgTopic" tid="0x00009431" comment="客户数据变动查询应答">
-			<field name="RspQryClientChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnClientChgTopic" tid="0x00009432" comment="客户数据变动查询应答">
-			<field name="RtnClientChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryPartClientChgTopic" tid="0x00009433" comment="会员客户对照变动查询">
-			<field name="ReqQryPartClientChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryPartClientChgTopic" tid="0x00009434" comment="会员客户对照变动查询应答">
-			<field name="RspQryPartClientChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnPartClientChgTopic" tid="0x00009435" comment="会员客户对照变动查询应答">
-			<field name="RtnPartClientChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryPosiLimitChgTopic" tid="0x00009436" comment="限仓数据变动查询">
-			<field name="ReqQryPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryPosiLimitChgTopic" tid="0x00009437" comment="限仓数据变动查询应答">
-			<field name="RspQryPosiLimitChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnPosiLimitChgTopic" tid="0x00009438" comment="限仓数据变动查询应答">
-			<field name="RtnPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryHedgeDetailChgTopic" tid="0x00009439" comment="保值额度变动查询">
-			<field name="ReqQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryHedgeDetailChgTopic" tid="0x00009440" comment="保值额度变动查询应答">
-			<field name="RspQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnHedgeDetailChgTopic" tid="0x00009441" comment="保值额度变动查询应答">
-			<field name="RtnHedgeDetailChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryParticipantChgTopic" tid="0x00009442" comment="会员变动查询">
-			<field name="ReqQryParticipantChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryParticipantChgTopic" tid="0x00009443" comment="会员变动查询应答">
-			<field name="RspQryParticipantChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnParticipantChgTopic" tid="0x00009444" comment="会员变动查询应答">
-			<field name="RtnParticipantChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryMarginRateChgTopic" tid="0x00009445" comment="保证金率变动查询">
-			<field name="ReqQryMarginRateChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryMarginRateChgTopic" tid="0x00009446" comment="保证金率变动查询应答">
-			<field name="RspQryMarginRateChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnMarginRateChgTopic" tid="0x00009447" comment="保证金率变动查询应答">
-			<field name="RtnMarginRateChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryUserIpChgTopic" tid="0x00009448" comment="IP地址变动查询">
-			<field name="ReqQryUserIpChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryUserIpChgTopic" tid="0x00009449" comment="IP地址变动查询应答">
-			<field name="RspQryUserIpChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnUserIpChgTopic" tid="0x00009450" comment="IP地址变动查询应答">
-			<field name="RtnUserIpChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryClientPosiLimitChgTopic" tid="0x00009451" comment="限仓数据变动查询">
-			<field name="ReqQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryClientPosiLimitChgTopic" tid="0x00009452" comment="限仓数据变动查询应答">
-			<field name="RspQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnClientPosiLimitChgTopic" tid="0x00009453" comment="限仓数据变动查询应答">
-			<field name="RtnClientPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQrySpecPosiLimitChgTopic" tid="0x00009454" comment="限仓数据变动查询">
-			<field name="ReqQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQrySpecPosiLimitChgTopic" tid="0x00009455" comment="限仓数据变动查询应答">
-			<field name="RspQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnSpecPosiLimitChgTopic" tid="0x00009456" comment="限仓数据变动查询应答">
-			<field name="RtnSpecPosiLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
 		<package name="ReqQryHistoryObjectAttrTopic" tid="0x00009457" comment="历史对象状态指标查询">
 			<field name="ReqQryHistoryObjectAttr" minOccur="1" maxOccur="*"/>
 		</package>
@@ -869,20 +655,6 @@
 			<field name="RspQrySysUserDelete" minOccur="1" maxOccur="*"/>
 			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
-		<package name="RspQryParticipantInitTopic" tid="0x00009474" comment="会员初始化应答">
-			<field name="RspQryParticipantInit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnParticipantInitTopic" tid="0x00009475" comment="会员初始化应答">
-			<field name="RtnParticipantInit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryUserInitTopic" tid="0x00009476" comment="座席初始化应答">
-			<field name="RspQryUserInit" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnUserInitTopic" tid="0x00009477" comment="座席初始化应答">
-			<field name="RtnUserInit" minOccur="1" maxOccur="*"/>
-		</package>
 		<package name="RspQryClientInitTopic" tid="0x00009478" comment="客户初始化应答">
 			<field name="RspQryClientInit" minOccur="1" maxOccur="*"/>
 			<field name="RspInfo" minOccur="1" maxOccur="1"/>
@@ -903,23 +675,6 @@
 		<package name="ReqQryWarningEventUpdateTopic" tid="0x00009485" comment="告警事件修改">
 			<field name="ReqQryWarningEventUpdate" minOccur="1" maxOccur="*"/>
 		</package>
-		<package name="ReqQryTradeUserLoginInfoTopic" tid="0x00009486" comment="交易系统登录信息查询">
-			<field name="ReqQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryTradeUserLoginInfoTopic" tid="0x00009487" comment="交易系统登录信息">
-			<field name="RspQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnTradeUserLoginInfoTopic" tid="0x00009488" comment="交易系统登录信息">
-			<field name="RtnTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryPartTradeTopic" tid="0x00009489" comment="会员交易查询">
-			<field name="ReqQryPartTrade" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryPartTradeTopic" tid="0x00009490" comment="会员交易查询应答">
-			<field name="RspQryPartTrade" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
 		<package name="ReqQryTradepeakTopic" tid="0x00009491" comment="交易峰值查询">
 			<field name="ReqQryTradepeak" minOccur="1" maxOccur="*"/>
 		</package>
@@ -935,12 +690,6 @@
 		</package>
 		<package name="RtnPriceLimitChgTopic" tid="0x00009495" comment="">
 			<field name="RtnPriceLimitChg" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryParticipantInitTopic" tid="0x00009496" comment="管理平台初始化信息查询">
-			<field name="ReqQryParticipantInit" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryUserInitTopic" tid="0x00009497" comment="管理平台初始化信息查询">
-			<field name="ReqQryUserInit" minOccur="1" maxOccur="*"/>
 		</package>
 		<package name="ReqQryHistoryCpuInfoTopic" tid="0x00009500" comment="">
 			<field name="ReqQryHistoryCpuInfo" minOccur="1" maxOccur="*"/>
@@ -965,19 +714,13 @@
 		</package>
 		<package name="RspQryHostConfig" tid="0x00009506" comment="HostConfig查询请求应答">
 			<field name="RspQryHostConfig" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="ReqQryMonitorOnlineUser" tid="0x00009507" comment="监控系统在线用户查询">
 			<field name="ReqQryMonitorOnlineUser" minOccur="1" maxOccur="*"/>
 		</package>
 		<package name="RspQryMonitorOnlineUser" tid="0x00009508" comment="监控系统在线用户应答">
 			<field name="RspQryMonitorOnlineUser" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="ReqQryFrontStat" tid="0x00009509" comment="交易系统前置统计查询">
-			<field name="ReqQryFrontStat" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryFrontStat" tid="0x00009510" comment="交易系统前置统计应答">
-			<field name="RspQryFrontStat" minOccur="1" maxOccur="*"/>
 			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="RtnSysTimeSyncTopic" tid="0x00009511" comment="监控系统时钟同步">
@@ -1169,6 +912,7 @@
 		</package>
 		<package name="RspQryWarningActiveChange" tid="0x00009567" comment="告警激活变更">
 			<field name="RspQryWarningActiveChange" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="RtnWarningActiveChange" tid="0x00009568" comment="告警激活变更">
 			<field name="RtnWarningActiveChange" minOccur="1" maxOccur="*"/>
@@ -1209,16 +953,6 @@
 		</package>
 		<package name="RtnTradeFrontOrderRttStatTopic" tid="0x00009579" comment="交易系统前置报单响应信息">
 			<field name="RtnTradeFrontOrderRttStat" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryParticTradeOrderStatesTopic" tid="0x0000957a" comment="会员席位交易状态">
-			<field name="ReqQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryParticTradeOrderStatesTopic" tid="0x0000957b" comment="会员席位交易状态">
-			<field name="RspQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnParticTradeOrderStatesTopic" tid="0x0000957c" comment="会员席位交易状态">
-			<field name="RtnParticTradeOrderStates" minOccur="1" maxOccur="*"/>
 		</package>
 		<package name="ReqQryRouterInfoTopic" tid="0x0000957d" comment="系统路由信息">
 			<field name="ReqQryRouterInfo" minOccur="1" maxOccur="*"/>
@@ -1319,26 +1053,6 @@
 		</package>
 		<package name="RtnPerformanceTopTopic" tid="0x0000959a" comment="订阅网络性能排序">
 			<field name="RtnPerformanceTop" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryInstrumentStatusTopic" tid="0x0000959b" comment="请求约状态切换数据">
-			<field name="ReqQryInstrumentStatus" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryInstrumentStatusTopic" tid="0x0000959c" comment="返回约状态切换数据">
-			<field name="RspQryInstrumentStatus" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnInstrumentStatusTopic" tid="0x0000959d" comment="订阅约状态切换数据">
-			<field name="RtnInstrumentStatus" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="ReqQryCurrTradingSegmentAttrTopic" tid="0x0000959e" comment="请求合约交易节信息">
-			<field name="ReqQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
-		</package>
-		<package name="RspQryCurrTradingSegmentAttrTopic" tid="0x0000959f" comment="返回合约交易节信息">
-			<field name="RspQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
-			<field name="RspInfo" minOccur="1" maxOccur="1"/>
-		</package>
-		<package name="RtnCurrTradingSegmentAttrTopic" tid="0x000095a0" comment="订阅合约交易节信息">
-			<field name="RtnCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
 		</package>
 		<package name="ReqQryRealTimeNetObjectAttrTopic" tid="0x00100003" comment="最新网络指标查询">
 			<field name="ReqQryRealTimeNetObjectAttr" minOccur="1" maxOccur="*"/>
@@ -1735,9 +1449,11 @@
 		</package>
 		<package name="RspConfigLoginTopic" tid="0x00100130" comment="配置服务对登陆的响应">
 			<field name="RspQryConfigLogin" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="RspServerTypeTopic" tid="0x00100131" comment="对当前登录配置的服务角色的响应">
 			<field name="RspServerType" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
 		</package>
 		<package name="ReqSysServerExitTopic" tid="0x00100150" comment="告知服务，让其退出">
 			<field name="ReqSysServerExit" minOccur="1" maxOccur="1"/>
@@ -1925,6 +1641,687 @@
 		<package name="RtnNetNonPartyLinkInfoTopic" tid="0x00100199" comment="订阅非会员链路表信息">
 			<field name="RtnNetNonPartyLinkInfo" minOccur="1" maxOccur="*"/>
 		</package>
+		<package name="ReqQryMonConfigInfo" tid="0x00010001" comment="请求配置信息">
+			<field name="ReqQryMonConfigInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonConfigInfo" tid="0x00010002" comment="应答配置信息">
+			<field name="RspQryMonConfigInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonConfigInfo" tid="0x00010003" comment="应答配置信息">
+			<field name="RtnMonConfigInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RtnMonitorDayInfo" tid="0x00010004" comment="通知监控日信息">
+			<field name="MonitorDayInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradingDayInfo" tid="0x00010005" comment="通知交易日信息">
+			<field name="TradingDayInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSectionFinish" tid="0x00010006" comment="监控阶段结束">
+			<field name="MonitorSection" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSectionChange" tid="0x00010007" comment="监控阶段切换">
+			<field name="MonitorSection" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqMonServiceConnect" tid="0x00010008" comment="服务连接请求">
+			<field name="ReqMonServiceConnect" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspMonServiceConnect" tid="0x00010009" comment="服务连接响应">
+			<field name="RspMonServiceConnect" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonProxyConfig" tid="0x0001000A" comment="Proxy或探针名称配置">
+			<field name="RtnMonProxyConfig" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryMonServiceStatus" tid="0x0001000B" comment="服务的当前状态查询">
+			<field name="ReqQryMonServiceStatus" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonServiceStatus" tid="0x0001000C" comment="服务的当前状态响应">
+			<field name="RspQryMonServiceStatus" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonServiceStatus" tid="0x0001000D" comment="服务的当前状态推送">
+			<field name="RtnMonServiceStatus" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonDataCenterRole" tid="0x0001000E" comment="当前数据中心角色">
+			<field name="RtnMonDataCenterRole" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryMonProbeTask" tid="0x0001000F" comment="探针任务配置查询请求">
+			<field name="ReqQryMonProbeTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonProbeTask" tid="0x00010010" comment="探针任务配置查询响应">
+			<field name="RspQryMonProbeTask" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonProbeTask" tid="0x00010011" comment="探针任务配置推送">
+			<field name="RtnMonProbeTask" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonObjectAttr" tid="0x00010012" comment="监控系统指标查询请求">
+			<field name="ReqQryMonObjectAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonObjectAttr" tid="0x00010013" comment="监控系统指标查询应答">
+			<field name="RspQryMonObjectAttr" minOccur="0" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonObjectAttr" tid="0x00010014" comment="监控系统指标查询推送">
+			<field name="RtnMonObjectAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonSyslogEvent" tid="0x00010015" comment="监控系统Syslog事件查询请求">
+			<field name="ReqQryMonSyslogEvent" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonSyslogEvent" tid="0x00010016" comment="监控系统Syslog事件查询应答">
+			<field name="RspQryMonSyslogEvent" minOccur="0" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonSyslogEvent" tid="0x00010017" comment="监控系统Syslog事件查询推送">
+			<field name="RtnMonSyslogEvent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonFileOffset" tid="0x00010018" comment="文件读取偏移量查询请求">
+			<field name="ReqQryMonFileOffset" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonFileOffset" tid="0x00010019" comment="文件读取偏移量查询应答">
+			<field name="RspQryMonFileOffset" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonFileOffset" tid="0x0001001A" comment="文件读取偏移量查询推送">
+			<field name="RtnMonFileOffset" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonFileContent" tid="0x0001001B" comment="文件内容查询请求">
+			<field name="ReqQryMonFileContent" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonFileContent" tid="0x0001001C" comment="文件内容查询应答">
+			<field name="RspQryMonFileContent" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonFileContent" tid="0x0001001D" comment="文件内容通告">
+			<field name="RtnMonFileContent" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostBasicEnv" tid="0x0001001E" comment="主机基础环境信息查询请求">
+			<field name="ReqQryMonHostBasicEnv" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostBasicEnv" tid="0x0001001F" comment="主机基础环境信息应答">
+			<field name="RspQryMonHostBasicEnv" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostBasicEnv" tid="0x00010020" comment="主机基础环境信息应答">
+			<field name="RtnMonHostBasicEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostNetworkEnv" tid="0x00010021" comment="主机基础网络信息查询">
+			<field name="ReqQryMonHostNetworkEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonHostNetworkEnv" tid="0x00010022" comment="主机基础网络信息应答">
+			<field name="RspQryMonHostNetworkEnv" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostNetworkEnv" tid="0x00010023" comment="主机基础网络信息通告">
+			<field name="RtnMonHostNetworkEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostFileSysEnv" tid="0x00010024" comment="主机文件系统信息查询">
+			<field name="ReqQryMonHostFileSysEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonHostFileSysEnv" tid="0x00010025" comment="主机文件系统信息应答">
+			<field name="RspQryMonHostFileSysEnv" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostFileSysEnv" tid="0x00010026" comment="主机文件系统信息通告">
+			<field name="RtnMonHostFileSysEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostSwapEnv" tid="0x00010027" comment="主机交换分区信息查询">
+			<field name="ReqQryMonHostSwapEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonHostSwapEnv" tid="0x00010028" comment="主机交换分区信息应答">
+			<field name="RspQryMonHostSwapEnv" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostSwapEnv" tid="0x00010029" comment="主机交换分区信息通告">
+			<field name="RtnMonHostSwapEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostCPUAttr" tid="0x0001002A" comment="主机的CPU信息指标信息请求">
+			<field name="ReqQryMonHostCPUAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostCPUAttr" tid="0x0001002B" comment="主机的CPU信息指标信息应答">
+			<field name="RspQryMonHostCPUAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostCPUAttr" tid="0x0001002C" comment="主机的CPU信息指标信息">
+			<field name="RtnMonHostCPUAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostMemAttr" tid="0x0001002D" comment="主机的Memory使用信息请求">
+			<field name="ReqQryMonHostMemAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostMemAttr" tid="0x0001002E" comment="主机的Memory使用信息应答">
+			<field name="RspQryMonHostMemAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostMemAttr" tid="0x0001002F" comment="主机的Memory使用信息">
+			<field name="RtnMonHostMemAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostFileSystemAttr" tid="0x00010030" comment="主机的FileSystem使用信息请求">
+			<field name="ReqQryMonHostFileSystemAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostFileSystemAttr" tid="0x00010031" comment="主机的FileSystem使用信息应答">
+			<field name="RspQryMonHostFileSystemAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostFileSystemAttr" tid="0x00010032" comment="主机的FileSystem使用信息">
+			<field name="RtnMonHostFileSystemAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostUserInfo" tid="0x00010033" comment="主机的用户信息请求">
+			<field name="ReqQryMonHostUserInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostUserInfo" tid="0x00010034" comment="主机的用户信息应答">
+			<field name="RspQryMonHostUserInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostUserInfo" tid="0x00010035" comment="主机的用户信息">
+			<field name="RtnMonHostUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostOnlineUserInfo" tid="0x00010036" comment="主机的在线用户信息请求">
+			<field name="ReqQryMonHostOnlineUserInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostOnlineUserInfo" tid="0x00010037" comment="主机的在线用户信息应答">
+			<field name="RspQryMonHostOnlineUserInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostOnlineUserInfo" tid="0x00010038" comment="主机的在线用户信息">
+			<field name="RtnMonHostOnlineUserInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostNetworkAttr" tid="0x00010039" comment="主机的network使用信息请求">
+			<field name="ReqQryMonHostNetworkAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostNetworkAttr" tid="0x0001003A" comment="主机的network使用信息应答">
+			<field name="RspQryMonHostNetworkAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostNetworkAttr" tid="0x0001003B" comment="主机的network使用信息">
+			<field name="RtnMonHostNetworkAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostStatInfo" tid="0x0001003C" comment="主机的系统状态信息请求">
+			<field name="ReqQryMonHostStatInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostStatInfo" tid="0x0001003D" comment="主机的系统状态信息应答">
+			<field name="RspQryMonHostStatInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostStatInfo" tid="0x0001003E" comment="主机的系统状态信息">
+			<field name="RtnMonHostStatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostDiskIOAttr" tid="0x0001003F" comment="主机的磁盘IO信息请求">
+			<field name="ReqQryMonHostDiskIOAttr" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostDiskIOAttr" tid="0x00010040" comment="主机的磁盘IO信息应答">
+			<field name="RspQryMonHostDiskIOAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostDiskIOAttr" tid="0x00010041" comment="主机的磁盘IO信息">
+			<field name="RtnMonHostDiskIOAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostRouterInfo" tid="0x00010042" comment="主机的路由信息请求">
+			<field name="ReqQryMonHostRouterInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostRouterInfo" tid="0x00010043" comment="主机的路由信息应答">
+			<field name="RspQryMonHostRouterInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostRouterInfo" tid="0x00010044" comment="主机的路由信息">
+			<field name="RtnMonHostRouterInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostProcessInfo" tid="0x00010045" comment="主机的进程信息请求">
+			<field name="ReqQryMonHostProcessInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonHostProcessInfo" tid="0x00010046" comment="主机的进程信息应答">
+			<field name="RspQryMonHostProcessInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostProcessInfo" tid="0x00010047" comment="主机的进程信息">
+			<field name="RtnMonHostProcessInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RtnMonDBQuery" tid="0x0001004A" comment="数据库采集的推送报文，包括了SP，DBLog，DBAttr">
+			<field name="RtnMonDBQuery" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonSPQuery" tid="0x0001004B" comment="客户端临时SP查询请求">
+			<field name="ReqQryMonSPQuery" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspQryMonSPQuery" tid="0x0001004C" comment="响应客户端临时SP查询请求">
+			<field name="RtnMonDBQuery" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="ReqServiceVersion" tid="0x0001004E" comment="服务版本信息请求">
+			<field name="ReqServiceVersion" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspServiceVersion" tid="0x0001004F" comment="服务版本信息响应">
+			<field name="RspServiceVersion" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="ReqServiceProgram" tid="0x00010051" comment="服务应用程序请求">
+			<field name="ReqServiceProgram" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspServiceProgram" tid="0x00010052" comment="服务应用程序响应">
+			<field name="RspServiceProgram" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="ReqUpdateState" tid="0x00010054" comment="升级服务获取状态">
+			<field name="ReqUpdateState" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspUpdateState" tid="0x00010055" comment="升级服务获取状态响应">
+			<field name="RspUpdateState" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="ReqSubscribe" tid="0x00010057" comment="订阅请求">
+			<field name="ReqSubscribe" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqCancelSubscribe" tid="0x00010058" comment="取消订阅请求">
+			<field name="ReqSubscribe" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspSubscribe" tid="0x00010059" comment="订阅请求应答">
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="ReqFileSendSuccess" tid="0x0001005A" comment="用于通知目标服务文件已发送成功">
+			<field name="ReqFileSendSuccess" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RspFileSendSuccess" tid="0x0001005B" comment="通知目标服务文件已成功接收">
+			<field name="RspFileSendSuccess" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnFileSendSuccess" tid="0x0001005C" comment="用于通知目标服务文件已发送成功">
+			<field name="RtnFileSendSuccess" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryMonTomcatInfo" tid="0x00011050" comment="tomcat信息查询">
+			<field name="ReqQryMonTomcatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonTomcatInfo" tid="0x00011051" comment="tomcat信息应答">
+			<field name="RspQryMonTomcatInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="0" maxOccur="1"/>
+		</package>
+		<package name="RtnMonTomcatInfo" tid="0x00011052" comment="tomcat信息推送">
+			<field name="RtnMonTomcatInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonWebAppInfo" tid="0x00011053" comment="Web应用信息">
+			<field name="RspQryMonWebAppInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonWebAppInfo" tid="0x00011054" comment="Web应用信息">
+			<field name="RtnMonWebAppInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonServletInfo" tid="0x00011055" comment="应用servlet信息">
+			<field name="RspQryMonServletInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonServletInfo" tid="0x00011056" comment="应用servlet信息">
+			<field name="RtnMonServletInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonFileInfo" tid="0x00011057" comment="文件信息">
+			<field name="RspQryMonFileInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonFileInfo" tid="0x00011058" comment="文件信息">
+			<field name="RtnMonFileInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonSessionInfo" tid="0x00011059" comment="应用会话信息应答">
+			<field name="RspQryMonSessionInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonSessionInfo" tid="0x0001105A" comment="应用会话信息推送">
+			<field name="RtnMonSessionInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonJDBCInfo" tid="0x0001105B" comment="JDBC信息">
+			<field name="RspQryMonJDBCInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonJDBCInfo" tid="0x0001105C" comment="JDBC信息">
+			<field name="RtnMonJDBCInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonThreadInfo" tid="0x0001105D" comment="线程信息">
+			<field name="RspQryMonThreadInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonThreadInfo" tid="0x0001105E" comment="线程信息">
+			<field name="RtnMonThreadInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonVMInfo" tid="0x0001105F" comment="虚拟机信息查询">
+			<field name="ReqQryMonVMInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonVMInfo" tid="0x00011060" comment="虚拟机信息">
+			<field name="RspQryMonVMInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonVMInfo" tid="0x00011061" comment="虚拟机信息">
+			<field name="RtnMonVMInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonPropertyInfo" tid="0x00011062" comment="系统属性信息查询">
+			<field name="ReqQryMonPropertyInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonPropertyInfo" tid="0x00011063" comment="系统属性信息">
+			<field name="RspQryMonPropertyInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonPropertyInfo" tid="0x00011064" comment="系统属性信息">
+			<field name="RtnMonPropertyInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonMemPoolInfo" tid="0x00011065" comment="系统内存池信息查询">
+			<field name="ReqQryMonMemPoolInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonMemPoolInfo" tid="0x00011066" comment="系统内存池信息">
+			<field name="RspQryMonMemPoolInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonMemPoolInfo" tid="0x00011067" comment="系统内存池信息">
+			<field name="RtnMonMemPoolInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonConnectionInfo" tid="0x00011068" comment="连接信息查询">
+			<field name="ReqQryMonConnectionInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonConnectionInfo" tid="0x00011069" comment="连接信息">
+			<field name="RspQryMonConnectionInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonConnectionInfo" tid="0x0001106A" comment="连接信息">
+			<field name="RtnMonConnectionInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInvalidateOrderTopic" tid="0x00009400" comment="无效报单查询">
+			<field name="ReqQryInvalidateOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInvalidateOrderTopic" tid="0x00009401" comment="无效报单查询应答">
+			<field name="RspQryInvalidateOrder" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInvalidateOrderTopic" tid="0x00009402" comment="无效报单查询应答">
+			<field name="RtnInvalidateOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryOrderStatusTopic" tid="0x00009403" comment="报单状态查询">
+			<field name="ReqQryOrderStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryOrderStatusTopic" tid="0x00009404" comment="报单状态查询应答">
+			<field name="RspQryOrderStatus" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnOrderStatusTopic" tid="0x00009405" comment="报单状态查询应答">
+			<field name="RtnOrderStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryBargainOrderTopic" tid="0x00009406" comment="报单成交查询">
+			<field name="ReqQryBargainOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryBargainOrderTopic" tid="0x00009407" comment="报单成交查询应答">
+			<field name="RspQryBargainOrder" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnBargainOrderTopic" tid="0x00009408" comment="报单成交查询应答">
+			<field name="RtnBargainOrder" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInstPropertyTopic" tid="0x00009409" comment="合约基本属性查询">
+			<field name="ReqQryInstProperty" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInstPropertyTopic" tid="0x00009410" comment="合约基本属性查询应答">
+			<field name="RspQryInstProperty" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInstPropertyTopic" tid="0x00009411" comment="合约基本属性查询应答">
+			<field name="RtnInstProperty" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMarginRateTopic" tid="0x00009412" comment="合约保证金率查询">
+			<field name="ReqQryMarginRate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMarginRateTopic" tid="0x00009413" comment="合约保证金率查询应答">
+			<field name="RspQryMarginRate" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMarginRateTopic" tid="0x00009414" comment="合约保证金率查询应答">
+			<field name="RtnMarginRate" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPriceLimitTopic" tid="0x00009415" comment="合约涨跌停板查询">
+			<field name="ReqQryPriceLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPriceLimitTopic" tid="0x00009416" comment="合约涨跌停板查询应答">
+			<field name="RspQryPriceLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPriceLimitTopic" tid="0x00009417" comment="合约涨跌停板查询应答">
+			<field name="RtnPriceLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartPosiLimitTopic" tid="0x00009418" comment="会员限仓查询">
+			<field name="ReqQryPartPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartPosiLimitTopic" tid="0x00009419" comment="会员限仓查询应答">
+			<field name="RspQryPartPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPartPosiLimitTopic" tid="0x00009420" comment="会员限仓查询应答">
+			<field name="RtnPartPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientPosiLimitTopic" tid="0x00009421" comment="客户限仓查询">
+			<field name="ReqQryClientPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientPosiLimitTopic" tid="0x00009422" comment="客户限仓查询应答">
+			<field name="RspQryClientPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientPosiLimitTopic" tid="0x00009423" comment="客户限仓查询应答">
+			<field name="RtnClientPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySpecialPosiLimitTopic" tid="0x00009424" comment="特殊客户限仓查询">
+			<field name="ReqQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySpecialPosiLimitTopic" tid="0x00009425" comment="特殊客户限仓查询应答">
+			<field name="RspQrySpecialPosiLimit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSpecialPosiLimitTopic" tid="0x00009426" comment="特殊客户限仓查询应答">
+			<field name="RtnSpecialPosiLimit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTransactionChgTopic" tid="0x00009427" comment="账户出入金查询">
+			<field name="ReqQryTransactionChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTransactionChgTopic" tid="0x00009428" comment="账户出入金查询应答">
+			<field name="RspQryTransactionChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTransactionChgTopic" tid="0x00009429" comment="账户出入金查询应答">
+			<field name="RtnTransactionChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientChgTopic" tid="0x00009430" comment="客户数据变动查询">
+			<field name="ReqQryClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientChgTopic" tid="0x00009431" comment="客户数据变动查询应答">
+			<field name="RspQryClientChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientChgTopic" tid="0x00009432" comment="客户数据变动查询应答">
+			<field name="RtnClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartClientChgTopic" tid="0x00009433" comment="会员客户对照变动查询">
+			<field name="ReqQryPartClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartClientChgTopic" tid="0x00009434" comment="会员客户对照变动查询应答">
+			<field name="RspQryPartClientChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPartClientChgTopic" tid="0x00009435" comment="会员客户对照变动查询应答">
+			<field name="RtnPartClientChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPosiLimitChgTopic" tid="0x00009436" comment="限仓数据变动查询">
+			<field name="ReqQryPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPosiLimitChgTopic" tid="0x00009437" comment="限仓数据变动查询应答">
+			<field name="RspQryPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnPosiLimitChgTopic" tid="0x00009438" comment="限仓数据变动查询应答">
+			<field name="RtnPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryHedgeDetailChgTopic" tid="0x00009439" comment="保值额度变动查询">
+			<field name="ReqQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryHedgeDetailChgTopic" tid="0x00009440" comment="保值额度变动查询应答">
+			<field name="RspQryHedgeDetailChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnHedgeDetailChgTopic" tid="0x00009441" comment="保值额度变动查询应答">
+			<field name="RtnHedgeDetailChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryParticipantChgTopic" tid="0x00009442" comment="会员变动查询">
+			<field name="ReqQryParticipantChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryParticipantChgTopic" tid="0x00009443" comment="会员变动查询应答">
+			<field name="RspQryParticipantChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnParticipantChgTopic" tid="0x00009444" comment="会员变动查询应答">
+			<field name="RtnParticipantChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMarginRateChgTopic" tid="0x00009445" comment="保证金率变动查询">
+			<field name="ReqQryMarginRateChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMarginRateChgTopic" tid="0x00009446" comment="保证金率变动查询应答">
+			<field name="RspQryMarginRateChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMarginRateChgTopic" tid="0x00009447" comment="保证金率变动查询应答">
+			<field name="RtnMarginRateChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryUserIpChgTopic" tid="0x00009448" comment="IP地址变动查询">
+			<field name="ReqQryUserIpChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryUserIpChgTopic" tid="0x00009449" comment="IP地址变动查询应答">
+			<field name="RspQryUserIpChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnUserIpChgTopic" tid="0x00009450" comment="IP地址变动查询应答">
+			<field name="RtnUserIpChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryClientPosiLimitChgTopic" tid="0x00009451" comment="限仓数据变动查询">
+			<field name="ReqQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryClientPosiLimitChgTopic" tid="0x00009452" comment="限仓数据变动查询应答">
+			<field name="RspQryClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnClientPosiLimitChgTopic" tid="0x00009453" comment="限仓数据变动查询应答">
+			<field name="RtnClientPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQrySpecPosiLimitChgTopic" tid="0x00009454" comment="限仓数据变动查询">
+			<field name="ReqQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQrySpecPosiLimitChgTopic" tid="0x00009455" comment="限仓数据变动查询应答">
+			<field name="RspQrySpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnSpecPosiLimitChgTopic" tid="0x00009456" comment="限仓数据变动查询应答">
+			<field name="RtnSpecPosiLimitChg" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryFrontStatTopic" tid="0x00009509" comment="交易系统前置统计查询">
+			<field name="ReqQryFrontStat" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryFrontStatTopic" tid="0x00009510" comment="交易系统前置统计应答">
+			<field name="RspQryFrontStat" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryParticipantInitTopic" tid="0x00009496" comment="管理平台初始化信息查询">
+			<field name="ReqQryParticipantInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryParticipantInitTopic" tid="0x00009474" comment="会员初始化应答">
+			<field name="RspQryParticipantInit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnParticipantInitTopic" tid="0x00009475" comment="会员初始化应答">
+			<field name="RtnParticipantInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryUserInitTopic" tid="0x00009497" comment="管理平台初始化信息查询">
+			<field name="ReqQryUserInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryUserInitTopic" tid="0x00009476" comment="座席初始化应答">
+			<field name="RspQryUserInit" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnUserInitTopic" tid="0x00009477" comment="座席初始化应答">
+			<field name="RtnUserInit" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryInstrumentStatusTopic" tid="0x0000959b" comment="请求约状态切换数据">
+			<field name="ReqQryInstrumentStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryInstrumentStatusTopic" tid="0x0000959c" comment="返回约状态切换数据">
+			<field name="RspQryInstrumentStatus" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnInstrumentStatusTopic" tid="0x0000959d" comment="订阅约状态切换数据">
+			<field name="RtnInstrumentStatus" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryCurrTradingSegmentAttrTopic" tid="0x0000959e" comment="请求合约交易节信息">
+			<field name="ReqQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryCurrTradingSegmentAttrTopic" tid="0x0000959f" comment="返回合约交易节信息">
+			<field name="RspQryCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnCurrTradingSegmentAttrTopic" tid="0x000095a0" comment="订阅合约交易节信息">
+			<field name="RtnCurrTradingSegmentAttr" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryTradeUserLoginInfoTopic" tid="0x00009486" comment="交易系统登录信息查询">
+			<field name="ReqQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryTradeUserLoginInfoTopic" tid="0x00009487" comment="交易系统登录信息">
+			<field name="RspQryTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnTradeUserLoginInfoTopic" tid="0x00009488" comment="交易系统登录信息">
+			<field name="RtnTradeUserLoginInfo" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryPartTradeTopic" tid="0x00009489" comment="会员交易查询">
+			<field name="ReqQryPartTrade" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryPartTradeTopic" tid="0x00009490" comment="会员交易查询应答">
+			<field name="RspQryPartTrade" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="ReqQryParticTradeOrderStatesTopic" tid="0x0000957a" comment="会员席位交易状态">
+			<field name="ReqQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryParticTradeOrderStatesTopic" tid="0x0000957b" comment="会员席位交易状态">
+			<field name="RspQryParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnParticTradeOrderStatesTopic" tid="0x0000957c" comment="会员席位交易状态">
+			<field name="RtnParticTradeOrderStates" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonitor2ObjectTopic" tid="0x00020000" comment="获得监控对象信息查询">
+			<field name="ReqQryMonitor2Object" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonitor2ObjectTopic" tid="0x00020001" comment="获得监控对象信息应答">
+			<field name="RspQryMonitor2Object" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonitor2ObjectTopic" tid="0x00020002" comment="获得监控对象信息应答">
+			<field name="RtnMonitor2Object" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonHostCommonEnvTopic" tid="0x00020003" comment="主机环境信息查询">
+			<field name="ReqQryMonHostCommonEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonHostCommonEnvTopic" tid="0x00020004" comment="主机环境信息应答">
+			<field name="RspQryMonHostCommonEnv" minOccur="1" maxOccur="1"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonHostCommonEnvTopic" tid="0x00020005" comment="主机环境信息应答">
+			<field name="RtnMonHostCommonEnv" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonOidHostRationalTopic" tid="0x00020006" comment="获取业务进程和主机关系">
+			<field name="ReqQryMonOidHostRational" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonOidHostRationalTopic" tid="0x00020007" comment="应答业务进程和主机关系">
+			<field name="RspQryMonOidHostRational" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonOidHostRationalTopic" tid="0x00020008" comment="推送业务进程和主机关系">
+			<field name="RtnMonOidHostRational" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="ReqQryMonOidRelationTopic" tid="0x00020009" comment="对象关系查询">
+			<field name="ReqQryMonOidRelation" minOccur="1" maxOccur="*"/>
+		</package>
+		<package name="RspQryMonOidRelationTopic" tid="0x0002000A" comment="对象关系查询应答">
+			<field name="RspQryMonOidRelation" minOccur="1" maxOccur="*"/>
+			<field name="RspInfo" minOccur="1" maxOccur="1"/>
+		</package>
+		<package name="RtnMonOidRelationTopic" tid="0x0002000B" comment="对象关系查询应答">
+			<field name="RtnMonOidRelation" minOccur="1" maxOccur="*"/>
+		</package>
 	</packages>
 	<fields>
 		<fieldDefine name="Dissemination" fid="0x0001" comment="信息分发">
@@ -1984,7 +2381,7 @@
 			<item name="ParticipantID" type="CParticipantIDType" description="会员代码"/>
 		</fieldDefine>
 		<fieldDefine name="InputOrder" fid="0x0011" comment="输入报单">
-			<item name="OrderSysID" type="COrderSysIDType" description="报单编号"/>
+			<item name="OrderSysID" type="COrderSysIDType" description="报单?嗪?"/>
 			<item name="ParticipantID" type="CParticipantIDType" description="会员代码"/>
 			<item name="ClientID" type="CClientIDType" description="客户代码"/>
 			<item name="UserID" type="CUserIDType" description="交易用户代码"/>
@@ -2006,8 +2403,6 @@
 			<item name="IsAutoSuspend" type="CBoolType" description="自动挂起标志"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="OrderAction" fid="0x0012" comment="报单操作">
 			<item name="OrderSysID" type="COrderSysIDType" description="报单编号"/>
@@ -2021,8 +2416,6 @@
 			<item name="ActionLocalID" type="COrderLocalIDType" description="操作本地编号"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="OTCOrder" fid="0x0013" comment="OTC报单">
 			<item name="TradingDay" type="CDateType" description="交易日"/>
@@ -2051,9 +2444,7 @@
 			<item name="OtherClearingPartID" type="CParticipantIDType" description="对手方结算会员编号"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
 			<item name="ActionDay" type="CDateType" description="业务发生日期"/>
-			<item name="EfpInstrumentID" type="CInstrumentIDType" description="efp对应期货或期权合约代码"/>
-			<item name="ReservePositionFlag" type="CExecOrderPositionFlagType" description="期权行权后是否保留期货头寸的标记"/>
-			<item name="DeliveryMode" type="CDeliveryModeType" description="交割模式"/>
+			<item name="EfpInstrumentID" type="CInstrumentIDType" description="efp对应期货合约代码"/>
 		</fieldDefine>
 		<fieldDefine name="OrderSession" fid="0x0014" comment="报单会话">
 			<item name="FrontID" type="CFrontIDType" description="前置编号"/>
@@ -2076,8 +2467,6 @@
 			<item name="AskCombHedgeFlag" type="CCombHedgeFlagType" description="卖方组合套保标志"/>
 			<item name="AskPrice" type="CPriceType" description="卖方价格"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="QuoteAction" fid="0x0022" comment="报价操作">
 			<item name="QuoteSysID" type="CQuoteSysIDType" description="报价编号"/>
@@ -2089,8 +2478,6 @@
 			<item name="ActionLocalID" type="COrderLocalIDType" description="操作本地编号"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="InputExecOrder" fid="0x0023" comment="输入执行宣告">
 			<item name="InstrumentID" type="CInstrumentIDType" description="合约编号"/>
@@ -2099,15 +2486,9 @@
 			<item name="UserID" type="CUserIDType" description="交易用户代码"/>
 			<item name="ExecOrderLocalID" type="COrderLocalIDType" description="本地执行宣告编号"/>
 			<item name="Volume" type="CVolumeType" description="数量"/>
-			<item name="OffsetFlag" type="COffsetFlagType" description="开平标志"/>
-			<item name="HedgeFlag" type="CHedgeFlagType" description="投机套保标志"/>
-			<item name="PosiDirection" type="CPosiDirectionType" description="持仓方向"/>
-			<item name="ReservePositionFlag" type="CExecOrderPositionFlagType" description="期权行权后是否保留期货头寸的标记"/>
-			<item name="CloseFlag" type="CExecOrderCloseFlagType" description="期权行权后生成的头寸是否自动平仓"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
+			<item name="OffsetFlag" type="COffsetFlagType" description="开平标志"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="ExecOrderAction" fid="0x0024" comment="执行宣告操作">
 			<item name="ExecOrderSysID" type="CExecOrderSysIDType" description="执行宣告编号"/>
@@ -2119,8 +2500,6 @@
 			<item name="ActionLocalID" type="COrderLocalIDType" description="操作本地编号"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="UserLogout" fid="0x0031" comment="用户登录退出">
 			<item name="UserID" type="CUserIDType" description="交易用户代码"/>
@@ -2162,8 +2541,6 @@
 			<item name="OffsetFlag4" type="COffsetFlagType" description="开平标志4"/>
 			<item name="HedgeFlag4" type="CHedgeFlagType" description="投机套保标志4"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="ForceUserExit" fid="0x0053" comment="强制用户退出">
 			<item name="ParticipantID" type="CParticipantIDType" description="会员代码"/>
@@ -2456,7 +2833,6 @@
 			<item name="UserType" type="CUserTypeType" description="交易用户类型"/>
 			<item name="Password" type="CPasswordType" description="密码"/>
 			<item name="IsActive" type="CUserActiveType" description="交易员权限"/>
-			<item name="IsDirectConnForbidden" type="CBoolType" description="交易员是否禁止直接连接前置"/>
 		</fieldDefine>
 		<fieldDefine name="Client" fid="0x1403" comment="客户">
 			<item name="ClientID" type="CClientIDType" description="客户代码"/>
@@ -2773,8 +3149,6 @@
 			<item name="ClearingPartID" type="CParticipantIDType" description="结算会员编号"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
 			<item name="ActionDay" type="CDateType" description="业务发生日期"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="Trade" fid="0x2507" comment="成交">
 			<item name="TradingDay" type="CDateType" description="交易日"/>
@@ -2806,7 +3180,7 @@
 			<item name="TradingDay" type="CDateType" description="交易日"/>
 			<item name="SettlementGroupID" type="CSettlementGroupIDType" description="结算组代码"/>
 			<item name="SettlementID" type="CSettlementIDType" description="结算编号"/>
-			<item name="OrderSysID" type="COrderSysIDType" description="报单编号"/>
+			<item name="OrderSysID" type="COrderSysIDType" description="报单?嗪?"/>
 			<item name="ParticipantID" type="CParticipantIDType" description="会员代码"/>
 			<item name="ClientID" type="CClientIDType" description="客户代码"/>
 			<item name="UserID" type="CUserIDType" description="交易用户代码"/>
@@ -2844,8 +3218,6 @@
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
 			<item name="ActionDay" type="CDateType" description="业务发生日期"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="ExecOrder" fid="0x2509" comment="执行宣告">
 			<item name="TradingDay" type="CDateType" description="交易日"/>
@@ -2857,12 +3229,8 @@
 			<item name="UserID" type="CUserIDType" description="交易用户代码"/>
 			<item name="ExecOrderLocalID" type="COrderLocalIDType" description="本地执行宣告编号"/>
 			<item name="Volume" type="CVolumeType" description="数量"/>
-			<item name="OffsetFlag" type="COffsetFlagType" description="开平标志"/>
-			<item name="HedgeFlag" type="CHedgeFlagType" description="投机套保标志"/>
-			<item name="PosiDirection" type="CPosiDirectionType" description="持仓方向"/>
-			<item name="ReservePositionFlag" type="CExecOrderPositionFlagType" description="期权行权后是否保留期货头寸的标记"/>
-			<item name="CloseFlag" type="CExecOrderCloseFlagType" description="期权行权后生成的头寸是否自动平仓"/>
 			<item name="BusinessUnit" type="CBusinessUnitType" description="业务单元"/>
+			<item name="OffsetFlag" type="COffsetFlagType" description="开平标志"/>
 			<item name="ExecOrderSysID" type="CExecOrderSysIDType" description="执行宣告编号"/>
 			<item name="InsertDate" type="CDateType" description="报单日期"/>
 			<item name="InsertTime" type="CTimeType" description="插入时间"/>
@@ -2871,8 +3239,6 @@
 			<item name="ClearingPartID" type="CParticipantIDType" description="结算会员编号"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
 			<item name="ActionDay" type="CDateType" description="业务发生日期"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="CombOrder" fid="0x250A" comment="非标组合报单">
 			<item name="TradingDay" type="CDateType" description="交易日"/>
@@ -2914,8 +3280,6 @@
 			<item name="ClearingPartID" type="CParticipantIDType" description="结算会员编号"/>
 			<item name="BusinessLocalID" type="CBusinessLocalIDType" description="本地业务标识"/>
 			<item name="ActionDay" type="CDateType" description="业务发生日期"/>
-			<item name="IPAddress" type="CIPAddressType" description="IP地址"/>
-			<item name="MacAddress" type="CMacAddressType" description="Mac地址"/>
 		</fieldDefine>
 		<fieldDefine name="AdminOrder" fid="0x2510" comment="管理报单">
 			<item name="InstrumentID" type="CInstrumentIDType" description="合约代码"/>
@@ -3005,7 +3369,6 @@
 			<item name="Depth" type="CDepthType" description="代理深度"/>
 			<item name="SessionStatus" type="CSessionStatusType" description="连接状态"/>
 			<item name="DeletedSessionID" type="CSessionIDType" description="删除的会话编号"/>
-			<item name="MaxCommFlux" type="CCommFluxType" description="最大通讯量"/>
 		</fieldDefine>
 		<fieldDefine name="ReqQryTopCpuInfo" fid="0x5001" comment="CPU资源使用查询">
 			<item name="HostName" type="CTypeObjectIDType" description=""/>
@@ -8113,6 +8476,1036 @@
 			<item name="SEAT_NO" type="CGeneralResultType" description="席位号"/>
 			<item name="PRO" type="CPolicyStringTypeType" description="备注"/>
 		</fieldDefine>
+		<fieldDefine name="ReqQryMonConfigInfo" fid="0x9101" comment="配置请求信息">
+			<item name="ConfigName" type="CConfigNameType" description="配置名称"/>
+			<item name="ConfigArg" type="CString32Type" description="配置参数"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonConfigInfo" fid="0x9102" comment="配置应答信息">
+			<item name="ConfigName" type="CConfigNameType" description="配置名称"/>
+			<item name="ConfigArg" type="CString32Type" description="配置参数"/>
+			<item name="ConfigContent" type="CConfigContentType" description="配置内容"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonConfigInfo" fid="0x9103" comment="配置推送信息">
+			<item name="ConfigName" type="CConfigNameType" description="配置名称"/>
+			<item name="ConfigArg" type="CString32Type" description="配置参数"/>
+			<item name="ConfigContent" type="CConfigContentType" description="配置内容"/>
+		</fieldDefine>
+		<fieldDefine name="MonitorDayInfo" fid="0x9104" comment="监控日信息">
+			<item name="Date" type="CDateType" description="日期"/>
+		</fieldDefine>
+		<fieldDefine name="TradingDayInfo" fid="0x9105" comment="交易日信息">
+			<item name="Date" type="CDateType" description="日期"/>
+		</fieldDefine>
+		<fieldDefine name="MonitorSection" fid="0x9106" comment="监控节信息">
+			<item name="MonitorSection" type="CMonitorSectionType" description="监控节"/>
+		</fieldDefine>
+		<fieldDefine name="ReqMonServiceConnect" fid="0x9107" comment="服务连接请求">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspMonServiceConnect" fid="0x9108" comment="服务连接响应">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="ErrorID" type="CErrorIDType" description="错误代码"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonProxyConfig" fid="0x9109" comment="Proxy或探针名称配置">
+			<item name="RemoteName" type="CString64Type" description="对端服务类型"/>
+			<item name="RemoteID" type="CString64Type" description="对端服务名称"/>
+			<item name="HostName" type="CString64Type" description="主机名称"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonServiceStatus" fid="0x910A" comment="服务的当前连接状态查询">
+			<item name="ServiceName" type="CString64Type" description="服务类型"/>
+			<item name="ServiceID" type="CString64Type" description="服务名称"/>
+			<item name="Status" type="CSessionStatusType" description="服务状态"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonServiceStatus" fid="0x910B" comment="服务的当前连接状态响应">
+			<item name="ServiceName" type="CString64Type" description="服务类型"/>
+			<item name="ServiceID" type="CString64Type" description="服务名称"/>
+			<item name="Status" type="CSessionStatusType" description="服务状态"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonServiceStatus" fid="0x910C" comment="服务的当前连接状态">
+			<item name="ServiceName" type="CString64Type" description="服务类型"/>
+			<item name="ServiceID" type="CString64Type" description="服务名称"/>
+			<item name="Status" type="CSessionStatusType" description="服务状态"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonDataCenterRole" fid="0x910D" comment="当前数据中心角色">
+			<item name="DataCenter" type="CString32Type" description="数据中心名称"/>
+			<item name="Role" type="CDataCenterRoleType" description="数据中心角色"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonProbeTask" fid="0x910E" comment="探针任务配置查询请求">
+			<item name="ProbeID" type="CString32Type" description="探针名称"/>
+			<item name="TaskType" type="CString16Type" description="任务类型"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonProbeTask" fid="0x910F" comment="探针任务配置查询响应">
+			<item name="ProbeID" type="CString32Type" description="探针名称"/>
+			<item name="TaskType" type="CString16Type" description="任务类型"/>
+			<item name="TaskDesc" type="CString256Type" description="任务描述"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonProbeTask" fid="0x9110" comment="探针任务配置推送">
+			<item name="ProbeID" type="CString32Type" description="探针名称"/>
+			<item name="TaskType" type="CString16Type" description="任务类型"/>
+			<item name="TaskDesc" type="CString256Type" description="任务描述"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonFileOffset" fid="0x9111" comment="文件读取偏移量查询请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="FileName" type="CFileNameType" description="文件名称"/>
+			<item name="ReadOffset" type="CUINT64Type" description="当前读取偏移量"/>
+			<item name="ReadTime" type="CMonTimeType" description="当前读取时间"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonFileOffset" fid="0x9112" comment="文件读取偏移量查询应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="FileName" type="CFileNameType" description="文件名称"/>
+			<item name="ReadOffset" type="CUINT64Type" description="当前读取偏移量"/>
+			<item name="ReadTime" type="CMonTimeType" description="当前读取时间"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonFileOffset" fid="0x9113" comment="文件读取偏移量查询推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="FileName" type="CFileNameType" description="文件名称"/>
+			<item name="ReadOffset" type="CUINT64Type" description="当前读取偏移量"/>
+			<item name="ReadTime" type="CMonTimeType" description="当前读取时间"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonFileContent" fid="0x9114" comment="文件内容查询请求">
+			<item name="FileName" type="CFileNameType" description="请求的文件名称"/>
+			<item name="FileType" type="CString16Type" description="请求的文件类型"/>
+			<item name="ContentOffset" type="CUINT64Type" description="请求的文件内容起点偏移量"/>
+			<item name="ContentLength" type="CINT32Type" description="请求的文件内容长度"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonFileContent" fid="0x9115" comment="文件内容查询应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="FileName" type="CFileNameType" description="文件名称"/>
+			<item name="FileType" type="CString16Type" description="文件类型"/>
+			<item name="ContentOffset" type="CUINT64Type" description="装载的文件内容起点偏移量"/>
+			<item name="ContentLength" type="CINT32Type" description="装载的文件内容长度"/>
+			<item name="FileContent" type="CFileContentType" description="装载的文件内容"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonFileContent" fid="0x9116" comment="文件内容推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="FileName" type="CFileNameType" description="文件名称"/>
+			<item name="FileType" type="CString16Type" description="文件类型"/>
+			<item name="ContentOffset" type="CUINT64Type" description="装载的文件内容起点偏移量"/>
+			<item name="ContentLength" type="CINT32Type" description="装载的文件内容长度"/>
+			<item name="FileContent" type="CFileContentType" description="装载的文件内容"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonObjectAttr" fid="0x9117" comment="监控系统指标查询请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="属性名"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonObjectAttr" fid="0x9118" comment="监控系统指标查询应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="属性名"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="ValueType" type="CMonValueTypeType" description="指标值类型"/>
+			<item name="AttrValue" type="CMonAttrValueType" description="指标值"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonObjectAttr" fid="0x9119" comment="监控系统指标查询推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="属性名"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="ValueType" type="CMonValueTypeType" description="指标值类型"/>
+			<item name="AttrValue" type="CMonAttrValueType" description="指标值"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonSyslogEvent" fid="0x911A" comment="监控系统Syslog事件查询请求">
+			<item name="StartTime" type="CMonTimeType" description="开始时间"/>
+			<item name="EndTime" type="CMonTimeType" description="结束时间"/>
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="EventName" type="CString64Type" description="事件名称"/>
+			<item name="EventLevel" type="CMonEventLevelType" description="事件等级"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonSyslogEvent" fid="0x911B" comment="监控系统Syslog事件查询应答">
+			<item name="OccurTime" type="CMonTimeType" description="事件发生时间"/>
+			<item name="MonTime" type="CMonTimeType" description="事件采集时间"/>
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="EventID" type="CUINT64Type" description="事件ID"/>
+			<item name="EventName" type="CString64Type" description="事件名称"/>
+			<item name="EventDesc" type="CString512Type" description="事件描述"/>
+			<item name="EventDescFlag" type="CMonEventDescFlagType" description="事件描述标记"/>
+			<item name="EventLevel" type="CMonEventLevelType" description="事件等级"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonSyslogEvent" fid="0x911C" comment="监控系统Syslog事件查询推送">
+			<item name="OccurTime" type="CMonTimeType" description="事件发生时间"/>
+			<item name="MonTime" type="CMonTimeType" description="事件采集时间"/>
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="EventID" type="CUINT64Type" description="事件ID"/>
+			<item name="EventName" type="CString64Type" description="事件名称"/>
+			<item name="EventDesc" type="CString512Type" description="事件描述"/>
+			<item name="EventDescFlag" type="CMonEventDescFlagType" description="事件描述标记"/>
+			<item name="EventLevel" type="CMonEventLevelType" description="事件等级"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostBasicEnv" fid="0x911E" comment="主机基础环境信息请求">
+			<item name="HostID" type="CDigitObjectIDType" description="主机的数字化对象ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostBasicEnv" fid="0x911F" comment="主机基础环境信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="HostModel" type="CString32Type" description="主机型号(操作系统类型)"/>
+			<item name="MainMemory" type="CINT32Type" description="主机内存大小"/>
+			<item name="CPUVendor" type="CString32Type" description="主机CPU厂商"/>
+			<item name="CPUModel" type="CString32Type" description="主机CPU型号"/>
+			<item name="CPUMHz" type="CString32Type" description="主机CPU主频"/>
+			<item name="CPUCache" type="CString32Type" description="主机CPU缓存大小"/>
+			<item name="CPUCores" type="CINT32Type" description="主机CPU核心数量"/>
+			<item name="Processors" type="CINT32Type" description="主机CPU个数"/>
+			<item name="OsMode" type="CINT32Type" description="操作系统位数32/64"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostBasicEnv" fid="0x9120" comment="主机基础环境信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="HostModel" type="CString32Type" description="主机型号(操作系统类型)"/>
+			<item name="MainMemory" type="CINT32Type" description="主机内存大小"/>
+			<item name="CPUVendor" type="CString32Type" description="主机CPU厂商"/>
+			<item name="CPUModel" type="CString32Type" description="主机CPU型号"/>
+			<item name="CPUMHz" type="CString32Type" description="主机CPU主频"/>
+			<item name="CPUCache" type="CString32Type" description="主机CPU缓存大小"/>
+			<item name="CPUCores" type="CINT32Type" description="主机CPU核心数量"/>
+			<item name="Processors" type="CINT32Type" description="主机CPU个数"/>
+			<item name="OsMode" type="CINT32Type" description="操作系统位数32/64"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostNetworkEnv" fid="0x9121" comment="主机基础网络信息查询">
+			<item name="HostID" type="CDigitObjectIDType" description="主机的数字化对象ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostNetworkEnv" fid="0x9122" comment="主机基础网络信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="LanHardwareID" type="CString64Type" description="网络硬件ID(网卡名称)"/>
+			<item name="MACAddress" type="CString32Type" description="网卡Mac地址"/>
+			<item name="IPAddress" type="CString16Type" description="网卡IP地址"/>
+			<item name="IPMask" type="CString16Type" description="网卡掩码地址"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostNetworkEnv" fid="0x9123" comment="主机基础网络信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="LanHardwareID" type="CString64Type" description="网络硬件ID(网卡名称)"/>
+			<item name="MACAddress" type="CString32Type" description="网卡Mac地址"/>
+			<item name="IPAddress" type="CString16Type" description="网卡IP地址"/>
+			<item name="IPMask" type="CString16Type" description="网卡掩码地址"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostFileSysEnv" fid="0x9124" comment="主机文件系统信息查询">
+			<item name="HostID" type="CDigitObjectIDType" description="主机的数字化对象ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostFileSysEnv" fid="0x9125" comment="主机文件系统信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="LVMDeviceFile" type="CString32Type" description="LVM Device File"/>
+			<item name="MountPoint" type="CString32Type" description="Mount Point"/>
+			<item name="FSsize" type="CUINT64Type" description="File System Size"/>
+			<item name="FSType" type="CString32Type" description="File System Type"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostFileSysEnv" fid="0x9126" comment="主机文件系统信息通告">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="LVMDeviceFile" type="CString32Type" description="LVM Device File"/>
+			<item name="MountPoint" type="CString32Type" description="Mount Point"/>
+			<item name="FSsize" type="CUINT64Type" description="File System Size"/>
+			<item name="FSType" type="CString32Type" description="File System Type"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostSwapEnv" fid="0x9127" comment="主机交换分区信息查询">
+			<item name="HostID" type="CDigitObjectIDType" description="主机的数字化对象ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostSwapEnv" fid="0x9128" comment="主机交换分区信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="Type" type="CString32Type" description="交换分区类型"/>
+			<item name="Size" type="CINT32Type" description="交换分区大小"/>
+			<item name="Priority" type="CINT32Type" description="交换分区优先级"/>
+			<item name="Location" type="CString32Type" description="交换分区地址"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostSwapEnv" fid="0x9129" comment="主机交换分区信息通告">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="Type" type="CString32Type" description="交换分区类型"/>
+			<item name="Size" type="CINT32Type" description="交换分区大小"/>
+			<item name="Priority" type="CINT32Type" description="交换分区优先级"/>
+			<item name="Location" type="CString32Type" description="交换分区地址"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostCPUAttr" fid="0x912A" comment="主机的CPU信息指标信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="CpuID" type="CString8Type" description="主机的CPU编号"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostCPUAttr" fid="0x912B" comment="主机的CPU信息指标信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="CpuID" type="CString8Type" description="主机的CPU编号"/>
+			<item name="LOAD" type="CDoubleTypeType" description="CPU LOAD值"/>
+			<item name="USER" type="CDoubleTypeType" description="CPU USER值"/>
+			<item name="NICE" type="CDoubleTypeType" description="CPU NICE值"/>
+			<item name="SYS" type="CDoubleTypeType" description="CPU SYS值"/>
+			<item name="IDLE" type="CDoubleTypeType" description="CPU IDLE值"/>
+			<item name="BLOCK" type="CDoubleTypeType" description="CPU BLOCK值"/>
+			<item name="SWAIT" type="CDoubleTypeType" description="CPU SWAIT值"/>
+			<item name="INTR" type="CDoubleTypeType" description="CPU INTR值"/>
+			<item name="SSYS" type="CDoubleTypeType" description="CPU SSYS值"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostCPUAttr" fid="0x912C" comment="主机的CPU信息指标信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="CpuID" type="CString8Type" description="主机的CPU编号"/>
+			<item name="LOAD" type="CDoubleTypeType" description="CPU LOAD值"/>
+			<item name="USER" type="CDoubleTypeType" description="CPU USER值"/>
+			<item name="NICE" type="CDoubleTypeType" description="CPU NICE值"/>
+			<item name="SYS" type="CDoubleTypeType" description="CPU SYS值"/>
+			<item name="IDLE" type="CDoubleTypeType" description="CPU IDLE值"/>
+			<item name="BLOCK" type="CDoubleTypeType" description="CPU BLOCK值"/>
+			<item name="SWAIT" type="CDoubleTypeType" description="CPU SWAIT值"/>
+			<item name="INTR" type="CDoubleTypeType" description="CPU INTR值"/>
+			<item name="SSYS" type="CDoubleTypeType" description="CPU SSYS值"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostMemAttr" fid="0x912D" comment="主机的Memory信息指标信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostMemAttr" fid="0x912E" comment="主机的Memory信息指标信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="TOTALREAL" type="CINT32Type" description="总的物理内存"/>
+			<item name="ACTIVEREAL" type="CINT32Type" description="可用物理内存"/>
+			<item name="TOTALVIRTUAL" type="CINT32Type" description="总的虚拟内存"/>
+			<item name="ACTIVEVIRTUAL" type="CINT32Type" description="可用虚拟内存"/>
+			<item name="FREE" type="CINT32Type" description="总的可用内存"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostMemAttr" fid="0x912F" comment="主机的Memory信息指标信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="TOTALREAL" type="CINT32Type" description="总的物理内存"/>
+			<item name="ACTIVEREAL" type="CINT32Type" description="可用物理内存"/>
+			<item name="TOTALVIRTUAL" type="CINT32Type" description="总的虚拟内存"/>
+			<item name="ACTIVEVIRTUAL" type="CINT32Type" description="可用虚拟内存"/>
+			<item name="FREE" type="CINT32Type" description="总的可用内存"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostFileSystemAttr" fid="0x9130" comment="主机的FileSystem信息指标信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostFileSystemAttr" fid="0x9131" comment="主机的FileSystem信息指标信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="FILESYSTEM" type="CString64Type" description="文件系统物理名"/>
+			<item name="MountedOn" type="CString16Type" description="加载位置"/>
+			<item name="FSTYPE" type="CString16Type" description="文件系统类型"/>
+			<item name="SIZE" type="CUINT64Type" description="总大小"/>
+			<item name="AVAIL" type="CUINT64Type" description="非超级用户可获取的大小"/>
+			<item name="USED" type="CUINT64Type" description="已经使用的空间大小"/>
+			<item name="pUSERD" type="CDoubleTypeType" description="使用率"/>
+			<item name="ISIZE" type="CUINT64Type" description="文件节点总数"/>
+			<item name="IFREE" type="CUINT64Type" description="可用文件节点总数"/>
+			<item name="IUSED" type="CUINT64Type" description="已用文件节点总数"/>
+			<item name="pIUSED" type="CDoubleTypeType" description="文件节点总数使用百分比"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostFileSystemAttr" fid="0x9132" comment="主机的FileSystem信息指标信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="FILESYSTEM" type="CString64Type" description="文件系统物理名"/>
+			<item name="MountedOn" type="CString16Type" description="加载位置"/>
+			<item name="FSTYPE" type="CString16Type" description="文件系统类型"/>
+			<item name="SIZE" type="CUINT64Type" description="总大小"/>
+			<item name="AVAIL" type="CUINT64Type" description="非超级用户可获取的大小"/>
+			<item name="USED" type="CUINT64Type" description="已经使用的空间大小"/>
+			<item name="pUSERD" type="CDoubleTypeType" description="使用率"/>
+			<item name="ISIZE" type="CUINT64Type" description="文件节点总数"/>
+			<item name="IFREE" type="CUINT64Type" description="可用文件节点总数"/>
+			<item name="IUSED" type="CUINT64Type" description="已用文件节点总数"/>
+			<item name="pIUSED" type="CDoubleTypeType" description="文件节点总数使用百分比"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostUserInfo" fid="0x9133" comment="主机的用户信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostUserInfo" fid="0x9134" comment="主机的用户信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="PASSWORD" type="CString32Type" description="密码"/>
+			<item name="UID" type="CINT32Type" description="用户ID"/>
+			<item name="GID" type="CINT32Type" description="用户组ID"/>
+			<item name="HOMEDIR" type="CString32Type" description="HOME路径"/>
+			<item name="USERSHELL" type="CString32Type" description="用户使用SHELL环境"/>
+			<item name="GROUPNAME" type="CString32Type" description="用户组名"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostUserInfo" fid="0x9135" comment="主机的用户信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="PASSWORD" type="CString32Type" description="密码"/>
+			<item name="UID" type="CINT32Type" description="用户ID"/>
+			<item name="GID" type="CINT32Type" description="用户组ID"/>
+			<item name="HOMEDIR" type="CString32Type" description="HOME路径"/>
+			<item name="USERSHELL" type="CString32Type" description="用户使用SHELL环境"/>
+			<item name="GROUPNAME" type="CString32Type" description="用户组名"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostOnlineUserInfo" fid="0x9136" comment="主机的在线用户信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostOnlineUserInfo" fid="0x9137" comment="主机的在线用户信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="TIME" type="CString32Type" description="登录时间"/>
+			<item name="TTY" type="CString32Type" description="终端类型"/>
+			<item name="IP" type="CString32Type" description="IP地址"/>
+			<item name="PID" type="CINT32Type" description="进程ID"/>
+			<item name="CONNECTIME" type="CString32Type" description="连接时间"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostOnlineUserInfo" fid="0x9138" comment="主机的在线用户信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="TIME" type="CString32Type" description="登录时间"/>
+			<item name="TTY" type="CString32Type" description="终端类型"/>
+			<item name="IP" type="CString32Type" description="IP地址"/>
+			<item name="PID" type="CINT32Type" description="进程ID"/>
+			<item name="CONNECTIME" type="CString32Type" description="连接时间"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostNetworkAttr" fid="0x9139" comment="主机的Network信息指标信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostNetworkAttr" fid="0x913A" comment="主机的Network信息指标信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="NAME" type="CString16Type" description="网卡名"/>
+			<item name="STATUS" type="CString16Type" description="网卡的up或down状态"/>
+			<item name="IPADDRESS" type="CIPAddressType" description="网卡的ip地址"/>
+			<item name="MASK" type="CString32Type" description="网卡掩码地址"/>
+			<item name="MAC" type="CString32Type" description="网卡MAC地址"/>
+			<item name="RCVBYTES" type="CUINT64Type" description="网卡接收的流量"/>
+			<item name="RCVPKGS" type="CUINT64Type" description="网卡接收的数据包"/>
+			<item name="RCVERRPKGS" type="CUINT64Type" description="网卡接收到的错误包数量"/>
+			<item name="RCVDRPPKGS" type="CUINT64Type" description="网卡丢弃的包数量"/>
+			<item name="SNDBYTES" type="CUINT64Type" description="网卡发送的字节数"/>
+			<item name="SNDPKGS" type="CUINT64Type" description="网卡发送的包数量"/>
+			<item name="SNDERRPKGS" type="CUINT64Type" description="网卡发送的包数量"/>
+			<item name="SNDDRPPKGS" type="CUINT64Type" description="网卡发送的被丢弃包数量"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostNetworkAttr" fid="0x913B" comment="主机的Network信息指标信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="NAME" type="CString16Type" description="网卡名"/>
+			<item name="STATUS" type="CString16Type" description="网卡的up或down状态"/>
+			<item name="IPADDRESS" type="CIPAddressType" description="网卡的ip地址"/>
+			<item name="MASK" type="CString32Type" description="网卡掩码地址"/>
+			<item name="MAC" type="CString32Type" description="网卡MAC地址"/>
+			<item name="RCVBYTES" type="CUINT64Type" description="网卡接收的流量"/>
+			<item name="RCVPKGS" type="CUINT64Type" description="网卡接收的数据包"/>
+			<item name="RCVERRPKGS" type="CUINT64Type" description="网卡接收到的错误包数量"/>
+			<item name="RCVDRPPKGS" type="CUINT64Type" description="网卡丢弃的包数量"/>
+			<item name="SNDBYTES" type="CUINT64Type" description="网卡发送的字节数"/>
+			<item name="SNDPKGS" type="CUINT64Type" description="网卡发送的包数量"/>
+			<item name="SNDERRPKGS" type="CUINT64Type" description="网卡发送的包数量"/>
+			<item name="SNDDRPPKGS" type="CUINT64Type" description="网卡发送的被丢弃包数量"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostStatInfo" fid="0x913C" comment="主机的系统状态信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostStatInfo" fid="0x913D" comment="主机的系统状态信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="ProcRun" type="CINT32Type" description="活跃进程数"/>
+			<item name="ProcBlk" type="CINT32Type" description="阻塞进程数"/>
+			<item name="SwapIn" type="CINT32Type" description="每秒由磁盘进入Swap的页面数"/>
+			<item name="SwapOut" type="CINT32Type" description="每秒由Swap进入磁盘的页面数"/>
+			<item name="BlockIn" type="CINT32Type" description="每秒从块设备读入的Block数"/>
+			<item name="BlockOut" type="CINT32Type" description="每秒向块设备写入的Block数"/>
+			<item name="Inter" type="CINT32Type" description="每秒设备中段次数"/>
+			<item name="Context" type="CINT32Type" description="每秒上下文切换次数"/>
+			<item name="CPUUser" type="CDoubleTypeType" description="用户态CPU百分率"/>
+			<item name="CPUSys" type="CDoubleTypeType" description="系统态CPU百分率"/>
+			<item name="CPUIdle" type="CDoubleTypeType" description="空闲态CPU百分率"/>
+			<item name="CPUIOWait" type="CDoubleTypeType" description="IO等待态CPU百分率"/>
+			<item name="CPUSteal" type="CDoubleTypeType" description="窃取态CPU百分率"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostStatInfo" fid="0x913E" comment="主机的系统状态信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="ProcRun" type="CINT32Type" description="活跃进程数"/>
+			<item name="ProcBlk" type="CINT32Type" description="阻塞进程数"/>
+			<item name="SwapIn" type="CINT32Type" description="每秒由磁盘进入Swap的页面数"/>
+			<item name="SwapOut" type="CINT32Type" description="每秒由Swap进入磁盘的页面数"/>
+			<item name="BlockIn" type="CINT32Type" description="每秒从块设备读入的Block数"/>
+			<item name="BlockOut" type="CINT32Type" description="每秒向块设备写入的Block数"/>
+			<item name="Inter" type="CINT32Type" description="每秒设备中段次数"/>
+			<item name="Context" type="CINT32Type" description="每秒上下文切换次数"/>
+			<item name="CPUUser" type="CDoubleTypeType" description="用户态CPU百分率"/>
+			<item name="CPUSys" type="CDoubleTypeType" description="系统态CPU百分率"/>
+			<item name="CPUIdle" type="CDoubleTypeType" description="空闲态CPU百分率"/>
+			<item name="CPUIOWait" type="CDoubleTypeType" description="IO等待态CPU百分率"/>
+			<item name="CPUSteal" type="CDoubleTypeType" description="窃取态CPU百分率"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostDiskIOAttr" fid="0x913F" comment="主机的DiskIO信息指标信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostDiskIOAttr" fid="0x9140" comment="主机的DiskIO信息指标信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="PartName" type="CString32Type" description="分区名"/>
+			<item name="ReadMerges" type="CDoubleTypeType" description="每秒ReadMerge数"/>
+			<item name="WriteMerges" type="CDoubleTypeType" description="每秒WriteMerge数"/>
+			<item name="ReadIOs" type="CDoubleTypeType" description="每秒ReadIO数"/>
+			<item name="WriteIOs" type="CDoubleTypeType" description="每秒WriteIO数"/>
+			<item name="ReadKBs" type="CDoubleTypeType" description="每秒Read字节数"/>
+			<item name="WriteKBs" type="CDoubleTypeType" description="每秒Write字节数"/>
+			<item name="SizeVal" type="CDoubleTypeType" description="Size值"/>
+			<item name="QueueVal" type="CDoubleTypeType" description="Queue值"/>
+			<item name="Svc_t" type="CDoubleTypeType" description="Svc_t值"/>
+			<item name="Busy" type="CDoubleTypeType" description="繁忙百分率"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostDiskIOAttr" fid="0x9141" comment="主机的DiskIO信息指标信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="PartName" type="CString32Type" description="分区名"/>
+			<item name="ReadMerges" type="CDoubleTypeType" description="每秒ReadMerge数"/>
+			<item name="WriteMerges" type="CDoubleTypeType" description="每秒WriteMerge数"/>
+			<item name="ReadIOs" type="CDoubleTypeType" description="每秒ReadIO数"/>
+			<item name="WriteIOs" type="CDoubleTypeType" description="每秒WriteIO数"/>
+			<item name="ReadKBs" type="CDoubleTypeType" description="每秒Read字节数"/>
+			<item name="WriteKBs" type="CDoubleTypeType" description="每秒Write字节数"/>
+			<item name="SizeVal" type="CDoubleTypeType" description="Size值"/>
+			<item name="QueueVal" type="CDoubleTypeType" description="Queue值"/>
+			<item name="Svc_t" type="CDoubleTypeType" description="Svc_t值"/>
+			<item name="Busy" type="CDoubleTypeType" description="繁忙百分率"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostRouterInfo" fid="0x9142" comment="主机的路由信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostRouterInfo" fid="0x9143" comment="主机的路由信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="Dev" type="CString32Type" description="设备接口名"/>
+			<item name="Destination" type="CString16Type" description="目标网段ip地址"/>
+			<item name="Gateway" type="CString16Type" description="网关ip地址"/>
+			<item name="Mask" type="CString16Type" description="掩码ip地址"/>
+			<item name="Flag" type="CString8Type" description="网络状态"/>
+			<item name="RefCnt" type="CINT32Type" description="关联计数"/>
+			<item name="Use" type="CINT32Type" description="使用计数"/>
+			<item name="Metric" type="CINT32Type" description="metric值"/>
+			<item name="Mtu" type="CINT32Type" description="mtu值"/>
+			<item name="Win" type="CINT32Type" description="win值"/>
+			<item name="Rtt" type="CINT32Type" description="rtt值"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostRouterInfo" fid="0x9144" comment="主机的路由信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="Dev" type="CString32Type" description="设备接口名"/>
+			<item name="Destination" type="CString16Type" description="目标网段ip地址"/>
+			<item name="Gateway" type="CString16Type" description="网关ip地址"/>
+			<item name="Mask" type="CString16Type" description="掩码ip地址"/>
+			<item name="Flag" type="CString8Type" description="网络状态"/>
+			<item name="RefCnt" type="CINT32Type" description="关联计数"/>
+			<item name="Use" type="CINT32Type" description="使用计数"/>
+			<item name="Metric" type="CINT32Type" description="metric值"/>
+			<item name="Mtu" type="CINT32Type" description="mtu值"/>
+			<item name="Win" type="CINT32Type" description="win值"/>
+			<item name="Rtt" type="CINT32Type" description="rtt值"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostProcessInfo" fid="0x9145" comment="主机的进程信息请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="StartDate" type="CDateType" description="开始日期"/>
+			<item name="StartTime" type="CTimeType" description="开始时间"/>
+			<item name="EndDate" type="CDateType" description="结束日期"/>
+			<item name="EndTime" type="CTimeType" description="结束时间"/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostProcessInfo" fid="0x9146" comment="主机的进程信息响应">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="PID" type="CINT32Type" description="进程号"/>
+			<item name="CPU" type="CINT32Type" description="处理器号"/>
+			<item name="TTY" type="CINT32Type" description="终端名"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="PRI" type="CINT32Type" description="任务的优先级"/>
+			<item name="NI" type="CINT32Type" description="任务的nice值"/>
+			<item name="SSIZE" type="CUINT64Type" description="任务的代码加上数据再加上栈空间的大小"/>
+			<item name="RES" type="CUINT64Type" description="任务使用的物理内存的总数量"/>
+			<item name="STATE" type="CProcessStateType" description="任务的状态"/>
+			<item name="STIME" type="CString32Type" description="自任务开始时使用的总CPU时间"/>
+			<item name="pWCPU" type="CDoubleTypeType" description="进程的CPU利用率权重百分比"/>
+			<item name="pCPU" type="CDoubleTypeType" description="进程的原始的CPU利用率百分比"/>
+			<item name="COMMAND" type="CString64Type" description="启动进程的命令名"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostProcessInfo" fid="0x9147" comment="主机的进程信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="PID" type="CINT32Type" description="进程号"/>
+			<item name="CPU" type="CINT32Type" description="处理器号"/>
+			<item name="TTY" type="CINT32Type" description="终端名"/>
+			<item name="USERNAME" type="CString32Type" description="用户名"/>
+			<item name="PRI" type="CINT32Type" description="任务的优先级"/>
+			<item name="NI" type="CINT32Type" description="任务的nice值"/>
+			<item name="SSIZE" type="CUINT64Type" description="任务的代码加上数据再加上栈空间的大小"/>
+			<item name="RES" type="CUINT64Type" description="任务使用的物理内存的总数量"/>
+			<item name="STATE" type="CProcessStateType" description="任务的状态"/>
+			<item name="STIME" type="CString32Type" description="自任务开始时使用的总CPU时间"/>
+			<item name="pWCPU" type="CDoubleTypeType" description="进程的CPU利用率权重百分比"/>
+			<item name="pCPU" type="CDoubleTypeType" description="进程的原始的CPU利用率百分比"/>
+			<item name="COMMAND" type="CString64Type" description="启动进程的命令名"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonDBQuery" fid="0x914A" comment="数据库采集内容的回传">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="SPName" type="CString128Type" description="存储过程名，可以为空"/>
+			<item name="QueryResult" type="CString1024Type" description="数据库查询结果"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonSPQuery" fid="0x914B" comment="客户端临时SP查询请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="DBName" type="CString16Type" description="数据库别名"/>
+			<item name="SPName" type="CString64Type" description="存储过程名"/>
+		</fieldDefine>
+		<fieldDefine name="RspMonSPQueryInfo" fid="0x914C" comment="客户端临时SP查询结果状态">
+			<item name="ErrorID" type="CINT32Type" description="查询结果状态码"/>
+			<item name="ErrorMsg" type="CString128Type" description="查询返回的提示信息"/>
+		</fieldDefine>
+		<fieldDefine name="ReqServiceVersion" fid="0x914E" comment="服务版本信息请求">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspServiceVersion" fid="0x914F" comment="服务版本信息响应">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="VersionID" type="CVersionIDType" description="服务版本号"/>
+			<item name="ServiceMD5Value" type="CServiceMD5ValueType" description="服务MD5码"/>
+			<item name="UpdateMD5Value" type="CUpdateMD5ValueType" description="升级服务MD5码"/>
+		</fieldDefine>
+		<fieldDefine name="ReqServiceProgram" fid="0x9151" comment="服务应用程序请求">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+		</fieldDefine>
+		<fieldDefine name="RspServiceProgram" fid="0x9152" comment="服务应用程序响应">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceProgram" type="CServiceProgramType" description="服务应用程序"/>
+			<item name="ProgramLength" type="CProgramLengthType" description="应用程序长度"/>
+			<item name="ProgramId" type="CProgramIdType" description="应用程序编号"/>
+		</fieldDefine>
+		<fieldDefine name="ReqUpdateState" fid="0x9154" comment="升级服务获取状态">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="ProgramUpdateState" type="CProgramUpdateStateType" description="获取应用程序状态"/>
+		</fieldDefine>
+		<fieldDefine name="RspUpdateState" fid="0x9155" comment="升级服务获取状态响应">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="ProgramUpdateState" type="CProgramUpdateStateType" description="获取应用程序状态"/>
+		</fieldDefine>
+		<fieldDefine name="ReqSubscribe" fid="0x9157" comment="订阅请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="对象ID"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="属性名"/>
+		</fieldDefine>
+		<fieldDefine name="ReqFileSendSuccess" fid="0x915A" comment="文件发送成功通知">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="Datacenter" type="CString32Type" description="服务所在的数据中心名称"/>
+			<item name="FileName" type="CString256Type" description="文件名称，不包含路径"/>
+			<item name="FileSize" type="CUINT64Type" description="文件大小"/>
+			<item name="TarDir" type="CString256Type" description="文件在目标主机的存放位置,可以为空"/>
+			<item name="TargetServiceName" type="CServiceNameType" description="接收文件的服务名称,可以为空"/>
+			<item name="TargetServiceID" type="CServiceIDType" description="接收文件的服务ID,可以为空"/>
+			<item name="TargetDatacenter" type="CString32Type" description="目标服务所在的数据中心名称,可以为空"/>
+		</fieldDefine>
+		<fieldDefine name="RspFileSendSuccess" fid="0x915B" comment="回送文件接收成功">
+			<item name="ServiceName" type="CServiceNameType" description="接收文件的服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="接收文件的服务ID"/>
+			<item name="Datacenter" type="CString32Type" description="目标服务所在的数据中心名称"/>
+			<item name="FileName" type="CString256Type" description="文件名称，不包含路径"/>
+			<item name="SourceServiceName" type="CServiceNameType" description="接收文件的服务名称,可以为空"/>
+			<item name="SourceServiceID" type="CServiceIDType" description="接收文件的服务ID,可以为空"/>
+			<item name="SourceDatacenter" type="CString32Type" description="目标服务所在的数据中心名称,可以为空"/>
+		</fieldDefine>
+		<fieldDefine name="RtnFileSendSuccess" fid="0x915C" comment="文件发送成功通知">
+			<item name="ServiceName" type="CServiceNameType" description="服务名称"/>
+			<item name="ServiceID" type="CServiceIDType" description="服务ID"/>
+			<item name="Datacenter" type="CString32Type" description="服务所在的数据中心名称"/>
+			<item name="FileName" type="CString256Type" description="文件名称，不包含路径"/>
+			<item name="FileSize" type="CUINT64Type" description="文件大小"/>
+			<item name="TarDir" type="CString256Type" description="文件在目标主机的存放位置,可以为空"/>
+			<item name="TargetServiceName" type="CServiceNameType" description="接收文件的服务名称,可以为空"/>
+			<item name="TargetServiceID" type="CServiceIDType" description="接收文件的服务ID,可以为空"/>
+			<item name="TargetDatacenter" type="CString32Type" description="目标服务所在的数据中心名称,可以为空"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonTomcatInfo" fid="0x9550" comment="tomcat信息查询">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonTomcatInfo" fid="0x9551" comment="tomcat信息查询">
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+			<item name="Content" type="CString1024Type" description="通用返回字段"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonTomcatInfo" fid="0x9552" comment="tomcat信息查询">
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+			<item name="Content" type="CString1024Type" description="通用返回字段"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonWebAppInfo" fid="0x9553" comment="web app信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="AppName" type="CString32Type" description="Web应用名称"/>
+			<item name="Status" type="CString16Type" description="应用运行状态"/>
+			<item name="Desc" type="CString512Type" description="应用描述信息"/>
+			<item name="StartTime" type="CString20Type" description="应用启动时间"/>
+			<item name="ServletNum" type="CString10Type" description="应用servlet数量"/>
+			<item name="ProcessTime" type="CString20Type" description="应用处理总时长"/>
+			<item name="RequestNum" type="CString20Type" description="应用累计接收请求数"/>
+			<item name="ErrorNum" type="CString20Type" description="应用累计错误数"/>
+			<item name="SessionSize" type="CString10Type" description="应用当前会话数"/>
+			<item name="TimeOut" type="CString10Type" description="会话超时时长(秒)"/>
+			<item name="JDBCUsage" type="CString10Type" description="应用JDBC连接使用率"/>
+			<item name="JSPNum" type="CString10Type" description="应用JSP文件数量"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonWebAppInfo" fid="0x9554" comment="web app信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="AppName" type="CString32Type" description="Web应用名称"/>
+			<item name="Status" type="CString16Type" description="应用运行状态"/>
+			<item name="Desc" type="CString512Type" description="应用描述信息"/>
+			<item name="StartTime" type="CString20Type" description="应用启动时间"/>
+			<item name="ServletNum" type="CString10Type" description="应用servlet数量"/>
+			<item name="ProcessTime" type="CString20Type" description="应用处理总时长"/>
+			<item name="RequestNum" type="CString20Type" description="应用累计接收请求数"/>
+			<item name="ErrorNum" type="CString20Type" description="应用累计错误数"/>
+			<item name="SessionSize" type="CString10Type" description="应用当前会话数"/>
+			<item name="TimeOut" type="CString10Type" description="会话超时时长(秒)"/>
+			<item name="JDBCUsage" type="CString10Type" description="应用JDBC连接使用率"/>
+			<item name="JSPNum" type="CString10Type" description="应用JSP文件数量"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonServletInfo" fid="0x9555" comment="servlet信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="servlet名称"/>
+			<item name="LoadTime" type="CINT32Type" description="加载耗时"/>
+			<item name="RequestNum" type="CINT32Type" description="接收请求数量"/>
+			<item name="RequestErrNum" type="CINT32Type" description="错误数量"/>
+			<item name="ProcessTime" type="CINT32Type" description="处理时长"/>
+			<item name="MixTime" type="CINT32Type" description="最小处理时间"/>
+			<item name="MaxTime" type="CINT32Type" description="最大处理时间"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonServletInfo" fid="0x9556" comment="servlet信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="servlet名称"/>
+			<item name="LoadTime" type="CINT32Type" description="加载耗时"/>
+			<item name="RequestNum" type="CINT32Type" description="接收请求数量"/>
+			<item name="RequestErrNum" type="CINT32Type" description="错误数量"/>
+			<item name="ProcessTime" type="CINT32Type" description="处理时长"/>
+			<item name="MixTime" type="CINT32Type" description="最小处理时间"/>
+			<item name="MaxTime" type="CINT32Type" description="最大处理时间"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonFileInfo" fid="0x9557" comment="文件信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="PathName" type="CString256Type" description="文件全路径名"/>
+			<item name="FileSize" type="CString10Type" description="文件大小"/>
+			<item name="LastModDate" type="CString20Type" description="文件最后修改时间"/>
+			<item name="FileType" type="CString16Type" description="文件属性"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonFileInfo" fid="0x9558" comment="文件信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="PathName" type="CString256Type" description="文件全路径名"/>
+			<item name="FileSize" type="CString10Type" description="文件大小"/>
+			<item name="LastModDate" type="CString20Type" description="文件最后修改时间"/>
+			<item name="FileType" type="CString16Type" description="文件属性"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonSessionInfo" fid="0x9559" comment="应用会话信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="SessionID" type="CString32Type" description="Session编号"/>
+			<item name="SessionName" type="CString64Type" description="Session名称"/>
+			<item name="RemoteIP" type="CString16Type" description="Session对应客户端IP地址"/>
+			<item name="BeginTime" type="CString16Type" description="Session创建时间"/>
+			<item name="LatestTime" type="CString16Type" description="Session最新请求时间"/>
+			<item name="MaxIdleTime" type="CINT32Type" description="Session超时时间(秒)"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonSessionInfo" fid="0x955A" comment="应用会话信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="SessionID" type="CString32Type" description="Session编号"/>
+			<item name="SessionName" type="CString64Type" description="Session名称"/>
+			<item name="RemoteIP" type="CString16Type" description="Session对应客户端IP地址"/>
+			<item name="BeginTime" type="CString16Type" description="Session创建时间"/>
+			<item name="LatestTime" type="CString16Type" description="Session最新请求时间"/>
+			<item name="MaxIdleTime" type="CINT32Type" description="Session超时时间(秒)"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonJDBCInfo" fid="0x955B" comment="JDBC信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="AppName" type="CString32Type" description="应用程序名称"/>
+			<item name="Name" type="CString32Type" description="JDBC连接池名称"/>
+			<item name="Usage" type="CRatioType" description="连接池使用比例"/>
+			<item name="ConnNumMax" type="CINT32Type" description="最大连接数"/>
+			<item name="ConnNumFree" type="CINT32Type" description="空闲连接数"/>
+			<item name="ConnNumUnRU" type="CINT32Type" description="不可重用连接数"/>
+			<item name="ConnNumRU" type="CINT32Type" description="可重用连接数"/>
+			<item name="UserName" type="CString32Type" description="对应数据库用户"/>
+			<item name="Type" type="CString64Type" description="JDBC类型"/>
+			<item name="URL" type="CString64Type" description="JDBC Url"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonJDBCInfo" fid="0x955C" comment="JDBC信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="AppName" type="CString32Type" description="应用程序名称"/>
+			<item name="Name" type="CString32Type" description="JDBC连接池名称"/>
+			<item name="Usage" type="CRatioType" description="连接池使用比例"/>
+			<item name="ConnNumMax" type="CINT32Type" description="最大连接数"/>
+			<item name="ConnNumFree" type="CINT32Type" description="空闲连接数"/>
+			<item name="ConnNumUnRU" type="CINT32Type" description="不可重用连接数"/>
+			<item name="ConnNumRU" type="CINT32Type" description="可重用连接数"/>
+			<item name="UserName" type="CString32Type" description="对应数据库用户"/>
+			<item name="Type" type="CString64Type" description="JDBC类型"/>
+			<item name="URL" type="CString64Type" description="JDBC Url"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonThreadInfo" fid="0x955D" comment="线程信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="线程名称"/>
+			<item name="ThreadNum" type="CINT32Type" description="线程编号"/>
+			<item name="ThreadStatus" type="CString16Type" description="线程状态"/>
+			<item name="InNative" type="CINT32Type" description="线程Native标识"/>
+			<item name="Suspended" type="CString16Type" description="线程Suspended标识"/>
+			<item name="BlockCount" type="CINT32Type" description="线程阻塞总数"/>
+			<item name="WaitCount" type="CINT32Type" description="线程等待总数"/>
+			<item name="CpuTime" type="CRatioType" description="线程CPU时间"/>
+			<item name="UserTime" type="CRatioType" description="线程用户时间"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonThreadInfo" fid="0x955E" comment="线程信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="线程名称"/>
+			<item name="ThreadNum" type="CINT32Type" description="线程编号"/>
+			<item name="ThreadStatus" type="CString16Type" description="线程状态"/>
+			<item name="InNative" type="CINT32Type" description="线程Native标识"/>
+			<item name="Suspended" type="CString16Type" description="线程Suspended标识"/>
+			<item name="BlockCount" type="CINT32Type" description="线程阻塞总数"/>
+			<item name="WaitCount" type="CINT32Type" description="线程等待总数"/>
+			<item name="CpuTime" type="CRatioType" description="线程CPU时间"/>
+			<item name="UserTime" type="CRatioType" description="线程用户时间"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonVMInfo" fid="0x955F" comment="虚拟机信息查询">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonVMInfo" fid="0x9560" comment="虚拟机信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="虚拟机名称"/>
+			<item name="VmName" type="CString64Type" description="虚拟机类型"/>
+			<item name="VmVendor" type="CString64Type" description="供应商"/>
+			<item name="VmVersion" type="CString64Type" description="虚拟机版本"/>
+			<item name="StartTime" type="CString64Type" description="启动时间"/>
+			<item name="BootClassPath" type="CString800Type" description="启动类路径"/>
+			<item name="ClassPath" type="CString800Type" description="类路径"/>
+			<item name="LibraryPath" type="CString800Type" description="库路径"/>
+			<item name="Arguments" type="CString800Type" description="启动参数"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonVMInfo" fid="0x9561" comment="虚拟机信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Name" type="CString64Type" description="虚拟机名称"/>
+			<item name="VmName" type="CString64Type" description="虚拟机类型"/>
+			<item name="VmVendor" type="CString64Type" description="供应商"/>
+			<item name="VmVersion" type="CString64Type" description="虚拟机版本"/>
+			<item name="StartTime" type="CString64Type" description="启动时间"/>
+			<item name="BootClassPath" type="CString800Type" description="启动类路径"/>
+			<item name="ClassPath" type="CString800Type" description="类路径"/>
+			<item name="LibraryPath" type="CString800Type" description="库路径"/>
+			<item name="Arguments" type="CString800Type" description="启动参数"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonPropertyInfo" fid="0x9562" comment="系统属性信息查询">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonPropertyInfo" fid="0x9563" comment="系统属性信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Property" type="CString64Type" description="系统属性名"/>
+			<item name="ClipFlag" type="CINT32Type" description="分割标识"/>
+			<item name="Value" type="CString256Type" description="属性值"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonPropertyInfo" fid="0x9564" comment="系统属性信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="Property" type="CString64Type" description="系统属性名"/>
+			<item name="ClipFlag" type="CINT32Type" description="分割标识"/>
+			<item name="Value" type="CString256Type" description="属性值"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonMemPoolInfo" fid="0x9565" comment="系统内存池信息查询">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonMemPoolInfo" fid="0x9566" comment="系统内存池信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="PoolName" type="CString32Type" description="系统属性名"/>
+			<item name="Usage" type="CString10Type" description="系统属性名"/>
+			<item name="committedbytes" type="CString20Type" description="系统属性名"/>
+			<item name="initbytes" type="CString20Type" description="系统属性名"/>
+			<item name="maxbytes" type="CString20Type" description="系统属性名"/>
+			<item name="usedbytes" type="CString20Type" description="系统属性名"/>
+			<item name="Type" type="CString10Type" description="系统属性名"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonMemPoolInfo" fid="0x9567" comment="系统内存池信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="PoolName" type="CString32Type" description="系统属性名"/>
+			<item name="Usage" type="CString10Type" description="系统属性名"/>
+			<item name="committedbytes" type="CString20Type" description="系统属性名"/>
+			<item name="initbytes" type="CString20Type" description="系统属性名"/>
+			<item name="maxbytes" type="CString20Type" description="系统属性名"/>
+			<item name="usedbytes" type="CString20Type" description="系统属性名"/>
+			<item name="Type" type="CString10Type" description="系统属性名"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonConnectionInfo" fid="0x9568" comment="连接信息查询">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="SubObjectID" type="CDigitObjectIDType" description="子监控对象"/>
+			<item name="AttrType" type="CDigitAttrTypeType" description="监控指标"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonConnectionInfo" fid="0x9569" comment="连接信息应答">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="ServiceName" type="CString32Type" description="服务线程名"/>
+			<item name="Stage" type="CString10Type" description="当前状态"/>
+			<item name="RequestCount" type="CRatioType" description="累计接收请求数"/>
+			<item name="ErrorCount" type="CRatioType" description="累计错误数"/>
+			<item name="ProcTime" type="CRatioType" description="累计处理时长"/>
+			<item name="BytesReceived" type="CRatioType" description="累计接收字节数"/>
+			<item name="BytesSent" type="CRatioType" description="累计发送字节数"/>
+			<item name="RemoteIP" type="CString16Type" description="远程IP地址"/>
+			<item name="MaxAccessURI" type="CString64Type" description="最大请求URI"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonConnectionInfo" fid="0x956A" comment="连接信息推送">
+			<item name="ObjectID" type="CDigitObjectIDType" description="监控对象"/>
+			<item name="MonTime" type="CMonTimeType" description="监控时间"/>
+			<item name="ServiceName" type="CString32Type" description="服务线程名"/>
+			<item name="Stage" type="CString10Type" description="当前状态"/>
+			<item name="RequestCount" type="CRatioType" description="累计接收请求数"/>
+			<item name="ErrorCount" type="CRatioType" description="累计错误数"/>
+			<item name="ProcTime" type="CRatioType" description="累计处理时长"/>
+			<item name="BytesReceived" type="CRatioType" description="累计接收字节数"/>
+			<item name="BytesSent" type="CRatioType" description="累计发送字节数"/>
+			<item name="RemoteIP" type="CString16Type" description="远程IP地址"/>
+			<item name="MaxAccessURI" type="CString64Type" description="最大请求URI"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonitor2Object" fid="0x9600" comment="获得监控对象信息查询请求">
+			<item name="ObjectID" type="CDigitObjectIDType" description="业务进程对象ID，数字形式"/>
+			<item name="StartDateTime" type="CDigitDateTimeType" description=""/>
+			<item name="EndDateTime" type="CDigitDateTimeType" description=""/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonitor2Object" fid="0x9601" comment="获得监控对象信息应答信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="业务进程对象ID，数字形式"/>
+			<item name="ObjectName" type="CTypeLongObjectNameType" description="本级业务进程对象名字"/>
+			<item name="WarningActive" type="CTypeIsActiveType" description="告警事件产生标志位"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonitor2Object" fid="0x9602" comment="获得监控对象信息应答信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="业务进程对象ID，数字形式"/>
+			<item name="ObjectName" type="CTypeLongObjectNameType" description="本级业务进程对象名字"/>
+			<item name="WarningActive" type="CTypeIsActiveType" description="告警事件产生标志位"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonHostCommonEnv" fid="0x9603" comment="获取主机基础环境信息">
+			<item name="HostID" type="CDigitObjectIDType" description="主机的数字化对象ID"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonHostCommonEnv" fid="0x9604" comment="应答主机基础环境信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="HostModel" type="CString32Type" description="主机型号(操作系统类型)"/>
+			<item name="MainMemory" type="CINT32Type" description="主机内存大小"/>
+			<item name="CPUVendor" type="CString32Type" description="主机CPU厂商"/>
+			<item name="CPUModel" type="CString32Type" description="主机CPU型号"/>
+			<item name="CPUMHz" type="CString32Type" description="主机CPU主频"/>
+			<item name="CPUCache" type="CString32Type" description="主机CPU缓存大小"/>
+			<item name="CPUCores" type="CINT32Type" description="主机CPU核心数量"/>
+			<item name="Processors" type="CINT32Type" description="主机CPU个数"/>
+			<item name="OsMode" type="CINT32Type" description="操作系统位数32/64"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonHostCommonEnv" fid="0x9605" comment="推送主机基础环境信息">
+			<item name="ObjectID" type="CDigitObjectIDType" description="数字化对象ID"/>
+			<item name="MonTime" type="CMonTimeType" description="采集时间"/>
+			<item name="HostModel" type="CString32Type" description="主机型号(操作系统类型)"/>
+			<item name="MainMemory" type="CINT32Type" description="主机内存大小"/>
+			<item name="CPUVendor" type="CString32Type" description="主机CPU厂商"/>
+			<item name="CPUModel" type="CString32Type" description="主机CPU型号"/>
+			<item name="CPUMHz" type="CString32Type" description="主机CPU主频"/>
+			<item name="CPUCache" type="CString32Type" description="主机CPU缓存大小"/>
+			<item name="CPUCores" type="CINT32Type" description="主机CPU核心数量"/>
+			<item name="Processors" type="CINT32Type" description="主机CPU个数"/>
+			<item name="OsMode" type="CINT32Type" description="操作系统位数32/64"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonOidHostRational" fid="0x9606" comment="获取业务进程和主机关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description="主机ID，数字形式"/>
+			<item name="StartDateTime" type="CDigitDateTimeType" description=""/>
+			<item name="EndDateTime" type="CDigitDateTimeType" description=""/>
+			<item name="KeepAlive" type="CTypeKeepAliveType" description="持续订阅标记"/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonOidHostRational" fid="0x9607" comment="应答业务进程和主机关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description="业务进程对象ID"/>
+			<item name="HostObjectID" type="CDigitObjectIDType" description="业务进程所在的主机ID"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonOidHostRational" fid="0x9608" comment="推送业务进程和主机关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description="业务进程对象ID"/>
+			<item name="HostObjectID" type="CDigitObjectIDType" description="业务进程所在的主机ID"/>
+		</fieldDefine>
+		<fieldDefine name="ReqQryMonOidRelation" fid="0x9609" comment="请求业务进程和指标关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description=""/>
+		</fieldDefine>
+		<fieldDefine name="RspQryMonOidRelation" fid="0x960A" comment="应答业务进程和指标关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description="定义对象名"/>
+			<item name="HoldAttrID" type="CDigitAttrTypeType" description="定义对象名"/>
+		</fieldDefine>
+		<fieldDefine name="RtnMonOidRelation" fid="0x960B" comment="推送业务进程和指标关系">
+			<item name="ObjectID" type="CDigitObjectIDType" description="定义对象名"/>
+			<item name="HoldAttrID" type="CDigitAttrTypeType" description="定义对象名"/>
+		</fieldDefine>
 	</fields>
 	<entities/>
 	<types>
@@ -8148,6 +9541,14 @@
 		<Int typename="DbmtSequenceID" label="Dbmt序列号" length="8"/>
 		<Int typename="UniCount" length="2" label="停板数量"/>
 		<Int typename="CommFlux" label="通讯量" length="8"/>
+		<Int typename="NetArea" label="网络区域" length="8"/>
+		<Int typename="SortValue" label="所排序值类型" length="8"/>
+		<Int typename="SortType" label="排序类型" length="8"/>
+		<Int typename="DuringTimeType" label="查询时间类型" length="8"/>
+		<Int typename="DuringTimeValue" label="查询时间值" length="8"/>
+		<Int typename="TopN" label="前N的值" length="8"/>
+		<String typename="TopResult" label="性能排序结果" length="256"/>
+		<String typename="NetSubArea" label="网络子区域" length="64"/>
 		<String typename="QuantityUnit" label="数量单位" length="6"/>
 		<String typename="Alias" length="2" label="别名"/>
 		<String typename="OriginalText" length="2" label="原文"/>
@@ -8206,6 +9607,8 @@
 		<String typename="BusinessUnit" length="20" label="业务单元"/>
 		<String typename="TradingSystemName" length="60" label="交易系统名称"/>
 		<String typename="PeriodName" length="100" label="时间阶段名称"/>
+		<String typename="EventDesID" length="12" label="事件描述ID号"/>
+		<String typename="FrontSerialNum" length="50" label="Front编号全名"/>
 		<EnumChar typename="StartMode" label="启动模式" prefix="SM">
 			<enum name="Normal" value="1" label="正常"/>
 			<enum name="Emerge" value="2" label="应急"/>
@@ -8553,6 +9956,9 @@
 		<Float typename="Ratio" length="10" precision="4" label="比率"/>
 		<Float typename="Money" length="19" precision="3" label="资金"/>
 		<Float typename="LargeVolume" length="19" precision="3" label="大额数量"/>
+		<Float typename="CapValue" length="19" precision="4" label="比率"/>
+		<QWord typename="LargeNumber" length="20" label="巨大无符号数值"/>
+		<VString typename="NumberLists" length="128" label="整数列"/>
 		<Char typename="NewsUrgency" label="紧急程度"/>
 		<Word typename="SequenceSeries" label="序列系列号"/>
 		<Word typename="CommPhaseNo" label="通讯时段号"/>
@@ -8568,6 +9974,7 @@
 		<VString typename="ClientPosiLimitCalcDesc" length="1024" label="客户限仓算法描述"/>
 		<VString typename="FieldName" label="字段名" length="2048"/>
 		<VString typename="FieldContent" label="字段内容" length="2048"/>
+		<VString typename="LinkCostPra" length="32" label="流量参数"/>
 		<Int typename="PartyLenth" label="Party字段长度" length="3"/>
 		<Int typename="StepSize" label="序列号步长" length="1"/>
 		<String typename="ArchiveOperator" label="归档操作人" length="10"/>
@@ -9594,49 +11001,6 @@
 			<enum name="Connected" value="0" label="已连接"/>
 			<enum name="DisConnected" value="1" label="断开"/>
 		</EnumChar>
-		<EnumChar typename="ExecOrderPositionFlag" label="期权行权后是否保留期货头寸的标记" prefix="EOPF">
-			<enum name="Reserve" value="0" label="保留"/>
-			<enum name="UnReserve" value="1" label="不保留"/>
-		</EnumChar>
-		<EnumChar typename="ExecOrderCloseFlag" label="期权行权后是否自动平仓" prefix="EOCF">
-			<enum name="AutoClose" value="0" label="自动平仓"/>
-			<enum name="NotToClose" value="1" label="免于自动平仓"/>
-		</EnumChar>
-		<String typename="MacAddress" label="Mac地址" length="20"/>
-		<VString typename="EncryptText" label="加密字符串内容" length="300"/>
-		<Int typename="InitCryptValue" length="8" label="初始加密值"/>
-		<EnumChar typename="EncryptType" label="加密类型" prefix="ET">
-			<enum name="RSA" value="0" label="RSA加密"/>
-		</EnumChar>
-		<EnumChar typename="ConnFrontType" label="连接前置类型" prefix="CT">
-			<enum name="Direct" value="0" label="直连"/>
-			<enum name="Fens" value="1" label="通过fens连接"/>
-		</EnumChar>
-		<VString typename="EncryptKeySegment" label="用于加密的密钥片段" length="1000"/>
-		<EnumChar typename="ActionResult" label="执行结果" prefix="AR">
-			<enum name="Failed" value="0" label="执行失败"/>
-			<enum name="Success" value="1" label="执行成功"/>
-		</EnumChar>
-		<EnumChar typename="MortgageDepositReason" label="质押金上场失败原因" prefix="MD">
-			<enum name="NoError" value="0" label="无错误"/>
-			<enum name="LackDeposit" value="1" label="资金不足"/>
-			<enum name="NoAccount" value="2" label="找不到账户"/>
-			<enum name="Other" value="3" label="其它"/>
-		</EnumChar>
-		<VString typename="LinkCostPra" length="32" label="流量参数"/>
-		<Float typename="CapValue" length="19" precision="4" label="比率"/>
-		<QWord typename="LargeNumber" length="20" label="巨大无符号数值"/>
-		<VString typename="NumberLists" length="128" label="整数列"/>
-		<String typename="EventDesID" length="12" label="事件描述ID号"/>
-		<String typename="FrontSerialNum" length="50" label="Front编号全名"/>
-		<Int typename="NetArea" label="网络区域" length="8"/>
-		<Int typename="SortValue" label="所排序值类型" length="8"/>
-		<Int typename="SortType" label="排序类型" length="8"/>
-		<Int typename="DuringTimeType" label="查询时间类型" length="8"/>
-		<Int typename="DuringTimeValue" label="查询时间值" length="8"/>
-		<Int typename="TopN" label="前N的值" length="8"/>
-		<String typename="TopResult" label="性能排序结果" length="256"/>
-		<String typename="NetSubArea" label="网络子区域" length="64"/>
 		<Int typename="TypeIsActive" length="1" label="进程活跃状态"/>
 		<Int typename="TypeKeepAlive" length="1" label="查询消息订阅标记"/>
 		<VString typename="TypeChar10" length="10" label="主机名称"/>
@@ -9696,7 +11060,7 @@
 		<VString typename="GeneralResult" length="1024" label="通用返回字段"/>
 		<VString typename="GeneralResult_2K" length="2048" label="通用返回字段"/>
 		<VString typename="TypeSubcriberObjectID" length="512" label="订阅对象ID"/>
-		<VString typename="VersionID" length="16" label="版本号"/>
+		<VString typename="VersionID_old" length="16" label="版本号"/>
 		<Int typename="VersionFlag" length="2" label="版本匹配标识"/>
 		<VString typename="FileVersion" length="16" label="文件版本"/>
 		<Int typename="Offset" length="4" label="文件偏移"/>
@@ -9747,5 +11111,67 @@
 		<String typename="NodeInfo" length="256" label="节点信息"/>
 		<String typename="LinkInfo" length="128" label="链路信息"/>
 		<String typename="LinkState" length="64" label="链路状态"/>
+		<Int typename="ModuleType" label="模块类型" length="4"/>
+		<Int typename="ModuleItem" label="模块实例" length="4"/>
+		<Int typename="MonitorSection" label="监控节" length="4"/>
+		<Int typename="ServiceID" label="服务ID" length="4"/>
+		<Int typename="ProgramLength" label="应用程序长度" length="4"/>
+		<Int typename="ProgramId" label="应用程序编号" length="4"/>
+		<Int typename="ProgramUpdateState" label="获取应用程序状态" length="4"/>
+		<Int typename="INT32" label="INT32类型" length="4"/>
+		<QWord typename="UINT64" label="UINT64类型" length="8"/>
+		<QWord typename="MonTime" label="监控系统时间" length="8"/>
+		<QWord typename="DigitObjectID" label="数字化对象ID" length="8"/>
+		<QWord typename="DigitAttrType" label="数字化属性名" length="8"/>
+		<QWord typename="DigitDateTime" label="数字化日期时间" length="8"/>
+		<QWord typename="DigitAttrValue" label="数字化属性值" length="8"/>
+		<Float typename="DoubleType" length="8" precision="4" label="指标数据值"/>
+		<String typename="String8" label="8字节长字符串" length="8"/>
+		<String typename="String10" label="10字节长字符串" length="10"/>
+		<String typename="String16" label="16字节长字符串" length="16"/>
+		<String typename="String20" label="20字节长字符串" length="20"/>
+		<String typename="String32" label="32字节长字符串" length="32"/>
+		<String typename="String64" label="64字节长字符串" length="64"/>
+		<String typename="String128" label="128字节长字符串" length="128"/>
+		<String typename="String256" label="256字节长字符串" length="256"/>
+		<String typename="String512" label="512字节长字符串" length="512"/>
+		<String typename="String800" label="800字节长字符串" length="800"/>
+		<String typename="String1024" label="1024字节长字符串" length="1024"/>
+		<String typename="ConfigName" label="配置名称" length="128"/>
+		<String typename="ServiceName" label="服务名称" length="64"/>
+		<String typename="ConfigContent" label="配置文件内容" length="1000"/>
+		<String typename="MonAttrValue" label="指标数据值" length="32"/>
+		<VString typename="VersionID" label="服务版本号" length="20"/>
+		<VString typename="ServiceMD5Value" label="服务MD5码" length="200"/>
+		<VString typename="UpdateMD5Value" label="升级服务MD5码" length="200"/>
+		<VString typename="ServiceProgram" label="服务应用程序" length="1000"/>
+		<EnumChar typename="DataCenterRole" label="数据中心角色" prefix="MON_DCROLE">
+			<enum name="Main" value="0" label="主中心"/>
+			<enum name="Backup" value="1" label="备中心"/>
+		</EnumChar>
+		<EnumChar typename="ProcessState" label="进程状态" prefix="MON_PROC">
+			<enum name="Blocked" value="D" label="阻塞状态"/>
+			<enum name="Running" value="R" label="正在运行"/>
+			<enum name="Sleep" value="S" label="休眠状态"/>
+			<enum name="Zombie" value="Z" label="僵尸状态"/>
+		</EnumChar>
+		<EnumChar typename="MonValueType" label="值类型" prefix="MON_VAL">
+			<enum name="UNKNOWN" value="0" label="未知"/>
+			<enum name="INT" value="1" label="整形"/>
+			<enum name="DOUBLE" value="2" label="浮点型"/>
+			<enum name="STRING" value="3" label="字符串"/>
+		</EnumChar>
+		<EnumChar typename="MonEventLevel" label="监控事件等级" prefix="MON_EVENT_LEVEL">
+			<enum name="UNKNOWN" value="0" label="未知等级"/>
+			<enum name="INFO" value="5" label="通告"/>
+			<enum name="WARNING" value="4" label="告警"/>
+			<enum name="ERROR" value="3" label="错误"/>
+			<enum name="FATAL" value="2" label="致命错误"/>
+			<enum name="DEBUG" value="6" label="调试"/>
+		</EnumChar>
+		<EnumChar typename="MonEventDescFlag" label="监控事件描述标记" prefix="MON_EVENT_DESC_FLAG">
+			<enum name="CONTINUE" value="0" label="还有后续信息"/>
+			<enum name="LAST" value="1" label="没有后续信息"/>
+		</EnumChar>
 	</types>
 </FTD>
