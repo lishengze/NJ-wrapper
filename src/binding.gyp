@@ -9,7 +9,7 @@
         ".",
       ],
       "libraries": [
-         "-lC:\NodejsWrapper\windows-complete-sys\src/sysuserapi.lib"
+         "-lC:\NodejsWrapper\windows-simple-monitor2\src/sysuserapi.lib"
       ]
     }
   ]

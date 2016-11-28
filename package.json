@@ -7,7 +7,6 @@
   "gypfile": true,
   "devDependencies": {
     "nan": "^2.0.0",
-    "mocha": "^2.2.5",
     "node-gyp": "^1.0.3"
   },
   "dependencies": {
