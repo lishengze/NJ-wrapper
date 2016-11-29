@@ -21,6 +21,7 @@
 #define USER_API_EXPORT __declspec(dllexport)
 #else
 #define USER_API_EXPORT __declspec(dllimport)
+#pragma comment(lib, "sysuserapi.lib")
 #endif
 #else
 #define USER_API_EXPORT 

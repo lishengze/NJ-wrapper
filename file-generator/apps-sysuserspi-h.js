@@ -14,12 +14,12 @@ var fileData = hereDoc(function () {
  /*#ifndef _SYSUSERSPI_H_
  #define _SYSUSERSPI_H_
 
- #include "FtdcSysUserApi.h"
+ #include "FtdcUserApi.h"
  #include "tool-function.h"
  #include "id-func.h"
  #include "nan.h"
 
- class SysUserSpi: public CShfeFtdcSysUserSpi
+ class SysUserSpi: public CShfeFtdcUserSpi
  {
     public:
         Nan::Persistent<v8::Object> m_spiobj;

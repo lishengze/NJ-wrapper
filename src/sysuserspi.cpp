@@ -124,7 +124,11 @@ void SysUserSpi::OnRspQrySysUserLoginTopic(CShfeFtdcRspQrySysUserLoginField* pRs
         OutputCallbackMessage("pRspQrySysUserLogin->Privilege: ", pRspQrySysUserLogin->Privilege, g_RunningResult_File);
         OutputCallbackMessage("pRspQrySysUserLogin->VersionFlag: ", pRspQrySysUserLogin->VersionFlag, g_RunningResult_File);
     }
-    OutputCallbackMessage("pRspInfo:", pRspInfo, g_RunningResult_File);
+    if (NULL != pRspInfo) { 
+        OutputCallbackMessage("pRspInfo->ErrorID:", pRspInfo->ErrorID, g_RunningResult_File);
+        OutputCallbackMessage("pRspInfo->ErrorMsg:", pRspInfo->ErrorMsg, g_RunningResult_File);
+    }
+    
     OutputCallbackMessage("nRequestID:", nRequestID, g_RunningResult_File);
     OutputCallbackMessage("bIsLast:", bIsLast, g_RunningResult_File);
 

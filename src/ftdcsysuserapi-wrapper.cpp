@@ -1,7 +1,7 @@
 #include <nan.h>
 #include "ftdcsysuserapi-wrapper.h"
-#include "FtdcSysUserApi.h"
-#include "FtdcSysUserApiStruct.h"
+#include "FtdcUserApi.h"
+#include "FtdcUserApiStruct.h"
 #include "sysuserspi.h"
 #include "tool-function.h"
 #include "id-func.h"
@@ -17,7 +17,7 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
     // cout << "FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper!" << endl;
-    m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
+    m_userApi = CShfeFtdcUserApi::CreateFtdcUserApi(pszFlowPath);
     m_spi = new SysUserSpi();
     if (NULL == m_spi) {
        OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);
@@ -27,6 +27,7 @@ FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 }
 
 FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper START -----------");
     m_userApi->Release();
     
     if (NULL != m_spi) {
@@ -35,6 +36,7 @@ FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper() {
     }
     
     g_RunningResult_File.close();
+    OutputCallbackMessage("------- FtdcSysUserApi_Wrapper::~FtdcSysUserApi_Wrapper END! -----------");
 }
 
 void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {

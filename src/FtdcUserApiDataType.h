@@ -10,7 +10,9 @@
 #ifndef FTDCDATATYPE_H
 #define FTDCDATATYPE_H
 
-#include "platform.h"
+// #include "platform.h"
+
+typedef unsigned long int	QWORD;
 
 enum TE_RESUME_TYPE
 {

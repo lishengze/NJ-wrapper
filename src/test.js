@@ -1,9 +1,15 @@
 var spi      = require("./test-spi.js");
 var addon    = require("./build/Release/addon.node");
 var SysUserApiStruct    = require("./SysUserApiStruct.js");
+var bNewServer = true;
+
+if (true === bNewServer) {
+	var realTimeSystemPath  = "tcp://172.1.128.151:19840";
+} else {
+	var realTimeSystemPath  = "tcp://172.1.128.165:18841";
+}
 
 // var realTimeSystemPath  = "tcp://172.1.128.172:19943";
-var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 // var realTimeSystemPath = "tcp://192.168.100.1:19943";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
 var user = {};

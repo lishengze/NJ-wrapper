@@ -10,7 +10,7 @@ var fileData = hereDoc(function () {
 #define _FTDCSYSUSERAPI_WRAPPER_H_
 
 #include <nan.h>
-#include "FtdcSysUserApi.h"
+#include "FtdcUserApi.h"
 #include "sysuserspi.h"
 
 class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap {

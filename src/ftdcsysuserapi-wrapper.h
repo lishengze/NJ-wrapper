@@ -2,7 +2,7 @@
 #define FTDCSYSUSERAPI_WRAPPER_H
 
 #include <nan.h>
-#include "FtdcSysUserApi.h"
+#include "FtdcUserApi.h"
 #include "sysuserspi.h"
 
 class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap{
@@ -14,7 +14,7 @@ class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap{
      ~FtdcSysUserApi_Wrapper();
   
      static Nan::Persistent<v8::Function> constructor;
-     CShfeFtdcSysUserApi* m_userApi;
+     CShfeFtdcUserApi* m_userApi;
      SysUserSpi* m_spi;
 
      static NAN_METHOD(New);

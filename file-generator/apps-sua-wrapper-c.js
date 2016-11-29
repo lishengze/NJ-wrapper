@@ -16,7 +16,7 @@ var tabSpace = ["","    ", "        ", "            ", "                ","     
 var fileData= hereDoc(function () {
 /*#include <nan.h>
 #include "ftdcsysuserapi-wrapper.h"
-#include "FtdcSysUserApiStruct.h"
+#include "FtdcUserApiStruct.h"
 #include "sysuserspi.h"
 #include "tool-function.h"
 #include "id-func.h"

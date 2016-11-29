@@ -27,7 +27,7 @@ fs.writeFile(jsonFileName, fileData, function (err) {
     if (err) {
         console.log(err);
     } else {
-        console.log('Succeed in saving ' + pathName + jsonFileName);
+        console.log('Succeed in saving ' + jsonFileName);
     }
 
 });

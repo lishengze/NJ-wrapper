@@ -3,7 +3,7 @@ var fs           = require ('fs');
 var path         = require ('path');
 
 var g_isTestTtn = false;
-var g_isTestReqMonitor = true;
+var g_isTestReqMonitor = false;
 var g_isTestBandwidth = false;
 var g_isTestLogin = true;
 var g_ReqQryMonitorObjectTopic_Numb;
@@ -138,14 +138,13 @@ var Spi = function(){
       if (true === g_isTestLogin) {
         this.user.userApi.ReqQrySysUserLoginTopic(this.user.loginField, 1);
       }      
-      // if (true === g_isTestTtn)
-      // {
-      //   var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
-      //   this.TestReqQrySubscriberTopic(1);
-      // }
 
-      if (true === g_isTestReqMonitor)
-      {
+      if (true === g_isTestTtn) {
+        var testfileName = path.join (__dirname, './test-com-redhat-js-Rtn-'+g_rtn_callback_onesec+'.txt');
+        this.TestReqQrySubscriberTopic(1);
+      }
+
+      if (true === g_isTestReqMonitor) {
         var testfileName = path.join (__dirname, './test-com-redhat-js-monitor.txt');
         this.TestReqQryMonitorObjectTopic(g_ReqQryMonitorObjectTopic_Numb);
       }
