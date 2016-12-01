@@ -4,8 +4,10 @@
 //生成FtdcSysUserApi_Wrapper.cc文件
 var fs = require('fs');
 var hereDoc = require('../lib/tool-function.js').hereDoc;
-var ftdContent = require("../lib/FTD.json");
-var sysContent = require("../lib/sysuserapi.json");
+var serverName = process.argv[2];
+var pathName = '../lib/' + serverName + '/';
+var ftdContent = require(pathName + "FTD.json");
+var sysContent = require(pathName + "sysuserapi.json");
 
 var ftdFuncs = ftdContent.FTD.packages[0].package;
 var ftdField = ftdContent.FTD.fields[0].fieldDefine;
@@ -31,7 +33,7 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
-    m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
+    m_userApi = CShfeFtdcUserApi::CreateFtdcUserApi(pszFlowPath);
     m_spi = new SysUserSpi();
     if (NULL == m_spi) {
        OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);

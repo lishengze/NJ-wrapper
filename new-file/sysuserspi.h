@@ -1,12 +1,12 @@
 #ifndef _SYSUSERSPI_H_
  #define _SYSUSERSPI_H_
 
- #include "FtdcSysUserApi.h"
+ #include "FtdcUserApi.h"
  #include "tool-function.h"
  #include "id-func.h"
  #include "nan.h"
 
- class SysUserSpi: public CShfeFtdcSysUserSpi
+ class SysUserSpi: public CShfeFtdcUserSpi
  {
     public:
         Nan::Persistent<v8::Object> m_spiobj;
@@ -209,7 +209,7 @@
 
         virtual void OnRspQryMonitorOnlineUser(CShfeFtdcRspQryMonitorOnlineUserField *pRspQryMonitorOnlineUser, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
-        virtual void OnRspQryFrontStat(CShfeFtdcRspQryFrontStatField *pRspQryFrontStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+        virtual void OnRspQryFrontStatTopic(CShfeFtdcRspQryFrontStatField *pRspQryFrontStat, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
         virtual void OnRtnSysTimeSyncTopic(CShfeFtdcRtnSysTimeSyncField *pRtnSysTimeSync);
 
@@ -502,6 +502,126 @@
         virtual void OnRspQryPerformanceTopTopic(CShfeFtdcRspQryPerformanceTopField *pRspQryPerformanceTop, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
 
         virtual void OnRtnPerformanceTopTopic(CShfeFtdcRtnPerformanceTopField *pRtnPerformanceTop);
+
+        virtual void OnRspQryNetNonPartyLinkInfoTopic(CShfeFtdcRspQryNetNonPartyLinkInfoField *pRspQryNetNonPartyLinkInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnNetNonPartyLinkInfoTopic(CShfeFtdcRtnNetNonPartyLinkInfoField *pRtnNetNonPartyLinkInfo);
+
+        virtual void OnRspQryMonConfigInfo(CShfeFtdcRspQryMonConfigInfoField *pRspQryMonConfigInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonConfigInfo(CShfeFtdcRtnMonConfigInfoField *pRtnMonConfigInfo);
+
+        virtual void OnRtnMonitorDayInfo(CShfeFtdcMonitorDayInfoField *pMonitorDayInfo);
+
+        virtual void OnRtnTradingDayInfo(CShfeFtdcTradingDayInfoField *pTradingDayInfo);
+
+        virtual void OnRtnSectionFinish(CShfeFtdcMonitorSectionField *pMonitorSection);
+
+        virtual void OnRtnSectionChange(CShfeFtdcMonitorSectionField *pMonitorSection);
+
+        virtual void OnRspMonServiceConnect(CShfeFtdcRspMonServiceConnectField *pRspMonServiceConnect, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonProxyConfig(CShfeFtdcRtnMonProxyConfigField *pRtnMonProxyConfig);
+
+        virtual void OnRspQryMonServiceStatus(CShfeFtdcRspQryMonServiceStatusField *pRspQryMonServiceStatus, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonServiceStatus(CShfeFtdcRtnMonServiceStatusField *pRtnMonServiceStatus);
+
+        virtual void OnRtnMonDataCenterRole(CShfeFtdcRtnMonDataCenterRoleField *pRtnMonDataCenterRole);
+
+        virtual void OnRspQryMonProbeTask(CShfeFtdcRspQryMonProbeTaskField *pRspQryMonProbeTask, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonProbeTask(CShfeFtdcRtnMonProbeTaskField *pRtnMonProbeTask);
+
+        virtual void OnRspQryMonObjectAttr(CShfeFtdcRspQryMonObjectAttrField *pRspQryMonObjectAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonObjectAttr(CShfeFtdcRtnMonObjectAttrField *pRtnMonObjectAttr);
+
+        virtual void OnRspQryMonSyslogEvent(CShfeFtdcRspQryMonSyslogEventField *pRspQryMonSyslogEvent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonSyslogEvent(CShfeFtdcRtnMonSyslogEventField *pRtnMonSyslogEvent);
+
+        virtual void OnRspQryMonFileOffset(CShfeFtdcRspQryMonFileOffsetField *pRspQryMonFileOffset, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonFileOffset(CShfeFtdcRtnMonFileOffsetField *pRtnMonFileOffset);
+
+        virtual void OnRspQryMonFileContent(CShfeFtdcRspQryMonFileContentField *pRspQryMonFileContent, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonFileContent(CShfeFtdcRtnMonFileContentField *pRtnMonFileContent);
+
+        virtual void OnRspQryMonHostCPUAttr(CShfeFtdcRspQryMonHostCPUAttrField *pRspQryMonHostCPUAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostCPUAttr(CShfeFtdcRtnMonHostCPUAttrField *pRtnMonHostCPUAttr);
+
+        virtual void OnRspQryMonHostMemAttr(CShfeFtdcRspQryMonHostMemAttrField *pRspQryMonHostMemAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostMemAttr(CShfeFtdcRtnMonHostMemAttrField *pRtnMonHostMemAttr);
+
+        virtual void OnRtnMonHostFileSystemAttr(CShfeFtdcRtnMonHostFileSystemAttrField *pRtnMonHostFileSystemAttr);
+
+        virtual void OnRtnMonHostUserInfo(CShfeFtdcRtnMonHostUserInfoField *pRtnMonHostUserInfo);
+
+        virtual void OnRtnMonHostOnlineUserInfo(CShfeFtdcRtnMonHostOnlineUserInfoField *pRtnMonHostOnlineUserInfo);
+
+        virtual void OnRspQryMonHostNetworkAttr(CShfeFtdcRspQryMonHostNetworkAttrField *pRspQryMonHostNetworkAttr, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostNetworkAttr(CShfeFtdcRtnMonHostNetworkAttrField *pRtnMonHostNetworkAttr);
+
+        virtual void OnRspQryMonHostStatInfo(CShfeFtdcRspQryMonHostStatInfoField *pRspQryMonHostStatInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostStatInfo(CShfeFtdcRtnMonHostStatInfoField *pRtnMonHostStatInfo);
+
+        virtual void OnRtnMonHostDiskIOAttr(CShfeFtdcRtnMonHostDiskIOAttrField *pRtnMonHostDiskIOAttr);
+
+        virtual void OnRspQryMonHostRouterInfo(CShfeFtdcRspQryMonHostRouterInfoField *pRspQryMonHostRouterInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostRouterInfo(CShfeFtdcRtnMonHostRouterInfoField *pRtnMonHostRouterInfo);
+
+        virtual void OnRspQryMonHostProcessInfo(CShfeFtdcRspQryMonHostProcessInfoField *pRspQryMonHostProcessInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostProcessInfo(CShfeFtdcRtnMonHostProcessInfoField *pRtnMonHostProcessInfo);
+
+        virtual void OnRtnMonDBQuery(CShfeFtdcRtnMonDBQueryField *pRtnMonDBQuery);
+
+        virtual void OnRspQryMonSPQuery(CShfeFtdcRtnMonDBQueryField *pRtnMonDBQuery, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRspServiceVersion(CShfeFtdcRspServiceVersionField *pRspServiceVersion, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRspServiceProgram(CShfeFtdcRspServiceProgramField *pRspServiceProgram, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRspUpdateState(CShfeFtdcRspUpdateStateField *pRspUpdateState, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRspQryMonHostBasicEnv(CShfeFtdcRspQryMonHostBasicEnvField *pRspQryMonHostBasicEnv, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostBasicEnv(CShfeFtdcRtnMonHostBasicEnvField *pRtnMonHostBasicEnv);
+
+        virtual void OnRspQryMonHostNetworkEnv(CShfeFtdcRspQryMonHostNetworkEnvField *pRspQryMonHostNetworkEnv, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostNetworkEnv(CShfeFtdcRtnMonHostNetworkEnvField *pRtnMonHostNetworkEnv);
+
+        virtual void OnRspQryMonHostFileSysEnv(CShfeFtdcRspQryMonHostFileSysEnvField *pRspQryMonHostFileSysEnv, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostFileSysEnv(CShfeFtdcRtnMonHostFileSysEnvField *pRtnMonHostFileSysEnv);
+
+        virtual void OnRspQryMonHostSwapEnv(CShfeFtdcRspQryMonHostSwapEnvField *pRspQryMonHostSwapEnv, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostSwapEnv(CShfeFtdcRtnMonHostSwapEnvField *pRtnMonHostSwapEnv);
+
+        virtual void OnRspQryMonitor2ObjectTopic(CShfeFtdcRspQryMonitor2ObjectField *pRspQryMonitor2Object, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonitor2ObjectTopic(CShfeFtdcRtnMonitor2ObjectField *pRtnMonitor2Object);
+
+        virtual void OnRspQryMonHostCommonEnvTopic(CShfeFtdcRspQryMonHostCommonEnvField *pRspQryMonHostCommonEnv, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonHostCommonEnvTopic(CShfeFtdcRtnMonHostCommonEnvField *pRtnMonHostCommonEnv);
+
+        virtual void OnRspQryMonOidHostRationalTopic(CShfeFtdcRspQryMonOidHostRationalField *pRspQryMonOidHostRational, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonOidHostRationalTopic(CShfeFtdcRtnMonOidHostRationalField *pRtnMonOidHostRational);
+
+        virtual void OnRspQryMonOidRelationTopic(CShfeFtdcRspQryMonOidRelationField *pRspQryMonOidRelation, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+
+        virtual void OnRtnMonOidRelationTopic(CShfeFtdcRtnMonOidRelationField *pRtnMonOidRelation);
 
 }; 
 

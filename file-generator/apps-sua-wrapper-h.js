@@ -1,6 +1,9 @@
 var fs = require('fs');
 var hereDoc = require('../lib/tool-function.js').hereDoc;
-var sysContent = require("../lib/sysuserapi.json");
+var serverName = process.argv[2];
+var pathName = '../lib/' + serverName + '/';
+var ftdContent = require(pathName + "FTD.json");
+var sysContent = require(pathName + "sysuserapi.json");
 
 var sysFuncs = sysContent.sysuserapi.ftdpackage;
 var tabSpace = ["","    ", "        ", "            ", "                ","                    "];
@@ -22,7 +25,7 @@ public:
     ~FtdcSysUserApi_Wrapper();
   
     static Nan::Persistent<v8::Function> constructor;
-    CShfeFtdcSysUserApi* m_userApi;
+    CShfeFtdcUserApi* m_userApi;
     SysUserSpi* m_spi;
 
     static NAN_METHOD(New);

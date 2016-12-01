@@ -8,43 +8,45 @@ if (true === bNewServer) {
 } else {
 	var realTimeSystemPath  = "tcp://172.1.128.165:18841";
 }
-
 // var realTimeSystemPath  = "tcp://172.1.128.172:19943";
 // var realTimeSystemPath = "tcp://192.168.100.1:19943";
 var innerTestSystemPath = "tcp://172.1.128.111:18842";
+
+
+var sysUserLoginField       = new SysUserApiStruct.CShfeFtdcReqQrySysUserLoginField();
+sysUserLoginField.UserID    = "admin";
+sysUserLoginField.Password  = "admin";
+sysUserLoginField.VersionID = "2.0.0.0";
+
+var monitor2ObjectField  = new SysUserApiStruct.CShfeFtdcReqQryMonitor2ObjectField();
+
+var subscriberField = new SysUserApiStruct.CShfeFtdcReqQrySubscriberField();
+subscriberField.ObjectID  = "TMS.PuDian.app.sysprobe.1"+'.'+"CPUUsage";
+subscriberField.ObjectNum = -1;
+subscriberField.KeepAlive = 1;
+
+var subscribeField = new SysUserApiStruct.CShfeFtdcReqSubscribeField();
+subscribeField.ObjectID = 72434628689922;  // "BM.TMS.ZhangJ.app.monproxy.1",72434628689922
+subscribeField.AttrType = 124; 						 // "CPUUsage", 124
+
+var monConfigInfoField = new SysUserApiStruct.CShfeFtdcReqQryMonConfigInfoField();
+monConfigInfoField.ConfigName = "ObjectIDNS";
+
 var user = {};
-
-var loginField       = new SysUserApiStruct.CShfeFtdcReqQrySysUserLoginField();
-loginField.UserID    = "admin";
-loginField.Password  = "admin";
-loginField.VersionID = "2.0.0.0";
-
-var monitorObjectField  = new SysUserApiStruct.CShfeFtdcReqQryMonitorObjectField();
-
-var objectID = "TMS.PuDian.app.sysprobe.1";
-var attrType = "CPUUsage";
-var reqQrySubscriberData = new SysUserApiStruct.CShfeFtdcReqQrySubscriberField();
-reqQrySubscriberData.ObjectID = objectID+'.'+attrType;
-reqQrySubscriberData.ObjectNum = -1;
-reqQrySubscriberData.KeepAlive = 1;
-
-var userWorkDirName = 'usr/' + loginField.UserID;
-var spawn = require('child_process').spawn('mkdir', [userWorkDirName]);
-userWorkDirName += "/";
-
-// console.log (userWorkDirName)
-
 user.userApi = new addon.FtdcSysUserApi_Wrapper("");
-user.loginReqNumbers                   = 0;
-user.monitorObjectReqNumbers           = 0;
-user.ReqQrySysUserRegisterTopicNumbers = 0;
-user.ReqQrySubscriberNumbers           = 0;
+user.bTestSysUserLogin   = true;
+user.bTestMonConfigInfo  = false;
+user.bTestSubscriberData = false;
+user.bTestSubscribe      = false;
+user.bTestMonitor2Object = true;
 
-user.loginField           = loginField;
-user.monitorObjectField   = monitorObjectField;
-user.reqQrySubscriberData = reqQrySubscriberData;
-user.Spi                  = new spi.Spi();
-user.Spi.user             = user;
+user.sysUserLoginField   = sysUserLoginField;
+user.monitor2ObjectField = monitor2ObjectField;
+user.subscriberField     = subscriberField;
+user.monConfigInfoField  = monConfigInfoField;
+user.subscribeField      = subscribeField;
+user.Spi                 = new spi.Spi();
+user.Spi.user            = user;
 
 user.userApi.RegisterFront(realTimeSystemPath);
 user.userApi.RegisterSpi(user.Spi);
@@ -57,3 +59,8 @@ process.on('beforeExit', function (code) {
 process.on('exit', function (code) {
 	console.log('Nodejs, exit: ' + code.toString());
 });
+
+
+// var userWorkDirName = 'usr/' + sysUserLoginField.UserID;
+// var spawn = require('child_process').spawn('mkdir', [userWorkDirName]);
+// userWorkDirName += "/";

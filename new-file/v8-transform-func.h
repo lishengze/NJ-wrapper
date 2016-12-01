@@ -196,7 +196,7 @@ void   OnRspQryHistoryNetworkInfoTopic (uv_async_t *handle);
 
 void   OnRspQryMonitorOnlineUser (uv_async_t *handle);
 
-void   OnRspQryFrontStat (uv_async_t *handle);
+void   OnRspQryFrontStatTopic (uv_async_t *handle);
 
 void   OnRtnSysTimeSyncTopic (uv_async_t *handle);
 
@@ -489,6 +489,126 @@ void   OnRtnCurrTradingSegmentAttrTopic (uv_async_t *handle);
 void   OnRspQryPerformanceTopTopic (uv_async_t *handle);
 
 void   OnRtnPerformanceTopTopic (uv_async_t *handle);
+
+void   OnRspQryNetNonPartyLinkInfoTopic (uv_async_t *handle);
+
+void   OnRtnNetNonPartyLinkInfoTopic (uv_async_t *handle);
+
+void   OnRspQryMonConfigInfo (uv_async_t *handle);
+
+void   OnRtnMonConfigInfo (uv_async_t *handle);
+
+void   OnRtnMonitorDayInfo (uv_async_t *handle);
+
+void   OnRtnTradingDayInfo (uv_async_t *handle);
+
+void   OnRtnSectionFinish (uv_async_t *handle);
+
+void   OnRtnSectionChange (uv_async_t *handle);
+
+void   OnRspMonServiceConnect (uv_async_t *handle);
+
+void   OnRtnMonProxyConfig (uv_async_t *handle);
+
+void   OnRspQryMonServiceStatus (uv_async_t *handle);
+
+void   OnRtnMonServiceStatus (uv_async_t *handle);
+
+void   OnRtnMonDataCenterRole (uv_async_t *handle);
+
+void   OnRspQryMonProbeTask (uv_async_t *handle);
+
+void   OnRtnMonProbeTask (uv_async_t *handle);
+
+void   OnRspQryMonObjectAttr (uv_async_t *handle);
+
+void   OnRtnMonObjectAttr (uv_async_t *handle);
+
+void   OnRspQryMonSyslogEvent (uv_async_t *handle);
+
+void   OnRtnMonSyslogEvent (uv_async_t *handle);
+
+void   OnRspQryMonFileOffset (uv_async_t *handle);
+
+void   OnRtnMonFileOffset (uv_async_t *handle);
+
+void   OnRspQryMonFileContent (uv_async_t *handle);
+
+void   OnRtnMonFileContent (uv_async_t *handle);
+
+void   OnRspQryMonHostCPUAttr (uv_async_t *handle);
+
+void   OnRtnMonHostCPUAttr (uv_async_t *handle);
+
+void   OnRspQryMonHostMemAttr (uv_async_t *handle);
+
+void   OnRtnMonHostMemAttr (uv_async_t *handle);
+
+void   OnRtnMonHostFileSystemAttr (uv_async_t *handle);
+
+void   OnRtnMonHostUserInfo (uv_async_t *handle);
+
+void   OnRtnMonHostOnlineUserInfo (uv_async_t *handle);
+
+void   OnRspQryMonHostNetworkAttr (uv_async_t *handle);
+
+void   OnRtnMonHostNetworkAttr (uv_async_t *handle);
+
+void   OnRspQryMonHostStatInfo (uv_async_t *handle);
+
+void   OnRtnMonHostStatInfo (uv_async_t *handle);
+
+void   OnRtnMonHostDiskIOAttr (uv_async_t *handle);
+
+void   OnRspQryMonHostRouterInfo (uv_async_t *handle);
+
+void   OnRtnMonHostRouterInfo (uv_async_t *handle);
+
+void   OnRspQryMonHostProcessInfo (uv_async_t *handle);
+
+void   OnRtnMonHostProcessInfo (uv_async_t *handle);
+
+void   OnRtnMonDBQuery (uv_async_t *handle);
+
+void   OnRspQryMonSPQuery (uv_async_t *handle);
+
+void   OnRspServiceVersion (uv_async_t *handle);
+
+void   OnRspServiceProgram (uv_async_t *handle);
+
+void   OnRspUpdateState (uv_async_t *handle);
+
+void   OnRspQryMonHostBasicEnv (uv_async_t *handle);
+
+void   OnRtnMonHostBasicEnv (uv_async_t *handle);
+
+void   OnRspQryMonHostNetworkEnv (uv_async_t *handle);
+
+void   OnRtnMonHostNetworkEnv (uv_async_t *handle);
+
+void   OnRspQryMonHostFileSysEnv (uv_async_t *handle);
+
+void   OnRtnMonHostFileSysEnv (uv_async_t *handle);
+
+void   OnRspQryMonHostSwapEnv (uv_async_t *handle);
+
+void   OnRtnMonHostSwapEnv (uv_async_t *handle);
+
+void   OnRspQryMonitor2ObjectTopic (uv_async_t *handle);
+
+void   OnRtnMonitor2ObjectTopic (uv_async_t *handle);
+
+void   OnRspQryMonHostCommonEnvTopic (uv_async_t *handle);
+
+void   OnRtnMonHostCommonEnvTopic (uv_async_t *handle);
+
+void   OnRspQryMonOidHostRationalTopic (uv_async_t *handle);
+
+void   OnRtnMonOidHostRationalTopic (uv_async_t *handle);
+
+void   OnRspQryMonOidRelationTopic (uv_async_t *handle);
+
+void   OnRtnMonOidRelationTopic (uv_async_t *handle);
 
 #endif
 

@@ -1,7 +1,9 @@
 var fs = require('fs');
 var hereDoc = require('../lib/tool-function.js').hereDoc;
-var ftdContent = require("../lib/FTD.json");
-var sysContent = require("../lib/sysuserapi.json");
+var serverName = process.argv[2];
+var pathName = '../lib/' + serverName + '/';
+var ftdContent = require(pathName + "FTD.json");
+var sysContent = require(pathName + "sysuserapi.json");
 
 var ftdFuncs = ftdContent.FTD.packages[0].package;
 var ftdField = ftdContent.FTD.fields[0].fieldDefine;
@@ -585,7 +587,6 @@ for (var sysFuncsIndex = 0; sysFuncsIndex < sysFuncs.length; ++sysFuncsIndex) {
         }
     }
 } 
-
 
 var pathName = '../new-file/';
 var fileName = 'v8-transform-func.cpp';

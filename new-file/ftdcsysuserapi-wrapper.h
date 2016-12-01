@@ -2,7 +2,7 @@
 #define _FTDCSYSUSERAPI_WRAPPER_H_
 
 #include <nan.h>
-#include "FtdcSysUserApi.h"
+#include "FtdcUserApi.h"
 #include "sysuserspi.h"
 
 class FtdcSysUserApi_Wrapper : public Nan::ObjectWrap {
@@ -14,7 +14,7 @@ public:
     ~FtdcSysUserApi_Wrapper();
   
     static Nan::Persistent<v8::Function> constructor;
-    CShfeFtdcSysUserApi* m_userApi;
+    CShfeFtdcUserApi* m_userApi;
     SysUserSpi* m_spi;
 
     static NAN_METHOD(New);
@@ -82,7 +82,7 @@ public:
     static NAN_METHOD(ReqQryHistoryMemInfoTopic);
     static NAN_METHOD(ReqQryHistoryNetworkInfoTopic);
     static NAN_METHOD(ReqQryMonitorOnlineUser);
-    static NAN_METHOD(ReqQryFrontStat);
+    static NAN_METHOD(ReqQryFrontStatTopic);
     static NAN_METHOD(ReqQryHistoryTradePeakTopic);
     static NAN_METHOD(ReqQryTomcatInfoTopic);
     static NAN_METHOD(ReqQryDBQueryTopic);
@@ -149,6 +149,35 @@ public:
     static NAN_METHOD(ReqQryInstrumentStatusTopic);
     static NAN_METHOD(ReqQryCurrTradingSegmentAttrTopic);
     static NAN_METHOD(ReqQryPerformanceTopTopic);
+    static NAN_METHOD(ReqQryNetNonPartyLinkInfoTopic);
+    static NAN_METHOD(ReqQryMonConfigInfo);
+    static NAN_METHOD(ReqMonServiceConnect);
+    static NAN_METHOD(ReqQryMonServiceStatus);
+    static NAN_METHOD(ReqQryMonProbeTask);
+    static NAN_METHOD(ReqQryMonObjectAttr);
+    static NAN_METHOD(ReqQryMonSyslogEvent);
+    static NAN_METHOD(ReqQryMonFileOffset);
+    static NAN_METHOD(ReqQryMonFileContent);
+    static NAN_METHOD(ReqQryMonHostCPUAttr);
+    static NAN_METHOD(ReqQryMonHostMemAttr);
+    static NAN_METHOD(ReqQryMonHostNetworkAttr);
+    static NAN_METHOD(ReqQryMonHostStatInfo);
+    static NAN_METHOD(ReqQryMonHostRouterInfo);
+    static NAN_METHOD(ReqQryMonHostProcessInfo);
+    static NAN_METHOD(ReqQryMonSPQuery);
+    static NAN_METHOD(ReqServiceVersion);
+    static NAN_METHOD(ReqServiceProgram);
+    static NAN_METHOD(ReqUpdateState);
+    static NAN_METHOD(ReqSubscribe);
+    static NAN_METHOD(ReqCancelSubscribe);
+    static NAN_METHOD(ReqQryMonHostBasicEnv);
+    static NAN_METHOD(ReqQryMonHostNetworkEnv);
+    static NAN_METHOD(ReqQryMonHostFileSysEnv);
+    static NAN_METHOD(ReqQryMonHostSwapEnv);
+    static NAN_METHOD(ReqQryMonitor2ObjectTopic);
+    static NAN_METHOD(ReqQryMonHostCommonEnvTopic);
+    static NAN_METHOD(ReqQryMonOidHostRationalTopic);
+    static NAN_METHOD(ReqQryMonOidRelationTopic);
 };
 
 #endif

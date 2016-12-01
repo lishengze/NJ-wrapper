@@ -16,18 +16,24 @@ function loadXMLDoc(filePath){
 		}
 }
 
-var fileName = 'sysuserapi';
-var pathName = '../lib/';
-var xmlFileName  = pathName + fileName + ".xml";
-var jsonFileName = pathName + fileName + ".json";
+var fileName = ['sysuserapi', 'FTD'];
+var serverName = process.argv[2];
 
-var fileData = loadXMLDoc(xmlFileName);
+for (var i = 0; i < fileName.length; ++i) {
+	var pathName = '../lib/' + serverName + '/';
+	var xmlFileName  = pathName + fileName[i] + ".xml";
+	var jsonFileName = pathName + fileName[i] + ".json";
 
-fs.writeFile(jsonFileName, fileData, function (err) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('Succeed in saving ' + jsonFileName);
-    }
+	var fileData = loadXMLDoc(xmlFileName);
 
-});
+	fs.writeFile(jsonFileName, fileData, function(fileName) {
+		return function (err) {
+						if (err) {
+							console.log(err);
+						} else {
+							console.log('Succeed in saving ' + fileName);
+						}
+					}
+		}(jsonFileName)
+	);
+}

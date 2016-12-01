@@ -1,6 +1,6 @@
 #include "v8-transform-data.h"
 #include "v8-transform-func.h"
-#include "FtdcSysUserApiStruct.h"
+#include "FtdcUserApiStruct.h"
 #include "tool-function.h"
 #include "id-func.h"
 #include <fstream>
@@ -13668,26 +13668,26 @@ void OnRspQryMonitorOnlineUser (uv_async_t *handle) {
     OutputCallbackMessage("****** v8-transform-func:: RspQryMonitorOnlineUser: END! ******\n", g_RunningResult_File);
 }
 
-void OnRspQryFrontStat (uv_async_t *handle) { 
-    OutputCallbackMessage("\n****** v8-transform-func:: RspQryFrontStat: START! ******", g_RunningResult_File);
+void OnRspQryFrontStatTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryFrontStatTopic: START! ******", g_RunningResult_File);
     queue<void**>* pReceivedData;
-    uv_mutex_lock (&g_RspQryFrontStat_mutex);
+    uv_mutex_lock (&g_RspQryFrontStatTopic_mutex);
 
-    int ioUserNumb = g_RspQryFrontStat_IOUser_vec.size();
+    int ioUserNumb = g_RspQryFrontStatTopic_IOUser_vec.size();
     pReceivedData = new queue<void**>[ioUserNumb];
     int i = 0;
-    for(vector<FRONT_ID>::iterator it = g_RspQryFrontStat_IOUser_vec.begin();
-        it != g_RspQryFrontStat_IOUser_vec.end(); it++ , i++) {
-        int dataNumb = g_RspQryFrontStat_Data_map[*it].size();
+    for(vector<FRONT_ID>::iterator it = g_RspQryFrontStatTopic_IOUser_vec.begin();
+        it != g_RspQryFrontStatTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryFrontStatTopic_Data_map[*it].size();
         OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
-        while (!g_RspQryFrontStat_Data_map[*it].empty()) {
-            pReceivedData[i].push (g_RspQryFrontStat_Data_map[*it].front());
-            g_RspQryFrontStat_Data_map[*it].pop();
+        while (!g_RspQryFrontStatTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryFrontStatTopic_Data_map[*it].front());
+            g_RspQryFrontStatTopic_Data_map[*it].pop();
         }
     }
-    g_RspQryFrontStat_IOUser_vec.clear();
+    g_RspQryFrontStatTopic_IOUser_vec.clear();
 
-    uv_mutex_unlock (&g_RspQryFrontStat_mutex);
+    uv_mutex_unlock (&g_RspQryFrontStatTopic_mutex);
 
     for (int i = 0; i < ioUserNumb; ++i) {
         while ( !pReceivedData[i].empty() ) {
@@ -13695,8 +13695,8 @@ void OnRspQryFrontStat (uv_async_t *handle) {
             pReceivedData[i].pop();
 
             if (NULL == paramArray ) {
-                OutputCallbackMessage ("v8-transform-func::Delivered RspQryFrontStat paramArray is NULL", g_RunningResult_File);
-                OutputCallbackMessage ("****** v8-transform-func:: RspQryFrontStat: END! ******\n", g_RunningResult_File);
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryFrontStatTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryFrontStatTopic: END! ******\n", g_RunningResult_File);
                 return;
             }
             Nan::HandleScope scope; 
@@ -13711,9 +13711,9 @@ void OnRspQryFrontStat (uv_async_t *handle) {
             int* pRequestID = (int*)paramArray[3];
             bool* pIsLastNew = (bool*)paramArray[4];
 
-            v8::Local<v8::Value> OnRspQryFrontStat = localSpiObj->Get(Nan::New<v8::String>("OnRspQryFrontStat").ToLocalChecked());
-            if (OnRspQryFrontStat->IsFunction()) {
-                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryFrontStat);
+            v8::Local<v8::Value> OnRspQryFrontStatTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryFrontStatTopic").ToLocalChecked());
+            if (OnRspQryFrontStatTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryFrontStatTopic);
                 Nan::Callback callback(function);
 
                 v8::Local<v8::Object> pRspQryFrontStatJS = Nan::New<v8::Object>();
@@ -13811,7 +13811,7 @@ void OnRspQryFrontStat (uv_async_t *handle) {
         pReceivedData = NULL; 
     } 
 
-    OutputCallbackMessage("****** v8-transform-func:: RspQryFrontStat: END! ******\n", g_RunningResult_File);
+    OutputCallbackMessage("****** v8-transform-func:: RspQryFrontStatTopic: END! ******\n", g_RunningResult_File);
 }
 
 void OnRtnSysTimeSyncTopic (uv_async_t *handle) { 
@@ -34276,5 +34276,7803 @@ void OnRtnPerformanceTopTopic (uv_async_t *handle) {
     } 
 
     OutputCallbackMessage("****** v8-transform-func:: RtnPerformanceTopTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryNetNonPartyLinkInfoTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
+
+    int ioUserNumb = g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryNetNonPartyLinkInfoTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryNetNonPartyLinkInfoTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryNetNonPartyLinkInfoTopic_Data_map[*it].front());
+            g_RspQryNetNonPartyLinkInfoTopic_Data_map[*it].pop();
+        }
+    }
+    g_RspQryNetNonPartyLinkInfoTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryNetNonPartyLinkInfoTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryNetNonPartyLinkInfoTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryNetNonPartyLinkInfoField* pRspQryNetNonPartyLinkInfo = (CShfeFtdcRspQryNetNonPartyLinkInfoField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryNetNonPartyLinkInfoTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryNetNonPartyLinkInfoTopic").ToLocalChecked());
+            if (OnRspQryNetNonPartyLinkInfoTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryNetNonPartyLinkInfoTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryNetNonPartyLinkInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryNetNonPartyLinkInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> OperationType = Nan::New<v8::String> ("OperationType").ToLocalChecked();
+                    v8::Local<v8::Integer> OperationTypeValue = Nan::New<v8::Integer> (pRspQryNetNonPartyLinkInfo->OperationType);
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (OperationType), Local<v8::Value>(OperationTypeValue));
+
+                    v8::Local<v8::String> ID = Nan::New<v8::String> ("ID").ToLocalChecked();
+                    v8::Local<v8::Integer> IDValue = Nan::New<v8::Integer> (pRspQryNetNonPartyLinkInfo->ID);
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (ID), Local<v8::Value>(IDValue));
+
+                    v8::Local<v8::String> MEMBER_NO = Nan::New<v8::String> ("MEMBER_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->MEMBER_NO, utf8string);
+                    v8::Local<v8::String> MEMBER_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MEMBER_NO), Local<v8::Value>(MEMBER_NOValue));
+
+                    v8::Local<v8::String> MEMBER_NAME = Nan::New<v8::String> ("MEMBER_NAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->MEMBER_NAME, utf8string);
+                    v8::Local<v8::String> MEMBER_NAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MEMBER_NAME), Local<v8::Value>(MEMBER_NAMEValue));
+
+                    v8::Local<v8::String> REMOTE_ADDR = Nan::New<v8::String> ("REMOTE_ADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->REMOTE_ADDR, utf8string);
+                    v8::Local<v8::String> REMOTE_ADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (REMOTE_ADDR), Local<v8::Value>(REMOTE_ADDRValue));
+
+                    v8::Local<v8::String> LOCAL_ADDR = Nan::New<v8::String> ("LOCAL_ADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->LOCAL_ADDR, utf8string);
+                    v8::Local<v8::String> LOCAL_ADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (LOCAL_ADDR), Local<v8::Value>(LOCAL_ADDRValue));
+
+                    v8::Local<v8::String> ADDRESS = Nan::New<v8::String> ("ADDRESS").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->ADDRESS, utf8string);
+                    v8::Local<v8::String> ADDRESSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (ADDRESS), Local<v8::Value>(ADDRESSValue));
+
+                    v8::Local<v8::String> LINE_STATUS = Nan::New<v8::String> ("LINE_STATUS").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->LINE_STATUS, utf8string);
+                    v8::Local<v8::String> LINE_STATUSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (LINE_STATUS), Local<v8::Value>(LINE_STATUSValue));
+
+                    v8::Local<v8::String> CONTACT = Nan::New<v8::String> ("CONTACT").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->CONTACT, utf8string);
+                    v8::Local<v8::String> CONTACTValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (CONTACT), Local<v8::Value>(CONTACTValue));
+
+                    v8::Local<v8::String> TELEPHONE = Nan::New<v8::String> ("TELEPHONE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->TELEPHONE, utf8string);
+                    v8::Local<v8::String> TELEPHONEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (TELEPHONE), Local<v8::Value>(TELEPHONEValue));
+
+                    v8::Local<v8::String> MOBILEPHONE = Nan::New<v8::String> ("MOBILEPHONE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->MOBILEPHONE, utf8string);
+                    v8::Local<v8::String> MOBILEPHONEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MOBILEPHONE), Local<v8::Value>(MOBILEPHONEValue));
+
+                    v8::Local<v8::String> EMAIL = Nan::New<v8::String> ("EMAIL").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->EMAIL, utf8string);
+                    v8::Local<v8::String> EMAILValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (EMAIL), Local<v8::Value>(EMAILValue));
+
+                    v8::Local<v8::String> FAX = Nan::New<v8::String> ("FAX").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->FAX, utf8string);
+                    v8::Local<v8::String> FAXValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (FAX), Local<v8::Value>(FAXValue));
+
+                    v8::Local<v8::String> PROVINCE = Nan::New<v8::String> ("PROVINCE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->PROVINCE, utf8string);
+                    v8::Local<v8::String> PROVINCEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (PROVINCE), Local<v8::Value>(PROVINCEValue));
+
+                    v8::Local<v8::String> DDN_NO = Nan::New<v8::String> ("DDN_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->DDN_NO, utf8string);
+                    v8::Local<v8::String> DDN_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (DDN_NO), Local<v8::Value>(DDN_NOValue));
+
+                    v8::Local<v8::String> IN_MODE = Nan::New<v8::String> ("IN_MODE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IN_MODE, utf8string);
+                    v8::Local<v8::String> IN_MODEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IN_MODE), Local<v8::Value>(IN_MODEValue));
+
+                    v8::Local<v8::String> IP_WAN = Nan::New<v8::String> ("IP_WAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IP_WAN, utf8string);
+                    v8::Local<v8::String> IP_WANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IP_WAN), Local<v8::Value>(IP_WANValue));
+
+                    v8::Local<v8::String> IP_LAN = Nan::New<v8::String> ("IP_LAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IP_LAN, utf8string);
+                    v8::Local<v8::String> IP_LANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IP_LAN), Local<v8::Value>(IP_LANValue));
+
+                    v8::Local<v8::String> IPADDR = Nan::New<v8::String> ("IPADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IPADDR, utf8string);
+                    v8::Local<v8::String> IPADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IPADDR), Local<v8::Value>(IPADDRValue));
+
+                    v8::Local<v8::String> Interface = Nan::New<v8::String> ("Interface").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->Interface, utf8string);
+                    v8::Local<v8::String> InterfaceValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (Interface), Local<v8::Value>(InterfaceValue));
+
+                    v8::Local<v8::String> INTERFACE_DATE = Nan::New<v8::String> ("INTERFACE_DATE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->INTERFACE_DATE, utf8string);
+                    v8::Local<v8::String> INTERFACE_DATEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (INTERFACE_DATE), Local<v8::Value>(INTERFACE_DATEValue));
+
+                    v8::Local<v8::String> SOFTWARE = Nan::New<v8::String> ("SOFTWARE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->SOFTWARE, utf8string);
+                    v8::Local<v8::String> SOFTWAREValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SOFTWARE), Local<v8::Value>(SOFTWAREValue));
+
+                    v8::Local<v8::String> FEE_TYPE = Nan::New<v8::String> ("FEE_TYPE").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->FEE_TYPE, utf8string);
+                    v8::Local<v8::String> FEE_TYPEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (FEE_TYPE), Local<v8::Value>(FEE_TYPEValue));
+
+                    v8::Local<v8::String> SERVICEPROVIDER = Nan::New<v8::String> ("SERVICEPROVIDER").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->SERVICEPROVIDER, utf8string);
+                    v8::Local<v8::String> SERVICEPROVIDERValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SERVICEPROVIDER), Local<v8::Value>(SERVICEPROVIDERValue));
+
+                    v8::Local<v8::String> IF_ZIYING = Nan::New<v8::String> ("IF_ZIYING").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IF_ZIYING, utf8string);
+                    v8::Local<v8::String> IF_ZIYINGValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IF_ZIYING), Local<v8::Value>(IF_ZIYINGValue));
+
+                    v8::Local<v8::String> IF_TUOGUAN = Nan::New<v8::String> ("IF_TUOGUAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->IF_TUOGUAN, utf8string);
+                    v8::Local<v8::String> IF_TUOGUANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IF_TUOGUAN), Local<v8::Value>(IF_TUOGUANValue));
+
+                    v8::Local<v8::String> HASOTHER = Nan::New<v8::String> ("HASOTHER").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->HASOTHER, utf8string);
+                    v8::Local<v8::String> HASOTHERValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (HASOTHER), Local<v8::Value>(HASOTHERValue));
+
+                    v8::Local<v8::String> SEAT_NO = Nan::New<v8::String> ("SEAT_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->SEAT_NO, utf8string);
+                    v8::Local<v8::String> SEAT_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SEAT_NO), Local<v8::Value>(SEAT_NOValue));
+
+                    v8::Local<v8::String> PRO = Nan::New<v8::String> ("PRO").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryNetNonPartyLinkInfo->PRO, utf8string);
+                    v8::Local<v8::String> PROValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryNetNonPartyLinkInfoJS->Set(Local<v8::Value> (PRO), Local<v8::Value>(PROValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryNetNonPartyLinkInfo) { 
+                    params[0] = Local<v8::Value>(pRspQryNetNonPartyLinkInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryNetNonPartyLinkInfo) { 
+                delete pRspQryNetNonPartyLinkInfo; 
+                pRspQryNetNonPartyLinkInfo = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnNetNonPartyLinkInfoTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
+
+    int ioUserNumb = g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.begin();
+        it != g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnNetNonPartyLinkInfoTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnNetNonPartyLinkInfoTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnNetNonPartyLinkInfoTopic_Data_map[*it].front());
+            g_RtnNetNonPartyLinkInfoTopic_Data_map[*it].pop();
+        }
+    }
+    g_RtnNetNonPartyLinkInfoTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnNetNonPartyLinkInfoTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnNetNonPartyLinkInfoTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnNetNonPartyLinkInfoField* pRtnNetNonPartyLinkInfo = (CShfeFtdcRtnNetNonPartyLinkInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnNetNonPartyLinkInfoTopic = localSpiObj->Get(Nan::New<v8::String>("OnRtnNetNonPartyLinkInfoTopic").ToLocalChecked());
+            if (OnRtnNetNonPartyLinkInfoTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnNetNonPartyLinkInfoTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnNetNonPartyLinkInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnNetNonPartyLinkInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> OperationType = Nan::New<v8::String> ("OperationType").ToLocalChecked();
+                    v8::Local<v8::Integer> OperationTypeValue = Nan::New<v8::Integer> (pRtnNetNonPartyLinkInfo->OperationType);
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (OperationType), Local<v8::Value>(OperationTypeValue));
+
+                    v8::Local<v8::String> ID = Nan::New<v8::String> ("ID").ToLocalChecked();
+                    v8::Local<v8::Integer> IDValue = Nan::New<v8::Integer> (pRtnNetNonPartyLinkInfo->ID);
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (ID), Local<v8::Value>(IDValue));
+
+                    v8::Local<v8::String> MEMBER_NO = Nan::New<v8::String> ("MEMBER_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->MEMBER_NO, utf8string);
+                    v8::Local<v8::String> MEMBER_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MEMBER_NO), Local<v8::Value>(MEMBER_NOValue));
+
+                    v8::Local<v8::String> MEMBER_NAME = Nan::New<v8::String> ("MEMBER_NAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->MEMBER_NAME, utf8string);
+                    v8::Local<v8::String> MEMBER_NAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MEMBER_NAME), Local<v8::Value>(MEMBER_NAMEValue));
+
+                    v8::Local<v8::String> REMOTE_ADDR = Nan::New<v8::String> ("REMOTE_ADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->REMOTE_ADDR, utf8string);
+                    v8::Local<v8::String> REMOTE_ADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (REMOTE_ADDR), Local<v8::Value>(REMOTE_ADDRValue));
+
+                    v8::Local<v8::String> LOCAL_ADDR = Nan::New<v8::String> ("LOCAL_ADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->LOCAL_ADDR, utf8string);
+                    v8::Local<v8::String> LOCAL_ADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (LOCAL_ADDR), Local<v8::Value>(LOCAL_ADDRValue));
+
+                    v8::Local<v8::String> ADDRESS = Nan::New<v8::String> ("ADDRESS").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->ADDRESS, utf8string);
+                    v8::Local<v8::String> ADDRESSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (ADDRESS), Local<v8::Value>(ADDRESSValue));
+
+                    v8::Local<v8::String> LINE_STATUS = Nan::New<v8::String> ("LINE_STATUS").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->LINE_STATUS, utf8string);
+                    v8::Local<v8::String> LINE_STATUSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (LINE_STATUS), Local<v8::Value>(LINE_STATUSValue));
+
+                    v8::Local<v8::String> CONTACT = Nan::New<v8::String> ("CONTACT").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->CONTACT, utf8string);
+                    v8::Local<v8::String> CONTACTValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (CONTACT), Local<v8::Value>(CONTACTValue));
+
+                    v8::Local<v8::String> TELEPHONE = Nan::New<v8::String> ("TELEPHONE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->TELEPHONE, utf8string);
+                    v8::Local<v8::String> TELEPHONEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (TELEPHONE), Local<v8::Value>(TELEPHONEValue));
+
+                    v8::Local<v8::String> MOBILEPHONE = Nan::New<v8::String> ("MOBILEPHONE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->MOBILEPHONE, utf8string);
+                    v8::Local<v8::String> MOBILEPHONEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (MOBILEPHONE), Local<v8::Value>(MOBILEPHONEValue));
+
+                    v8::Local<v8::String> EMAIL = Nan::New<v8::String> ("EMAIL").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->EMAIL, utf8string);
+                    v8::Local<v8::String> EMAILValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (EMAIL), Local<v8::Value>(EMAILValue));
+
+                    v8::Local<v8::String> FAX = Nan::New<v8::String> ("FAX").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->FAX, utf8string);
+                    v8::Local<v8::String> FAXValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (FAX), Local<v8::Value>(FAXValue));
+
+                    v8::Local<v8::String> PROVINCE = Nan::New<v8::String> ("PROVINCE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->PROVINCE, utf8string);
+                    v8::Local<v8::String> PROVINCEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (PROVINCE), Local<v8::Value>(PROVINCEValue));
+
+                    v8::Local<v8::String> DDN_NO = Nan::New<v8::String> ("DDN_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->DDN_NO, utf8string);
+                    v8::Local<v8::String> DDN_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (DDN_NO), Local<v8::Value>(DDN_NOValue));
+
+                    v8::Local<v8::String> IN_MODE = Nan::New<v8::String> ("IN_MODE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IN_MODE, utf8string);
+                    v8::Local<v8::String> IN_MODEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IN_MODE), Local<v8::Value>(IN_MODEValue));
+
+                    v8::Local<v8::String> IP_WAN = Nan::New<v8::String> ("IP_WAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IP_WAN, utf8string);
+                    v8::Local<v8::String> IP_WANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IP_WAN), Local<v8::Value>(IP_WANValue));
+
+                    v8::Local<v8::String> IP_LAN = Nan::New<v8::String> ("IP_LAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IP_LAN, utf8string);
+                    v8::Local<v8::String> IP_LANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IP_LAN), Local<v8::Value>(IP_LANValue));
+
+                    v8::Local<v8::String> IPADDR = Nan::New<v8::String> ("IPADDR").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IPADDR, utf8string);
+                    v8::Local<v8::String> IPADDRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IPADDR), Local<v8::Value>(IPADDRValue));
+
+                    v8::Local<v8::String> Interface = Nan::New<v8::String> ("Interface").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->Interface, utf8string);
+                    v8::Local<v8::String> InterfaceValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (Interface), Local<v8::Value>(InterfaceValue));
+
+                    v8::Local<v8::String> INTERFACE_DATE = Nan::New<v8::String> ("INTERFACE_DATE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->INTERFACE_DATE, utf8string);
+                    v8::Local<v8::String> INTERFACE_DATEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (INTERFACE_DATE), Local<v8::Value>(INTERFACE_DATEValue));
+
+                    v8::Local<v8::String> SOFTWARE = Nan::New<v8::String> ("SOFTWARE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->SOFTWARE, utf8string);
+                    v8::Local<v8::String> SOFTWAREValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SOFTWARE), Local<v8::Value>(SOFTWAREValue));
+
+                    v8::Local<v8::String> FEE_TYPE = Nan::New<v8::String> ("FEE_TYPE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->FEE_TYPE, utf8string);
+                    v8::Local<v8::String> FEE_TYPEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (FEE_TYPE), Local<v8::Value>(FEE_TYPEValue));
+
+                    v8::Local<v8::String> SERVICEPROVIDER = Nan::New<v8::String> ("SERVICEPROVIDER").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->SERVICEPROVIDER, utf8string);
+                    v8::Local<v8::String> SERVICEPROVIDERValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SERVICEPROVIDER), Local<v8::Value>(SERVICEPROVIDERValue));
+
+                    v8::Local<v8::String> IF_ZIYING = Nan::New<v8::String> ("IF_ZIYING").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IF_ZIYING, utf8string);
+                    v8::Local<v8::String> IF_ZIYINGValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IF_ZIYING), Local<v8::Value>(IF_ZIYINGValue));
+
+                    v8::Local<v8::String> IF_TUOGUAN = Nan::New<v8::String> ("IF_TUOGUAN").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->IF_TUOGUAN, utf8string);
+                    v8::Local<v8::String> IF_TUOGUANValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (IF_TUOGUAN), Local<v8::Value>(IF_TUOGUANValue));
+
+                    v8::Local<v8::String> HASOTHER = Nan::New<v8::String> ("HASOTHER").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->HASOTHER, utf8string);
+                    v8::Local<v8::String> HASOTHERValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (HASOTHER), Local<v8::Value>(HASOTHERValue));
+
+                    v8::Local<v8::String> SEAT_NO = Nan::New<v8::String> ("SEAT_NO").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->SEAT_NO, utf8string);
+                    v8::Local<v8::String> SEAT_NOValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (SEAT_NO), Local<v8::Value>(SEAT_NOValue));
+
+                    v8::Local<v8::String> PRO = Nan::New<v8::String> ("PRO").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnNetNonPartyLinkInfo->PRO, utf8string);
+                    v8::Local<v8::String> PROValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnNetNonPartyLinkInfoJS->Set(Local<v8::Value> (PRO), Local<v8::Value>(PROValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnNetNonPartyLinkInfo) { 
+                    params[0] = Local<v8::Value>(pRtnNetNonPartyLinkInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnNetNonPartyLinkInfo) { 
+                delete pRtnNetNonPartyLinkInfo; 
+                pRtnNetNonPartyLinkInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnNetNonPartyLinkInfoTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonConfigInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonConfigInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonConfigInfo_mutex);
+
+    int ioUserNumb = g_RspQryMonConfigInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonConfigInfo_IOUser_vec.begin();
+        it != g_RspQryMonConfigInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonConfigInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonConfigInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonConfigInfo_Data_map[*it].front());
+            g_RspQryMonConfigInfo_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonConfigInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonConfigInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonConfigInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonConfigInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonConfigInfoField* pRspQryMonConfigInfo = (CShfeFtdcRspQryMonConfigInfoField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonConfigInfo = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonConfigInfo").ToLocalChecked());
+            if (OnRspQryMonConfigInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonConfigInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonConfigInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonConfigInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ConfigName = Nan::New<v8::String> ("ConfigName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonConfigInfo->ConfigName, utf8string);
+                    v8::Local<v8::String> ConfigNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonConfigInfoJS->Set(Local<v8::Value> (ConfigName), Local<v8::Value>(ConfigNameValue));
+
+                    v8::Local<v8::String> ConfigArg = Nan::New<v8::String> ("ConfigArg").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonConfigInfo->ConfigArg, utf8string);
+                    v8::Local<v8::String> ConfigArgValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonConfigInfoJS->Set(Local<v8::Value> (ConfigArg), Local<v8::Value>(ConfigArgValue));
+
+                    v8::Local<v8::String> ConfigContent = Nan::New<v8::String> ("ConfigContent").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonConfigInfo->ConfigContent, utf8string);
+                    v8::Local<v8::String> ConfigContentValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonConfigInfoJS->Set(Local<v8::Value> (ConfigContent), Local<v8::Value>(ConfigContentValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonConfigInfo) { 
+                    params[0] = Local<v8::Value>(pRspQryMonConfigInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonConfigInfo) { 
+                delete pRspQryMonConfigInfo; 
+                pRspQryMonConfigInfo = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonConfigInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonConfigInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonConfigInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonConfigInfo_mutex);
+
+    int ioUserNumb = g_RtnMonConfigInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonConfigInfo_IOUser_vec.begin();
+        it != g_RtnMonConfigInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonConfigInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonConfigInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonConfigInfo_Data_map[*it].front());
+            g_RtnMonConfigInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonConfigInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonConfigInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonConfigInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonConfigInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonConfigInfoField* pRtnMonConfigInfo = (CShfeFtdcRtnMonConfigInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonConfigInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonConfigInfo").ToLocalChecked());
+            if (OnRtnMonConfigInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonConfigInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonConfigInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonConfigInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ConfigName = Nan::New<v8::String> ("ConfigName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonConfigInfo->ConfigName, utf8string);
+                    v8::Local<v8::String> ConfigNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonConfigInfoJS->Set(Local<v8::Value> (ConfigName), Local<v8::Value>(ConfigNameValue));
+
+                    v8::Local<v8::String> ConfigArg = Nan::New<v8::String> ("ConfigArg").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonConfigInfo->ConfigArg, utf8string);
+                    v8::Local<v8::String> ConfigArgValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonConfigInfoJS->Set(Local<v8::Value> (ConfigArg), Local<v8::Value>(ConfigArgValue));
+
+                    v8::Local<v8::String> ConfigContent = Nan::New<v8::String> ("ConfigContent").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonConfigInfo->ConfigContent, utf8string);
+                    v8::Local<v8::String> ConfigContentValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonConfigInfoJS->Set(Local<v8::Value> (ConfigContent), Local<v8::Value>(ConfigContentValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonConfigInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonConfigInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonConfigInfo) { 
+                delete pRtnMonConfigInfo; 
+                pRtnMonConfigInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonConfigInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonitorDayInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonitorDayInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonitorDayInfo_mutex);
+
+    int ioUserNumb = g_RtnMonitorDayInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonitorDayInfo_IOUser_vec.begin();
+        it != g_RtnMonitorDayInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonitorDayInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonitorDayInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonitorDayInfo_Data_map[*it].front());
+            g_RtnMonitorDayInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonitorDayInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonitorDayInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonitorDayInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonitorDayInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcMonitorDayInfoField* pMonitorDayInfo = (CShfeFtdcMonitorDayInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonitorDayInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonitorDayInfo").ToLocalChecked());
+            if (OnRtnMonitorDayInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonitorDayInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pMonitorDayInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pMonitorDayInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> Date = Nan::New<v8::String> ("Date").ToLocalChecked();
+                    Gb2312ToUtf8(pMonitorDayInfo->Date, utf8string);
+                    v8::Local<v8::String> DateValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pMonitorDayInfoJS->Set(Local<v8::Value> (Date), Local<v8::Value>(DateValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pMonitorDayInfo) { 
+                    params[0] = Local<v8::Value>(pMonitorDayInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pMonitorDayInfo) { 
+                delete pMonitorDayInfo; 
+                pMonitorDayInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonitorDayInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnTradingDayInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnTradingDayInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnTradingDayInfo_mutex);
+
+    int ioUserNumb = g_RtnTradingDayInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnTradingDayInfo_IOUser_vec.begin();
+        it != g_RtnTradingDayInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnTradingDayInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnTradingDayInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnTradingDayInfo_Data_map[*it].front());
+            g_RtnTradingDayInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnTradingDayInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnTradingDayInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnTradingDayInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnTradingDayInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcTradingDayInfoField* pTradingDayInfo = (CShfeFtdcTradingDayInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnTradingDayInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnTradingDayInfo").ToLocalChecked());
+            if (OnRtnTradingDayInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnTradingDayInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pTradingDayInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pTradingDayInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> Date = Nan::New<v8::String> ("Date").ToLocalChecked();
+                    Gb2312ToUtf8(pTradingDayInfo->Date, utf8string);
+                    v8::Local<v8::String> DateValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pTradingDayInfoJS->Set(Local<v8::Value> (Date), Local<v8::Value>(DateValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pTradingDayInfo) { 
+                    params[0] = Local<v8::Value>(pTradingDayInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pTradingDayInfo) { 
+                delete pTradingDayInfo; 
+                pTradingDayInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnTradingDayInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnSectionFinish (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnSectionFinish: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnSectionFinish_mutex);
+
+    int ioUserNumb = g_RtnSectionFinish_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnSectionFinish_IOUser_vec.begin();
+        it != g_RtnSectionFinish_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnSectionFinish_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnSectionFinish_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnSectionFinish_Data_map[*it].front());
+            g_RtnSectionFinish_Data_map[*it].pop();
+        }
+    }
+    g_RtnSectionFinish_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnSectionFinish_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnSectionFinish paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnSectionFinish: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcMonitorSectionField* pMonitorSection = (CShfeFtdcMonitorSectionField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnSectionFinish = localSpiObj->Get(Nan::New<v8::String>("OnRtnSectionFinish").ToLocalChecked());
+            if (OnRtnSectionFinish->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnSectionFinish);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pMonitorSectionJS = Nan::New<v8::Object>();
+                
+                if (NULL != pMonitorSection) { 
+                    string utf8string;
+                    v8::Local<v8::String> MonitorSection = Nan::New<v8::String> ("MonitorSection").ToLocalChecked();
+                    v8::Local<v8::Integer> MonitorSectionValue = Nan::New<v8::Integer> (pMonitorSection->MonitorSection);
+                    pMonitorSectionJS->Set(Local<v8::Value> (MonitorSection), Local<v8::Value>(MonitorSectionValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pMonitorSection) { 
+                    params[0] = Local<v8::Value>(pMonitorSectionJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pMonitorSection) { 
+                delete pMonitorSection; 
+                pMonitorSection = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnSectionFinish: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnSectionChange (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnSectionChange: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnSectionChange_mutex);
+
+    int ioUserNumb = g_RtnSectionChange_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnSectionChange_IOUser_vec.begin();
+        it != g_RtnSectionChange_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnSectionChange_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnSectionChange_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnSectionChange_Data_map[*it].front());
+            g_RtnSectionChange_Data_map[*it].pop();
+        }
+    }
+    g_RtnSectionChange_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnSectionChange_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnSectionChange paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnSectionChange: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcMonitorSectionField* pMonitorSection = (CShfeFtdcMonitorSectionField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnSectionChange = localSpiObj->Get(Nan::New<v8::String>("OnRtnSectionChange").ToLocalChecked());
+            if (OnRtnSectionChange->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnSectionChange);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pMonitorSectionJS = Nan::New<v8::Object>();
+                
+                if (NULL != pMonitorSection) { 
+                    string utf8string;
+                    v8::Local<v8::String> MonitorSection = Nan::New<v8::String> ("MonitorSection").ToLocalChecked();
+                    v8::Local<v8::Integer> MonitorSectionValue = Nan::New<v8::Integer> (pMonitorSection->MonitorSection);
+                    pMonitorSectionJS->Set(Local<v8::Value> (MonitorSection), Local<v8::Value>(MonitorSectionValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pMonitorSection) { 
+                    params[0] = Local<v8::Value>(pMonitorSectionJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pMonitorSection) { 
+                delete pMonitorSection; 
+                pMonitorSection = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnSectionChange: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspMonServiceConnect (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspMonServiceConnect: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspMonServiceConnect_mutex);
+
+    int ioUserNumb = g_RspMonServiceConnect_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspMonServiceConnect_IOUser_vec.begin();
+        it != g_RspMonServiceConnect_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspMonServiceConnect_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspMonServiceConnect_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspMonServiceConnect_Data_map[*it].front());
+            g_RspMonServiceConnect_Data_map[*it].pop();
+        }
+    }
+    g_RspMonServiceConnect_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspMonServiceConnect_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspMonServiceConnect paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspMonServiceConnect: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspMonServiceConnectField* pRspMonServiceConnect = (CShfeFtdcRspMonServiceConnectField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspMonServiceConnect = localSpiObj->Get(Nan::New<v8::String>("OnRspMonServiceConnect").ToLocalChecked());
+            if (OnRspMonServiceConnect->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspMonServiceConnect);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspMonServiceConnectJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspMonServiceConnect) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspMonServiceConnect->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspMonServiceConnectJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceID = Nan::New<v8::String> ("ServiceID").ToLocalChecked();
+                    v8::Local<v8::Integer> ServiceIDValue = Nan::New<v8::Integer> (pRspMonServiceConnect->ServiceID);
+                    pRspMonServiceConnectJS->Set(Local<v8::Value> (ServiceID), Local<v8::Value>(ServiceIDValue));
+
+                    v8::Local<v8::String> ErrorID = Nan::New<v8::String> ("ErrorID").ToLocalChecked();
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer> (pRspMonServiceConnect->ErrorID);
+                    pRspMonServiceConnectJS->Set(Local<v8::Value> (ErrorID), Local<v8::Value>(ErrorIDValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspMonServiceConnect) { 
+                    params[0] = Local<v8::Value>(pRspMonServiceConnectJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspMonServiceConnect) { 
+                delete pRspMonServiceConnect; 
+                pRspMonServiceConnect = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspMonServiceConnect: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonProxyConfig (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonProxyConfig: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonProxyConfig_mutex);
+
+    int ioUserNumb = g_RtnMonProxyConfig_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonProxyConfig_IOUser_vec.begin();
+        it != g_RtnMonProxyConfig_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonProxyConfig_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonProxyConfig_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonProxyConfig_Data_map[*it].front());
+            g_RtnMonProxyConfig_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonProxyConfig_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonProxyConfig_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonProxyConfig paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonProxyConfig: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonProxyConfigField* pRtnMonProxyConfig = (CShfeFtdcRtnMonProxyConfigField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonProxyConfig = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonProxyConfig").ToLocalChecked());
+            if (OnRtnMonProxyConfig->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonProxyConfig);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonProxyConfigJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonProxyConfig) { 
+                    string utf8string;
+                    v8::Local<v8::String> RemoteName = Nan::New<v8::String> ("RemoteName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProxyConfig->RemoteName, utf8string);
+                    v8::Local<v8::String> RemoteNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProxyConfigJS->Set(Local<v8::Value> (RemoteName), Local<v8::Value>(RemoteNameValue));
+
+                    v8::Local<v8::String> RemoteID = Nan::New<v8::String> ("RemoteID").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProxyConfig->RemoteID, utf8string);
+                    v8::Local<v8::String> RemoteIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProxyConfigJS->Set(Local<v8::Value> (RemoteID), Local<v8::Value>(RemoteIDValue));
+
+                    v8::Local<v8::String> HostName = Nan::New<v8::String> ("HostName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProxyConfig->HostName, utf8string);
+                    v8::Local<v8::String> HostNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProxyConfigJS->Set(Local<v8::Value> (HostName), Local<v8::Value>(HostNameValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonProxyConfig) { 
+                    params[0] = Local<v8::Value>(pRtnMonProxyConfigJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonProxyConfig) { 
+                delete pRtnMonProxyConfig; 
+                pRtnMonProxyConfig = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonProxyConfig: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonServiceStatus (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonServiceStatus: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonServiceStatus_mutex);
+
+    int ioUserNumb = g_RspQryMonServiceStatus_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonServiceStatus_IOUser_vec.begin();
+        it != g_RspQryMonServiceStatus_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonServiceStatus_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonServiceStatus_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonServiceStatus_Data_map[*it].front());
+            g_RspQryMonServiceStatus_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonServiceStatus_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonServiceStatus_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonServiceStatus paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonServiceStatus: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonServiceStatusField* pRspQryMonServiceStatus = (CShfeFtdcRspQryMonServiceStatusField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonServiceStatus = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonServiceStatus").ToLocalChecked());
+            if (OnRspQryMonServiceStatus->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonServiceStatus);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonServiceStatusJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonServiceStatus) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonServiceStatus->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonServiceStatusJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceID = Nan::New<v8::String> ("ServiceID").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonServiceStatus->ServiceID, utf8string);
+                    v8::Local<v8::String> ServiceIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonServiceStatusJS->Set(Local<v8::Value> (ServiceID), Local<v8::Value>(ServiceIDValue));
+
+                    v8::Local<v8::String> Status = Nan::New<v8::String> ("Status").ToLocalChecked();
+                    v8::Local<v8::Integer> StatusValue = Nan::New<v8::Integer> (pRspQryMonServiceStatus->Status);
+                    pRspQryMonServiceStatusJS->Set(Local<v8::Value> (Status), Local<v8::Value>(StatusValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonServiceStatus) { 
+                    params[0] = Local<v8::Value>(pRspQryMonServiceStatusJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonServiceStatus) { 
+                delete pRspQryMonServiceStatus; 
+                pRspQryMonServiceStatus = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonServiceStatus: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonServiceStatus (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonServiceStatus: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonServiceStatus_mutex);
+
+    int ioUserNumb = g_RtnMonServiceStatus_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonServiceStatus_IOUser_vec.begin();
+        it != g_RtnMonServiceStatus_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonServiceStatus_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonServiceStatus_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonServiceStatus_Data_map[*it].front());
+            g_RtnMonServiceStatus_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonServiceStatus_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonServiceStatus_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonServiceStatus paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonServiceStatus: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonServiceStatusField* pRtnMonServiceStatus = (CShfeFtdcRtnMonServiceStatusField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonServiceStatus = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonServiceStatus").ToLocalChecked());
+            if (OnRtnMonServiceStatus->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonServiceStatus);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonServiceStatusJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonServiceStatus) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonServiceStatus->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonServiceStatusJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceID = Nan::New<v8::String> ("ServiceID").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonServiceStatus->ServiceID, utf8string);
+                    v8::Local<v8::String> ServiceIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonServiceStatusJS->Set(Local<v8::Value> (ServiceID), Local<v8::Value>(ServiceIDValue));
+
+                    v8::Local<v8::String> Status = Nan::New<v8::String> ("Status").ToLocalChecked();
+                    v8::Local<v8::Integer> StatusValue = Nan::New<v8::Integer> (pRtnMonServiceStatus->Status);
+                    pRtnMonServiceStatusJS->Set(Local<v8::Value> (Status), Local<v8::Value>(StatusValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonServiceStatus) { 
+                    params[0] = Local<v8::Value>(pRtnMonServiceStatusJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonServiceStatus) { 
+                delete pRtnMonServiceStatus; 
+                pRtnMonServiceStatus = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonServiceStatus: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonDataCenterRole (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonDataCenterRole: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonDataCenterRole_mutex);
+
+    int ioUserNumb = g_RtnMonDataCenterRole_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonDataCenterRole_IOUser_vec.begin();
+        it != g_RtnMonDataCenterRole_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonDataCenterRole_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonDataCenterRole_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonDataCenterRole_Data_map[*it].front());
+            g_RtnMonDataCenterRole_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonDataCenterRole_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonDataCenterRole_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonDataCenterRole paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonDataCenterRole: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonDataCenterRoleField* pRtnMonDataCenterRole = (CShfeFtdcRtnMonDataCenterRoleField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonDataCenterRole = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonDataCenterRole").ToLocalChecked());
+            if (OnRtnMonDataCenterRole->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonDataCenterRole);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonDataCenterRoleJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonDataCenterRole) { 
+                    string utf8string;
+                    v8::Local<v8::String> DataCenter = Nan::New<v8::String> ("DataCenter").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonDataCenterRole->DataCenter, utf8string);
+                    v8::Local<v8::String> DataCenterValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonDataCenterRoleJS->Set(Local<v8::Value> (DataCenter), Local<v8::Value>(DataCenterValue));
+
+                    v8::Local<v8::String> Role = Nan::New<v8::String> ("Role").ToLocalChecked();
+                    v8::Local<v8::Integer> RoleValue = Nan::New<v8::Integer> (pRtnMonDataCenterRole->Role);
+                    pRtnMonDataCenterRoleJS->Set(Local<v8::Value> (Role), Local<v8::Value>(RoleValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonDataCenterRole) { 
+                    params[0] = Local<v8::Value>(pRtnMonDataCenterRoleJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonDataCenterRole) { 
+                delete pRtnMonDataCenterRole; 
+                pRtnMonDataCenterRole = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonDataCenterRole: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonProbeTask (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonProbeTask: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonProbeTask_mutex);
+
+    int ioUserNumb = g_RspQryMonProbeTask_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonProbeTask_IOUser_vec.begin();
+        it != g_RspQryMonProbeTask_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonProbeTask_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonProbeTask_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonProbeTask_Data_map[*it].front());
+            g_RspQryMonProbeTask_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonProbeTask_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonProbeTask_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonProbeTask paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonProbeTask: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonProbeTaskField* pRspQryMonProbeTask = (CShfeFtdcRspQryMonProbeTaskField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonProbeTask = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonProbeTask").ToLocalChecked());
+            if (OnRspQryMonProbeTask->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonProbeTask);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonProbeTaskJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonProbeTask) { 
+                    string utf8string;
+                    v8::Local<v8::String> ProbeID = Nan::New<v8::String> ("ProbeID").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonProbeTask->ProbeID, utf8string);
+                    v8::Local<v8::String> ProbeIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonProbeTaskJS->Set(Local<v8::Value> (ProbeID), Local<v8::Value>(ProbeIDValue));
+
+                    v8::Local<v8::String> TaskType = Nan::New<v8::String> ("TaskType").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonProbeTask->TaskType, utf8string);
+                    v8::Local<v8::String> TaskTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonProbeTaskJS->Set(Local<v8::Value> (TaskType), Local<v8::Value>(TaskTypeValue));
+
+                    v8::Local<v8::String> TaskDesc = Nan::New<v8::String> ("TaskDesc").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonProbeTask->TaskDesc, utf8string);
+                    v8::Local<v8::String> TaskDescValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonProbeTaskJS->Set(Local<v8::Value> (TaskDesc), Local<v8::Value>(TaskDescValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonProbeTask) { 
+                    params[0] = Local<v8::Value>(pRspQryMonProbeTaskJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonProbeTask) { 
+                delete pRspQryMonProbeTask; 
+                pRspQryMonProbeTask = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonProbeTask: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonProbeTask (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonProbeTask: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonProbeTask_mutex);
+
+    int ioUserNumb = g_RtnMonProbeTask_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonProbeTask_IOUser_vec.begin();
+        it != g_RtnMonProbeTask_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonProbeTask_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonProbeTask_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonProbeTask_Data_map[*it].front());
+            g_RtnMonProbeTask_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonProbeTask_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonProbeTask_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonProbeTask paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonProbeTask: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonProbeTaskField* pRtnMonProbeTask = (CShfeFtdcRtnMonProbeTaskField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonProbeTask = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonProbeTask").ToLocalChecked());
+            if (OnRtnMonProbeTask->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonProbeTask);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonProbeTaskJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonProbeTask) { 
+                    string utf8string;
+                    v8::Local<v8::String> ProbeID = Nan::New<v8::String> ("ProbeID").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProbeTask->ProbeID, utf8string);
+                    v8::Local<v8::String> ProbeIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProbeTaskJS->Set(Local<v8::Value> (ProbeID), Local<v8::Value>(ProbeIDValue));
+
+                    v8::Local<v8::String> TaskType = Nan::New<v8::String> ("TaskType").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProbeTask->TaskType, utf8string);
+                    v8::Local<v8::String> TaskTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProbeTaskJS->Set(Local<v8::Value> (TaskType), Local<v8::Value>(TaskTypeValue));
+
+                    v8::Local<v8::String> TaskDesc = Nan::New<v8::String> ("TaskDesc").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonProbeTask->TaskDesc, utf8string);
+                    v8::Local<v8::String> TaskDescValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonProbeTaskJS->Set(Local<v8::Value> (TaskDesc), Local<v8::Value>(TaskDescValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonProbeTask) { 
+                    params[0] = Local<v8::Value>(pRtnMonProbeTaskJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonProbeTask) { 
+                delete pRtnMonProbeTask; 
+                pRtnMonProbeTask = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonProbeTask: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonObjectAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonObjectAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonObjectAttr_mutex);
+
+    int ioUserNumb = g_RspQryMonObjectAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonObjectAttr_IOUser_vec.begin();
+        it != g_RspQryMonObjectAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonObjectAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonObjectAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonObjectAttr_Data_map[*it].front());
+            g_RspQryMonObjectAttr_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonObjectAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonObjectAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonObjectAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonObjectAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonObjectAttrField* pRspQryMonObjectAttr = (CShfeFtdcRspQryMonObjectAttrField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonObjectAttr = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonObjectAttr").ToLocalChecked());
+            if (OnRspQryMonObjectAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonObjectAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonObjectAttrJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonObjectAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonObjectAttr->ObjectID);
+                    pRspQryMonObjectAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> AttrType = Nan::New<v8::String> ("AttrType").ToLocalChecked();
+                    v8::Local<v8::Number> AttrTypeValue = Nan::New<v8::Number> (pRspQryMonObjectAttr->AttrType);
+                    pRspQryMonObjectAttrJS->Set(Local<v8::Value> (AttrType), Local<v8::Value>(AttrTypeValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonObjectAttr->MonTime);
+                    pRspQryMonObjectAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ValueType = Nan::New<v8::String> ("ValueType").ToLocalChecked();
+                    v8::Local<v8::Integer> ValueTypeValue = Nan::New<v8::Integer> (pRspQryMonObjectAttr->ValueType);
+                    pRspQryMonObjectAttrJS->Set(Local<v8::Value> (ValueType), Local<v8::Value>(ValueTypeValue));
+
+                    v8::Local<v8::String> AttrValue = Nan::New<v8::String> ("AttrValue").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonObjectAttr->AttrValue, utf8string);
+                    v8::Local<v8::String> AttrValueValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonObjectAttrJS->Set(Local<v8::Value> (AttrValue), Local<v8::Value>(AttrValueValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonObjectAttr) { 
+                    params[0] = Local<v8::Value>(pRspQryMonObjectAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonObjectAttr) { 
+                delete pRspQryMonObjectAttr; 
+                pRspQryMonObjectAttr = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonObjectAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonObjectAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonObjectAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonObjectAttr_mutex);
+
+    int ioUserNumb = g_RtnMonObjectAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonObjectAttr_IOUser_vec.begin();
+        it != g_RtnMonObjectAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonObjectAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonObjectAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonObjectAttr_Data_map[*it].front());
+            g_RtnMonObjectAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonObjectAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonObjectAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonObjectAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonObjectAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonObjectAttrField* pRtnMonObjectAttr = (CShfeFtdcRtnMonObjectAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonObjectAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonObjectAttr").ToLocalChecked());
+            if (OnRtnMonObjectAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonObjectAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonObjectAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonObjectAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonObjectAttr->ObjectID);
+                    pRtnMonObjectAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> AttrType = Nan::New<v8::String> ("AttrType").ToLocalChecked();
+                    v8::Local<v8::Number> AttrTypeValue = Nan::New<v8::Number> (pRtnMonObjectAttr->AttrType);
+                    pRtnMonObjectAttrJS->Set(Local<v8::Value> (AttrType), Local<v8::Value>(AttrTypeValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonObjectAttr->MonTime);
+                    pRtnMonObjectAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ValueType = Nan::New<v8::String> ("ValueType").ToLocalChecked();
+                    v8::Local<v8::Integer> ValueTypeValue = Nan::New<v8::Integer> (pRtnMonObjectAttr->ValueType);
+                    pRtnMonObjectAttrJS->Set(Local<v8::Value> (ValueType), Local<v8::Value>(ValueTypeValue));
+
+                    v8::Local<v8::String> AttrValue = Nan::New<v8::String> ("AttrValue").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonObjectAttr->AttrValue, utf8string);
+                    v8::Local<v8::String> AttrValueValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonObjectAttrJS->Set(Local<v8::Value> (AttrValue), Local<v8::Value>(AttrValueValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonObjectAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonObjectAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonObjectAttr) { 
+                delete pRtnMonObjectAttr; 
+                pRtnMonObjectAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonObjectAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonSyslogEvent (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonSyslogEvent: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonSyslogEvent_mutex);
+
+    int ioUserNumb = g_RspQryMonSyslogEvent_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonSyslogEvent_IOUser_vec.begin();
+        it != g_RspQryMonSyslogEvent_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonSyslogEvent_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonSyslogEvent_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonSyslogEvent_Data_map[*it].front());
+            g_RspQryMonSyslogEvent_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonSyslogEvent_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonSyslogEvent_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonSyslogEvent paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonSyslogEvent: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonSyslogEventField* pRspQryMonSyslogEvent = (CShfeFtdcRspQryMonSyslogEventField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonSyslogEvent = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonSyslogEvent").ToLocalChecked());
+            if (OnRspQryMonSyslogEvent->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonSyslogEvent);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonSyslogEventJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonSyslogEvent) { 
+                    string utf8string;
+                    v8::Local<v8::String> OccurTime = Nan::New<v8::String> ("OccurTime").ToLocalChecked();
+                    v8::Local<v8::Number> OccurTimeValue = Nan::New<v8::Number> (pRspQryMonSyslogEvent->OccurTime);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (OccurTime), Local<v8::Value>(OccurTimeValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonSyslogEvent->MonTime);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonSyslogEvent->ObjectID);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> EventID = Nan::New<v8::String> ("EventID").ToLocalChecked();
+                    v8::Local<v8::Number> EventIDValue = Nan::New<v8::Number> (pRspQryMonSyslogEvent->EventID);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (EventID), Local<v8::Value>(EventIDValue));
+
+                    v8::Local<v8::String> EventName = Nan::New<v8::String> ("EventName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonSyslogEvent->EventName, utf8string);
+                    v8::Local<v8::String> EventNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (EventName), Local<v8::Value>(EventNameValue));
+
+                    v8::Local<v8::String> EventDesc = Nan::New<v8::String> ("EventDesc").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonSyslogEvent->EventDesc, utf8string);
+                    v8::Local<v8::String> EventDescValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (EventDesc), Local<v8::Value>(EventDescValue));
+
+                    v8::Local<v8::String> EventDescFlag = Nan::New<v8::String> ("EventDescFlag").ToLocalChecked();
+                    v8::Local<v8::Integer> EventDescFlagValue = Nan::New<v8::Integer> (pRspQryMonSyslogEvent->EventDescFlag);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (EventDescFlag), Local<v8::Value>(EventDescFlagValue));
+
+                    v8::Local<v8::String> EventLevel = Nan::New<v8::String> ("EventLevel").ToLocalChecked();
+                    v8::Local<v8::Integer> EventLevelValue = Nan::New<v8::Integer> (pRspQryMonSyslogEvent->EventLevel);
+                    pRspQryMonSyslogEventJS->Set(Local<v8::Value> (EventLevel), Local<v8::Value>(EventLevelValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonSyslogEvent) { 
+                    params[0] = Local<v8::Value>(pRspQryMonSyslogEventJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonSyslogEvent) { 
+                delete pRspQryMonSyslogEvent; 
+                pRspQryMonSyslogEvent = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonSyslogEvent: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonSyslogEvent (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonSyslogEvent: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonSyslogEvent_mutex);
+
+    int ioUserNumb = g_RtnMonSyslogEvent_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonSyslogEvent_IOUser_vec.begin();
+        it != g_RtnMonSyslogEvent_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonSyslogEvent_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonSyslogEvent_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonSyslogEvent_Data_map[*it].front());
+            g_RtnMonSyslogEvent_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonSyslogEvent_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonSyslogEvent_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonSyslogEvent paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonSyslogEvent: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonSyslogEventField* pRtnMonSyslogEvent = (CShfeFtdcRtnMonSyslogEventField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonSyslogEvent = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonSyslogEvent").ToLocalChecked());
+            if (OnRtnMonSyslogEvent->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonSyslogEvent);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonSyslogEventJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonSyslogEvent) { 
+                    string utf8string;
+                    v8::Local<v8::String> OccurTime = Nan::New<v8::String> ("OccurTime").ToLocalChecked();
+                    v8::Local<v8::Number> OccurTimeValue = Nan::New<v8::Number> (pRtnMonSyslogEvent->OccurTime);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (OccurTime), Local<v8::Value>(OccurTimeValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonSyslogEvent->MonTime);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonSyslogEvent->ObjectID);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> EventID = Nan::New<v8::String> ("EventID").ToLocalChecked();
+                    v8::Local<v8::Number> EventIDValue = Nan::New<v8::Number> (pRtnMonSyslogEvent->EventID);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (EventID), Local<v8::Value>(EventIDValue));
+
+                    v8::Local<v8::String> EventName = Nan::New<v8::String> ("EventName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonSyslogEvent->EventName, utf8string);
+                    v8::Local<v8::String> EventNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (EventName), Local<v8::Value>(EventNameValue));
+
+                    v8::Local<v8::String> EventDesc = Nan::New<v8::String> ("EventDesc").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonSyslogEvent->EventDesc, utf8string);
+                    v8::Local<v8::String> EventDescValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (EventDesc), Local<v8::Value>(EventDescValue));
+
+                    v8::Local<v8::String> EventDescFlag = Nan::New<v8::String> ("EventDescFlag").ToLocalChecked();
+                    v8::Local<v8::Integer> EventDescFlagValue = Nan::New<v8::Integer> (pRtnMonSyslogEvent->EventDescFlag);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (EventDescFlag), Local<v8::Value>(EventDescFlagValue));
+
+                    v8::Local<v8::String> EventLevel = Nan::New<v8::String> ("EventLevel").ToLocalChecked();
+                    v8::Local<v8::Integer> EventLevelValue = Nan::New<v8::Integer> (pRtnMonSyslogEvent->EventLevel);
+                    pRtnMonSyslogEventJS->Set(Local<v8::Value> (EventLevel), Local<v8::Value>(EventLevelValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonSyslogEvent) { 
+                    params[0] = Local<v8::Value>(pRtnMonSyslogEventJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonSyslogEvent) { 
+                delete pRtnMonSyslogEvent; 
+                pRtnMonSyslogEvent = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonSyslogEvent: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonFileOffset (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonFileOffset: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonFileOffset_mutex);
+
+    int ioUserNumb = g_RspQryMonFileOffset_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonFileOffset_IOUser_vec.begin();
+        it != g_RspQryMonFileOffset_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonFileOffset_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonFileOffset_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonFileOffset_Data_map[*it].front());
+            g_RspQryMonFileOffset_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonFileOffset_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonFileOffset_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonFileOffset paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonFileOffset: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonFileOffsetField* pRspQryMonFileOffset = (CShfeFtdcRspQryMonFileOffsetField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonFileOffset = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonFileOffset").ToLocalChecked());
+            if (OnRspQryMonFileOffset->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonFileOffset);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonFileOffsetJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonFileOffset) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonFileOffset->ObjectID);
+                    pRspQryMonFileOffsetJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> FileName = Nan::New<v8::String> ("FileName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonFileOffset->FileName, utf8string);
+                    v8::Local<v8::String> FileNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonFileOffsetJS->Set(Local<v8::Value> (FileName), Local<v8::Value>(FileNameValue));
+
+                    v8::Local<v8::String> ReadOffset = Nan::New<v8::String> ("ReadOffset").ToLocalChecked();
+                    v8::Local<v8::Number> ReadOffsetValue = Nan::New<v8::Number> (pRspQryMonFileOffset->ReadOffset);
+                    pRspQryMonFileOffsetJS->Set(Local<v8::Value> (ReadOffset), Local<v8::Value>(ReadOffsetValue));
+
+                    v8::Local<v8::String> ReadTime = Nan::New<v8::String> ("ReadTime").ToLocalChecked();
+                    v8::Local<v8::Number> ReadTimeValue = Nan::New<v8::Number> (pRspQryMonFileOffset->ReadTime);
+                    pRspQryMonFileOffsetJS->Set(Local<v8::Value> (ReadTime), Local<v8::Value>(ReadTimeValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonFileOffset) { 
+                    params[0] = Local<v8::Value>(pRspQryMonFileOffsetJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonFileOffset) { 
+                delete pRspQryMonFileOffset; 
+                pRspQryMonFileOffset = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonFileOffset: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonFileOffset (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonFileOffset: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonFileOffset_mutex);
+
+    int ioUserNumb = g_RtnMonFileOffset_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonFileOffset_IOUser_vec.begin();
+        it != g_RtnMonFileOffset_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonFileOffset_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonFileOffset_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonFileOffset_Data_map[*it].front());
+            g_RtnMonFileOffset_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonFileOffset_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonFileOffset_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonFileOffset paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonFileOffset: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonFileOffsetField* pRtnMonFileOffset = (CShfeFtdcRtnMonFileOffsetField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonFileOffset = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonFileOffset").ToLocalChecked());
+            if (OnRtnMonFileOffset->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonFileOffset);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonFileOffsetJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonFileOffset) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonFileOffset->ObjectID);
+                    pRtnMonFileOffsetJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> FileName = Nan::New<v8::String> ("FileName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonFileOffset->FileName, utf8string);
+                    v8::Local<v8::String> FileNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonFileOffsetJS->Set(Local<v8::Value> (FileName), Local<v8::Value>(FileNameValue));
+
+                    v8::Local<v8::String> ReadOffset = Nan::New<v8::String> ("ReadOffset").ToLocalChecked();
+                    v8::Local<v8::Number> ReadOffsetValue = Nan::New<v8::Number> (pRtnMonFileOffset->ReadOffset);
+                    pRtnMonFileOffsetJS->Set(Local<v8::Value> (ReadOffset), Local<v8::Value>(ReadOffsetValue));
+
+                    v8::Local<v8::String> ReadTime = Nan::New<v8::String> ("ReadTime").ToLocalChecked();
+                    v8::Local<v8::Number> ReadTimeValue = Nan::New<v8::Number> (pRtnMonFileOffset->ReadTime);
+                    pRtnMonFileOffsetJS->Set(Local<v8::Value> (ReadTime), Local<v8::Value>(ReadTimeValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonFileOffset) { 
+                    params[0] = Local<v8::Value>(pRtnMonFileOffsetJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonFileOffset) { 
+                delete pRtnMonFileOffset; 
+                pRtnMonFileOffset = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonFileOffset: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonFileContent (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonFileContent: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonFileContent_mutex);
+
+    int ioUserNumb = g_RspQryMonFileContent_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonFileContent_IOUser_vec.begin();
+        it != g_RspQryMonFileContent_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonFileContent_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonFileContent_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonFileContent_Data_map[*it].front());
+            g_RspQryMonFileContent_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonFileContent_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonFileContent_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonFileContent paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonFileContent: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonFileContentField* pRspQryMonFileContent = (CShfeFtdcRspQryMonFileContentField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonFileContent = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonFileContent").ToLocalChecked());
+            if (OnRspQryMonFileContent->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonFileContent);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonFileContentJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonFileContent) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonFileContent->ObjectID);
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonFileContent->MonTime);
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> FileName = Nan::New<v8::String> ("FileName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonFileContent->FileName, utf8string);
+                    v8::Local<v8::String> FileNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (FileName), Local<v8::Value>(FileNameValue));
+
+                    v8::Local<v8::String> FileType = Nan::New<v8::String> ("FileType").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonFileContent->FileType, utf8string);
+                    v8::Local<v8::String> FileTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (FileType), Local<v8::Value>(FileTypeValue));
+
+                    v8::Local<v8::String> ContentOffset = Nan::New<v8::String> ("ContentOffset").ToLocalChecked();
+                    v8::Local<v8::Number> ContentOffsetValue = Nan::New<v8::Number> (pRspQryMonFileContent->ContentOffset);
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (ContentOffset), Local<v8::Value>(ContentOffsetValue));
+
+                    v8::Local<v8::String> ContentLength = Nan::New<v8::String> ("ContentLength").ToLocalChecked();
+                    v8::Local<v8::Integer> ContentLengthValue = Nan::New<v8::Integer> (pRspQryMonFileContent->ContentLength);
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (ContentLength), Local<v8::Value>(ContentLengthValue));
+
+                    v8::Local<v8::String> FileContent = Nan::New<v8::String> ("FileContent").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonFileContent->FileContent, utf8string);
+                    v8::Local<v8::String> FileContentValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonFileContentJS->Set(Local<v8::Value> (FileContent), Local<v8::Value>(FileContentValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonFileContent) { 
+                    params[0] = Local<v8::Value>(pRspQryMonFileContentJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonFileContent) { 
+                delete pRspQryMonFileContent; 
+                pRspQryMonFileContent = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonFileContent: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonFileContent (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonFileContent: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonFileContent_mutex);
+
+    int ioUserNumb = g_RtnMonFileContent_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonFileContent_IOUser_vec.begin();
+        it != g_RtnMonFileContent_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonFileContent_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonFileContent_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonFileContent_Data_map[*it].front());
+            g_RtnMonFileContent_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonFileContent_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonFileContent_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonFileContent paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonFileContent: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonFileContentField* pRtnMonFileContent = (CShfeFtdcRtnMonFileContentField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonFileContent = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonFileContent").ToLocalChecked());
+            if (OnRtnMonFileContent->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonFileContent);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonFileContentJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonFileContent) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonFileContent->ObjectID);
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonFileContent->MonTime);
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> FileName = Nan::New<v8::String> ("FileName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonFileContent->FileName, utf8string);
+                    v8::Local<v8::String> FileNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (FileName), Local<v8::Value>(FileNameValue));
+
+                    v8::Local<v8::String> FileType = Nan::New<v8::String> ("FileType").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonFileContent->FileType, utf8string);
+                    v8::Local<v8::String> FileTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (FileType), Local<v8::Value>(FileTypeValue));
+
+                    v8::Local<v8::String> ContentOffset = Nan::New<v8::String> ("ContentOffset").ToLocalChecked();
+                    v8::Local<v8::Number> ContentOffsetValue = Nan::New<v8::Number> (pRtnMonFileContent->ContentOffset);
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (ContentOffset), Local<v8::Value>(ContentOffsetValue));
+
+                    v8::Local<v8::String> ContentLength = Nan::New<v8::String> ("ContentLength").ToLocalChecked();
+                    v8::Local<v8::Integer> ContentLengthValue = Nan::New<v8::Integer> (pRtnMonFileContent->ContentLength);
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (ContentLength), Local<v8::Value>(ContentLengthValue));
+
+                    v8::Local<v8::String> FileContent = Nan::New<v8::String> ("FileContent").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonFileContent->FileContent, utf8string);
+                    v8::Local<v8::String> FileContentValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonFileContentJS->Set(Local<v8::Value> (FileContent), Local<v8::Value>(FileContentValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonFileContent) { 
+                    params[0] = Local<v8::Value>(pRtnMonFileContentJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonFileContent) { 
+                delete pRtnMonFileContent; 
+                pRtnMonFileContent = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonFileContent: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostCPUAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostCPUAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostCPUAttr_mutex);
+
+    int ioUserNumb = g_RspQryMonHostCPUAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostCPUAttr_IOUser_vec.begin();
+        it != g_RspQryMonHostCPUAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostCPUAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostCPUAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostCPUAttr_Data_map[*it].front());
+            g_RspQryMonHostCPUAttr_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostCPUAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostCPUAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostCPUAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostCPUAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostCPUAttrField* pRspQryMonHostCPUAttr = (CShfeFtdcRspQryMonHostCPUAttrField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostCPUAttr = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostCPUAttr").ToLocalChecked());
+            if (OnRspQryMonHostCPUAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostCPUAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostCPUAttrJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostCPUAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->ObjectID);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->MonTime);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> CpuID = Nan::New<v8::String> ("CpuID").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCPUAttr->CpuID, utf8string);
+                    v8::Local<v8::String> CpuIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (CpuID), Local<v8::Value>(CpuIDValue));
+
+                    v8::Local<v8::String> LOAD = Nan::New<v8::String> ("LOAD").ToLocalChecked();
+                    v8::Local<v8::Number> LOADValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->LOAD);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (LOAD), Local<v8::Value>(LOADValue));
+
+                    v8::Local<v8::String> USER = Nan::New<v8::String> ("USER").ToLocalChecked();
+                    v8::Local<v8::Number> USERValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->USER);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (USER), Local<v8::Value>(USERValue));
+
+                    v8::Local<v8::String> NICE = Nan::New<v8::String> ("NICE").ToLocalChecked();
+                    v8::Local<v8::Number> NICEValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->NICE);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (NICE), Local<v8::Value>(NICEValue));
+
+                    v8::Local<v8::String> SYS = Nan::New<v8::String> ("SYS").ToLocalChecked();
+                    v8::Local<v8::Number> SYSValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->SYS);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (SYS), Local<v8::Value>(SYSValue));
+
+                    v8::Local<v8::String> IDLE = Nan::New<v8::String> ("IDLE").ToLocalChecked();
+                    v8::Local<v8::Number> IDLEValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->IDLE);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (IDLE), Local<v8::Value>(IDLEValue));
+
+                    v8::Local<v8::String> BLOCK = Nan::New<v8::String> ("BLOCK").ToLocalChecked();
+                    v8::Local<v8::Number> BLOCKValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->BLOCK);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (BLOCK), Local<v8::Value>(BLOCKValue));
+
+                    v8::Local<v8::String> SWAIT = Nan::New<v8::String> ("SWAIT").ToLocalChecked();
+                    v8::Local<v8::Number> SWAITValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->SWAIT);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (SWAIT), Local<v8::Value>(SWAITValue));
+
+                    v8::Local<v8::String> INTR = Nan::New<v8::String> ("INTR").ToLocalChecked();
+                    v8::Local<v8::Number> INTRValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->INTR);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (INTR), Local<v8::Value>(INTRValue));
+
+                    v8::Local<v8::String> SSYS = Nan::New<v8::String> ("SSYS").ToLocalChecked();
+                    v8::Local<v8::Number> SSYSValue = Nan::New<v8::Number> (pRspQryMonHostCPUAttr->SSYS);
+                    pRspQryMonHostCPUAttrJS->Set(Local<v8::Value> (SSYS), Local<v8::Value>(SSYSValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostCPUAttr) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostCPUAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostCPUAttr) { 
+                delete pRspQryMonHostCPUAttr; 
+                pRspQryMonHostCPUAttr = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostCPUAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostCPUAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostCPUAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostCPUAttr_mutex);
+
+    int ioUserNumb = g_RtnMonHostCPUAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostCPUAttr_IOUser_vec.begin();
+        it != g_RtnMonHostCPUAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostCPUAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostCPUAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostCPUAttr_Data_map[*it].front());
+            g_RtnMonHostCPUAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostCPUAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostCPUAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostCPUAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostCPUAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostCPUAttrField* pRtnMonHostCPUAttr = (CShfeFtdcRtnMonHostCPUAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostCPUAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostCPUAttr").ToLocalChecked());
+            if (OnRtnMonHostCPUAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostCPUAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostCPUAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostCPUAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->ObjectID);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->MonTime);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> CpuID = Nan::New<v8::String> ("CpuID").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCPUAttr->CpuID, utf8string);
+                    v8::Local<v8::String> CpuIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (CpuID), Local<v8::Value>(CpuIDValue));
+
+                    v8::Local<v8::String> LOAD = Nan::New<v8::String> ("LOAD").ToLocalChecked();
+                    v8::Local<v8::Number> LOADValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->LOAD);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (LOAD), Local<v8::Value>(LOADValue));
+
+                    v8::Local<v8::String> USER = Nan::New<v8::String> ("USER").ToLocalChecked();
+                    v8::Local<v8::Number> USERValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->USER);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (USER), Local<v8::Value>(USERValue));
+
+                    v8::Local<v8::String> NICE = Nan::New<v8::String> ("NICE").ToLocalChecked();
+                    v8::Local<v8::Number> NICEValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->NICE);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (NICE), Local<v8::Value>(NICEValue));
+
+                    v8::Local<v8::String> SYS = Nan::New<v8::String> ("SYS").ToLocalChecked();
+                    v8::Local<v8::Number> SYSValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->SYS);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (SYS), Local<v8::Value>(SYSValue));
+
+                    v8::Local<v8::String> IDLE = Nan::New<v8::String> ("IDLE").ToLocalChecked();
+                    v8::Local<v8::Number> IDLEValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->IDLE);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (IDLE), Local<v8::Value>(IDLEValue));
+
+                    v8::Local<v8::String> BLOCK = Nan::New<v8::String> ("BLOCK").ToLocalChecked();
+                    v8::Local<v8::Number> BLOCKValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->BLOCK);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (BLOCK), Local<v8::Value>(BLOCKValue));
+
+                    v8::Local<v8::String> SWAIT = Nan::New<v8::String> ("SWAIT").ToLocalChecked();
+                    v8::Local<v8::Number> SWAITValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->SWAIT);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (SWAIT), Local<v8::Value>(SWAITValue));
+
+                    v8::Local<v8::String> INTR = Nan::New<v8::String> ("INTR").ToLocalChecked();
+                    v8::Local<v8::Number> INTRValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->INTR);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (INTR), Local<v8::Value>(INTRValue));
+
+                    v8::Local<v8::String> SSYS = Nan::New<v8::String> ("SSYS").ToLocalChecked();
+                    v8::Local<v8::Number> SSYSValue = Nan::New<v8::Number> (pRtnMonHostCPUAttr->SSYS);
+                    pRtnMonHostCPUAttrJS->Set(Local<v8::Value> (SSYS), Local<v8::Value>(SSYSValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostCPUAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostCPUAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostCPUAttr) { 
+                delete pRtnMonHostCPUAttr; 
+                pRtnMonHostCPUAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostCPUAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostMemAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostMemAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostMemAttr_mutex);
+
+    int ioUserNumb = g_RspQryMonHostMemAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostMemAttr_IOUser_vec.begin();
+        it != g_RspQryMonHostMemAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostMemAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostMemAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostMemAttr_Data_map[*it].front());
+            g_RspQryMonHostMemAttr_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostMemAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostMemAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostMemAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostMemAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostMemAttrField* pRspQryMonHostMemAttr = (CShfeFtdcRspQryMonHostMemAttrField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostMemAttr = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostMemAttr").ToLocalChecked());
+            if (OnRspQryMonHostMemAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostMemAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostMemAttrJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostMemAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostMemAttr->ObjectID);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostMemAttr->MonTime);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> TOTALREAL = Nan::New<v8::String> ("TOTALREAL").ToLocalChecked();
+                    v8::Local<v8::Integer> TOTALREALValue = Nan::New<v8::Integer> (pRspQryMonHostMemAttr->TOTALREAL);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (TOTALREAL), Local<v8::Value>(TOTALREALValue));
+
+                    v8::Local<v8::String> ACTIVEREAL = Nan::New<v8::String> ("ACTIVEREAL").ToLocalChecked();
+                    v8::Local<v8::Integer> ACTIVEREALValue = Nan::New<v8::Integer> (pRspQryMonHostMemAttr->ACTIVEREAL);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (ACTIVEREAL), Local<v8::Value>(ACTIVEREALValue));
+
+                    v8::Local<v8::String> TOTALVIRTUAL = Nan::New<v8::String> ("TOTALVIRTUAL").ToLocalChecked();
+                    v8::Local<v8::Integer> TOTALVIRTUALValue = Nan::New<v8::Integer> (pRspQryMonHostMemAttr->TOTALVIRTUAL);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (TOTALVIRTUAL), Local<v8::Value>(TOTALVIRTUALValue));
+
+                    v8::Local<v8::String> ACTIVEVIRTUAL = Nan::New<v8::String> ("ACTIVEVIRTUAL").ToLocalChecked();
+                    v8::Local<v8::Integer> ACTIVEVIRTUALValue = Nan::New<v8::Integer> (pRspQryMonHostMemAttr->ACTIVEVIRTUAL);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (ACTIVEVIRTUAL), Local<v8::Value>(ACTIVEVIRTUALValue));
+
+                    v8::Local<v8::String> FREE = Nan::New<v8::String> ("FREE").ToLocalChecked();
+                    v8::Local<v8::Integer> FREEValue = Nan::New<v8::Integer> (pRspQryMonHostMemAttr->FREE);
+                    pRspQryMonHostMemAttrJS->Set(Local<v8::Value> (FREE), Local<v8::Value>(FREEValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostMemAttr) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostMemAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostMemAttr) { 
+                delete pRspQryMonHostMemAttr; 
+                pRspQryMonHostMemAttr = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostMemAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostMemAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostMemAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostMemAttr_mutex);
+
+    int ioUserNumb = g_RtnMonHostMemAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostMemAttr_IOUser_vec.begin();
+        it != g_RtnMonHostMemAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostMemAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostMemAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostMemAttr_Data_map[*it].front());
+            g_RtnMonHostMemAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostMemAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostMemAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostMemAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostMemAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostMemAttrField* pRtnMonHostMemAttr = (CShfeFtdcRtnMonHostMemAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostMemAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostMemAttr").ToLocalChecked());
+            if (OnRtnMonHostMemAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostMemAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostMemAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostMemAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostMemAttr->ObjectID);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostMemAttr->MonTime);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> TOTALREAL = Nan::New<v8::String> ("TOTALREAL").ToLocalChecked();
+                    v8::Local<v8::Integer> TOTALREALValue = Nan::New<v8::Integer> (pRtnMonHostMemAttr->TOTALREAL);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (TOTALREAL), Local<v8::Value>(TOTALREALValue));
+
+                    v8::Local<v8::String> ACTIVEREAL = Nan::New<v8::String> ("ACTIVEREAL").ToLocalChecked();
+                    v8::Local<v8::Integer> ACTIVEREALValue = Nan::New<v8::Integer> (pRtnMonHostMemAttr->ACTIVEREAL);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (ACTIVEREAL), Local<v8::Value>(ACTIVEREALValue));
+
+                    v8::Local<v8::String> TOTALVIRTUAL = Nan::New<v8::String> ("TOTALVIRTUAL").ToLocalChecked();
+                    v8::Local<v8::Integer> TOTALVIRTUALValue = Nan::New<v8::Integer> (pRtnMonHostMemAttr->TOTALVIRTUAL);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (TOTALVIRTUAL), Local<v8::Value>(TOTALVIRTUALValue));
+
+                    v8::Local<v8::String> ACTIVEVIRTUAL = Nan::New<v8::String> ("ACTIVEVIRTUAL").ToLocalChecked();
+                    v8::Local<v8::Integer> ACTIVEVIRTUALValue = Nan::New<v8::Integer> (pRtnMonHostMemAttr->ACTIVEVIRTUAL);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (ACTIVEVIRTUAL), Local<v8::Value>(ACTIVEVIRTUALValue));
+
+                    v8::Local<v8::String> FREE = Nan::New<v8::String> ("FREE").ToLocalChecked();
+                    v8::Local<v8::Integer> FREEValue = Nan::New<v8::Integer> (pRtnMonHostMemAttr->FREE);
+                    pRtnMonHostMemAttrJS->Set(Local<v8::Value> (FREE), Local<v8::Value>(FREEValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostMemAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostMemAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostMemAttr) { 
+                delete pRtnMonHostMemAttr; 
+                pRtnMonHostMemAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostMemAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostFileSystemAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostFileSystemAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostFileSystemAttr_mutex);
+
+    int ioUserNumb = g_RtnMonHostFileSystemAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostFileSystemAttr_IOUser_vec.begin();
+        it != g_RtnMonHostFileSystemAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostFileSystemAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostFileSystemAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostFileSystemAttr_Data_map[*it].front());
+            g_RtnMonHostFileSystemAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostFileSystemAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostFileSystemAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostFileSystemAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostFileSystemAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostFileSystemAttrField* pRtnMonHostFileSystemAttr = (CShfeFtdcRtnMonHostFileSystemAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostFileSystemAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostFileSystemAttr").ToLocalChecked());
+            if (OnRtnMonHostFileSystemAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostFileSystemAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostFileSystemAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostFileSystemAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->ObjectID);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->MonTime);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> FILESYSTEM = Nan::New<v8::String> ("FILESYSTEM").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSystemAttr->FILESYSTEM, utf8string);
+                    v8::Local<v8::String> FILESYSTEMValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (FILESYSTEM), Local<v8::Value>(FILESYSTEMValue));
+
+                    v8::Local<v8::String> MountedOn = Nan::New<v8::String> ("MountedOn").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSystemAttr->MountedOn, utf8string);
+                    v8::Local<v8::String> MountedOnValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (MountedOn), Local<v8::Value>(MountedOnValue));
+
+                    v8::Local<v8::String> FSTYPE = Nan::New<v8::String> ("FSTYPE").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSystemAttr->FSTYPE, utf8string);
+                    v8::Local<v8::String> FSTYPEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (FSTYPE), Local<v8::Value>(FSTYPEValue));
+
+                    v8::Local<v8::String> SIZE = Nan::New<v8::String> ("SIZE").ToLocalChecked();
+                    v8::Local<v8::Number> SIZEValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->SIZE);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (SIZE), Local<v8::Value>(SIZEValue));
+
+                    v8::Local<v8::String> AVAIL = Nan::New<v8::String> ("AVAIL").ToLocalChecked();
+                    v8::Local<v8::Number> AVAILValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->AVAIL);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (AVAIL), Local<v8::Value>(AVAILValue));
+
+                    v8::Local<v8::String> USED = Nan::New<v8::String> ("USED").ToLocalChecked();
+                    v8::Local<v8::Number> USEDValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->USED);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (USED), Local<v8::Value>(USEDValue));
+
+                    v8::Local<v8::String> pUSERD = Nan::New<v8::String> ("pUSERD").ToLocalChecked();
+                    v8::Local<v8::Number> pUSERDValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->pUSERD);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (pUSERD), Local<v8::Value>(pUSERDValue));
+
+                    v8::Local<v8::String> ISIZE = Nan::New<v8::String> ("ISIZE").ToLocalChecked();
+                    v8::Local<v8::Number> ISIZEValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->ISIZE);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (ISIZE), Local<v8::Value>(ISIZEValue));
+
+                    v8::Local<v8::String> IFREE = Nan::New<v8::String> ("IFREE").ToLocalChecked();
+                    v8::Local<v8::Number> IFREEValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->IFREE);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (IFREE), Local<v8::Value>(IFREEValue));
+
+                    v8::Local<v8::String> IUSED = Nan::New<v8::String> ("IUSED").ToLocalChecked();
+                    v8::Local<v8::Number> IUSEDValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->IUSED);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (IUSED), Local<v8::Value>(IUSEDValue));
+
+                    v8::Local<v8::String> pIUSED = Nan::New<v8::String> ("pIUSED").ToLocalChecked();
+                    v8::Local<v8::Number> pIUSEDValue = Nan::New<v8::Number> (pRtnMonHostFileSystemAttr->pIUSED);
+                    pRtnMonHostFileSystemAttrJS->Set(Local<v8::Value> (pIUSED), Local<v8::Value>(pIUSEDValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostFileSystemAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostFileSystemAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostFileSystemAttr) { 
+                delete pRtnMonHostFileSystemAttr; 
+                pRtnMonHostFileSystemAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostFileSystemAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostUserInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostUserInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostUserInfo_mutex);
+
+    int ioUserNumb = g_RtnMonHostUserInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostUserInfo_IOUser_vec.begin();
+        it != g_RtnMonHostUserInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostUserInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostUserInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostUserInfo_Data_map[*it].front());
+            g_RtnMonHostUserInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostUserInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostUserInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostUserInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostUserInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostUserInfoField* pRtnMonHostUserInfo = (CShfeFtdcRtnMonHostUserInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostUserInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostUserInfo").ToLocalChecked());
+            if (OnRtnMonHostUserInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostUserInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostUserInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostUserInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostUserInfo->ObjectID);
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostUserInfo->MonTime);
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> USERNAME = Nan::New<v8::String> ("USERNAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostUserInfo->USERNAME, utf8string);
+                    v8::Local<v8::String> USERNAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (USERNAME), Local<v8::Value>(USERNAMEValue));
+
+                    v8::Local<v8::String> PASSWORD = Nan::New<v8::String> ("PASSWORD").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostUserInfo->PASSWORD, utf8string);
+                    v8::Local<v8::String> PASSWORDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (PASSWORD), Local<v8::Value>(PASSWORDValue));
+
+                    v8::Local<v8::String> UID = Nan::New<v8::String> ("UID").ToLocalChecked();
+                    v8::Local<v8::Integer> UIDValue = Nan::New<v8::Integer> (pRtnMonHostUserInfo->UID);
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (UID), Local<v8::Value>(UIDValue));
+
+                    v8::Local<v8::String> GID = Nan::New<v8::String> ("GID").ToLocalChecked();
+                    v8::Local<v8::Integer> GIDValue = Nan::New<v8::Integer> (pRtnMonHostUserInfo->GID);
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (GID), Local<v8::Value>(GIDValue));
+
+                    v8::Local<v8::String> HOMEDIR = Nan::New<v8::String> ("HOMEDIR").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostUserInfo->HOMEDIR, utf8string);
+                    v8::Local<v8::String> HOMEDIRValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (HOMEDIR), Local<v8::Value>(HOMEDIRValue));
+
+                    v8::Local<v8::String> USERSHELL = Nan::New<v8::String> ("USERSHELL").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostUserInfo->USERSHELL, utf8string);
+                    v8::Local<v8::String> USERSHELLValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (USERSHELL), Local<v8::Value>(USERSHELLValue));
+
+                    v8::Local<v8::String> GROUPNAME = Nan::New<v8::String> ("GROUPNAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostUserInfo->GROUPNAME, utf8string);
+                    v8::Local<v8::String> GROUPNAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostUserInfoJS->Set(Local<v8::Value> (GROUPNAME), Local<v8::Value>(GROUPNAMEValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostUserInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostUserInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostUserInfo) { 
+                delete pRtnMonHostUserInfo; 
+                pRtnMonHostUserInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostUserInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostOnlineUserInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostOnlineUserInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostOnlineUserInfo_mutex);
+
+    int ioUserNumb = g_RtnMonHostOnlineUserInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostOnlineUserInfo_IOUser_vec.begin();
+        it != g_RtnMonHostOnlineUserInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostOnlineUserInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostOnlineUserInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostOnlineUserInfo_Data_map[*it].front());
+            g_RtnMonHostOnlineUserInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostOnlineUserInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostOnlineUserInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostOnlineUserInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostOnlineUserInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostOnlineUserInfoField* pRtnMonHostOnlineUserInfo = (CShfeFtdcRtnMonHostOnlineUserInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostOnlineUserInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostOnlineUserInfo").ToLocalChecked());
+            if (OnRtnMonHostOnlineUserInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostOnlineUserInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostOnlineUserInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostOnlineUserInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostOnlineUserInfo->ObjectID);
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostOnlineUserInfo->MonTime);
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> USERNAME = Nan::New<v8::String> ("USERNAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostOnlineUserInfo->USERNAME, utf8string);
+                    v8::Local<v8::String> USERNAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (USERNAME), Local<v8::Value>(USERNAMEValue));
+
+                    v8::Local<v8::String> TIME = Nan::New<v8::String> ("TIME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostOnlineUserInfo->TIME, utf8string);
+                    v8::Local<v8::String> TIMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (TIME), Local<v8::Value>(TIMEValue));
+
+                    v8::Local<v8::String> TTY = Nan::New<v8::String> ("TTY").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostOnlineUserInfo->TTY, utf8string);
+                    v8::Local<v8::String> TTYValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (TTY), Local<v8::Value>(TTYValue));
+
+                    v8::Local<v8::String> IP = Nan::New<v8::String> ("IP").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostOnlineUserInfo->IP, utf8string);
+                    v8::Local<v8::String> IPValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (IP), Local<v8::Value>(IPValue));
+
+                    v8::Local<v8::String> PID = Nan::New<v8::String> ("PID").ToLocalChecked();
+                    v8::Local<v8::Integer> PIDValue = Nan::New<v8::Integer> (pRtnMonHostOnlineUserInfo->PID);
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (PID), Local<v8::Value>(PIDValue));
+
+                    v8::Local<v8::String> CONNECTIME = Nan::New<v8::String> ("CONNECTIME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostOnlineUserInfo->CONNECTIME, utf8string);
+                    v8::Local<v8::String> CONNECTIMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostOnlineUserInfoJS->Set(Local<v8::Value> (CONNECTIME), Local<v8::Value>(CONNECTIMEValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostOnlineUserInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostOnlineUserInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostOnlineUserInfo) { 
+                delete pRtnMonHostOnlineUserInfo; 
+                pRtnMonHostOnlineUserInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostOnlineUserInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostNetworkAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostNetworkAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostNetworkAttr_mutex);
+
+    int ioUserNumb = g_RspQryMonHostNetworkAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostNetworkAttr_IOUser_vec.begin();
+        it != g_RspQryMonHostNetworkAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostNetworkAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostNetworkAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostNetworkAttr_Data_map[*it].front());
+            g_RspQryMonHostNetworkAttr_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostNetworkAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostNetworkAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostNetworkAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostNetworkAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostNetworkAttrField* pRspQryMonHostNetworkAttr = (CShfeFtdcRspQryMonHostNetworkAttrField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostNetworkAttr = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostNetworkAttr").ToLocalChecked());
+            if (OnRspQryMonHostNetworkAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostNetworkAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostNetworkAttrJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostNetworkAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->ObjectID);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->MonTime);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> NAME = Nan::New<v8::String> ("NAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkAttr->NAME, utf8string);
+                    v8::Local<v8::String> NAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (NAME), Local<v8::Value>(NAMEValue));
+
+                    v8::Local<v8::String> STATUS = Nan::New<v8::String> ("STATUS").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkAttr->STATUS, utf8string);
+                    v8::Local<v8::String> STATUSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (STATUS), Local<v8::Value>(STATUSValue));
+
+                    v8::Local<v8::String> IPADDRESS = Nan::New<v8::String> ("IPADDRESS").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkAttr->IPADDRESS, utf8string);
+                    v8::Local<v8::String> IPADDRESSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (IPADDRESS), Local<v8::Value>(IPADDRESSValue));
+
+                    v8::Local<v8::String> MASK = Nan::New<v8::String> ("MASK").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkAttr->MASK, utf8string);
+                    v8::Local<v8::String> MASKValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (MASK), Local<v8::Value>(MASKValue));
+
+                    v8::Local<v8::String> MAC = Nan::New<v8::String> ("MAC").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkAttr->MAC, utf8string);
+                    v8::Local<v8::String> MACValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (MAC), Local<v8::Value>(MACValue));
+
+                    v8::Local<v8::String> RCVBYTES = Nan::New<v8::String> ("RCVBYTES").ToLocalChecked();
+                    v8::Local<v8::Number> RCVBYTESValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->RCVBYTES);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVBYTES), Local<v8::Value>(RCVBYTESValue));
+
+                    v8::Local<v8::String> RCVPKGS = Nan::New<v8::String> ("RCVPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->RCVPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVPKGS), Local<v8::Value>(RCVPKGSValue));
+
+                    v8::Local<v8::String> RCVERRPKGS = Nan::New<v8::String> ("RCVERRPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVERRPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->RCVERRPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVERRPKGS), Local<v8::Value>(RCVERRPKGSValue));
+
+                    v8::Local<v8::String> RCVDRPPKGS = Nan::New<v8::String> ("RCVDRPPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVDRPPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->RCVDRPPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVDRPPKGS), Local<v8::Value>(RCVDRPPKGSValue));
+
+                    v8::Local<v8::String> SNDBYTES = Nan::New<v8::String> ("SNDBYTES").ToLocalChecked();
+                    v8::Local<v8::Number> SNDBYTESValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->SNDBYTES);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDBYTES), Local<v8::Value>(SNDBYTESValue));
+
+                    v8::Local<v8::String> SNDPKGS = Nan::New<v8::String> ("SNDPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->SNDPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDPKGS), Local<v8::Value>(SNDPKGSValue));
+
+                    v8::Local<v8::String> SNDERRPKGS = Nan::New<v8::String> ("SNDERRPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDERRPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->SNDERRPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDERRPKGS), Local<v8::Value>(SNDERRPKGSValue));
+
+                    v8::Local<v8::String> SNDDRPPKGS = Nan::New<v8::String> ("SNDDRPPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDDRPPKGSValue = Nan::New<v8::Number> (pRspQryMonHostNetworkAttr->SNDDRPPKGS);
+                    pRspQryMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDDRPPKGS), Local<v8::Value>(SNDDRPPKGSValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostNetworkAttr) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostNetworkAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostNetworkAttr) { 
+                delete pRspQryMonHostNetworkAttr; 
+                pRspQryMonHostNetworkAttr = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostNetworkAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostNetworkAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostNetworkAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostNetworkAttr_mutex);
+
+    int ioUserNumb = g_RtnMonHostNetworkAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostNetworkAttr_IOUser_vec.begin();
+        it != g_RtnMonHostNetworkAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostNetworkAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostNetworkAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostNetworkAttr_Data_map[*it].front());
+            g_RtnMonHostNetworkAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostNetworkAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostNetworkAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostNetworkAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostNetworkAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostNetworkAttrField* pRtnMonHostNetworkAttr = (CShfeFtdcRtnMonHostNetworkAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostNetworkAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostNetworkAttr").ToLocalChecked());
+            if (OnRtnMonHostNetworkAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostNetworkAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostNetworkAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostNetworkAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->ObjectID);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->MonTime);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> NAME = Nan::New<v8::String> ("NAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkAttr->NAME, utf8string);
+                    v8::Local<v8::String> NAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (NAME), Local<v8::Value>(NAMEValue));
+
+                    v8::Local<v8::String> STATUS = Nan::New<v8::String> ("STATUS").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkAttr->STATUS, utf8string);
+                    v8::Local<v8::String> STATUSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (STATUS), Local<v8::Value>(STATUSValue));
+
+                    v8::Local<v8::String> IPADDRESS = Nan::New<v8::String> ("IPADDRESS").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkAttr->IPADDRESS, utf8string);
+                    v8::Local<v8::String> IPADDRESSValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (IPADDRESS), Local<v8::Value>(IPADDRESSValue));
+
+                    v8::Local<v8::String> MASK = Nan::New<v8::String> ("MASK").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkAttr->MASK, utf8string);
+                    v8::Local<v8::String> MASKValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (MASK), Local<v8::Value>(MASKValue));
+
+                    v8::Local<v8::String> MAC = Nan::New<v8::String> ("MAC").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkAttr->MAC, utf8string);
+                    v8::Local<v8::String> MACValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (MAC), Local<v8::Value>(MACValue));
+
+                    v8::Local<v8::String> RCVBYTES = Nan::New<v8::String> ("RCVBYTES").ToLocalChecked();
+                    v8::Local<v8::Number> RCVBYTESValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->RCVBYTES);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVBYTES), Local<v8::Value>(RCVBYTESValue));
+
+                    v8::Local<v8::String> RCVPKGS = Nan::New<v8::String> ("RCVPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->RCVPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVPKGS), Local<v8::Value>(RCVPKGSValue));
+
+                    v8::Local<v8::String> RCVERRPKGS = Nan::New<v8::String> ("RCVERRPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVERRPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->RCVERRPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVERRPKGS), Local<v8::Value>(RCVERRPKGSValue));
+
+                    v8::Local<v8::String> RCVDRPPKGS = Nan::New<v8::String> ("RCVDRPPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> RCVDRPPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->RCVDRPPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (RCVDRPPKGS), Local<v8::Value>(RCVDRPPKGSValue));
+
+                    v8::Local<v8::String> SNDBYTES = Nan::New<v8::String> ("SNDBYTES").ToLocalChecked();
+                    v8::Local<v8::Number> SNDBYTESValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->SNDBYTES);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDBYTES), Local<v8::Value>(SNDBYTESValue));
+
+                    v8::Local<v8::String> SNDPKGS = Nan::New<v8::String> ("SNDPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->SNDPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDPKGS), Local<v8::Value>(SNDPKGSValue));
+
+                    v8::Local<v8::String> SNDERRPKGS = Nan::New<v8::String> ("SNDERRPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDERRPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->SNDERRPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDERRPKGS), Local<v8::Value>(SNDERRPKGSValue));
+
+                    v8::Local<v8::String> SNDDRPPKGS = Nan::New<v8::String> ("SNDDRPPKGS").ToLocalChecked();
+                    v8::Local<v8::Number> SNDDRPPKGSValue = Nan::New<v8::Number> (pRtnMonHostNetworkAttr->SNDDRPPKGS);
+                    pRtnMonHostNetworkAttrJS->Set(Local<v8::Value> (SNDDRPPKGS), Local<v8::Value>(SNDDRPPKGSValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostNetworkAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostNetworkAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostNetworkAttr) { 
+                delete pRtnMonHostNetworkAttr; 
+                pRtnMonHostNetworkAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostNetworkAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostStatInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostStatInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostStatInfo_mutex);
+
+    int ioUserNumb = g_RspQryMonHostStatInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostStatInfo_IOUser_vec.begin();
+        it != g_RspQryMonHostStatInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostStatInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostStatInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostStatInfo_Data_map[*it].front());
+            g_RspQryMonHostStatInfo_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostStatInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostStatInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostStatInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostStatInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostStatInfoField* pRspQryMonHostStatInfo = (CShfeFtdcRspQryMonHostStatInfoField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostStatInfo = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostStatInfo").ToLocalChecked());
+            if (OnRspQryMonHostStatInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostStatInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostStatInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostStatInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->ObjectID);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->MonTime);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ProcRun = Nan::New<v8::String> ("ProcRun").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcRunValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->ProcRun);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (ProcRun), Local<v8::Value>(ProcRunValue));
+
+                    v8::Local<v8::String> ProcBlk = Nan::New<v8::String> ("ProcBlk").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcBlkValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->ProcBlk);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (ProcBlk), Local<v8::Value>(ProcBlkValue));
+
+                    v8::Local<v8::String> SwapIn = Nan::New<v8::String> ("SwapIn").ToLocalChecked();
+                    v8::Local<v8::Integer> SwapInValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->SwapIn);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (SwapIn), Local<v8::Value>(SwapInValue));
+
+                    v8::Local<v8::String> SwapOut = Nan::New<v8::String> ("SwapOut").ToLocalChecked();
+                    v8::Local<v8::Integer> SwapOutValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->SwapOut);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (SwapOut), Local<v8::Value>(SwapOutValue));
+
+                    v8::Local<v8::String> BlockIn = Nan::New<v8::String> ("BlockIn").ToLocalChecked();
+                    v8::Local<v8::Integer> BlockInValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->BlockIn);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (BlockIn), Local<v8::Value>(BlockInValue));
+
+                    v8::Local<v8::String> BlockOut = Nan::New<v8::String> ("BlockOut").ToLocalChecked();
+                    v8::Local<v8::Integer> BlockOutValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->BlockOut);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (BlockOut), Local<v8::Value>(BlockOutValue));
+
+                    v8::Local<v8::String> Inter = Nan::New<v8::String> ("Inter").ToLocalChecked();
+                    v8::Local<v8::Integer> InterValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->Inter);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (Inter), Local<v8::Value>(InterValue));
+
+                    v8::Local<v8::String> Context = Nan::New<v8::String> ("Context").ToLocalChecked();
+                    v8::Local<v8::Integer> ContextValue = Nan::New<v8::Integer> (pRspQryMonHostStatInfo->Context);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (Context), Local<v8::Value>(ContextValue));
+
+                    v8::Local<v8::String> CPUUser = Nan::New<v8::String> ("CPUUser").ToLocalChecked();
+                    v8::Local<v8::Number> CPUUserValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->CPUUser);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (CPUUser), Local<v8::Value>(CPUUserValue));
+
+                    v8::Local<v8::String> CPUSys = Nan::New<v8::String> ("CPUSys").ToLocalChecked();
+                    v8::Local<v8::Number> CPUSysValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->CPUSys);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (CPUSys), Local<v8::Value>(CPUSysValue));
+
+                    v8::Local<v8::String> CPUIdle = Nan::New<v8::String> ("CPUIdle").ToLocalChecked();
+                    v8::Local<v8::Number> CPUIdleValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->CPUIdle);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (CPUIdle), Local<v8::Value>(CPUIdleValue));
+
+                    v8::Local<v8::String> CPUIOWait = Nan::New<v8::String> ("CPUIOWait").ToLocalChecked();
+                    v8::Local<v8::Number> CPUIOWaitValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->CPUIOWait);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (CPUIOWait), Local<v8::Value>(CPUIOWaitValue));
+
+                    v8::Local<v8::String> CPUSteal = Nan::New<v8::String> ("CPUSteal").ToLocalChecked();
+                    v8::Local<v8::Number> CPUStealValue = Nan::New<v8::Number> (pRspQryMonHostStatInfo->CPUSteal);
+                    pRspQryMonHostStatInfoJS->Set(Local<v8::Value> (CPUSteal), Local<v8::Value>(CPUStealValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostStatInfo) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostStatInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostStatInfo) { 
+                delete pRspQryMonHostStatInfo; 
+                pRspQryMonHostStatInfo = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostStatInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostStatInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostStatInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostStatInfo_mutex);
+
+    int ioUserNumb = g_RtnMonHostStatInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostStatInfo_IOUser_vec.begin();
+        it != g_RtnMonHostStatInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostStatInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostStatInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostStatInfo_Data_map[*it].front());
+            g_RtnMonHostStatInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostStatInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostStatInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostStatInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostStatInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostStatInfoField* pRtnMonHostStatInfo = (CShfeFtdcRtnMonHostStatInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostStatInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostStatInfo").ToLocalChecked());
+            if (OnRtnMonHostStatInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostStatInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostStatInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostStatInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->ObjectID);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->MonTime);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> ProcRun = Nan::New<v8::String> ("ProcRun").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcRunValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->ProcRun);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (ProcRun), Local<v8::Value>(ProcRunValue));
+
+                    v8::Local<v8::String> ProcBlk = Nan::New<v8::String> ("ProcBlk").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcBlkValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->ProcBlk);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (ProcBlk), Local<v8::Value>(ProcBlkValue));
+
+                    v8::Local<v8::String> SwapIn = Nan::New<v8::String> ("SwapIn").ToLocalChecked();
+                    v8::Local<v8::Integer> SwapInValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->SwapIn);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (SwapIn), Local<v8::Value>(SwapInValue));
+
+                    v8::Local<v8::String> SwapOut = Nan::New<v8::String> ("SwapOut").ToLocalChecked();
+                    v8::Local<v8::Integer> SwapOutValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->SwapOut);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (SwapOut), Local<v8::Value>(SwapOutValue));
+
+                    v8::Local<v8::String> BlockIn = Nan::New<v8::String> ("BlockIn").ToLocalChecked();
+                    v8::Local<v8::Integer> BlockInValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->BlockIn);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (BlockIn), Local<v8::Value>(BlockInValue));
+
+                    v8::Local<v8::String> BlockOut = Nan::New<v8::String> ("BlockOut").ToLocalChecked();
+                    v8::Local<v8::Integer> BlockOutValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->BlockOut);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (BlockOut), Local<v8::Value>(BlockOutValue));
+
+                    v8::Local<v8::String> Inter = Nan::New<v8::String> ("Inter").ToLocalChecked();
+                    v8::Local<v8::Integer> InterValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->Inter);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (Inter), Local<v8::Value>(InterValue));
+
+                    v8::Local<v8::String> Context = Nan::New<v8::String> ("Context").ToLocalChecked();
+                    v8::Local<v8::Integer> ContextValue = Nan::New<v8::Integer> (pRtnMonHostStatInfo->Context);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (Context), Local<v8::Value>(ContextValue));
+
+                    v8::Local<v8::String> CPUUser = Nan::New<v8::String> ("CPUUser").ToLocalChecked();
+                    v8::Local<v8::Number> CPUUserValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->CPUUser);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (CPUUser), Local<v8::Value>(CPUUserValue));
+
+                    v8::Local<v8::String> CPUSys = Nan::New<v8::String> ("CPUSys").ToLocalChecked();
+                    v8::Local<v8::Number> CPUSysValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->CPUSys);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (CPUSys), Local<v8::Value>(CPUSysValue));
+
+                    v8::Local<v8::String> CPUIdle = Nan::New<v8::String> ("CPUIdle").ToLocalChecked();
+                    v8::Local<v8::Number> CPUIdleValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->CPUIdle);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (CPUIdle), Local<v8::Value>(CPUIdleValue));
+
+                    v8::Local<v8::String> CPUIOWait = Nan::New<v8::String> ("CPUIOWait").ToLocalChecked();
+                    v8::Local<v8::Number> CPUIOWaitValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->CPUIOWait);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (CPUIOWait), Local<v8::Value>(CPUIOWaitValue));
+
+                    v8::Local<v8::String> CPUSteal = Nan::New<v8::String> ("CPUSteal").ToLocalChecked();
+                    v8::Local<v8::Number> CPUStealValue = Nan::New<v8::Number> (pRtnMonHostStatInfo->CPUSteal);
+                    pRtnMonHostStatInfoJS->Set(Local<v8::Value> (CPUSteal), Local<v8::Value>(CPUStealValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostStatInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostStatInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostStatInfo) { 
+                delete pRtnMonHostStatInfo; 
+                pRtnMonHostStatInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostStatInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostDiskIOAttr (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostDiskIOAttr: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostDiskIOAttr_mutex);
+
+    int ioUserNumb = g_RtnMonHostDiskIOAttr_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostDiskIOAttr_IOUser_vec.begin();
+        it != g_RtnMonHostDiskIOAttr_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostDiskIOAttr_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostDiskIOAttr_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostDiskIOAttr_Data_map[*it].front());
+            g_RtnMonHostDiskIOAttr_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostDiskIOAttr_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostDiskIOAttr_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostDiskIOAttr paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostDiskIOAttr: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostDiskIOAttrField* pRtnMonHostDiskIOAttr = (CShfeFtdcRtnMonHostDiskIOAttrField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostDiskIOAttr = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostDiskIOAttr").ToLocalChecked());
+            if (OnRtnMonHostDiskIOAttr->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostDiskIOAttr);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostDiskIOAttrJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostDiskIOAttr) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->ObjectID);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->MonTime);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> PartName = Nan::New<v8::String> ("PartName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostDiskIOAttr->PartName, utf8string);
+                    v8::Local<v8::String> PartNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (PartName), Local<v8::Value>(PartNameValue));
+
+                    v8::Local<v8::String> ReadMerges = Nan::New<v8::String> ("ReadMerges").ToLocalChecked();
+                    v8::Local<v8::Number> ReadMergesValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->ReadMerges);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (ReadMerges), Local<v8::Value>(ReadMergesValue));
+
+                    v8::Local<v8::String> WriteMerges = Nan::New<v8::String> ("WriteMerges").ToLocalChecked();
+                    v8::Local<v8::Number> WriteMergesValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->WriteMerges);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (WriteMerges), Local<v8::Value>(WriteMergesValue));
+
+                    v8::Local<v8::String> ReadIOs = Nan::New<v8::String> ("ReadIOs").ToLocalChecked();
+                    v8::Local<v8::Number> ReadIOsValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->ReadIOs);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (ReadIOs), Local<v8::Value>(ReadIOsValue));
+
+                    v8::Local<v8::String> WriteIOs = Nan::New<v8::String> ("WriteIOs").ToLocalChecked();
+                    v8::Local<v8::Number> WriteIOsValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->WriteIOs);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (WriteIOs), Local<v8::Value>(WriteIOsValue));
+
+                    v8::Local<v8::String> ReadKBs = Nan::New<v8::String> ("ReadKBs").ToLocalChecked();
+                    v8::Local<v8::Number> ReadKBsValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->ReadKBs);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (ReadKBs), Local<v8::Value>(ReadKBsValue));
+
+                    v8::Local<v8::String> WriteKBs = Nan::New<v8::String> ("WriteKBs").ToLocalChecked();
+                    v8::Local<v8::Number> WriteKBsValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->WriteKBs);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (WriteKBs), Local<v8::Value>(WriteKBsValue));
+
+                    v8::Local<v8::String> SizeVal = Nan::New<v8::String> ("SizeVal").ToLocalChecked();
+                    v8::Local<v8::Number> SizeValValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->SizeVal);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (SizeVal), Local<v8::Value>(SizeValValue));
+
+                    v8::Local<v8::String> QueueVal = Nan::New<v8::String> ("QueueVal").ToLocalChecked();
+                    v8::Local<v8::Number> QueueValValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->QueueVal);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (QueueVal), Local<v8::Value>(QueueValValue));
+
+                    v8::Local<v8::String> Svc_t = Nan::New<v8::String> ("Svc_t").ToLocalChecked();
+                    v8::Local<v8::Number> Svc_tValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->Svc_t);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (Svc_t), Local<v8::Value>(Svc_tValue));
+
+                    v8::Local<v8::String> Busy = Nan::New<v8::String> ("Busy").ToLocalChecked();
+                    v8::Local<v8::Number> BusyValue = Nan::New<v8::Number> (pRtnMonHostDiskIOAttr->Busy);
+                    pRtnMonHostDiskIOAttrJS->Set(Local<v8::Value> (Busy), Local<v8::Value>(BusyValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostDiskIOAttr) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostDiskIOAttrJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostDiskIOAttr) { 
+                delete pRtnMonHostDiskIOAttr; 
+                pRtnMonHostDiskIOAttr = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostDiskIOAttr: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostRouterInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostRouterInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostRouterInfo_mutex);
+
+    int ioUserNumb = g_RspQryMonHostRouterInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostRouterInfo_IOUser_vec.begin();
+        it != g_RspQryMonHostRouterInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostRouterInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostRouterInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostRouterInfo_Data_map[*it].front());
+            g_RspQryMonHostRouterInfo_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostRouterInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostRouterInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostRouterInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostRouterInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostRouterInfoField* pRspQryMonHostRouterInfo = (CShfeFtdcRspQryMonHostRouterInfoField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostRouterInfo = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostRouterInfo").ToLocalChecked());
+            if (OnRspQryMonHostRouterInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostRouterInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostRouterInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostRouterInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostRouterInfo->ObjectID);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostRouterInfo->MonTime);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> Dev = Nan::New<v8::String> ("Dev").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostRouterInfo->Dev, utf8string);
+                    v8::Local<v8::String> DevValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Dev), Local<v8::Value>(DevValue));
+
+                    v8::Local<v8::String> Destination = Nan::New<v8::String> ("Destination").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostRouterInfo->Destination, utf8string);
+                    v8::Local<v8::String> DestinationValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Destination), Local<v8::Value>(DestinationValue));
+
+                    v8::Local<v8::String> Gateway = Nan::New<v8::String> ("Gateway").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostRouterInfo->Gateway, utf8string);
+                    v8::Local<v8::String> GatewayValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Gateway), Local<v8::Value>(GatewayValue));
+
+                    v8::Local<v8::String> Mask = Nan::New<v8::String> ("Mask").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostRouterInfo->Mask, utf8string);
+                    v8::Local<v8::String> MaskValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Mask), Local<v8::Value>(MaskValue));
+
+                    v8::Local<v8::String> Flag = Nan::New<v8::String> ("Flag").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostRouterInfo->Flag, utf8string);
+                    v8::Local<v8::String> FlagValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Flag), Local<v8::Value>(FlagValue));
+
+                    v8::Local<v8::String> RefCnt = Nan::New<v8::String> ("RefCnt").ToLocalChecked();
+                    v8::Local<v8::Integer> RefCntValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->RefCnt);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (RefCnt), Local<v8::Value>(RefCntValue));
+
+                    v8::Local<v8::String> Use = Nan::New<v8::String> ("Use").ToLocalChecked();
+                    v8::Local<v8::Integer> UseValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->Use);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Use), Local<v8::Value>(UseValue));
+
+                    v8::Local<v8::String> Metric = Nan::New<v8::String> ("Metric").ToLocalChecked();
+                    v8::Local<v8::Integer> MetricValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->Metric);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Metric), Local<v8::Value>(MetricValue));
+
+                    v8::Local<v8::String> Mtu = Nan::New<v8::String> ("Mtu").ToLocalChecked();
+                    v8::Local<v8::Integer> MtuValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->Mtu);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Mtu), Local<v8::Value>(MtuValue));
+
+                    v8::Local<v8::String> Win = Nan::New<v8::String> ("Win").ToLocalChecked();
+                    v8::Local<v8::Integer> WinValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->Win);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Win), Local<v8::Value>(WinValue));
+
+                    v8::Local<v8::String> Rtt = Nan::New<v8::String> ("Rtt").ToLocalChecked();
+                    v8::Local<v8::Integer> RttValue = Nan::New<v8::Integer> (pRspQryMonHostRouterInfo->Rtt);
+                    pRspQryMonHostRouterInfoJS->Set(Local<v8::Value> (Rtt), Local<v8::Value>(RttValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostRouterInfo) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostRouterInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostRouterInfo) { 
+                delete pRspQryMonHostRouterInfo; 
+                pRspQryMonHostRouterInfo = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostRouterInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostRouterInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostRouterInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostRouterInfo_mutex);
+
+    int ioUserNumb = g_RtnMonHostRouterInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostRouterInfo_IOUser_vec.begin();
+        it != g_RtnMonHostRouterInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostRouterInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostRouterInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostRouterInfo_Data_map[*it].front());
+            g_RtnMonHostRouterInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostRouterInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostRouterInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostRouterInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostRouterInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostRouterInfoField* pRtnMonHostRouterInfo = (CShfeFtdcRtnMonHostRouterInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostRouterInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostRouterInfo").ToLocalChecked());
+            if (OnRtnMonHostRouterInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostRouterInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostRouterInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostRouterInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostRouterInfo->ObjectID);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostRouterInfo->MonTime);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> Dev = Nan::New<v8::String> ("Dev").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostRouterInfo->Dev, utf8string);
+                    v8::Local<v8::String> DevValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Dev), Local<v8::Value>(DevValue));
+
+                    v8::Local<v8::String> Destination = Nan::New<v8::String> ("Destination").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostRouterInfo->Destination, utf8string);
+                    v8::Local<v8::String> DestinationValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Destination), Local<v8::Value>(DestinationValue));
+
+                    v8::Local<v8::String> Gateway = Nan::New<v8::String> ("Gateway").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostRouterInfo->Gateway, utf8string);
+                    v8::Local<v8::String> GatewayValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Gateway), Local<v8::Value>(GatewayValue));
+
+                    v8::Local<v8::String> Mask = Nan::New<v8::String> ("Mask").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostRouterInfo->Mask, utf8string);
+                    v8::Local<v8::String> MaskValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Mask), Local<v8::Value>(MaskValue));
+
+                    v8::Local<v8::String> Flag = Nan::New<v8::String> ("Flag").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostRouterInfo->Flag, utf8string);
+                    v8::Local<v8::String> FlagValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Flag), Local<v8::Value>(FlagValue));
+
+                    v8::Local<v8::String> RefCnt = Nan::New<v8::String> ("RefCnt").ToLocalChecked();
+                    v8::Local<v8::Integer> RefCntValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->RefCnt);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (RefCnt), Local<v8::Value>(RefCntValue));
+
+                    v8::Local<v8::String> Use = Nan::New<v8::String> ("Use").ToLocalChecked();
+                    v8::Local<v8::Integer> UseValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->Use);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Use), Local<v8::Value>(UseValue));
+
+                    v8::Local<v8::String> Metric = Nan::New<v8::String> ("Metric").ToLocalChecked();
+                    v8::Local<v8::Integer> MetricValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->Metric);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Metric), Local<v8::Value>(MetricValue));
+
+                    v8::Local<v8::String> Mtu = Nan::New<v8::String> ("Mtu").ToLocalChecked();
+                    v8::Local<v8::Integer> MtuValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->Mtu);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Mtu), Local<v8::Value>(MtuValue));
+
+                    v8::Local<v8::String> Win = Nan::New<v8::String> ("Win").ToLocalChecked();
+                    v8::Local<v8::Integer> WinValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->Win);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Win), Local<v8::Value>(WinValue));
+
+                    v8::Local<v8::String> Rtt = Nan::New<v8::String> ("Rtt").ToLocalChecked();
+                    v8::Local<v8::Integer> RttValue = Nan::New<v8::Integer> (pRtnMonHostRouterInfo->Rtt);
+                    pRtnMonHostRouterInfoJS->Set(Local<v8::Value> (Rtt), Local<v8::Value>(RttValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostRouterInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostRouterInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostRouterInfo) { 
+                delete pRtnMonHostRouterInfo; 
+                pRtnMonHostRouterInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostRouterInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostProcessInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostProcessInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostProcessInfo_mutex);
+
+    int ioUserNumb = g_RspQryMonHostProcessInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostProcessInfo_IOUser_vec.begin();
+        it != g_RspQryMonHostProcessInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostProcessInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostProcessInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostProcessInfo_Data_map[*it].front());
+            g_RspQryMonHostProcessInfo_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostProcessInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostProcessInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostProcessInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostProcessInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostProcessInfoField* pRspQryMonHostProcessInfo = (CShfeFtdcRspQryMonHostProcessInfoField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostProcessInfo = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostProcessInfo").ToLocalChecked());
+            if (OnRspQryMonHostProcessInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostProcessInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostProcessInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostProcessInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->ObjectID);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->MonTime);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> PID = Nan::New<v8::String> ("PID").ToLocalChecked();
+                    v8::Local<v8::Integer> PIDValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->PID);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (PID), Local<v8::Value>(PIDValue));
+
+                    v8::Local<v8::String> CPU = Nan::New<v8::String> ("CPU").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->CPU);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (CPU), Local<v8::Value>(CPUValue));
+
+                    v8::Local<v8::String> TTY = Nan::New<v8::String> ("TTY").ToLocalChecked();
+                    v8::Local<v8::Integer> TTYValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->TTY);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (TTY), Local<v8::Value>(TTYValue));
+
+                    v8::Local<v8::String> USERNAME = Nan::New<v8::String> ("USERNAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostProcessInfo->USERNAME, utf8string);
+                    v8::Local<v8::String> USERNAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (USERNAME), Local<v8::Value>(USERNAMEValue));
+
+                    v8::Local<v8::String> PRI = Nan::New<v8::String> ("PRI").ToLocalChecked();
+                    v8::Local<v8::Integer> PRIValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->PRI);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (PRI), Local<v8::Value>(PRIValue));
+
+                    v8::Local<v8::String> NI = Nan::New<v8::String> ("NI").ToLocalChecked();
+                    v8::Local<v8::Integer> NIValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->NI);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (NI), Local<v8::Value>(NIValue));
+
+                    v8::Local<v8::String> SSIZE = Nan::New<v8::String> ("SSIZE").ToLocalChecked();
+                    v8::Local<v8::Number> SSIZEValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->SSIZE);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (SSIZE), Local<v8::Value>(SSIZEValue));
+
+                    v8::Local<v8::String> RES = Nan::New<v8::String> ("RES").ToLocalChecked();
+                    v8::Local<v8::Number> RESValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->RES);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (RES), Local<v8::Value>(RESValue));
+
+                    v8::Local<v8::String> STATE = Nan::New<v8::String> ("STATE").ToLocalChecked();
+                    v8::Local<v8::Integer> STATEValue = Nan::New<v8::Integer> (pRspQryMonHostProcessInfo->STATE);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (STATE), Local<v8::Value>(STATEValue));
+
+                    v8::Local<v8::String> STIME = Nan::New<v8::String> ("STIME").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostProcessInfo->STIME, utf8string);
+                    v8::Local<v8::String> STIMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (STIME), Local<v8::Value>(STIMEValue));
+
+                    v8::Local<v8::String> pWCPU = Nan::New<v8::String> ("pWCPU").ToLocalChecked();
+                    v8::Local<v8::Number> pWCPUValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->pWCPU);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (pWCPU), Local<v8::Value>(pWCPUValue));
+
+                    v8::Local<v8::String> pCPU = Nan::New<v8::String> ("pCPU").ToLocalChecked();
+                    v8::Local<v8::Number> pCPUValue = Nan::New<v8::Number> (pRspQryMonHostProcessInfo->pCPU);
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (pCPU), Local<v8::Value>(pCPUValue));
+
+                    v8::Local<v8::String> COMMAND = Nan::New<v8::String> ("COMMAND").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostProcessInfo->COMMAND, utf8string);
+                    v8::Local<v8::String> COMMANDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostProcessInfoJS->Set(Local<v8::Value> (COMMAND), Local<v8::Value>(COMMANDValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostProcessInfo) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostProcessInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostProcessInfo) { 
+                delete pRspQryMonHostProcessInfo; 
+                pRspQryMonHostProcessInfo = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostProcessInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostProcessInfo (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostProcessInfo: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostProcessInfo_mutex);
+
+    int ioUserNumb = g_RtnMonHostProcessInfo_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostProcessInfo_IOUser_vec.begin();
+        it != g_RtnMonHostProcessInfo_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostProcessInfo_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostProcessInfo_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostProcessInfo_Data_map[*it].front());
+            g_RtnMonHostProcessInfo_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostProcessInfo_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostProcessInfo_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostProcessInfo paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostProcessInfo: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostProcessInfoField* pRtnMonHostProcessInfo = (CShfeFtdcRtnMonHostProcessInfoField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostProcessInfo = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostProcessInfo").ToLocalChecked());
+            if (OnRtnMonHostProcessInfo->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostProcessInfo);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostProcessInfoJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostProcessInfo) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->ObjectID);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->MonTime);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> PID = Nan::New<v8::String> ("PID").ToLocalChecked();
+                    v8::Local<v8::Integer> PIDValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->PID);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (PID), Local<v8::Value>(PIDValue));
+
+                    v8::Local<v8::String> CPU = Nan::New<v8::String> ("CPU").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->CPU);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (CPU), Local<v8::Value>(CPUValue));
+
+                    v8::Local<v8::String> TTY = Nan::New<v8::String> ("TTY").ToLocalChecked();
+                    v8::Local<v8::Integer> TTYValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->TTY);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (TTY), Local<v8::Value>(TTYValue));
+
+                    v8::Local<v8::String> USERNAME = Nan::New<v8::String> ("USERNAME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostProcessInfo->USERNAME, utf8string);
+                    v8::Local<v8::String> USERNAMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (USERNAME), Local<v8::Value>(USERNAMEValue));
+
+                    v8::Local<v8::String> PRI = Nan::New<v8::String> ("PRI").ToLocalChecked();
+                    v8::Local<v8::Integer> PRIValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->PRI);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (PRI), Local<v8::Value>(PRIValue));
+
+                    v8::Local<v8::String> NI = Nan::New<v8::String> ("NI").ToLocalChecked();
+                    v8::Local<v8::Integer> NIValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->NI);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (NI), Local<v8::Value>(NIValue));
+
+                    v8::Local<v8::String> SSIZE = Nan::New<v8::String> ("SSIZE").ToLocalChecked();
+                    v8::Local<v8::Number> SSIZEValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->SSIZE);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (SSIZE), Local<v8::Value>(SSIZEValue));
+
+                    v8::Local<v8::String> RES = Nan::New<v8::String> ("RES").ToLocalChecked();
+                    v8::Local<v8::Number> RESValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->RES);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (RES), Local<v8::Value>(RESValue));
+
+                    v8::Local<v8::String> STATE = Nan::New<v8::String> ("STATE").ToLocalChecked();
+                    v8::Local<v8::Integer> STATEValue = Nan::New<v8::Integer> (pRtnMonHostProcessInfo->STATE);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (STATE), Local<v8::Value>(STATEValue));
+
+                    v8::Local<v8::String> STIME = Nan::New<v8::String> ("STIME").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostProcessInfo->STIME, utf8string);
+                    v8::Local<v8::String> STIMEValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (STIME), Local<v8::Value>(STIMEValue));
+
+                    v8::Local<v8::String> pWCPU = Nan::New<v8::String> ("pWCPU").ToLocalChecked();
+                    v8::Local<v8::Number> pWCPUValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->pWCPU);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (pWCPU), Local<v8::Value>(pWCPUValue));
+
+                    v8::Local<v8::String> pCPU = Nan::New<v8::String> ("pCPU").ToLocalChecked();
+                    v8::Local<v8::Number> pCPUValue = Nan::New<v8::Number> (pRtnMonHostProcessInfo->pCPU);
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (pCPU), Local<v8::Value>(pCPUValue));
+
+                    v8::Local<v8::String> COMMAND = Nan::New<v8::String> ("COMMAND").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostProcessInfo->COMMAND, utf8string);
+                    v8::Local<v8::String> COMMANDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostProcessInfoJS->Set(Local<v8::Value> (COMMAND), Local<v8::Value>(COMMANDValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostProcessInfo) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostProcessInfoJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostProcessInfo) { 
+                delete pRtnMonHostProcessInfo; 
+                pRtnMonHostProcessInfo = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostProcessInfo: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonDBQuery (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonDBQuery: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonDBQuery_mutex);
+
+    int ioUserNumb = g_RtnMonDBQuery_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonDBQuery_IOUser_vec.begin();
+        it != g_RtnMonDBQuery_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonDBQuery_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonDBQuery_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonDBQuery_Data_map[*it].front());
+            g_RtnMonDBQuery_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonDBQuery_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonDBQuery_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonDBQuery paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonDBQuery: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonDBQueryField* pRtnMonDBQuery = (CShfeFtdcRtnMonDBQueryField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonDBQuery = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonDBQuery").ToLocalChecked());
+            if (OnRtnMonDBQuery->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonDBQuery);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonDBQueryJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonDBQuery) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonDBQuery->ObjectID);
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonDBQuery->MonTime);
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> SPName = Nan::New<v8::String> ("SPName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonDBQuery->SPName, utf8string);
+                    v8::Local<v8::String> SPNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (SPName), Local<v8::Value>(SPNameValue));
+
+                    v8::Local<v8::String> QueryResult = Nan::New<v8::String> ("QueryResult").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonDBQuery->QueryResult, utf8string);
+                    v8::Local<v8::String> QueryResultValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (QueryResult), Local<v8::Value>(QueryResultValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonDBQuery) { 
+                    params[0] = Local<v8::Value>(pRtnMonDBQueryJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonDBQuery) { 
+                delete pRtnMonDBQuery; 
+                pRtnMonDBQuery = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonDBQuery: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonSPQuery (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonSPQuery: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonSPQuery_mutex);
+
+    int ioUserNumb = g_RspQryMonSPQuery_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonSPQuery_IOUser_vec.begin();
+        it != g_RspQryMonSPQuery_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonSPQuery_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonSPQuery_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonSPQuery_Data_map[*it].front());
+            g_RspQryMonSPQuery_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonSPQuery_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonSPQuery_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonSPQuery paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonSPQuery: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonDBQueryField* pRtnMonDBQuery = (CShfeFtdcRtnMonDBQueryField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonSPQuery = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonSPQuery").ToLocalChecked());
+            if (OnRspQryMonSPQuery->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonSPQuery);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonDBQueryJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRtnMonDBQuery) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonDBQuery->ObjectID);
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonDBQuery->MonTime);
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> SPName = Nan::New<v8::String> ("SPName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonDBQuery->SPName, utf8string);
+                    v8::Local<v8::String> SPNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (SPName), Local<v8::Value>(SPNameValue));
+
+                    v8::Local<v8::String> QueryResult = Nan::New<v8::String> ("QueryResult").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonDBQuery->QueryResult, utf8string);
+                    v8::Local<v8::String> QueryResultValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonDBQueryJS->Set(Local<v8::Value> (QueryResult), Local<v8::Value>(QueryResultValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRtnMonDBQuery) { 
+                    params[0] = Local<v8::Value>(pRtnMonDBQueryJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonDBQuery) { 
+                delete pRtnMonDBQuery; 
+                pRtnMonDBQuery = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonSPQuery: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspServiceVersion (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspServiceVersion: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspServiceVersion_mutex);
+
+    int ioUserNumb = g_RspServiceVersion_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspServiceVersion_IOUser_vec.begin();
+        it != g_RspServiceVersion_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspServiceVersion_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspServiceVersion_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspServiceVersion_Data_map[*it].front());
+            g_RspServiceVersion_Data_map[*it].pop();
+        }
+    }
+    g_RspServiceVersion_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspServiceVersion_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspServiceVersion paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspServiceVersion: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspServiceVersionField* pRspServiceVersion = (CShfeFtdcRspServiceVersionField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspServiceVersion = localSpiObj->Get(Nan::New<v8::String>("OnRspServiceVersion").ToLocalChecked());
+            if (OnRspServiceVersion->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspServiceVersion);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspServiceVersionJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspServiceVersion) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceVersion->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceVersionJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceID = Nan::New<v8::String> ("ServiceID").ToLocalChecked();
+                    v8::Local<v8::Integer> ServiceIDValue = Nan::New<v8::Integer> (pRspServiceVersion->ServiceID);
+                    pRspServiceVersionJS->Set(Local<v8::Value> (ServiceID), Local<v8::Value>(ServiceIDValue));
+
+                    v8::Local<v8::String> VersionID = Nan::New<v8::String> ("VersionID").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceVersion->VersionID, utf8string);
+                    v8::Local<v8::String> VersionIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceVersionJS->Set(Local<v8::Value> (VersionID), Local<v8::Value>(VersionIDValue));
+
+                    v8::Local<v8::String> ServiceMD5Value = Nan::New<v8::String> ("ServiceMD5Value").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceVersion->ServiceMD5Value, utf8string);
+                    v8::Local<v8::String> ServiceMD5ValueValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceVersionJS->Set(Local<v8::Value> (ServiceMD5Value), Local<v8::Value>(ServiceMD5ValueValue));
+
+                    v8::Local<v8::String> UpdateMD5Value = Nan::New<v8::String> ("UpdateMD5Value").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceVersion->UpdateMD5Value, utf8string);
+                    v8::Local<v8::String> UpdateMD5ValueValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceVersionJS->Set(Local<v8::Value> (UpdateMD5Value), Local<v8::Value>(UpdateMD5ValueValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspServiceVersion) { 
+                    params[0] = Local<v8::Value>(pRspServiceVersionJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspServiceVersion) { 
+                delete pRspServiceVersion; 
+                pRspServiceVersion = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspServiceVersion: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspServiceProgram (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspServiceProgram: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspServiceProgram_mutex);
+
+    int ioUserNumb = g_RspServiceProgram_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspServiceProgram_IOUser_vec.begin();
+        it != g_RspServiceProgram_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspServiceProgram_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspServiceProgram_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspServiceProgram_Data_map[*it].front());
+            g_RspServiceProgram_Data_map[*it].pop();
+        }
+    }
+    g_RspServiceProgram_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspServiceProgram_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspServiceProgram paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspServiceProgram: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspServiceProgramField* pRspServiceProgram = (CShfeFtdcRspServiceProgramField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspServiceProgram = localSpiObj->Get(Nan::New<v8::String>("OnRspServiceProgram").ToLocalChecked());
+            if (OnRspServiceProgram->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspServiceProgram);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspServiceProgramJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspServiceProgram) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceProgram->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceProgramJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceProgram = Nan::New<v8::String> ("ServiceProgram").ToLocalChecked();
+                    Gb2312ToUtf8(pRspServiceProgram->ServiceProgram, utf8string);
+                    v8::Local<v8::String> ServiceProgramValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspServiceProgramJS->Set(Local<v8::Value> (ServiceProgram), Local<v8::Value>(ServiceProgramValue));
+
+                    v8::Local<v8::String> ProgramLength = Nan::New<v8::String> ("ProgramLength").ToLocalChecked();
+                    v8::Local<v8::Integer> ProgramLengthValue = Nan::New<v8::Integer> (pRspServiceProgram->ProgramLength);
+                    pRspServiceProgramJS->Set(Local<v8::Value> (ProgramLength), Local<v8::Value>(ProgramLengthValue));
+
+                    v8::Local<v8::String> ProgramId = Nan::New<v8::String> ("ProgramId").ToLocalChecked();
+                    v8::Local<v8::Integer> ProgramIdValue = Nan::New<v8::Integer> (pRspServiceProgram->ProgramId);
+                    pRspServiceProgramJS->Set(Local<v8::Value> (ProgramId), Local<v8::Value>(ProgramIdValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspServiceProgram) { 
+                    params[0] = Local<v8::Value>(pRspServiceProgramJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspServiceProgram) { 
+                delete pRspServiceProgram; 
+                pRspServiceProgram = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspServiceProgram: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspUpdateState (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspUpdateState: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspUpdateState_mutex);
+
+    int ioUserNumb = g_RspUpdateState_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspUpdateState_IOUser_vec.begin();
+        it != g_RspUpdateState_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspUpdateState_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspUpdateState_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspUpdateState_Data_map[*it].front());
+            g_RspUpdateState_Data_map[*it].pop();
+        }
+    }
+    g_RspUpdateState_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspUpdateState_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspUpdateState paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspUpdateState: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspUpdateStateField* pRspUpdateState = (CShfeFtdcRspUpdateStateField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspUpdateState = localSpiObj->Get(Nan::New<v8::String>("OnRspUpdateState").ToLocalChecked());
+            if (OnRspUpdateState->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspUpdateState);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspUpdateStateJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspUpdateState) { 
+                    string utf8string;
+                    v8::Local<v8::String> ServiceName = Nan::New<v8::String> ("ServiceName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspUpdateState->ServiceName, utf8string);
+                    v8::Local<v8::String> ServiceNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspUpdateStateJS->Set(Local<v8::Value> (ServiceName), Local<v8::Value>(ServiceNameValue));
+
+                    v8::Local<v8::String> ServiceID = Nan::New<v8::String> ("ServiceID").ToLocalChecked();
+                    v8::Local<v8::Integer> ServiceIDValue = Nan::New<v8::Integer> (pRspUpdateState->ServiceID);
+                    pRspUpdateStateJS->Set(Local<v8::Value> (ServiceID), Local<v8::Value>(ServiceIDValue));
+
+                    v8::Local<v8::String> ProgramUpdateState = Nan::New<v8::String> ("ProgramUpdateState").ToLocalChecked();
+                    v8::Local<v8::Integer> ProgramUpdateStateValue = Nan::New<v8::Integer> (pRspUpdateState->ProgramUpdateState);
+                    pRspUpdateStateJS->Set(Local<v8::Value> (ProgramUpdateState), Local<v8::Value>(ProgramUpdateStateValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspUpdateState) { 
+                    params[0] = Local<v8::Value>(pRspUpdateStateJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspUpdateState) { 
+                delete pRspUpdateState; 
+                pRspUpdateState = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspUpdateState: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostBasicEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostBasicEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostBasicEnv_mutex);
+
+    int ioUserNumb = g_RspQryMonHostBasicEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostBasicEnv_IOUser_vec.begin();
+        it != g_RspQryMonHostBasicEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostBasicEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostBasicEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostBasicEnv_Data_map[*it].front());
+            g_RspQryMonHostBasicEnv_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostBasicEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostBasicEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostBasicEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostBasicEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostBasicEnvField* pRspQryMonHostBasicEnv = (CShfeFtdcRspQryMonHostBasicEnvField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostBasicEnv = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostBasicEnv").ToLocalChecked());
+            if (OnRspQryMonHostBasicEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostBasicEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostBasicEnvJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostBasicEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostBasicEnv->ObjectID);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostBasicEnv->MonTime);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> HostModel = Nan::New<v8::String> ("HostModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostBasicEnv->HostModel, utf8string);
+                    v8::Local<v8::String> HostModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (HostModel), Local<v8::Value>(HostModelValue));
+
+                    v8::Local<v8::String> MainMemory = Nan::New<v8::String> ("MainMemory").ToLocalChecked();
+                    v8::Local<v8::Integer> MainMemoryValue = Nan::New<v8::Integer> (pRspQryMonHostBasicEnv->MainMemory);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (MainMemory), Local<v8::Value>(MainMemoryValue));
+
+                    v8::Local<v8::String> CPUVendor = Nan::New<v8::String> ("CPUVendor").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostBasicEnv->CPUVendor, utf8string);
+                    v8::Local<v8::String> CPUVendorValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (CPUVendor), Local<v8::Value>(CPUVendorValue));
+
+                    v8::Local<v8::String> CPUModel = Nan::New<v8::String> ("CPUModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostBasicEnv->CPUModel, utf8string);
+                    v8::Local<v8::String> CPUModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (CPUModel), Local<v8::Value>(CPUModelValue));
+
+                    v8::Local<v8::String> CPUMHz = Nan::New<v8::String> ("CPUMHz").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostBasicEnv->CPUMHz, utf8string);
+                    v8::Local<v8::String> CPUMHzValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (CPUMHz), Local<v8::Value>(CPUMHzValue));
+
+                    v8::Local<v8::String> CPUCache = Nan::New<v8::String> ("CPUCache").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostBasicEnv->CPUCache, utf8string);
+                    v8::Local<v8::String> CPUCacheValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (CPUCache), Local<v8::Value>(CPUCacheValue));
+
+                    v8::Local<v8::String> CPUCores = Nan::New<v8::String> ("CPUCores").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUCoresValue = Nan::New<v8::Integer> (pRspQryMonHostBasicEnv->CPUCores);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (CPUCores), Local<v8::Value>(CPUCoresValue));
+
+                    v8::Local<v8::String> Processors = Nan::New<v8::String> ("Processors").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcessorsValue = Nan::New<v8::Integer> (pRspQryMonHostBasicEnv->Processors);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (Processors), Local<v8::Value>(ProcessorsValue));
+
+                    v8::Local<v8::String> OsMode = Nan::New<v8::String> ("OsMode").ToLocalChecked();
+                    v8::Local<v8::Integer> OsModeValue = Nan::New<v8::Integer> (pRspQryMonHostBasicEnv->OsMode);
+                    pRspQryMonHostBasicEnvJS->Set(Local<v8::Value> (OsMode), Local<v8::Value>(OsModeValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostBasicEnv) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostBasicEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostBasicEnv) { 
+                delete pRspQryMonHostBasicEnv; 
+                pRspQryMonHostBasicEnv = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostBasicEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostBasicEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostBasicEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostBasicEnv_mutex);
+
+    int ioUserNumb = g_RtnMonHostBasicEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostBasicEnv_IOUser_vec.begin();
+        it != g_RtnMonHostBasicEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostBasicEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostBasicEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostBasicEnv_Data_map[*it].front());
+            g_RtnMonHostBasicEnv_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostBasicEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostBasicEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostBasicEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostBasicEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostBasicEnvField* pRtnMonHostBasicEnv = (CShfeFtdcRtnMonHostBasicEnvField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostBasicEnv = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostBasicEnv").ToLocalChecked());
+            if (OnRtnMonHostBasicEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostBasicEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostBasicEnvJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostBasicEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostBasicEnv->ObjectID);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostBasicEnv->MonTime);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> HostModel = Nan::New<v8::String> ("HostModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostBasicEnv->HostModel, utf8string);
+                    v8::Local<v8::String> HostModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (HostModel), Local<v8::Value>(HostModelValue));
+
+                    v8::Local<v8::String> MainMemory = Nan::New<v8::String> ("MainMemory").ToLocalChecked();
+                    v8::Local<v8::Integer> MainMemoryValue = Nan::New<v8::Integer> (pRtnMonHostBasicEnv->MainMemory);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (MainMemory), Local<v8::Value>(MainMemoryValue));
+
+                    v8::Local<v8::String> CPUVendor = Nan::New<v8::String> ("CPUVendor").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostBasicEnv->CPUVendor, utf8string);
+                    v8::Local<v8::String> CPUVendorValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (CPUVendor), Local<v8::Value>(CPUVendorValue));
+
+                    v8::Local<v8::String> CPUModel = Nan::New<v8::String> ("CPUModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostBasicEnv->CPUModel, utf8string);
+                    v8::Local<v8::String> CPUModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (CPUModel), Local<v8::Value>(CPUModelValue));
+
+                    v8::Local<v8::String> CPUMHz = Nan::New<v8::String> ("CPUMHz").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostBasicEnv->CPUMHz, utf8string);
+                    v8::Local<v8::String> CPUMHzValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (CPUMHz), Local<v8::Value>(CPUMHzValue));
+
+                    v8::Local<v8::String> CPUCache = Nan::New<v8::String> ("CPUCache").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostBasicEnv->CPUCache, utf8string);
+                    v8::Local<v8::String> CPUCacheValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (CPUCache), Local<v8::Value>(CPUCacheValue));
+
+                    v8::Local<v8::String> CPUCores = Nan::New<v8::String> ("CPUCores").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUCoresValue = Nan::New<v8::Integer> (pRtnMonHostBasicEnv->CPUCores);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (CPUCores), Local<v8::Value>(CPUCoresValue));
+
+                    v8::Local<v8::String> Processors = Nan::New<v8::String> ("Processors").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcessorsValue = Nan::New<v8::Integer> (pRtnMonHostBasicEnv->Processors);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (Processors), Local<v8::Value>(ProcessorsValue));
+
+                    v8::Local<v8::String> OsMode = Nan::New<v8::String> ("OsMode").ToLocalChecked();
+                    v8::Local<v8::Integer> OsModeValue = Nan::New<v8::Integer> (pRtnMonHostBasicEnv->OsMode);
+                    pRtnMonHostBasicEnvJS->Set(Local<v8::Value> (OsMode), Local<v8::Value>(OsModeValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostBasicEnv) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostBasicEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostBasicEnv) { 
+                delete pRtnMonHostBasicEnv; 
+                pRtnMonHostBasicEnv = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostBasicEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostNetworkEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostNetworkEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostNetworkEnv_mutex);
+
+    int ioUserNumb = g_RspQryMonHostNetworkEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostNetworkEnv_IOUser_vec.begin();
+        it != g_RspQryMonHostNetworkEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostNetworkEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostNetworkEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostNetworkEnv_Data_map[*it].front());
+            g_RspQryMonHostNetworkEnv_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostNetworkEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostNetworkEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostNetworkEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostNetworkEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostNetworkEnvField* pRspQryMonHostNetworkEnv = (CShfeFtdcRspQryMonHostNetworkEnvField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostNetworkEnv = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostNetworkEnv").ToLocalChecked());
+            if (OnRspQryMonHostNetworkEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostNetworkEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostNetworkEnvJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostNetworkEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostNetworkEnv->ObjectID);
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostNetworkEnv->MonTime);
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> LanHardwareID = Nan::New<v8::String> ("LanHardwareID").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkEnv->LanHardwareID, utf8string);
+                    v8::Local<v8::String> LanHardwareIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (LanHardwareID), Local<v8::Value>(LanHardwareIDValue));
+
+                    v8::Local<v8::String> MACAddress = Nan::New<v8::String> ("MACAddress").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkEnv->MACAddress, utf8string);
+                    v8::Local<v8::String> MACAddressValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (MACAddress), Local<v8::Value>(MACAddressValue));
+
+                    v8::Local<v8::String> IPAddress = Nan::New<v8::String> ("IPAddress").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkEnv->IPAddress, utf8string);
+                    v8::Local<v8::String> IPAddressValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (IPAddress), Local<v8::Value>(IPAddressValue));
+
+                    v8::Local<v8::String> IPMask = Nan::New<v8::String> ("IPMask").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostNetworkEnv->IPMask, utf8string);
+                    v8::Local<v8::String> IPMaskValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostNetworkEnvJS->Set(Local<v8::Value> (IPMask), Local<v8::Value>(IPMaskValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostNetworkEnv) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostNetworkEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostNetworkEnv) { 
+                delete pRspQryMonHostNetworkEnv; 
+                pRspQryMonHostNetworkEnv = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostNetworkEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostNetworkEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostNetworkEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostNetworkEnv_mutex);
+
+    int ioUserNumb = g_RtnMonHostNetworkEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostNetworkEnv_IOUser_vec.begin();
+        it != g_RtnMonHostNetworkEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostNetworkEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostNetworkEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostNetworkEnv_Data_map[*it].front());
+            g_RtnMonHostNetworkEnv_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostNetworkEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostNetworkEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostNetworkEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostNetworkEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostNetworkEnvField* pRtnMonHostNetworkEnv = (CShfeFtdcRtnMonHostNetworkEnvField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostNetworkEnv = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostNetworkEnv").ToLocalChecked());
+            if (OnRtnMonHostNetworkEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostNetworkEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostNetworkEnvJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostNetworkEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostNetworkEnv->ObjectID);
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostNetworkEnv->MonTime);
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> LanHardwareID = Nan::New<v8::String> ("LanHardwareID").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkEnv->LanHardwareID, utf8string);
+                    v8::Local<v8::String> LanHardwareIDValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (LanHardwareID), Local<v8::Value>(LanHardwareIDValue));
+
+                    v8::Local<v8::String> MACAddress = Nan::New<v8::String> ("MACAddress").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkEnv->MACAddress, utf8string);
+                    v8::Local<v8::String> MACAddressValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (MACAddress), Local<v8::Value>(MACAddressValue));
+
+                    v8::Local<v8::String> IPAddress = Nan::New<v8::String> ("IPAddress").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkEnv->IPAddress, utf8string);
+                    v8::Local<v8::String> IPAddressValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (IPAddress), Local<v8::Value>(IPAddressValue));
+
+                    v8::Local<v8::String> IPMask = Nan::New<v8::String> ("IPMask").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostNetworkEnv->IPMask, utf8string);
+                    v8::Local<v8::String> IPMaskValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostNetworkEnvJS->Set(Local<v8::Value> (IPMask), Local<v8::Value>(IPMaskValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostNetworkEnv) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostNetworkEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostNetworkEnv) { 
+                delete pRtnMonHostNetworkEnv; 
+                pRtnMonHostNetworkEnv = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostNetworkEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostFileSysEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostFileSysEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostFileSysEnv_mutex);
+
+    int ioUserNumb = g_RspQryMonHostFileSysEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostFileSysEnv_IOUser_vec.begin();
+        it != g_RspQryMonHostFileSysEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostFileSysEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostFileSysEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostFileSysEnv_Data_map[*it].front());
+            g_RspQryMonHostFileSysEnv_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostFileSysEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostFileSysEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostFileSysEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostFileSysEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostFileSysEnvField* pRspQryMonHostFileSysEnv = (CShfeFtdcRspQryMonHostFileSysEnvField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostFileSysEnv = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostFileSysEnv").ToLocalChecked());
+            if (OnRspQryMonHostFileSysEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostFileSysEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostFileSysEnvJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostFileSysEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostFileSysEnv->ObjectID);
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostFileSysEnv->MonTime);
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> LVMDeviceFile = Nan::New<v8::String> ("LVMDeviceFile").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostFileSysEnv->LVMDeviceFile, utf8string);
+                    v8::Local<v8::String> LVMDeviceFileValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (LVMDeviceFile), Local<v8::Value>(LVMDeviceFileValue));
+
+                    v8::Local<v8::String> MountPoint = Nan::New<v8::String> ("MountPoint").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostFileSysEnv->MountPoint, utf8string);
+                    v8::Local<v8::String> MountPointValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (MountPoint), Local<v8::Value>(MountPointValue));
+
+                    v8::Local<v8::String> FSsize = Nan::New<v8::String> ("FSsize").ToLocalChecked();
+                    v8::Local<v8::Number> FSsizeValue = Nan::New<v8::Number> (pRspQryMonHostFileSysEnv->FSsize);
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (FSsize), Local<v8::Value>(FSsizeValue));
+
+                    v8::Local<v8::String> FSType = Nan::New<v8::String> ("FSType").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostFileSysEnv->FSType, utf8string);
+                    v8::Local<v8::String> FSTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostFileSysEnvJS->Set(Local<v8::Value> (FSType), Local<v8::Value>(FSTypeValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostFileSysEnv) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostFileSysEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostFileSysEnv) { 
+                delete pRspQryMonHostFileSysEnv; 
+                pRspQryMonHostFileSysEnv = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostFileSysEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostFileSysEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostFileSysEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostFileSysEnv_mutex);
+
+    int ioUserNumb = g_RtnMonHostFileSysEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostFileSysEnv_IOUser_vec.begin();
+        it != g_RtnMonHostFileSysEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostFileSysEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostFileSysEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostFileSysEnv_Data_map[*it].front());
+            g_RtnMonHostFileSysEnv_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostFileSysEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostFileSysEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostFileSysEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostFileSysEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostFileSysEnvField* pRtnMonHostFileSysEnv = (CShfeFtdcRtnMonHostFileSysEnvField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostFileSysEnv = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostFileSysEnv").ToLocalChecked());
+            if (OnRtnMonHostFileSysEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostFileSysEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostFileSysEnvJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostFileSysEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostFileSysEnv->ObjectID);
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostFileSysEnv->MonTime);
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> LVMDeviceFile = Nan::New<v8::String> ("LVMDeviceFile").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSysEnv->LVMDeviceFile, utf8string);
+                    v8::Local<v8::String> LVMDeviceFileValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (LVMDeviceFile), Local<v8::Value>(LVMDeviceFileValue));
+
+                    v8::Local<v8::String> MountPoint = Nan::New<v8::String> ("MountPoint").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSysEnv->MountPoint, utf8string);
+                    v8::Local<v8::String> MountPointValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (MountPoint), Local<v8::Value>(MountPointValue));
+
+                    v8::Local<v8::String> FSsize = Nan::New<v8::String> ("FSsize").ToLocalChecked();
+                    v8::Local<v8::Number> FSsizeValue = Nan::New<v8::Number> (pRtnMonHostFileSysEnv->FSsize);
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (FSsize), Local<v8::Value>(FSsizeValue));
+
+                    v8::Local<v8::String> FSType = Nan::New<v8::String> ("FSType").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostFileSysEnv->FSType, utf8string);
+                    v8::Local<v8::String> FSTypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostFileSysEnvJS->Set(Local<v8::Value> (FSType), Local<v8::Value>(FSTypeValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostFileSysEnv) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostFileSysEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostFileSysEnv) { 
+                delete pRtnMonHostFileSysEnv; 
+                pRtnMonHostFileSysEnv = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostFileSysEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostSwapEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostSwapEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostSwapEnv_mutex);
+
+    int ioUserNumb = g_RspQryMonHostSwapEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostSwapEnv_IOUser_vec.begin();
+        it != g_RspQryMonHostSwapEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostSwapEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostSwapEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostSwapEnv_Data_map[*it].front());
+            g_RspQryMonHostSwapEnv_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostSwapEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostSwapEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostSwapEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostSwapEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostSwapEnvField* pRspQryMonHostSwapEnv = (CShfeFtdcRspQryMonHostSwapEnvField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostSwapEnv = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostSwapEnv").ToLocalChecked());
+            if (OnRspQryMonHostSwapEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostSwapEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostSwapEnvJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostSwapEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostSwapEnv->ObjectID);
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostSwapEnv->MonTime);
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> Type = Nan::New<v8::String> ("Type").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostSwapEnv->Type, utf8string);
+                    v8::Local<v8::String> TypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (Type), Local<v8::Value>(TypeValue));
+
+                    v8::Local<v8::String> Size = Nan::New<v8::String> ("Size").ToLocalChecked();
+                    v8::Local<v8::Integer> SizeValue = Nan::New<v8::Integer> (pRspQryMonHostSwapEnv->Size);
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (Size), Local<v8::Value>(SizeValue));
+
+                    v8::Local<v8::String> Priority = Nan::New<v8::String> ("Priority").ToLocalChecked();
+                    v8::Local<v8::Integer> PriorityValue = Nan::New<v8::Integer> (pRspQryMonHostSwapEnv->Priority);
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (Priority), Local<v8::Value>(PriorityValue));
+
+                    v8::Local<v8::String> Location = Nan::New<v8::String> ("Location").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostSwapEnv->Location, utf8string);
+                    v8::Local<v8::String> LocationValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostSwapEnvJS->Set(Local<v8::Value> (Location), Local<v8::Value>(LocationValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostSwapEnv) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostSwapEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostSwapEnv) { 
+                delete pRspQryMonHostSwapEnv; 
+                pRspQryMonHostSwapEnv = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostSwapEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostSwapEnv (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostSwapEnv: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostSwapEnv_mutex);
+
+    int ioUserNumb = g_RtnMonHostSwapEnv_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostSwapEnv_IOUser_vec.begin();
+        it != g_RtnMonHostSwapEnv_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostSwapEnv_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostSwapEnv_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostSwapEnv_Data_map[*it].front());
+            g_RtnMonHostSwapEnv_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostSwapEnv_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostSwapEnv_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostSwapEnv paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostSwapEnv: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostSwapEnvField* pRtnMonHostSwapEnv = (CShfeFtdcRtnMonHostSwapEnvField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostSwapEnv = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostSwapEnv").ToLocalChecked());
+            if (OnRtnMonHostSwapEnv->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostSwapEnv);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostSwapEnvJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostSwapEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostSwapEnv->ObjectID);
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostSwapEnv->MonTime);
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> Type = Nan::New<v8::String> ("Type").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostSwapEnv->Type, utf8string);
+                    v8::Local<v8::String> TypeValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (Type), Local<v8::Value>(TypeValue));
+
+                    v8::Local<v8::String> Size = Nan::New<v8::String> ("Size").ToLocalChecked();
+                    v8::Local<v8::Integer> SizeValue = Nan::New<v8::Integer> (pRtnMonHostSwapEnv->Size);
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (Size), Local<v8::Value>(SizeValue));
+
+                    v8::Local<v8::String> Priority = Nan::New<v8::String> ("Priority").ToLocalChecked();
+                    v8::Local<v8::Integer> PriorityValue = Nan::New<v8::Integer> (pRtnMonHostSwapEnv->Priority);
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (Priority), Local<v8::Value>(PriorityValue));
+
+                    v8::Local<v8::String> Location = Nan::New<v8::String> ("Location").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostSwapEnv->Location, utf8string);
+                    v8::Local<v8::String> LocationValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostSwapEnvJS->Set(Local<v8::Value> (Location), Local<v8::Value>(LocationValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostSwapEnv) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostSwapEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostSwapEnv) { 
+                delete pRtnMonHostSwapEnv; 
+                pRtnMonHostSwapEnv = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostSwapEnv: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonitor2ObjectTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonitor2ObjectTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonitor2ObjectTopic_mutex);
+
+    int ioUserNumb = g_RspQryMonitor2ObjectTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonitor2ObjectTopic_IOUser_vec.begin();
+        it != g_RspQryMonitor2ObjectTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonitor2ObjectTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonitor2ObjectTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonitor2ObjectTopic_Data_map[*it].front());
+            g_RspQryMonitor2ObjectTopic_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonitor2ObjectTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonitor2ObjectTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonitor2ObjectTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonitor2ObjectTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonitor2ObjectField* pRspQryMonitor2Object = (CShfeFtdcRspQryMonitor2ObjectField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonitor2ObjectTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonitor2ObjectTopic").ToLocalChecked());
+            if (OnRspQryMonitor2ObjectTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonitor2ObjectTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonitor2ObjectJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonitor2Object) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonitor2Object->ObjectID);
+                    pRspQryMonitor2ObjectJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> ObjectName = Nan::New<v8::String> ("ObjectName").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonitor2Object->ObjectName, utf8string);
+                    v8::Local<v8::String> ObjectNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonitor2ObjectJS->Set(Local<v8::Value> (ObjectName), Local<v8::Value>(ObjectNameValue));
+
+                    v8::Local<v8::String> WarningActive = Nan::New<v8::String> ("WarningActive").ToLocalChecked();
+                    v8::Local<v8::Integer> WarningActiveValue = Nan::New<v8::Integer> (pRspQryMonitor2Object->WarningActive);
+                    pRspQryMonitor2ObjectJS->Set(Local<v8::Value> (WarningActive), Local<v8::Value>(WarningActiveValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonitor2Object) { 
+                    params[0] = Local<v8::Value>(pRspQryMonitor2ObjectJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonitor2Object) { 
+                delete pRspQryMonitor2Object; 
+                pRspQryMonitor2Object = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonitor2ObjectTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonitor2ObjectTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonitor2ObjectTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonitor2ObjectTopic_mutex);
+
+    int ioUserNumb = g_RtnMonitor2ObjectTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonitor2ObjectTopic_IOUser_vec.begin();
+        it != g_RtnMonitor2ObjectTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonitor2ObjectTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonitor2ObjectTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonitor2ObjectTopic_Data_map[*it].front());
+            g_RtnMonitor2ObjectTopic_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonitor2ObjectTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonitor2ObjectTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonitor2ObjectTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonitor2ObjectTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonitor2ObjectField* pRtnMonitor2Object = (CShfeFtdcRtnMonitor2ObjectField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonitor2ObjectTopic = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonitor2ObjectTopic").ToLocalChecked());
+            if (OnRtnMonitor2ObjectTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonitor2ObjectTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonitor2ObjectJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonitor2Object) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonitor2Object->ObjectID);
+                    pRtnMonitor2ObjectJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> ObjectName = Nan::New<v8::String> ("ObjectName").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonitor2Object->ObjectName, utf8string);
+                    v8::Local<v8::String> ObjectNameValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonitor2ObjectJS->Set(Local<v8::Value> (ObjectName), Local<v8::Value>(ObjectNameValue));
+
+                    v8::Local<v8::String> WarningActive = Nan::New<v8::String> ("WarningActive").ToLocalChecked();
+                    v8::Local<v8::Integer> WarningActiveValue = Nan::New<v8::Integer> (pRtnMonitor2Object->WarningActive);
+                    pRtnMonitor2ObjectJS->Set(Local<v8::Value> (WarningActive), Local<v8::Value>(WarningActiveValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonitor2Object) { 
+                    params[0] = Local<v8::Value>(pRtnMonitor2ObjectJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonitor2Object) { 
+                delete pRtnMonitor2Object; 
+                pRtnMonitor2Object = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonitor2ObjectTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonHostCommonEnvTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonHostCommonEnvTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonHostCommonEnvTopic_mutex);
+
+    int ioUserNumb = g_RspQryMonHostCommonEnvTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonHostCommonEnvTopic_IOUser_vec.begin();
+        it != g_RspQryMonHostCommonEnvTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonHostCommonEnvTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonHostCommonEnvTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonHostCommonEnvTopic_Data_map[*it].front());
+            g_RspQryMonHostCommonEnvTopic_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonHostCommonEnvTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonHostCommonEnvTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonHostCommonEnvTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonHostCommonEnvTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonHostCommonEnvField* pRspQryMonHostCommonEnv = (CShfeFtdcRspQryMonHostCommonEnvField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonHostCommonEnvTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonHostCommonEnvTopic").ToLocalChecked());
+            if (OnRspQryMonHostCommonEnvTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonHostCommonEnvTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonHostCommonEnvJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonHostCommonEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonHostCommonEnv->ObjectID);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRspQryMonHostCommonEnv->MonTime);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> HostModel = Nan::New<v8::String> ("HostModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCommonEnv->HostModel, utf8string);
+                    v8::Local<v8::String> HostModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (HostModel), Local<v8::Value>(HostModelValue));
+
+                    v8::Local<v8::String> MainMemory = Nan::New<v8::String> ("MainMemory").ToLocalChecked();
+                    v8::Local<v8::Integer> MainMemoryValue = Nan::New<v8::Integer> (pRspQryMonHostCommonEnv->MainMemory);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (MainMemory), Local<v8::Value>(MainMemoryValue));
+
+                    v8::Local<v8::String> CPUVendor = Nan::New<v8::String> ("CPUVendor").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCommonEnv->CPUVendor, utf8string);
+                    v8::Local<v8::String> CPUVendorValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (CPUVendor), Local<v8::Value>(CPUVendorValue));
+
+                    v8::Local<v8::String> CPUModel = Nan::New<v8::String> ("CPUModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCommonEnv->CPUModel, utf8string);
+                    v8::Local<v8::String> CPUModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (CPUModel), Local<v8::Value>(CPUModelValue));
+
+                    v8::Local<v8::String> CPUMHz = Nan::New<v8::String> ("CPUMHz").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCommonEnv->CPUMHz, utf8string);
+                    v8::Local<v8::String> CPUMHzValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (CPUMHz), Local<v8::Value>(CPUMHzValue));
+
+                    v8::Local<v8::String> CPUCache = Nan::New<v8::String> ("CPUCache").ToLocalChecked();
+                    Gb2312ToUtf8(pRspQryMonHostCommonEnv->CPUCache, utf8string);
+                    v8::Local<v8::String> CPUCacheValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (CPUCache), Local<v8::Value>(CPUCacheValue));
+
+                    v8::Local<v8::String> CPUCores = Nan::New<v8::String> ("CPUCores").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUCoresValue = Nan::New<v8::Integer> (pRspQryMonHostCommonEnv->CPUCores);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (CPUCores), Local<v8::Value>(CPUCoresValue));
+
+                    v8::Local<v8::String> Processors = Nan::New<v8::String> ("Processors").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcessorsValue = Nan::New<v8::Integer> (pRspQryMonHostCommonEnv->Processors);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (Processors), Local<v8::Value>(ProcessorsValue));
+
+                    v8::Local<v8::String> OsMode = Nan::New<v8::String> ("OsMode").ToLocalChecked();
+                    v8::Local<v8::Integer> OsModeValue = Nan::New<v8::Integer> (pRspQryMonHostCommonEnv->OsMode);
+                    pRspQryMonHostCommonEnvJS->Set(Local<v8::Value> (OsMode), Local<v8::Value>(OsModeValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonHostCommonEnv) { 
+                    params[0] = Local<v8::Value>(pRspQryMonHostCommonEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonHostCommonEnv) { 
+                delete pRspQryMonHostCommonEnv; 
+                pRspQryMonHostCommonEnv = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonHostCommonEnvTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonHostCommonEnvTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonHostCommonEnvTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonHostCommonEnvTopic_mutex);
+
+    int ioUserNumb = g_RtnMonHostCommonEnvTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonHostCommonEnvTopic_IOUser_vec.begin();
+        it != g_RtnMonHostCommonEnvTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonHostCommonEnvTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonHostCommonEnvTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonHostCommonEnvTopic_Data_map[*it].front());
+            g_RtnMonHostCommonEnvTopic_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonHostCommonEnvTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonHostCommonEnvTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonHostCommonEnvTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonHostCommonEnvTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonHostCommonEnvField* pRtnMonHostCommonEnv = (CShfeFtdcRtnMonHostCommonEnvField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonHostCommonEnvTopic = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonHostCommonEnvTopic").ToLocalChecked());
+            if (OnRtnMonHostCommonEnvTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonHostCommonEnvTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonHostCommonEnvJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonHostCommonEnv) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonHostCommonEnv->ObjectID);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> MonTime = Nan::New<v8::String> ("MonTime").ToLocalChecked();
+                    v8::Local<v8::Number> MonTimeValue = Nan::New<v8::Number> (pRtnMonHostCommonEnv->MonTime);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (MonTime), Local<v8::Value>(MonTimeValue));
+
+                    v8::Local<v8::String> HostModel = Nan::New<v8::String> ("HostModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCommonEnv->HostModel, utf8string);
+                    v8::Local<v8::String> HostModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (HostModel), Local<v8::Value>(HostModelValue));
+
+                    v8::Local<v8::String> MainMemory = Nan::New<v8::String> ("MainMemory").ToLocalChecked();
+                    v8::Local<v8::Integer> MainMemoryValue = Nan::New<v8::Integer> (pRtnMonHostCommonEnv->MainMemory);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (MainMemory), Local<v8::Value>(MainMemoryValue));
+
+                    v8::Local<v8::String> CPUVendor = Nan::New<v8::String> ("CPUVendor").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCommonEnv->CPUVendor, utf8string);
+                    v8::Local<v8::String> CPUVendorValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (CPUVendor), Local<v8::Value>(CPUVendorValue));
+
+                    v8::Local<v8::String> CPUModel = Nan::New<v8::String> ("CPUModel").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCommonEnv->CPUModel, utf8string);
+                    v8::Local<v8::String> CPUModelValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (CPUModel), Local<v8::Value>(CPUModelValue));
+
+                    v8::Local<v8::String> CPUMHz = Nan::New<v8::String> ("CPUMHz").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCommonEnv->CPUMHz, utf8string);
+                    v8::Local<v8::String> CPUMHzValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (CPUMHz), Local<v8::Value>(CPUMHzValue));
+
+                    v8::Local<v8::String> CPUCache = Nan::New<v8::String> ("CPUCache").ToLocalChecked();
+                    Gb2312ToUtf8(pRtnMonHostCommonEnv->CPUCache, utf8string);
+                    v8::Local<v8::String> CPUCacheValue = Nan::New<v8::String> (utf8string.c_str()).ToLocalChecked();
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (CPUCache), Local<v8::Value>(CPUCacheValue));
+
+                    v8::Local<v8::String> CPUCores = Nan::New<v8::String> ("CPUCores").ToLocalChecked();
+                    v8::Local<v8::Integer> CPUCoresValue = Nan::New<v8::Integer> (pRtnMonHostCommonEnv->CPUCores);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (CPUCores), Local<v8::Value>(CPUCoresValue));
+
+                    v8::Local<v8::String> Processors = Nan::New<v8::String> ("Processors").ToLocalChecked();
+                    v8::Local<v8::Integer> ProcessorsValue = Nan::New<v8::Integer> (pRtnMonHostCommonEnv->Processors);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (Processors), Local<v8::Value>(ProcessorsValue));
+
+                    v8::Local<v8::String> OsMode = Nan::New<v8::String> ("OsMode").ToLocalChecked();
+                    v8::Local<v8::Integer> OsModeValue = Nan::New<v8::Integer> (pRtnMonHostCommonEnv->OsMode);
+                    pRtnMonHostCommonEnvJS->Set(Local<v8::Value> (OsMode), Local<v8::Value>(OsModeValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonHostCommonEnv) { 
+                    params[0] = Local<v8::Value>(pRtnMonHostCommonEnvJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonHostCommonEnv) { 
+                delete pRtnMonHostCommonEnv; 
+                pRtnMonHostCommonEnv = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonHostCommonEnvTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonOidHostRationalTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonOidHostRationalTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonOidHostRationalTopic_mutex);
+
+    int ioUserNumb = g_RspQryMonOidHostRationalTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonOidHostRationalTopic_IOUser_vec.begin();
+        it != g_RspQryMonOidHostRationalTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonOidHostRationalTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonOidHostRationalTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonOidHostRationalTopic_Data_map[*it].front());
+            g_RspQryMonOidHostRationalTopic_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonOidHostRationalTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonOidHostRationalTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonOidHostRationalTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonOidHostRationalTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonOidHostRationalField* pRspQryMonOidHostRational = (CShfeFtdcRspQryMonOidHostRationalField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonOidHostRationalTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonOidHostRationalTopic").ToLocalChecked());
+            if (OnRspQryMonOidHostRationalTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonOidHostRationalTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonOidHostRationalJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonOidHostRational) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonOidHostRational->ObjectID);
+                    pRspQryMonOidHostRationalJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> HostObjectID = Nan::New<v8::String> ("HostObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> HostObjectIDValue = Nan::New<v8::Number> (pRspQryMonOidHostRational->HostObjectID);
+                    pRspQryMonOidHostRationalJS->Set(Local<v8::Value> (HostObjectID), Local<v8::Value>(HostObjectIDValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonOidHostRational) { 
+                    params[0] = Local<v8::Value>(pRspQryMonOidHostRationalJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonOidHostRational) { 
+                delete pRspQryMonOidHostRational; 
+                pRspQryMonOidHostRational = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonOidHostRationalTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonOidHostRationalTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonOidHostRationalTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonOidHostRationalTopic_mutex);
+
+    int ioUserNumb = g_RtnMonOidHostRationalTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonOidHostRationalTopic_IOUser_vec.begin();
+        it != g_RtnMonOidHostRationalTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonOidHostRationalTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonOidHostRationalTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonOidHostRationalTopic_Data_map[*it].front());
+            g_RtnMonOidHostRationalTopic_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonOidHostRationalTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonOidHostRationalTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonOidHostRationalTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonOidHostRationalTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonOidHostRationalField* pRtnMonOidHostRational = (CShfeFtdcRtnMonOidHostRationalField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonOidHostRationalTopic = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonOidHostRationalTopic").ToLocalChecked());
+            if (OnRtnMonOidHostRationalTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonOidHostRationalTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonOidHostRationalJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonOidHostRational) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonOidHostRational->ObjectID);
+                    pRtnMonOidHostRationalJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> HostObjectID = Nan::New<v8::String> ("HostObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> HostObjectIDValue = Nan::New<v8::Number> (pRtnMonOidHostRational->HostObjectID);
+                    pRtnMonOidHostRationalJS->Set(Local<v8::Value> (HostObjectID), Local<v8::Value>(HostObjectIDValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonOidHostRational) { 
+                    params[0] = Local<v8::Value>(pRtnMonOidHostRationalJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonOidHostRational) { 
+                delete pRtnMonOidHostRational; 
+                pRtnMonOidHostRational = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonOidHostRationalTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRspQryMonOidRelationTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RspQryMonOidRelationTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RspQryMonOidRelationTopic_mutex);
+
+    int ioUserNumb = g_RspQryMonOidRelationTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RspQryMonOidRelationTopic_IOUser_vec.begin();
+        it != g_RspQryMonOidRelationTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RspQryMonOidRelationTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RspQryMonOidRelationTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RspQryMonOidRelationTopic_Data_map[*it].front());
+            g_RspQryMonOidRelationTopic_Data_map[*it].pop();
+        }
+    }
+    g_RspQryMonOidRelationTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RspQryMonOidRelationTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RspQryMonOidRelationTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RspQryMonOidRelationTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRspQryMonOidRelationField* pRspQryMonOidRelation = (CShfeFtdcRspQryMonOidRelationField*)(paramArray[1]);
+            CShfeFtdcRspInfoField *pRspInfo = (CShfeFtdcRspInfoField *)(paramArray[2]);
+            int* pRequestID = (int*)paramArray[3];
+            bool* pIsLastNew = (bool*)paramArray[4];
+
+            v8::Local<v8::Value> OnRspQryMonOidRelationTopic = localSpiObj->Get(Nan::New<v8::String>("OnRspQryMonOidRelationTopic").ToLocalChecked());
+            if (OnRspQryMonOidRelationTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRspQryMonOidRelationTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRspQryMonOidRelationJS = Nan::New<v8::Object>();
+                v8::Local<v8::Object> pRspInfoJS = Nan::New<v8::Object>();
+                v8::Local<v8::Integer> nRequestIDJS = Nan::New<v8::Integer>(*pRequestID);
+                v8::Local<v8::Boolean> nIsLastNewJS = Nan::New<v8::Boolean>(*pIsLastNew);
+                
+                if (NULL != pRspQryMonOidRelation) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRspQryMonOidRelation->ObjectID);
+                    pRspQryMonOidRelationJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> HoldAttrID = Nan::New<v8::String> ("HoldAttrID").ToLocalChecked();
+                    v8::Local<v8::Number> HoldAttrIDValue = Nan::New<v8::Number> (pRspQryMonOidRelation->HoldAttrID);
+                    pRspQryMonOidRelationJS->Set(Local<v8::Value> (HoldAttrID), Local<v8::Value>(HoldAttrIDValue));
+
+                }
+                if (NULL != pRspInfo) { 
+                    string utf8string; 
+                    v8::Local<v8::String>  ErrorID = Nan::New<v8::String>("ErrorID").ToLocalChecked(); 
+                    v8::Local<v8::Integer> ErrorIDValue = Nan::New<v8::Integer>(pRspInfo->ErrorID); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorID),Local<v8::Value>(ErrorIDValue)); 
+
+                    v8::Local<v8::String>  ErrorMsg = Nan::New<v8::String>("ErrorMsg").ToLocalChecked(); 
+                    Gb2312ToUtf8(pRspInfo->ErrorMsg, utf8string); 
+                    v8::Local<v8::String>  ErrorMsggValue = Nan::New(utf8string.c_str()).ToLocalChecked(); 
+                    pRspInfoJS->Set(Local<v8::Value>(ErrorMsg),Local<v8::Value>(ErrorMsggValue)); 
+                } 
+
+                v8::Local<v8::Value> params[4];
+                if (NULL != pRspQryMonOidRelation) { 
+                    params[0] = Local<v8::Value>(pRspQryMonOidRelationJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                if (NULL != pRspInfo) { 
+                    params[1] = Local<v8::Value>(pRspInfoJS); 
+                } else { 
+                    params[1] = Local<v8::Value>(Nan::Undefined()); 
+                }
+                params[2] = Local<v8::Value>(nRequestIDJS); 
+                params[3] = Local<v8::Value>(nIsLastNewJS); 
+
+                callback.Call(localSpiObj, 4, params); 
+            } 
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRspQryMonOidRelation) { 
+                delete pRspQryMonOidRelation; 
+                pRspQryMonOidRelation = NULL; 
+            } 
+            if (NULL != pRspInfo) { 
+                delete pRspInfo; 
+                pRspInfo = NULL; 
+            } 
+            if (NULL != pRequestID) { 
+                delete pRequestID; 
+                pRequestID = NULL; 
+            } 
+            if (NULL != pIsLastNew) {
+                delete pIsLastNew; 
+            pIsLastNew = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RspQryMonOidRelationTopic: END! ******\n", g_RunningResult_File);
+}
+
+void OnRtnMonOidRelationTopic (uv_async_t *handle) { 
+    OutputCallbackMessage("\n****** v8-transform-func:: RtnMonOidRelationTopic: START! ******", g_RunningResult_File);
+    queue<void**>* pReceivedData;
+    uv_mutex_lock (&g_RtnMonOidRelationTopic_mutex);
+
+    int ioUserNumb = g_RtnMonOidRelationTopic_IOUser_vec.size();
+    pReceivedData = new queue<void**>[ioUserNumb];
+    int i = 0;
+    for(vector<FRONT_ID>::iterator it = g_RtnMonOidRelationTopic_IOUser_vec.begin();
+        it != g_RtnMonOidRelationTopic_IOUser_vec.end(); it++ , i++) {
+        int dataNumb = g_RtnMonOidRelationTopic_Data_map[*it].size();
+        OutputCallbackMessage("dataNumb in this queue is: ",  dataNumb, g_RunningResult_File);
+        while (!g_RtnMonOidRelationTopic_Data_map[*it].empty()) {
+            pReceivedData[i].push (g_RtnMonOidRelationTopic_Data_map[*it].front());
+            g_RtnMonOidRelationTopic_Data_map[*it].pop();
+        }
+    }
+    g_RtnMonOidRelationTopic_IOUser_vec.clear();
+
+    uv_mutex_unlock (&g_RtnMonOidRelationTopic_mutex);
+
+    for (int i = 0; i < ioUserNumb; ++i) {
+        while ( !pReceivedData[i].empty() ) {
+            void** paramArray = pReceivedData[i].front();
+            pReceivedData[i].pop();
+
+            if (NULL == paramArray ) {
+                OutputCallbackMessage ("v8-transform-func::Delivered RtnMonOidRelationTopic paramArray is NULL", g_RunningResult_File);
+                OutputCallbackMessage ("****** v8-transform-func:: RtnMonOidRelationTopic: END! ******\n", g_RunningResult_File);
+                return;
+            }
+            Nan::HandleScope scope; 
+            Nan::Persistent<v8::Object>* pSpiObj = (Nan::Persistent<v8::Object>*)paramArray[0]; 
+            if (pSpiObj->IsEmpty()) { 
+                OutputCallbackMessage ("v8-transform-func::pSpiObj is NULL", g_RunningResult_File); 
+                return; 
+            } 
+            v8::Local<v8::Object> localSpiObj = Nan::New<v8::Object>(*pSpiObj); 
+            CShfeFtdcRtnMonOidRelationField* pRtnMonOidRelation = (CShfeFtdcRtnMonOidRelationField*)(paramArray[1]);
+            v8::Local<v8::Value> OnRtnMonOidRelationTopic = localSpiObj->Get(Nan::New<v8::String>("OnRtnMonOidRelationTopic").ToLocalChecked());
+            if (OnRtnMonOidRelationTopic->IsFunction()) {
+                v8::Local<v8::Function> function = v8::Local<v8::Function>::Cast(OnRtnMonOidRelationTopic);
+                Nan::Callback callback(function);
+
+                v8::Local<v8::Object> pRtnMonOidRelationJS = Nan::New<v8::Object>();
+                
+                if (NULL != pRtnMonOidRelation) { 
+                    string utf8string;
+                    v8::Local<v8::String> ObjectID = Nan::New<v8::String> ("ObjectID").ToLocalChecked();
+                    v8::Local<v8::Number> ObjectIDValue = Nan::New<v8::Number> (pRtnMonOidRelation->ObjectID);
+                    pRtnMonOidRelationJS->Set(Local<v8::Value> (ObjectID), Local<v8::Value>(ObjectIDValue));
+
+                    v8::Local<v8::String> HoldAttrID = Nan::New<v8::String> ("HoldAttrID").ToLocalChecked();
+                    v8::Local<v8::Number> HoldAttrIDValue = Nan::New<v8::Number> (pRtnMonOidRelation->HoldAttrID);
+                    pRtnMonOidRelationJS->Set(Local<v8::Value> (HoldAttrID), Local<v8::Value>(HoldAttrIDValue));
+
+                }
+                v8::Local<v8::Value> params[1];
+                if (NULL != pRtnMonOidRelation) { 
+                    params[0] = Local<v8::Value>(pRtnMonOidRelationJS);
+                } else { 
+                    params[0] = Local<v8::Value>(Nan::Undefined());
+                };
+                callback.Call(localSpiObj, 1, params); 
+            } 
+
+            if(NULL != pSpiObj) { 
+                delete pSpiObj; 
+                pSpiObj = NULL; 
+            } 
+            if (NULL != pRtnMonOidRelation) { 
+                delete pRtnMonOidRelation; 
+                pRtnMonOidRelation = NULL; 
+            } 
+            if (NULL != paramArray) { 
+                delete []paramArray; 
+                paramArray = NULL; 
+            } 
+        } 
+    } 
+    if (NULL != pReceivedData) { 
+        delete[] pReceivedData; 
+        pReceivedData = NULL; 
+    } 
+
+    OutputCallbackMessage("****** v8-transform-func:: RtnMonOidRelationTopic: END! ******\n", g_RunningResult_File);
 }
 

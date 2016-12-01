@@ -1,6 +1,6 @@
 #include <nan.h>
 #include "ftdcsysuserapi-wrapper.h"
-#include "FtdcSysUserApiStruct.h"
+#include "FtdcUserApiStruct.h"
 #include "sysuserspi.h"
 #include "tool-function.h"
 #include "id-func.h"
@@ -15,7 +15,7 @@ Nan::Persistent<Function> FtdcSysUserApi_Wrapper::constructor;
 
 FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper(const char *pszFlowPath)
 {
-    m_userApi = CShfeFtdcSysUserApi::CreateFtdcSysUserApi(pszFlowPath);
+    m_userApi = CShfeFtdcUserApi::CreateFtdcUserApi(pszFlowPath);
     m_spi = new SysUserSpi();
     if (NULL == m_spi) {
        OutputCallbackMessage("FtdcSysUserApi_Wrapper::FtdcSysUserApi_Wrapper:: m_spi is NULL", g_RunningResult_File);
@@ -104,7 +104,7 @@ void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
     Nan::SetPrototypeMethod(tpl,"ReqQryHistoryMemInfoTopic",ReqQryHistoryMemInfoTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryHistoryNetworkInfoTopic",ReqQryHistoryNetworkInfoTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryMonitorOnlineUser",ReqQryMonitorOnlineUser);
-    Nan::SetPrototypeMethod(tpl,"ReqQryFrontStat",ReqQryFrontStat);
+    Nan::SetPrototypeMethod(tpl,"ReqQryFrontStatTopic",ReqQryFrontStatTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryHistoryTradePeakTopic",ReqQryHistoryTradePeakTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryTomcatInfoTopic",ReqQryTomcatInfoTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryDBQueryTopic",ReqQryDBQueryTopic);
@@ -171,6 +171,35 @@ void FtdcSysUserApi_Wrapper::InitExports(Handle<Object> exports) {
     Nan::SetPrototypeMethod(tpl,"ReqQryInstrumentStatusTopic",ReqQryInstrumentStatusTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryCurrTradingSegmentAttrTopic",ReqQryCurrTradingSegmentAttrTopic);
     Nan::SetPrototypeMethod(tpl,"ReqQryPerformanceTopTopic",ReqQryPerformanceTopTopic);
+    Nan::SetPrototypeMethod(tpl,"ReqQryNetNonPartyLinkInfoTopic",ReqQryNetNonPartyLinkInfoTopic);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonConfigInfo",ReqQryMonConfigInfo);
+    Nan::SetPrototypeMethod(tpl,"ReqMonServiceConnect",ReqMonServiceConnect);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonServiceStatus",ReqQryMonServiceStatus);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonProbeTask",ReqQryMonProbeTask);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonObjectAttr",ReqQryMonObjectAttr);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonSyslogEvent",ReqQryMonSyslogEvent);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonFileOffset",ReqQryMonFileOffset);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonFileContent",ReqQryMonFileContent);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostCPUAttr",ReqQryMonHostCPUAttr);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostMemAttr",ReqQryMonHostMemAttr);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostNetworkAttr",ReqQryMonHostNetworkAttr);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostStatInfo",ReqQryMonHostStatInfo);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostRouterInfo",ReqQryMonHostRouterInfo);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostProcessInfo",ReqQryMonHostProcessInfo);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonSPQuery",ReqQryMonSPQuery);
+    Nan::SetPrototypeMethod(tpl,"ReqServiceVersion",ReqServiceVersion);
+    Nan::SetPrototypeMethod(tpl,"ReqServiceProgram",ReqServiceProgram);
+    Nan::SetPrototypeMethod(tpl,"ReqUpdateState",ReqUpdateState);
+    Nan::SetPrototypeMethod(tpl,"ReqSubscribe",ReqSubscribe);
+    Nan::SetPrototypeMethod(tpl,"ReqCancelSubscribe",ReqCancelSubscribe);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostBasicEnv",ReqQryMonHostBasicEnv);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostNetworkEnv",ReqQryMonHostNetworkEnv);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostFileSysEnv",ReqQryMonHostFileSysEnv);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostSwapEnv",ReqQryMonHostSwapEnv);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonitor2ObjectTopic",ReqQryMonitor2ObjectTopic);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonHostCommonEnvTopic",ReqQryMonHostCommonEnvTopic);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonOidHostRationalTopic",ReqQryMonOidHostRationalTopic);
+    Nan::SetPrototypeMethod(tpl,"ReqQryMonOidRelationTopic",ReqQryMonOidRelationTopic);
     constructor.Reset(tpl->GetFunction());
     exports->Set(Nan::New("FtdcSysUserApi_Wrapper").ToLocalChecked(), tpl->GetFunction());
 }
@@ -1798,7 +1827,7 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQrySysUserLoginTopic) {
 
     v8::Local<v8::Object> VersionIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("VersionID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
     v8::String::Utf8Value VersionIDData(Nan::To<v8::String>(VersionIDObj).ToLocalChecked());
-    strncpy(field.VersionID, *VersionIDData, 17);
+    strncpy(field.VersionID, *VersionIDData, 21);
 
     v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
     int nRequestID = (int)paramTwo->Value();
@@ -2505,8 +2534,8 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonitorOnlineUser) {
     OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonitorOnlineUser: END! ******", g_RunningResult_File);
 }
 
-NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFrontStat) {
-    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryFrontStat: START! ******", g_RunningResult_File);
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFrontStatTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryFrontStatTopic: START! ******", g_RunningResult_File);
 
     FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
     if(!(info[0]->IsObject() && info[1]->IsNumber()))
@@ -2535,11 +2564,11 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryFrontStat) {
     v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
     int nRequestID = (int)paramTwo->Value();
 
-    double returnValue= obj->m_userApi->ReqQryFrontStat(&field, nRequestID);
+    double returnValue= obj->m_userApi->ReqQryFrontStatTopic(&field, nRequestID);
 
     info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 
-    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryFrontStat: END! ******", g_RunningResult_File);
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryFrontStatTopic: END! ******", g_RunningResult_File);
 }
 
 NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryHistoryTradePeakTopic) {
@@ -5674,4 +5703,1101 @@ NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryPerformanceTopTopic) {
     info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
 
     OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryPerformanceTopTopic: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryNetNonPartyLinkInfoTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryNetNonPartyLinkInfoTopic: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryNetNonPartyLinkInfoField field;
+
+    v8::Local<v8::Object> OperationTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("OperationType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> OperationTypeData = Nan::To<v8::Integer>(OperationTypeObj).ToLocalChecked();
+    field.OperationType = OperationTypeData->Value();
+
+    v8::Local<v8::Object> IDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> IDData = Nan::To<v8::Integer>(IDObj).ToLocalChecked();
+    field.ID = IDData->Value();
+
+    v8::Local<v8::Object> MEMBER_NOObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("MEMBER_NO").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value MEMBER_NOData(Nan::To<v8::String>(MEMBER_NOObj).ToLocalChecked());
+    strncpy(field.MEMBER_NO, *MEMBER_NOData, 33);
+
+    v8::Local<v8::Object> MEMBER_NAMEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("MEMBER_NAME").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value MEMBER_NAMEData(Nan::To<v8::String>(MEMBER_NAMEObj).ToLocalChecked());
+    strncpy(field.MEMBER_NAME, *MEMBER_NAMEData, 65);
+
+    v8::Local<v8::Object> REMOTE_ADDRObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("REMOTE_ADDR").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value REMOTE_ADDRData(Nan::To<v8::String>(REMOTE_ADDRObj).ToLocalChecked());
+    strncpy(field.REMOTE_ADDR, *REMOTE_ADDRData, 65);
+
+    v8::Local<v8::Object> LOCAL_ADDRObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("LOCAL_ADDR").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value LOCAL_ADDRData(Nan::To<v8::String>(LOCAL_ADDRObj).ToLocalChecked());
+    strncpy(field.LOCAL_ADDR, *LOCAL_ADDRData, 65);
+
+    v8::Local<v8::Object> ADDRESSObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ADDRESS").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ADDRESSData(Nan::To<v8::String>(ADDRESSObj).ToLocalChecked());
+    strncpy(field.ADDRESS, *ADDRESSData, 257);
+
+    v8::Local<v8::Object> LINE_STATUSObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("LINE_STATUS").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value LINE_STATUSData(Nan::To<v8::String>(LINE_STATUSObj).ToLocalChecked());
+    strncpy(field.LINE_STATUS, *LINE_STATUSData, 33);
+
+    v8::Local<v8::Object> CONTACTObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("CONTACT").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value CONTACTData(Nan::To<v8::String>(CONTACTObj).ToLocalChecked());
+    strncpy(field.CONTACT, *CONTACTData, 33);
+
+    v8::Local<v8::Object> TELEPHONEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("TELEPHONE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value TELEPHONEData(Nan::To<v8::String>(TELEPHONEObj).ToLocalChecked());
+    strncpy(field.TELEPHONE, *TELEPHONEData, 65);
+
+    v8::Local<v8::Object> MOBILEPHONEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("MOBILEPHONE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value MOBILEPHONEData(Nan::To<v8::String>(MOBILEPHONEObj).ToLocalChecked());
+    strncpy(field.MOBILEPHONE, *MOBILEPHONEData, 65);
+
+    v8::Local<v8::Object> EMAILObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EMAIL").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EMAILData(Nan::To<v8::String>(EMAILObj).ToLocalChecked());
+    strncpy(field.EMAIL, *EMAILData, 65);
+
+    v8::Local<v8::Object> FAXObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("FAX").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value FAXData(Nan::To<v8::String>(FAXObj).ToLocalChecked());
+    strncpy(field.FAX, *FAXData, 65);
+
+    v8::Local<v8::Object> PROVINCEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("PROVINCE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value PROVINCEData(Nan::To<v8::String>(PROVINCEObj).ToLocalChecked());
+    strncpy(field.PROVINCE, *PROVINCEData, 33);
+
+    v8::Local<v8::Object> DDN_NOObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("DDN_NO").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value DDN_NOData(Nan::To<v8::String>(DDN_NOObj).ToLocalChecked());
+    strncpy(field.DDN_NO, *DDN_NOData, 65);
+
+    v8::Local<v8::Object> IN_MODEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IN_MODE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IN_MODEData(Nan::To<v8::String>(IN_MODEObj).ToLocalChecked());
+    strncpy(field.IN_MODE, *IN_MODEData, 65);
+
+    v8::Local<v8::Object> IP_WANObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IP_WAN").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IP_WANData(Nan::To<v8::String>(IP_WANObj).ToLocalChecked());
+    strncpy(field.IP_WAN, *IP_WANData, 65);
+
+    v8::Local<v8::Object> IP_LANObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IP_LAN").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IP_LANData(Nan::To<v8::String>(IP_LANObj).ToLocalChecked());
+    strncpy(field.IP_LAN, *IP_LANData, 65);
+
+    v8::Local<v8::Object> IPADDRObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IPADDR").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IPADDRData(Nan::To<v8::String>(IPADDRObj).ToLocalChecked());
+    strncpy(field.IPADDR, *IPADDRData, 65);
+
+    v8::Local<v8::Object> InterfaceObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("Interface").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value InterfaceData(Nan::To<v8::String>(InterfaceObj).ToLocalChecked());
+    strncpy(field.Interface, *InterfaceData, 65);
+
+    v8::Local<v8::Object> INTERFACE_DATEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("INTERFACE_DATE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value INTERFACE_DATEData(Nan::To<v8::String>(INTERFACE_DATEObj).ToLocalChecked());
+    strncpy(field.INTERFACE_DATE, *INTERFACE_DATEData, 33);
+
+    v8::Local<v8::Object> SOFTWAREObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("SOFTWARE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value SOFTWAREData(Nan::To<v8::String>(SOFTWAREObj).ToLocalChecked());
+    strncpy(field.SOFTWARE, *SOFTWAREData, 33);
+
+    v8::Local<v8::Object> FEE_TYPEObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("FEE_TYPE").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value FEE_TYPEData(Nan::To<v8::String>(FEE_TYPEObj).ToLocalChecked());
+    strncpy(field.FEE_TYPE, *FEE_TYPEData, 33);
+
+    v8::Local<v8::Object> SERVICEPROVIDERObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("SERVICEPROVIDER").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value SERVICEPROVIDERData(Nan::To<v8::String>(SERVICEPROVIDERObj).ToLocalChecked());
+    strncpy(field.SERVICEPROVIDER, *SERVICEPROVIDERData, 33);
+
+    v8::Local<v8::Object> IF_ZIYINGObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IF_ZIYING").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IF_ZIYINGData(Nan::To<v8::String>(IF_ZIYINGObj).ToLocalChecked());
+    strncpy(field.IF_ZIYING, *IF_ZIYINGData, 33);
+
+    v8::Local<v8::Object> IF_TUOGUANObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("IF_TUOGUAN").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value IF_TUOGUANData(Nan::To<v8::String>(IF_TUOGUANObj).ToLocalChecked());
+    strncpy(field.IF_TUOGUAN, *IF_TUOGUANData, 33);
+
+    v8::Local<v8::Object> HASOTHERObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HASOTHER").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value HASOTHERData(Nan::To<v8::String>(HASOTHERObj).ToLocalChecked());
+    strncpy(field.HASOTHER, *HASOTHERData, 33);
+
+    v8::Local<v8::Object> SEAT_NOObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("SEAT_NO").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value SEAT_NOData(Nan::To<v8::String>(SEAT_NOObj).ToLocalChecked());
+    strncpy(field.SEAT_NO, *SEAT_NOData, 1025);
+
+    v8::Local<v8::Object> PROObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("PRO").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value PROData(Nan::To<v8::String>(PROObj).ToLocalChecked());
+    strncpy(field.PRO, *PROData, 513);
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryNetNonPartyLinkInfoTopic(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryNetNonPartyLinkInfoTopic: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonConfigInfo) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonConfigInfo: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonConfigInfoField field;
+
+    v8::Local<v8::Object> ConfigNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ConfigName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ConfigNameData(Nan::To<v8::String>(ConfigNameObj).ToLocalChecked());
+    strncpy(field.ConfigName, *ConfigNameData, 129);
+
+    v8::Local<v8::Object> ConfigArgObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ConfigArg").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ConfigArgData(Nan::To<v8::String>(ConfigArgObj).ToLocalChecked());
+    strncpy(field.ConfigArg, *ConfigArgData, 33);
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonConfigInfo(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonConfigInfo: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqMonServiceConnect) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqMonServiceConnect: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqMonServiceConnectField field;
+
+    v8::Local<v8::Object> ServiceNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceNameData(Nan::To<v8::String>(ServiceNameObj).ToLocalChecked());
+    strncpy(field.ServiceName, *ServiceNameData, 65);
+
+    v8::Local<v8::Object> ServiceIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ServiceIDData = Nan::To<v8::Integer>(ServiceIDObj).ToLocalChecked();
+    field.ServiceID = ServiceIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqMonServiceConnect(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqMonServiceConnect: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonServiceStatus) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonServiceStatus: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonServiceStatusField field;
+
+    v8::Local<v8::Object> ServiceNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceNameData(Nan::To<v8::String>(ServiceNameObj).ToLocalChecked());
+    strncpy(field.ServiceName, *ServiceNameData, 65);
+
+    v8::Local<v8::Object> ServiceIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceIDData(Nan::To<v8::String>(ServiceIDObj).ToLocalChecked());
+    strncpy(field.ServiceID, *ServiceIDData, 65);
+
+    v8::Local<v8::Object> StatusObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("Status").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> StatusData = Nan::To<v8::Integer>(StatusObj).ToLocalChecked();
+    field.Status = StatusData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonServiceStatus(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonServiceStatus: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonProbeTask) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonProbeTask: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonProbeTaskField field;
+
+    v8::Local<v8::Object> ProbeIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ProbeID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ProbeIDData(Nan::To<v8::String>(ProbeIDObj).ToLocalChecked());
+    strncpy(field.ProbeID, *ProbeIDData, 33);
+
+    v8::Local<v8::Object> TaskTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("TaskType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value TaskTypeData(Nan::To<v8::String>(TaskTypeObj).ToLocalChecked());
+    strncpy(field.TaskType, *TaskTypeData, 17);
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonProbeTask(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonProbeTask: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonObjectAttr) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonObjectAttr: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonObjectAttrField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> AttrTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> AttrTypeData = Nan::To<v8::Integer>(AttrTypeObj).ToLocalChecked();
+    field.AttrType = AttrTypeData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonObjectAttr(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonObjectAttr: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonSyslogEvent) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonSyslogEvent: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonSyslogEventField field;
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> StartTimeData = Nan::To<v8::Integer>(StartTimeObj).ToLocalChecked();
+    field.StartTime = StartTimeData->Value();
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> EndTimeData = Nan::To<v8::Integer>(EndTimeObj).ToLocalChecked();
+    field.EndTime = EndTimeData->Value();
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> EventNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EventName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EventNameData(Nan::To<v8::String>(EventNameObj).ToLocalChecked());
+    strncpy(field.EventName, *EventNameData, 65);
+
+    v8::Local<v8::Object> EventLevelObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EventLevel").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> EventLevelData = Nan::To<v8::Integer>(EventLevelObj).ToLocalChecked();
+    field.EventLevel = EventLevelData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonSyslogEvent(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonSyslogEvent: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonFileOffset) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonFileOffset: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonFileOffsetField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> FileNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("FileName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value FileNameData(Nan::To<v8::String>(FileNameObj).ToLocalChecked());
+    strncpy(field.FileName, *FileNameData, 101);
+
+    v8::Local<v8::Object> ReadOffsetObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ReadOffset").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ReadOffsetData = Nan::To<v8::Integer>(ReadOffsetObj).ToLocalChecked();
+    field.ReadOffset = ReadOffsetData->Value();
+
+    v8::Local<v8::Object> ReadTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ReadTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ReadTimeData = Nan::To<v8::Integer>(ReadTimeObj).ToLocalChecked();
+    field.ReadTime = ReadTimeData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonFileOffset(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonFileOffset: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonFileContent) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonFileContent: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonFileContentField field;
+
+    v8::Local<v8::Object> FileNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("FileName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value FileNameData(Nan::To<v8::String>(FileNameObj).ToLocalChecked());
+    strncpy(field.FileName, *FileNameData, 101);
+
+    v8::Local<v8::Object> FileTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("FileType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value FileTypeData(Nan::To<v8::String>(FileTypeObj).ToLocalChecked());
+    strncpy(field.FileType, *FileTypeData, 17);
+
+    v8::Local<v8::Object> ContentOffsetObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ContentOffset").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ContentOffsetData = Nan::To<v8::Integer>(ContentOffsetObj).ToLocalChecked();
+    field.ContentOffset = ContentOffsetData->Value();
+
+    v8::Local<v8::Object> ContentLengthObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ContentLength").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ContentLengthData = Nan::To<v8::Integer>(ContentLengthObj).ToLocalChecked();
+    field.ContentLength = ContentLengthData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonFileContent(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonFileContent: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostCPUAttr) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostCPUAttr: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostCPUAttrField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> CpuIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("CpuID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value CpuIDData(Nan::To<v8::String>(CpuIDObj).ToLocalChecked());
+    strncpy(field.CpuID, *CpuIDData, 9);
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostCPUAttr(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostCPUAttr: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostMemAttr) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostMemAttr: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostMemAttrField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostMemAttr(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostMemAttr: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostNetworkAttr) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostNetworkAttr: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostNetworkAttrField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostNetworkAttr(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostNetworkAttr: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostStatInfo) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostStatInfo: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostStatInfoField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostStatInfo(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostStatInfo: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostRouterInfo) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostRouterInfo: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostRouterInfoField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostRouterInfo(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostRouterInfo: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostProcessInfo) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostProcessInfo: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostProcessInfoField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartDateData(Nan::To<v8::String>(StartDateObj).ToLocalChecked());
+    strncpy(field.StartDate, *StartDateData, 9);
+
+    v8::Local<v8::Object> StartTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value StartTimeData(Nan::To<v8::String>(StartTimeObj).ToLocalChecked());
+    strncpy(field.StartTime, *StartTimeData, 9);
+
+    v8::Local<v8::Object> EndDateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDate").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndDateData(Nan::To<v8::String>(EndDateObj).ToLocalChecked());
+    strncpy(field.EndDate, *EndDateData, 9);
+
+    v8::Local<v8::Object> EndTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value EndTimeData(Nan::To<v8::String>(EndTimeObj).ToLocalChecked());
+    strncpy(field.EndTime, *EndTimeData, 9);
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostProcessInfo(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostProcessInfo: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonSPQuery) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonSPQuery: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonSPQueryField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> DBNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("DBName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value DBNameData(Nan::To<v8::String>(DBNameObj).ToLocalChecked());
+    strncpy(field.DBName, *DBNameData, 17);
+
+    v8::Local<v8::Object> SPNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("SPName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value SPNameData(Nan::To<v8::String>(SPNameObj).ToLocalChecked());
+    strncpy(field.SPName, *SPNameData, 65);
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonSPQuery(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonSPQuery: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqServiceVersion) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqServiceVersion: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqServiceVersionField field;
+
+    v8::Local<v8::Object> ServiceNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceNameData(Nan::To<v8::String>(ServiceNameObj).ToLocalChecked());
+    strncpy(field.ServiceName, *ServiceNameData, 65);
+
+    v8::Local<v8::Object> ServiceIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ServiceIDData = Nan::To<v8::Integer>(ServiceIDObj).ToLocalChecked();
+    field.ServiceID = ServiceIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqServiceVersion(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqServiceVersion: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqServiceProgram) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqServiceProgram: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqServiceProgramField field;
+
+    v8::Local<v8::Object> ServiceNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceNameData(Nan::To<v8::String>(ServiceNameObj).ToLocalChecked());
+    strncpy(field.ServiceName, *ServiceNameData, 65);
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqServiceProgram(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqServiceProgram: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqUpdateState) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqUpdateState: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqUpdateStateField field;
+
+    v8::Local<v8::Object> ServiceNameObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceName").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::String::Utf8Value ServiceNameData(Nan::To<v8::String>(ServiceNameObj).ToLocalChecked());
+    strncpy(field.ServiceName, *ServiceNameData, 65);
+
+    v8::Local<v8::Object> ServiceIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ServiceID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ServiceIDData = Nan::To<v8::Integer>(ServiceIDObj).ToLocalChecked();
+    field.ServiceID = ServiceIDData->Value();
+
+    v8::Local<v8::Object> ProgramUpdateStateObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ProgramUpdateState").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ProgramUpdateStateData = Nan::To<v8::Integer>(ProgramUpdateStateObj).ToLocalChecked();
+    field.ProgramUpdateState = ProgramUpdateStateData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqUpdateState(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqUpdateState: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqSubscribe) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqSubscribe: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqSubscribeField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> AttrTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> AttrTypeData = Nan::To<v8::Integer>(AttrTypeObj).ToLocalChecked();
+    field.AttrType = AttrTypeData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqSubscribe(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqSubscribe: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqCancelSubscribe) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqCancelSubscribe: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqSubscribeField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> AttrTypeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("AttrType").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> AttrTypeData = Nan::To<v8::Integer>(AttrTypeObj).ToLocalChecked();
+    field.AttrType = AttrTypeData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqCancelSubscribe(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqCancelSubscribe: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostBasicEnv) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostBasicEnv: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostBasicEnvField field;
+
+    v8::Local<v8::Object> HostIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HostID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> HostIDData = Nan::To<v8::Integer>(HostIDObj).ToLocalChecked();
+    field.HostID = HostIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostBasicEnv(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostBasicEnv: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostNetworkEnv) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostNetworkEnv: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostNetworkEnvField field;
+
+    v8::Local<v8::Object> HostIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HostID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> HostIDData = Nan::To<v8::Integer>(HostIDObj).ToLocalChecked();
+    field.HostID = HostIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostNetworkEnv(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostNetworkEnv: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostFileSysEnv) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostFileSysEnv: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostFileSysEnvField field;
+
+    v8::Local<v8::Object> HostIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HostID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> HostIDData = Nan::To<v8::Integer>(HostIDObj).ToLocalChecked();
+    field.HostID = HostIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostFileSysEnv(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostFileSysEnv: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostSwapEnv) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostSwapEnv: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostSwapEnvField field;
+
+    v8::Local<v8::Object> HostIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HostID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> HostIDData = Nan::To<v8::Integer>(HostIDObj).ToLocalChecked();
+    field.HostID = HostIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostSwapEnv(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostSwapEnv: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonitor2ObjectTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonitor2ObjectTopic: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonitor2ObjectField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDateTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> StartDateTimeData = Nan::To<v8::Integer>(StartDateTimeObj).ToLocalChecked();
+    field.StartDateTime = StartDateTimeData->Value();
+
+    v8::Local<v8::Object> EndDateTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDateTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> EndDateTimeData = Nan::To<v8::Integer>(EndDateTimeObj).ToLocalChecked();
+    field.EndDateTime = EndDateTimeData->Value();
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonitor2ObjectTopic(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonitor2ObjectTopic: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonHostCommonEnvTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostCommonEnvTopic: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonHostCommonEnvField field;
+
+    v8::Local<v8::Object> HostIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("HostID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> HostIDData = Nan::To<v8::Integer>(HostIDObj).ToLocalChecked();
+    field.HostID = HostIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonHostCommonEnvTopic(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonHostCommonEnvTopic: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonOidHostRationalTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonOidHostRationalTopic: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonOidHostRationalField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Object> StartDateTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("StartDateTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> StartDateTimeData = Nan::To<v8::Integer>(StartDateTimeObj).ToLocalChecked();
+    field.StartDateTime = StartDateTimeData->Value();
+
+    v8::Local<v8::Object> EndDateTimeObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("EndDateTime").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> EndDateTimeData = Nan::To<v8::Integer>(EndDateTimeObj).ToLocalChecked();
+    field.EndDateTime = EndDateTimeData->Value();
+
+    v8::Local<v8::Object> KeepAliveObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("KeepAlive").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> KeepAliveData = Nan::To<v8::Integer>(KeepAliveObj).ToLocalChecked();
+    field.KeepAlive = KeepAliveData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonOidHostRationalTopic(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonOidHostRationalTopic: END! ******", g_RunningResult_File);
+}
+
+NAN_METHOD (FtdcSysUserApi_Wrapper::ReqQryMonOidRelationTopic) {
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonOidRelationTopic: START! ******", g_RunningResult_File);
+
+    FtdcSysUserApi_Wrapper* obj = ObjectWrap::Unwrap<FtdcSysUserApi_Wrapper>(info.Holder());
+    if(!(info[0]->IsObject() && info[1]->IsNumber()))
+    {
+        Nan::ThrowError("wrong parameter!");
+    }
+    v8::Local<v8::Object> paraValue = Nan::To<v8::Object>(info[0]).ToLocalChecked();
+    CShfeFtdcReqQryMonOidRelationField field;
+
+    v8::Local<v8::Object> ObjectIDObj = Nan::To<v8::Object>(Nan::Get(paraValue,Nan::New<v8::String>("ObjectID").ToLocalChecked()).ToLocalChecked()).ToLocalChecked();
+    v8::Local<v8::Integer> ObjectIDData = Nan::To<v8::Integer>(ObjectIDObj).ToLocalChecked();
+    field.ObjectID = ObjectIDData->Value();
+
+    v8::Local<v8::Integer> paramTwo = Nan::To<v8::Integer>(info[1]).ToLocalChecked();
+    int nRequestID = (int)paramTwo->Value();
+
+    double returnValue= obj->m_userApi->ReqQryMonOidRelationTopic(&field, nRequestID);
+
+    info.GetReturnValue().Set(Nan::New<v8::Number>(returnValue));
+
+    OutputCallbackMessage("\n****** FtdApi-wrapper: ReqQryMonOidRelationTopic: END! ******", g_RunningResult_File);
 }
