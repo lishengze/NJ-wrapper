@@ -42,9 +42,9 @@ user.bTestMonitor2Object = true;
 
 user.sysUserLoginField   = sysUserLoginField;
 user.monitor2ObjectField = monitor2ObjectField;
-user.subscriberField     = subscriberField;
 user.monConfigInfoField  = monConfigInfoField;
 user.subscribeField      = subscribeField;
+user.subscriberField     = subscriberField;
 user.Spi                 = new spi.Spi();
 user.Spi.user            = user;
 

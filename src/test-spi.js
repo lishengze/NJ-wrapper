@@ -25,7 +25,7 @@ var Spi = function(){
 
     }
 
-    this.OnRspQrySysUserLoginTopic = function(pRspQrySysUserLogin,pRspInfo,nRequestID,bIsLast) {
+    this.OnRspQrySysUserLoginTopic = function (pRspQrySysUserLogin, pRspInfo, nRequestID, bIsLast) {
       var outputStr = "\n++++++++++++++++ JS OnRspQrySysUserLoginTopic: START! ++++++++++++++++++\n";
       if (pRspQrySysUserLogin instanceof Object) {
         outputStr += "LoginTime :                 " + pRspQrySysUserLogin.LoginTime.toString() + "\n"
@@ -49,7 +49,6 @@ var Spi = function(){
               console.log(err);
           } 
       });
-
       console.log(outputStr);
 
       if (true === this.user.bTestMonConfigInfo) {
@@ -96,57 +95,10 @@ var Spi = function(){
 				});
 
 				// console.log (outputStr);
-				// if (bIsLast === true) {
-				//     console.log (outputStr);
-				// }
-		}
-
-		this.OnRtnObjectAttrTopic = function (pRtnObjectAttr) {
-				var outputStr = "\n************ JS::OnRtnObjectAttrTopic: START! ***********\n";
-				++g_RtnObjectAttrTopic_callbackNumb;
-				if (pRtnObjectAttr instanceof Object) {
-						outputStr +=  "ObjectID:                " + pRtnObjectAttr.ObjectID + "\n"
-												+ "AttrType:                " + pRtnObjectAttr.AttrType + "\n"
-												+ "MonDate:                 " + pRtnObjectAttr.MonDate + "\n"
-												+ "MonTime:                 " + pRtnObjectAttr.MonTime + "\n"
-												+ "ValueType:               " + pRtnObjectAttr.ValueType + "\n"
-												+ "AttrValue:               " + pRtnObjectAttr.AttrValue + "\n"
-				} else {
-						outputStr += "pRtnObjectAttr:          NULL!\n";
+				if (true === bIsLast) {
+				    console.log (outputStr);
 				}
-				outputStr += "g_RtnObjectAttrTopic_callbackNumb:   " + g_RtnObjectAttrTopic_callbackNumb + "\n";
-				outputStr += "************ JS::OnRtnObjectAttrTopic: END! *********** \n";
-
-				console.log(outputStr);
-				fs.appendFile(jsFileName, outputStr, function(err) {
-							if (err) {
-									console.log(err);
-							} 
-				});        
 		}
-
-    this.OnRtnMonObjectAttr = function (pRtnMonObjectAttr) {
-				var outputStr = "\n************ JS::OnRtnMonObjectAttr: START! ***********\n";
-				++g_RtnMonObjectAttr_callbackNumb;
-				if (pRtnMonObjectAttr instanceof Object) {
-						outputStr +=  "ObjectID:                " + pRtnMonObjectAttr.ObjectID + "\n"
-												+ "AttrType:                " + pRtnMonObjectAttr.AttrType + "\n"
-												+ "MonTime:                 " + pRtnMonObjectAttr.MonTime + "\n"
-												+ "ValueType:               " + pRtnMonObjectAttr.ValueType + "\n"
-												+ "AttrValue:               " + pRtnMonObjectAttr.AttrValue + "\n"
-				} else {
-						outputStr += "pRtnMonObjectAttr:          NULL!\n";
-				}
-				outputStr += "g_RtnMonObjectAttr_callbackNumb:   " + g_RtnMonObjectAttr_callbackNumb + "\n";
-				outputStr += "************ JS::OnRtnMonObjectAttr: END! *********** \n";
-
-				console.log(outputStr);
-				fs.appendFile(jsFileName, outputStr, function(err) {
-							if (err) {
-									console.log(err);
-							} 
-				});        
-    }
 
     this.OnRspQryMonConfigInfo = function (pRspQryMonConfigInfo, pRspInfo, nRequestID, bIsLast) {
         var outputStr = "\n++++++++++++++++ JS OnRspQryMonConfigInfo: START! ++++++++++++++++++\n";
@@ -175,8 +127,52 @@ var Spi = function(){
         console.log(outputStr);
     }
 
+    this.OnRtnMonObjectAttr = function (pRtnMonObjectAttr) {
+				var outputStr = "\n************ JS::OnRtnMonObjectAttr: START! ***********\n";
+				++g_RtnMonObjectAttr_callbackNumb;
+				if (pRtnMonObjectAttr instanceof Object) {
+						outputStr +=  "ObjectID:                " + pRtnMonObjectAttr.ObjectID + "\n"
+												+ "AttrType:                " + pRtnMonObjectAttr.AttrType + "\n"
+												+ "MonTime:                 " + pRtnMonObjectAttr.MonTime + "\n"
+												+ "ValueType:               " + pRtnMonObjectAttr.ValueType + "\n"
+												+ "AttrValue:               " + pRtnMonObjectAttr.AttrValue + "\n"
+				} else {
+						outputStr += "pRtnMonObjectAttr:          NULL!\n";
+				}
+				outputStr += "g_RtnMonObjectAttr_callbackNumb:   " + g_RtnMonObjectAttr_callbackNumb + "\n";
+				outputStr += "************ JS::OnRtnMonObjectAttr: END! *********** \n";
 
+				console.log(outputStr);
+				fs.appendFile(jsFileName, outputStr, function(err) {
+							if (err) {
+									console.log(err);
+							} 
+				});        
+    }
+
+		this.OnRtnObjectAttrTopic = function (pRtnObjectAttr) {
+				var outputStr = "\n************ JS::OnRtnObjectAttrTopic: START! ***********\n";
+				++g_RtnObjectAttrTopic_callbackNumb;
+				if (pRtnObjectAttr instanceof Object) {
+						outputStr +=  "ObjectID:                " + pRtnObjectAttr.ObjectID + "\n"
+												+ "AttrType:                " + pRtnObjectAttr.AttrType + "\n"
+												+ "MonDate:                 " + pRtnObjectAttr.MonDate + "\n"
+												+ "MonTime:                 " + pRtnObjectAttr.MonTime + "\n"
+												+ "ValueType:               " + pRtnObjectAttr.ValueType + "\n"
+												+ "AttrValue:               " + pRtnObjectAttr.AttrValue + "\n"
+				} else {
+						outputStr += "pRtnObjectAttr:          NULL!\n";
+				}
+				outputStr += "g_RtnObjectAttrTopic_callbackNumb:   " + g_RtnObjectAttrTopic_callbackNumb + "\n";
+				outputStr += "************ JS::OnRtnObjectAttrTopic: END! *********** \n";
+
+				console.log(outputStr);
+				fs.appendFile(jsFileName, outputStr, function(err) {
+							if (err) {
+									console.log(err);
+							} 
+				});        
+		}
 };
-
 
 exports.Spi = Spi;
