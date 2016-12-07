@@ -21,7 +21,6 @@
 #define USER_API_EXPORT __declspec(dllexport)
 #else
 #define USER_API_EXPORT __declspec(dllimport)
-#pragma comment(lib, "sysuserapi.lib")
 #endif
 #else
 #define USER_API_EXPORT 
@@ -1149,6 +1148,9 @@ public:
 
 	///用于通知目标服务文件已发送成功
 	virtual void OnRtnFileSendSuccess(CShfeFtdcRtnFileSendSuccessField *pRtnFileSendSuccess) {};
+
+	///流时间标记
+	virtual void OnRtnFlowTimeStamp(CShfeFtdcRtnFlowTimeStampField *pRtnFlowTimeStamp) {};
 
 	///tomcat信息应答
 	virtual void OnRspQryMonTomcatInfo(CShfeFtdcRspQryMonTomcatInfoField *pRspQryMonTomcatInfo, CShfeFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};

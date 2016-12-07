@@ -6,6 +6,10 @@ var g_RspQryMonitorObjectTopic_callbackNumb = 0;
 var g_RspQrySysUserLoginTopic_callbackNumb = 0;
 var g_RtnObjectAttrTopic_callbackNumb = 0;
 var g_RtnMonObjectAttr_callbackNumb = 0;
+var g_MonConfigInfo = [];
+g_MonConfigInfo["ObjectIDNS"] = "\n------------------ ObjectIDNS Data START!-----------------\n";
+g_MonConfigInfo["DomainNS"] = "\n------------------ DomainNS Data START!------------------\n";
+g_MonConfigInfo["AttrName"] = "\n------------------ AttrName Data START!------------------\n";
 
 var Spi = function(){
 
@@ -55,10 +59,6 @@ var Spi = function(){
         this.user.userApi.ReqQryMonConfigInfo(this.user.monConfigInfoField, 1);
       }
 
-      if (true === this.user.bTestSubscriberData) {
-        this.user.userApi.ReqQrySubscriberTopic(this.user.subscriberField, 1)
-      }
-
       if (true === this.user.bTestSubscribe) {
         this.user.userApi.ReqSubscribe(this.user.subscribeField, 1)
       }
@@ -67,11 +67,15 @@ var Spi = function(){
         this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
       }
 
+			if (true === this.user.bTestSubscriberData) {
+        this.user.userApi.ReqQrySubscriberTopic(this.user.subscriberField, 1)
+      }
+
     }
 
 		this.OnRspQryMonitor2ObjectTopic = function (pRspQryMonitor2Object, pRspInfo, nRequestID, bIsLast) {
 				g_RspQryMonitorObjectTopic_callbackNumb++;
-				var outputStr =  "\n************ JS::OnRspQryMonitorObjectTopic: START! ***********\n";
+				var outputStr =  "\n************ JS::OnRspQryMonitor2ObjectTopic: START! ***********\n";
 				if (pRspQryMonitor2Object instanceof Object) {
 						outputStr += "ObjectID :               " + pRspQryMonitor2Object.ObjectID.toString() + "\n"
 											+ "ObjectName :             " + pRspQryMonitor2Object.ObjectName.toString() + "\n"
@@ -86,7 +90,7 @@ var Spi = function(){
 		
 				outputStr += "bIsLast:                 " + bIsLast.toString() + "\n";
 				outputStr += "g_RspQryMonitorObjectTopic_callbackNumb:   " + g_RspQryMonitorObjectTopic_callbackNumb + "\n";
-				outputStr += "************ JS::OnRspQryMonitorObjectTopic: END! *********** \n";
+				outputStr += "************ JS::OnRspQryMonitor2ObjectTopic: END! *********** \n";
 		
 				fs.appendFile(jsFileName, outputStr, function(err) {
 							if (err) {
@@ -94,10 +98,10 @@ var Spi = function(){
 							} 
 				});
 
-				// console.log (outputStr);
-				if (true === bIsLast) {
-				    console.log (outputStr);
-				}
+				console.log (outputStr);
+				// if (true === bIsLast) {
+				//     console.log (outputStr);
+				// }
 		}
 
     this.OnRspQryMonConfigInfo = function (pRspQryMonConfigInfo, pRspInfo, nRequestID, bIsLast) {
@@ -107,6 +111,18 @@ var Spi = function(){
                      + "ConfigArg :                  " + pRspQryMonConfigInfo.ConfigArg.toString() + "\n"
                      + "ConfigContent :              " + pRspQryMonConfigInfo.ConfigContent.toString() + "\n"
 
+					if (undefined !== g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]) {
+						g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] += pRspQryMonConfigInfo.ConfigContent;
+						if (true === bIsLast) {
+							g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] +=  "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data END!-----------------\n";
+							fs.appendFile(jsFileName, g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName], function(err) {
+								if (err) {
+										console.log(err);
+								} 
+        			});
+						}
+					}
+
         } else {
                 outputStr += "pRspQryMonConfigInfo is NULL!\n";
         }
@@ -114,15 +130,16 @@ var Spi = function(){
            outputStr += "pRspInfo->ErrorID:          " + pRspInfo.ErrorID.toString() + "\n"
                       + "pRspInfo->ErrorMsg:         " + pRspInfo.ErrorMsg.toString() + "\n"        
         }
+				
 
         outputStr += "bIsLastNew :                " + bIsLast + "\n";
         outputStr += "++++++++++++++++ JS OnRspQryMonConfigInfo: END! ++++++++++++++++++" + "\n";
 
-        fs.appendFile(jsFileName, outputStr, function(err) {
-            if (err) {
-                console.log(err);
-            } 
-        });
+        // fs.appendFile(jsFileName, outputStr, function(err) {
+        //     if (err) {
+        //         console.log(err);
+        //     } 
+        // });
 
         console.log(outputStr);
     }
@@ -174,5 +191,10 @@ var Spi = function(){
 				});        
 		}
 };
+
+function processMonConfigInfoData (originData) {
+	var tmpData = originData.split("\n")
+}
+
 
 exports.Spi = Spi;

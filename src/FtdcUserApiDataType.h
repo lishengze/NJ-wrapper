@@ -10,9 +10,9 @@
 #ifndef FTDCDATATYPE_H
 #define FTDCDATATYPE_H
 
-// #include "platform.h"
+//#include "platform.h"
 
-typedef unsigned long int	QWORD;
+typedef unsigned long long QWORD;
 
 enum TE_RESUME_TYPE
 {
@@ -1659,6 +1659,8 @@ typedef char TShfeFtdcProcessStateType;
 #define SHFE_FTDC_MON_VAL_DOUBLE '2'
 ///字符串
 #define SHFE_FTDC_MON_VAL_STRING '3'
+///百分数
+#define SHFE_FTDC_MON_VAL_PERCENT '4'
 
 typedef char TShfeFtdcMonValueTypeType;
 

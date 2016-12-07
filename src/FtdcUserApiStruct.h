@@ -14378,6 +14378,15 @@ struct CShfeFtdcRtnFileSendSuccessField
 	TShfeFtdcString32Type	TargetDatacenter;
 };
 
+///时间标记
+struct CShfeFtdcRtnFlowTimeStampField
+{
+	///秒
+	TShfeFtdcINT32Type	Sec;
+	///微秒
+	TShfeFtdcINT32Type	USec;
+};
+
 ///tomcat信息查询
 struct CShfeFtdcReqQryMonTomcatInfoField
 {
