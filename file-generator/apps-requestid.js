@@ -5,6 +5,9 @@
 var fs = require('fs');
 var hereDoc = require('../lib/tool-function.js').hereDoc;
 var serverName = process.argv[2];
+if (undefined === serverName) {
+    serverName = 'new-server';
+}
 var pathName = '../lib/' + serverName + '/';
 var ftdContent = require(pathName + "FTD.json");
 var sysContent = require(pathName + "sysuserapi.json");
@@ -17,7 +20,7 @@ for (var i = 0; i < sysFuncs.length; ++i) {
     var funcName = sysFuncs[i].$.name;
 	var funcType = funcName.substring(0, 3);
     if (funcType === "Req") {
-        fileData += "" + funcName + "RequestID = 0;" + "\n\n";
+        fileData += "window." + funcName + "RequestID = 0;" + "\n\n";
     }
 }
 

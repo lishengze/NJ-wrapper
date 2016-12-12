@@ -180,7 +180,8 @@ for (var i = 0; i < sysFuncs.length; ++i) {
 	var funcType = funcName.substring(0, 3);
     if (funcType === "Rsp" || funcType === "Rtn") {
         for (var j = 0; j < ftdFuncs.length; ++j) {
-            if (ftdFuncs[j].$.name === funcName) {                
+            if (ftdFuncs[j].$.name === funcName) {       
+                         
                 var fieldName = ftdFuncs[j].field[0].$.name;
                 var queueName  = 'g_' + funcName + '_Data_map';
                 var vectorname = 'g_' + funcName + '_IOUser_vec';

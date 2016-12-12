@@ -1,0 +1,11 @@
+{
+  "name": "windows-complete-sys",
+  "version": "0.0.0",
+  "description": "Node.js Addons Example #9",
+  "main": "test.js",
+  "private": true,
+  "gypfile": true,
+  "dependencies": {
+    "nan": "*"
+  }
+}

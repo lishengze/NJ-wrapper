@@ -389,18 +389,3 @@ fs.writeFile(pathName + fileName, fileData, function (err) {
 
 });
 
-function InitializeHeadInfo (fileData) {
-
-}
-
-function AddClassFunc (fileData) {
-
-}
-
-function AddPublicFunc (fileData) {
-
-}
-
-function AddAutoGeneFunc (fileData) {
-
-}

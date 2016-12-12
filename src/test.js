@@ -1,4 +1,5 @@
 var spi      = require("./test-spi.js");
+// var addon    = require("./build/Release/addon-node.node");
 var addon    = require("./build/Release/addon.node");
 var SysUserApiStruct    = require("./SysUserApiStruct.js");
 var bNewServer = true;
@@ -30,7 +31,7 @@ subscribeField.ObjectID = 72434628689922;  // "BM.TMS.ZhangJ.app.monproxy.1",724
 subscribeField.AttrType = 124; 						 // "CPUUsage", 124
 
 var monConfigInfoField = new SysUserApiStruct.CShfeFtdcReqQryMonConfigInfoField();
-monConfigInfoField.ConfigName = "AttrName"; // ObjectIDNS, DomainNS, AttrName,
+monConfigInfoField.ConfigName = "ObjectIDNS"; // ObjectIDNS, DomainNS, AttrName,
 
 var user = {};
 user.userApi = new addon.FtdcSysUserApi_Wrapper("");
@@ -38,7 +39,7 @@ user.bTestSysUserLogin   = true;
 user.bTestMonConfigInfo  = true;
 user.bTestSubscriberData = false;
 user.bTestSubscribe      = false;
-user.bTestMonitor2Object = false;
+user.bTestMonitor2Object = true;
 
 user.sysUserLoginField   = sysUserLoginField;
 user.monitor2ObjectField = monitor2ObjectField;

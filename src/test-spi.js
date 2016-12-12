@@ -7,9 +7,11 @@ var g_RspQrySysUserLoginTopic_callbackNumb = 0;
 var g_RtnObjectAttrTopic_callbackNumb = 0;
 var g_RtnMonObjectAttr_callbackNumb = 0;
 var g_MonConfigInfo = [];
-g_MonConfigInfo["ObjectIDNS"] = "\n------------------ ObjectIDNS Data START!-----------------\n";
-g_MonConfigInfo["DomainNS"] = "\n------------------ DomainNS Data START!------------------\n";
-g_MonConfigInfo["AttrName"] = "\n------------------ AttrName Data START!------------------\n";
+g_MonConfigInfo["ObjectIDNS"] = "";
+g_MonConfigInfo["DomainNS"] = "";
+g_MonConfigInfo["AttrName"] = "";
+var g_treeViewMapDara;
+var g_treeViewData="";
 
 var Spi = function(){
 
@@ -63,14 +65,59 @@ var Spi = function(){
         this.user.userApi.ReqSubscribe(this.user.subscribeField, 1)
       }
 
-      if (true === this.user.bTestMonitor2Object) {
-        this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
-      }
+      // if (true === this.user.bTestMonitor2Object) {
+      //   this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
+      // }
 
 			if (true === this.user.bTestSubscriberData) {
         this.user.userApi.ReqQrySubscriberTopic(this.user.subscriberField, 1)
       }
 
+    }
+
+    this.OnRspQryMonConfigInfo = function (pRspQryMonConfigInfo, pRspInfo, nRequestID, bIsLast) {
+        var outputStr = "\n++++++++++++++++ JS OnRspQryMonConfigInfo: START! ++++++++++++++++++\n";
+        if (pRspQryMonConfigInfo instanceof Object) {
+          outputStr += "ConfigName :                 " + pRspQryMonConfigInfo.ConfigName.toString() + "\n"                   
+                     + "ConfigArg :                  " + pRspQryMonConfigInfo.ConfigArg.toString() + "\n"
+                     + "ConfigContent :              " + pRspQryMonConfigInfo.ConfigContent.toString() + "\n"
+
+					if (undefined !== g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]) {
+						g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] += pRspQryMonConfigInfo.ConfigContent;
+						if (true === bIsLast) {
+							var outputData = "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data START!-----------------\n"
+							               + g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] 
+														 + "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data END!-----------------\n";
+							
+							fs.appendFile(jsFileName, outputData, function(err) {
+								if (err) {
+										console.log(err);
+								} 
+        			});
+
+							g_treeViewMapDara = processMonConfigInfoData (g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]);
+							if (true === this.user.bTestMonitor2Object) {
+								this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
+							}
+						}
+					}
+
+        } else {
+                outputStr += "pRspQryMonConfigInfo is NULL!\n";
+        }
+        if (pRspInfo instanceof Object) {
+           outputStr += "pRspInfo->ErrorID:          " + pRspInfo.ErrorID.toString() + "\n"
+                      + "pRspInfo->ErrorMsg:         " + pRspInfo.ErrorMsg.toString() + "\n"        
+        }				
+        outputStr += "bIsLastNew :                " + bIsLast + "\n";
+        outputStr += "++++++++++++++++ JS OnRspQryMonConfigInfo: END! ++++++++++++++++++" + "\n";
+        // fs.appendFile(jsFileName, outputStr, function(err) {
+        //     if (err) {
+        //         console.log(err);
+        //     } 
+        // });
+
+        // console.log(outputStr);
     }
 
 		this.OnRspQryMonitor2ObjectTopic = function (pRspQryMonitor2Object, pRspInfo, nRequestID, bIsLast) {
@@ -80,13 +127,14 @@ var Spi = function(){
 						outputStr += "ObjectID :               " + pRspQryMonitor2Object.ObjectID.toString() + "\n"
 											+ "ObjectName :             " + pRspQryMonitor2Object.ObjectName.toString() + "\n"
 											+ "WarningActive :          " + pRspQryMonitor2Object.WarningActive.toString() + "\n";
+						g_treeViewData += pRspQryMonitor2Object.ObjectID + ': ' + g_treeViewMapDara[pRspQryMonitor2Object.ObjectID] + "\n";
 				} else {
 						outputStr += "pRspQryMonitorObject is NULL;\n";
 				}
 				if (pRspInfo instanceof Object) {
            outputStr += "pRspInfo->ErrorID:          " + pRspInfo.ErrorID.toString() + "\n"
                       + "pRspInfo->ErrorMsg:         " + pRspInfo.ErrorMsg.toString() + "\n"        
-        }
+        }				
 		
 				outputStr += "bIsLast:                 " + bIsLast.toString() + "\n";
 				outputStr += "g_RspQryMonitorObjectTopic_callbackNumb:   " + g_RspQryMonitorObjectTopic_callbackNumb + "\n";
@@ -99,50 +147,11 @@ var Spi = function(){
 				});
 
 				console.log (outputStr);
-				// if (true === bIsLast) {
-				//     console.log (outputStr);
-				// }
+				if (true === bIsLast) {
+				    console.log (g_treeViewData);
+				}
 		}
 
-    this.OnRspQryMonConfigInfo = function (pRspQryMonConfigInfo, pRspInfo, nRequestID, bIsLast) {
-        var outputStr = "\n++++++++++++++++ JS OnRspQryMonConfigInfo: START! ++++++++++++++++++\n";
-        if (pRspQryMonConfigInfo instanceof Object) {
-          outputStr += "ConfigName :                 " + pRspQryMonConfigInfo.ConfigName.toString() + "\n"                   
-                     + "ConfigArg :                  " + pRspQryMonConfigInfo.ConfigArg.toString() + "\n"
-                     + "ConfigContent :              " + pRspQryMonConfigInfo.ConfigContent.toString() + "\n"
-
-					if (undefined !== g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]) {
-						g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] += pRspQryMonConfigInfo.ConfigContent;
-						if (true === bIsLast) {
-							g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] +=  "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data END!-----------------\n";
-							fs.appendFile(jsFileName, g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName], function(err) {
-								if (err) {
-										console.log(err);
-								} 
-        			});
-						}
-					}
-
-        } else {
-                outputStr += "pRspQryMonConfigInfo is NULL!\n";
-        }
-        if (pRspInfo instanceof Object) {
-           outputStr += "pRspInfo->ErrorID:          " + pRspInfo.ErrorID.toString() + "\n"
-                      + "pRspInfo->ErrorMsg:         " + pRspInfo.ErrorMsg.toString() + "\n"        
-        }
-				
-
-        outputStr += "bIsLastNew :                " + bIsLast + "\n";
-        outputStr += "++++++++++++++++ JS OnRspQryMonConfigInfo: END! ++++++++++++++++++" + "\n";
-
-        // fs.appendFile(jsFileName, outputStr, function(err) {
-        //     if (err) {
-        //         console.log(err);
-        //     } 
-        // });
-
-        console.log(outputStr);
-    }
 
     this.OnRtnMonObjectAttr = function (pRtnMonObjectAttr) {
 				var outputStr = "\n************ JS::OnRtnMonObjectAttr: START! ***********\n";
@@ -193,8 +202,59 @@ var Spi = function(){
 };
 
 function processMonConfigInfoData (originData) {
-	var tmpData = originData.split("\n")
+	var tmpData = originData.split("\n");
+  var numberStringIndex = getTransDataIndex(tmpData);	
+	var transData = [];
+
+	// console.log (tmpData);
+	console.log (numberStringIndex);
+	for (var i = 0; i < tmpData.length; ++i) {
+		tmpData[i] = tmpData[i].split(",");
+		if (tmpData[i].length === 2) {
+			transData[tmpData[i][numberStringIndex.numberIndex]] = tmpData[i][numberStringIndex.stringIndex].replace(' ','');
+			// console.log (tmpData[i][numberStringIndex.numberIndex] + ': ' + transData[tmpData[i][numberStringIndex.numberIndex]]);			
+		}
+	}
+
+	// console.log (transData);
+	return transData;
 }
 
+function getTransDataIndex (originData) {
+	var indexData = {};
+	for (var i = 0; i < originData.length; ++i) {
+		var testData = originData[i].split(",");
+		if (testData.length === 2) {
+			if (isNumber(testData[0])) {
+				indexData.numberIndex = 0;
+				indexData.stringIndex = 1;
+			} else {
+				indexData.numberIndex = 1;
+				indexData.stringIndex = 0;
+			}
+			break;
+		}
+		
+	}
+	// console.log (indexData);
+	return indexData;
+}
+
+function isNumber (value) {
+	var valueArray = value.split('');
+	var numbArray = ['0','1', '2', '3', '4', '5', '6', '7', '8', '9'];
+	var isNumb;
+	for (var i = 0; i < valueArray.length; ++i) {
+		isNumb = false; 
+		for (var j = 0; j < numbArray.length; ++j) {
+			if (valueArray[i].toString() == numbArray[j].toString()){
+				isNumb = true;
+				break;
+			} 			
+		}
+		if (!isNumb) {return isNumb;}
+	}
+	return isNumb;
+}
 
 exports.Spi = Spi;
