@@ -18,7 +18,8 @@ var fileData = hereDoc(function () {
     this.ChildProcessUncaughtException = 'ChildProcessUncaughtException',
 
     this.ConnectServer = "ConnectServer",
-
+    this.RspQyrUserLoginSucceed = "RspQyrUserLoginSucceed",
+    
     // server connect events-ManualGenerate
     this.New = "New",
     this.Release = "Release",

@@ -33,10 +33,15 @@ subscribeField.AttrType = 124; 						 // "CPUUsage", 124
 var monConfigInfoField = new SysUserApiStruct.CShfeFtdcReqQryMonConfigInfoField();
 monConfigInfoField.ConfigName = "ObjectIDNS"; // ObjectIDNS, DomainNS, AttrName,
 
+// var monConfigInfoFieldArray = new Array(3);
+// for (var i = 0; i < 3; ++i) {
+// 	monConfigInfoFieldArray[]
+// }
+
 var user = {};
 user.userApi = new addon.FtdcSysUserApi_Wrapper("");
 user.bTestSysUserLogin   = true;
-user.bTestMonConfigInfo  = true;
+user.bTestMonConfigInfo  = false;
 user.bTestSubscriberData = false;
 user.bTestSubscribe      = false;
 user.bTestMonitor2Object = true;
@@ -49,9 +54,23 @@ user.subscriberField     = subscriberField;
 user.Spi                 = new spi.Spi();
 user.Spi.user            = user;
 
+reqAllMonConfigDatra();
+
 user.userApi.RegisterFront(realTimeSystemPath);
 user.userApi.RegisterSpi(user.Spi);
 user.userApi.Init();
+
+function reqAllMonConfigDatra () {
+	var monConfigInfoFieldArray = new Array(3);
+	for (var i = 0; i < 3; ++i) {
+		monConfigInfoFieldArray[i] = new SysUserApiStruct.CShfeFtdcReqQryMonConfigInfoField();
+	}
+	monConfigInfoFieldArray[0].ConfigName = "ObjectIDNS";
+	monConfigInfoFieldArray[1].ConfigName = "DomainNS";
+	monConfigInfoFieldArray[2].ConfigName = "AttrName";
+	user.monConfigInfoFieldArray = monConfigInfoFieldArray;
+	user.bTestAllMonConfigInfo = true;
+}
 
 process.on('beforeExit', function (code) {
 	console.log('Nodejs, beforeExit: ' + code.toString());

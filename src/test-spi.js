@@ -10,7 +10,17 @@ var g_MonConfigInfo = [];
 g_MonConfigInfo["ObjectIDNS"] = "";
 g_MonConfigInfo["DomainNS"] = "";
 g_MonConfigInfo["AttrName"] = "";
-var g_treeViewMapDara;
+
+var g_IsReqMonConfigEnd = [];
+g_IsReqMonConfigEnd["ObjectIDNS"] = false;
+g_IsReqMonConfigEnd["DomainNS"] = false;
+g_IsReqMonConfigEnd["AttrName"] = false;
+
+var g_treeViewMapData = [];
+g_treeViewMapData["ObjectIDNS"] = [];
+g_treeViewMapData["DomainNS"] = [];
+g_treeViewMapData["AttrName"] = [];
+
 var g_treeViewData="";
 
 var Spi = function(){
@@ -50,11 +60,11 @@ var Spi = function(){
       outputStr += "bIsLastNew :                " + bIsLast + "\n";
       outputStr += "++++++++++++++++ JS OnRspQrySysUserLoginTopic: END! ++++++++++++++++++" + "\n";
 
-      fs.appendFile(jsFileName, outputStr, function(err) {
-          if (err) {
-              console.log(err);
-          } 
-      });
+      // fs.appendFile(jsFileName, outputStr, function(err) {
+      //     if (err) {
+      //         console.log(err);
+      //     } 
+      // });
       console.log(outputStr);
 
       if (true === this.user.bTestMonConfigInfo) {
@@ -65,13 +75,19 @@ var Spi = function(){
         this.user.userApi.ReqSubscribe(this.user.subscribeField, 1)
       }
 
-      // if (true === this.user.bTestMonitor2Object) {
-      //   this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
-      // }
+      if (true === this.user.bTestMonitor2Object && false === this.user.bTestMonConfigInfo) {
+        this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
+      }
 
 			if (true === this.user.bTestSubscriberData) {
         this.user.userApi.ReqQrySubscriberTopic(this.user.subscriberField, 1)
       }
+
+			if (true === this.user.bTestAllMonConfigInfo) {
+				for (var i = 0; i < this.user.monConfigInfoFieldArray.length; ++i) {
+					this.user.userApi.ReqQryMonConfigInfo(this.user.monConfigInfoFieldArray[i], 1);
+				}
+			}
 
     }
 
@@ -84,22 +100,52 @@ var Spi = function(){
 
 					if (undefined !== g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]) {
 						g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] += pRspQryMonConfigInfo.ConfigContent;
-						if (true === bIsLast) {
-							var outputData = "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data START!-----------------\n"
-							               + g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] 
-														 + "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data END!-----------------\n";
-							
-							fs.appendFile(jsFileName, outputData, function(err) {
-								if (err) {
-										console.log(err);
-								} 
-        			});
+						g_IsReqMonConfigEnd[pRspQryMonConfigInfo.ConfigName] = bIsLast;
+						var isAllRspEnd = true;
+						for (var ConfigName in g_IsReqMonConfigEnd) {
+							if (!g_IsReqMonConfigEnd[ConfigName]) {
+								isAllRspEnd = false;break;
+							}
+						}
 
-							g_treeViewMapDara = processMonConfigInfoData (g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]);
+						if (isAllRspEnd) {
+							console.log (g_IsReqMonConfigEnd);
+
+							for (var ConfigName in g_IsReqMonConfigEnd) {
+								var outputData = "------------------ "+ ConfigName + " Data START!-----------------\n"
+																+ g_MonConfigInfo[ConfigName] 
+																+ "------------------ "+ ConfigName + " Data END!-----------------\n";
+								
+								fs.appendFile(jsFileName, outputData, function(err) {
+									if (err) {
+											console.log(err);
+									} 
+								});
+
+								g_treeViewMapData[ConfigName] = processMonConfigInfoData (g_MonConfigInfo[ConfigName]);
+								
+							}
+							// OutputFunc(g_treeViewMapData);
 							if (true === this.user.bTestMonitor2Object) {
 								this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
 							}
 						}
+						// if (true === bIsLast) {
+						// 	var outputData = "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data START!-----------------\n"
+						// 	               + g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName] 
+						// 								 + "------------------ "+ pRspQryMonConfigInfo.ConfigName + " Data END!-----------------\n";
+							
+						// 	fs.appendFile(jsFileName, outputData, function(err) {
+						// 		if (err) {
+						// 				console.log(err);
+						// 		} 
+        		// 	});
+
+						// 	g_treeViewMapData = processMonConfigInfoData (g_MonConfigInfo[pRspQryMonConfigInfo.ConfigName]);
+						// 	if (true === this.user.bTestMonitor2Object) {
+						// 		this.user.userApi.ReqQryMonitor2ObjectTopic(this.user.monitor2ObjectField, 1)
+						// 	}
+						// }
 					}
 
         } else {
@@ -127,7 +173,10 @@ var Spi = function(){
 						outputStr += "ObjectID :               " + pRspQryMonitor2Object.ObjectID.toString() + "\n"
 											+ "ObjectName :             " + pRspQryMonitor2Object.ObjectName.toString() + "\n"
 											+ "WarningActive :          " + pRspQryMonitor2Object.WarningActive.toString() + "\n";
-						g_treeViewData += pRspQryMonitor2Object.ObjectID + ': ' + g_treeViewMapDara[pRspQryMonitor2Object.ObjectID] + "\n";
+					if (this.user.bTestAllMonConfigInfo) {
+						  outputStr += "TransObjectID:           " + g_treeViewMapData["ObjectIDNS"][pRspQryMonitor2Object.ObjectID] + "\n"
+							g_treeViewData += pRspQryMonitor2Object.ObjectID + ': ' + g_treeViewMapData["ObjectIDNS"][pRspQryMonitor2Object.ObjectID] + "\n";					
+					}
 				} else {
 						outputStr += "pRspQryMonitorObject is NULL;\n";
 				}
@@ -141,17 +190,16 @@ var Spi = function(){
 				outputStr += "************ JS::OnRspQryMonitor2ObjectTopic: END! *********** \n";
 		
 				fs.appendFile(jsFileName, outputStr, function(err) {
-							if (err) {
-									console.log(err);
-							} 
+						if (err) {
+								console.log(err);
+						} 
 				});
 
 				console.log (outputStr);
 				if (true === bIsLast) {
-				    console.log (g_treeViewData);
+				    // if (this.user.bTestAllMonConfigInfo) console.log (g_treeViewData);
 				}
 		}
-
 
     this.OnRtnMonObjectAttr = function (pRtnMonObjectAttr) {
 				var outputStr = "\n************ JS::OnRtnMonObjectAttr: START! ***********\n";
@@ -200,6 +248,14 @@ var Spi = function(){
 				});        
 		}
 };
+
+function OutputFunc(data) {
+	for (configName in data) {
+		for (value in data[configName]) {
+			console.log (value + ": " + data[configName][value]);
+		}
+	}
+}
 
 function processMonConfigInfoData (originData) {
 	var tmpData = originData.split("\n");
