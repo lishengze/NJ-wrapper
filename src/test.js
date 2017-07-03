@@ -1,13 +1,15 @@
-var spi      = require("./test-spi.js");
+// var addon    = require("./addon.node");
 // var addon    = require("./build/Release/addon-node.node");
 var addon    = require("./build/Release/addon.node");
+var spi      = require("./test-spi.js");
 var SysUserApiStruct    = require("./SysUserApiStruct.js");
 var bNewServer = true;
 
 if (true === bNewServer) {
-	var realTimeSystemPath  = "tcp://172.1.128.151:19840";
+	// var realTimeSystemPath = "tcp://172.1.128.151:19840";
+	var realTimeSystemPath = "tcp://172.1.128.160:19840";
 } else {
-	var realTimeSystemPath  = "tcp://172.1.128.165:18841";
+	var realTimeSystemPath = "tcp://172.1.128.165:18841";
 }
 // var realTimeSystemPath  = "tcp://172.1.128.172:19943";
 // var realTimeSystemPath = "tcp://192.168.100.1:19943";
@@ -31,7 +33,7 @@ subscribeField.ObjectID = 72434628689922;  // "BM.TMS.ZhangJ.app.monproxy.1",724
 subscribeField.AttrType = 124; 						 // "CPUUsage", 124
 
 var monConfigInfoField = new SysUserApiStruct.CShfeFtdcReqQryMonConfigInfoField();
-monConfigInfoField.ConfigName = "ObjectIDNS"; // ObjectIDNS, DomainNS, AttrName,
+monConfigInfoField.ConfigName = "AttrName"; // ObjectIDNS, DomainNS, AttrName,
 
 // var monConfigInfoFieldArray = new Array(3);
 // for (var i = 0; i < 3; ++i) {
@@ -44,7 +46,7 @@ user.bTestSysUserLogin   = true;
 user.bTestMonConfigInfo  = false;
 user.bTestSubscriberData = false;
 user.bTestSubscribe      = false;
-user.bTestMonitor2Object = true;
+user.bTestMonitor2Object = false;
 
 user.sysUserLoginField   = sysUserLoginField;
 user.monitor2ObjectField = monitor2ObjectField;

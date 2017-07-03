@@ -47,9 +47,9 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 
 	这几个文件的作用是在登录的时候加密用户密码
 
-### 5. libsysuserapi.so
+### 5. sysuserapi.dll sysuserapi.lib
 
-	这个文件是sysuserapi的linux下的动态库文件，在封装编译时用到。
+	这两个文件是FtdcSysUserApi.h对应的动态链接库，由后台人员提供，动态链接库的位数必须与封装平台对应的系统位数相同。
 
 
 ## 封装说明及其相关文件
@@ -74,12 +74,10 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 
 ### 4. ftdcsysuserapi-wrapper.h, ftdcsysuserapi-wrapper.cpp
 
-	封装CShfeFtdcSysUserApi这个类, 封装请求的api.
-	使用Nan::ObjectWrap,将请求的字段封装，用于C++后台请求。
-	JS -> Nan::ObjectWrap, V8-data -> C++
+* 封装CShfeFtdcSysUserApi这个类, 封装用于请求的api.
+* 使用Nan::ObjectWrap,将请求的字段封装，用于向C++后台发出请求。
+* 封装好后，用js脚本向后台请求的内部逻辑就变成：JS -> [Nan::ObjectWrap, V8-data] -> C++
 	
-
-
 ### 5. sysuserspi.h,sysuserspi.cpp; v8-transform-func.h, v8-transform-func.cpp.
 * 基本结构
     1. sysuserspi.h ,sysuserspi.cpp 继承自CShfeFtdcSysUserSpi类，在封装的内部作为实际回调处理类。
@@ -113,21 +111,25 @@ Nodejs native模块的编写需要学习V8引擎和nan。
 *  上面的每一个变量都是api相关的，每一个api都有对应的一套数据结构。
 *  InitV8Transformdata(), DeInitV8Transformdata()分别是对异步消息和全局锁的初始化以及析构。InitV8Transformdata() 在addon.cpp 被调用, DeInitV8Transformdata() 在SysUserSpi的析构函数中被调用。
 
-### 8. charset-convert-linux.h, charset-convert-linux.cpp.
+### 8. charset-convert-windows.h, charset-convert-windows.cpp.
     字符串转换函数，回调函数中的数据时gb2312编码，后台无法直接显示，转换成utf-8编码。
     
 ### 9. tool-funciton.h, tool-function.cpp
-    工具性的一些函数
+    自定义的工具函数
     
-### 10. SysUserApiStruct_JS.js
+### 10. SysUserApiStruct.js
 
 	FtdcSysUserApiStruct.h中定义的结构体需要在js中有相应的定义，这样js中发起服务请求时
 	就可以填充请求内容。
 
-### 11. test.js
+### 11. test.js, test-spi.js
 
 	测试文件，在js中测试封装好的接口。
 
+## 自动生成编译代码
+	由于需要转换的接口过多，所以转换的代码基本都是在确定了转换逻辑后，用脚本文件自动生成的，脚本文件存放在file-generator中。
+	请求与回调信息的来源为后台提供的xml文件。其中apps-xmltojson.js就是将xml转换成易于js文件访问的json文件。
+	每次源文件xml发生变动，需要重新生成所有文件。执行auto.js 便可自动执行所有剩下的脚本文件，自动生成所有的编译文件。新生成的文件存放在new-file文件夹中。
 
 ### 如何编译
 参考[node-gyp](https://github.com/nodejs/node-gyp)
@@ -144,6 +146,10 @@ npm install --verbose --arch=ia32 >compile-info.txt
 node-gyp build --verbose >compile-info.txt
 ```
 
+编译给atom 或 electron 平台使用时，也就是我们项目的使用平台，需要指定编译平台为对应的electron版本。
+可以参考这个[链接](http://www.jianshu.com/p/9ce7a9ccdc78) 或官方的 [Using Native Node Modules](https://electron.atom.io/docs/tutorial/using-native-node-modules/)
+
+编译后的结果存放在build文件夹内。
 
 ## 一些参考文档：
 * [V8概况](https://developers.google.com/v8/intro)，因为GFW的原因，这个
